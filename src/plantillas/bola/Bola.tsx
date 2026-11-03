@@ -266,13 +266,16 @@ export const Bola: React.FC<GuionBola> = (props) => {
           return <Pelota key={`e-${b.idx}-${k}`} x={filaA[b.idx * CAMPOS_POR_BOLA]} y={filaA[b.idx * CAMPOS_POR_BOLA + 1]} r={r} color={b.color} opacidad={0.08 + 0.09 * k} estela />;
         }))}
         <Particulas eventos={recientes} frame={frame} />
-        {bolas.map((b) => (
-          sim.modo === 'crecer' && enFinal && b.idx === climax?.bola
-            ? <Pelota key={b.idx} x={xLleno} y={yLleno} r={radioLleno} color={colorClimax} />
-            // En escape con varias bolas, las que quedan dentro se apagan para que la ganadora destaque.
-            : <Pelota key={b.idx} x={b.x} y={b.y} r={b.r} color={b.color}
-                opacidad={sim.modo === 'escape' && enFinal && b.idx !== climax?.bola ? interpolate(trasClimax, [0, 20], [1, 0.3], { extrapolateRight: 'clamp' }) : 1} />
+        {bolas.filter((b) => !(sim.modo === 'crecer' && enFinal && b.idx === climax?.bola)).map((b) => (
+          // En escape con varias bolas, las que quedan dentro se apagan para que la ganadora destaque.
+          // En crecer, las demás desaparecen mientras la ganadora tapa la pantalla.
+          <Pelota key={b.idx} x={b.x} y={b.y} r={b.r} color={b.color}
+            opacidad={enFinal && b.idx !== climax?.bola
+              ? (sim.modo === 'escape' ? interpolate(trasClimax, [0, 20], [1, 0.3], { extrapolateRight: 'clamp' }) : 1 - expansion)
+              : 1} />
         ))}
+        {/* La bola que llena el círculo se dibuja al final, encima de todas. */}
+        {sim.modo === 'crecer' && enFinal && climax && <Pelota x={xLleno} y={yLleno} r={radioLleno} color={colorClimax} />}
       </AbsoluteFill>
 
       {/* Flash de pantalla en el clímax */}
@@ -291,12 +294,12 @@ export const Bola: React.FC<GuionBola> = (props) => {
       {/* Cartel del clímax */}
       {enFinal && (
         <>
-          <Texto top={sim.modo === 'crecer' ? 760 : 700} tam={100} escala={0.6 + 0.4 * entradaCartel} opacidad={entradaCartel * fadeCierre}
+          <Texto top={sim.modo === 'crecer' ? 760 : 700} tam={textoFinal.length > 16 && sim.modo === 'crecer' ? 84 : 100} escala={0.6 + 0.4 * entradaCartel} opacidad={entradaCartel * fadeCierre}
             color={sim.modo === 'crecer' ? PALETA.fondo : colorClimax}
             sombra={sim.modo === 'crecer' ? 'none' : `0 0 40px ${hexA(colorClimax, 0.9)}, 0 0 90px ${hexA(colorClimax, 0.5)}, 0 6px 24px rgba(0,0,0,0.7)`}>
             {textoFinal}
           </Texto>
-          <Texto top={sim.modo === 'crecer' ? 900 : 960} tam={56} familia={TIPO.texto} peso={700} escala={1} opacidad={interpolate(trasClimax, [16, 30], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) * fadeCierre}
+          <Texto top={sim.modo === 'crecer' ? 930 : 960} tam={56} familia={TIPO.texto} peso={700} escala={1} opacidad={interpolate(trasClimax, [16, 30], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) * fadeCierre}
             color={sim.modo === 'crecer' ? PALETA.fondo : PALETA.tinta} sombra={sim.modo === 'crecer' ? 'none' : undefined}>
             {subFinal}
           </Texto>
