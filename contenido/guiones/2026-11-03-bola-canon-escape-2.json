@@ -1,6 +1,6 @@
 {
   "plantilla": "bola",
-  "id": "pendiente-bola-canon-escape-2",
+  "id": "2026-11-03-bola-canon-escape-2",
   "titulo": "2 bolitas, 1 hueco que gira: ¿cuál escapa primero? (Canon)",
   "descripcion": "Dos bolitas de neón rebotan y chocan dentro de un anillo con un hueco que gira. Cada rebote toca una nota de el Canon en Re de Pachelbel. Solo una escapa: elige tu color antes del final.\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #pachelbel #canon",
   "hashtags": [
@@ -13,7 +13,7 @@
     "#canon"
   ],
   "props": {
-    "id": "pendiente-bola-canon-escape-2",
+    "id": "2026-11-03-bola-canon-escape-2",
     "gancho": "2 bolitas. 1 hueco que gira. ¿Cuál sale?",
     "melodia": "canon",
     "modo": "escape",

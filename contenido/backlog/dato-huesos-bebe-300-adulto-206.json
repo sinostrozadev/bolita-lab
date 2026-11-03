@@ -2,7 +2,7 @@
   "plantilla": "dato",
   "id": "pendiente-dato-huesos-bebe-300-adulto-206",
   "titulo": "Naces con unos 300 huesos y de adulto tienes 206",
-  "descripcion": "Al nacer tenemos alrededor de 300 huesos, muchos de cartílago, que se fusionan hasta quedar 206 en la adultez.\n\nFuentes:\n- Cleveland Clinic, Bones: https://my.clevelandclinic.org/health/body/21868-bones\n- Nemours KidsHealth, Your bones: https://kidshealth.org/en/teens/bones-muscles-joints.html\n\n#shorts #datos #curiosidades #cuerpohumano #huesos #bolitalab",
+  "descripcion": "Al nacer tenemos alrededor de 300 huesos, muchos de cartílago, que se fusionan hasta quedar 206 en la adultez.\n\nFuentes:\n- Cleveland Clinic, Bones: https://my.clevelandclinic.org/health/body/21868-bones\n- Nemours KidsHealth, Your bones: https://kidshealth.org/en/teens/bones-muscles-joints.html\n- Cleveland Clinic, Fontanelle (la anterior se cierra hacia los 18–24 meses): https://my.clevelandclinic.org/health/body/23209-fontanelle\n- Cleveland Clinic: cada mano tiene 27 huesos y cada pie 26 → 54 + 52 = 106 de 206.\n- Webb & Suchey 1985, Am. J. Phys. Anthropol. 68:457 (la epífisis medial de la clavícula se fusiona por completo hacia los ~22–30 años; es de las últimas).\n\n#shorts #datos #curiosidades #cuerpohumano #huesos #bolitalab",
   "hashtags": [
     "#shorts",
     "#datos",
@@ -34,6 +34,16 @@
         }
       },
       {
+        "texto": "Por eso su cráneo tiene zonas blandas, las fontanelas, que se cierran cerca de los dos años.",
+        "visual": {
+          "tipo": "frase",
+          "texto": "Fontanelas: huecos blandos en el cráneo",
+          "enfasis": [
+            "fontanelas"
+          ]
+        }
+      },
+      {
         "texto": "De adulto quedan doscientos seis.",
         "visual": {
           "tipo": "cifra",
@@ -41,12 +51,46 @@
           "sufijo": "",
           "etiqueta": "huesos de un adulto"
         }
+      },
+      {
+        "texto": "Y más de la mitad están en tus manos y tus pies: ciento seis. El resto del cuerpo tiene cien.",
+        "visual": {
+          "tipo": "comparar",
+          "items": [
+            {
+              "etiqueta": "Manos",
+              "valor": 54,
+              "color": "cian"
+            },
+            {
+              "etiqueta": "Pies",
+              "valor": 52,
+              "color": "magenta"
+            },
+            {
+              "etiqueta": "Resto del cuerpo",
+              "valor": 100
+            }
+          ]
+        }
+      },
+      {
+        "texto": "La clavícula es de los últimos en terminar de soldarse: cerca de los veinticinco años.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 25,
+          "sufijo": " años",
+          "etiqueta": "edad aprox. en que la clavícula termina de fusionarse"
+        }
       }
     ],
     "remate": "Perder huesos es, en realidad, crecer.",
     "fuentes": [
       "Cleveland Clinic, Bones: https://my.clevelandclinic.org/health/body/21868-bones",
-      "Nemours KidsHealth, Your bones: https://kidshealth.org/en/teens/bones-muscles-joints.html"
+      "Nemours KidsHealth, Your bones: https://kidshealth.org/en/teens/bones-muscles-joints.html",
+      "Cleveland Clinic, Fontanelle (la anterior se cierra hacia los 18–24 meses): https://my.clevelandclinic.org/health/body/23209-fontanelle",
+      "Cleveland Clinic: cada mano tiene 27 huesos y cada pie 26 → 54 + 52 = 106 de 206.",
+      "Webb & Suchey 1985, Am. J. Phys. Anthropol. 68:457 (la epífisis medial de la clavícula se fusiona por completo hacia los ~22–30 años; es de las últimas)."
     ]
   }
 }

@@ -2,7 +2,7 @@
   "plantilla": "dato",
   "id": "pendiente-dato-venus-dia-mas-largo-que-ano",
   "titulo": "En Venus un día dura más que un año entero",
-  "descripcion": "Venus tarda 243 días terrestres en girar sobre sí mismo y 225 en dar la vuelta al Sol.\n\nFuentes:\n- NASA Venus Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html\n\n#shorts #datos #curiosidades #espacio #venus #bolitalab",
+  "descripcion": "Venus tarda 243 días terrestres en girar sobre sí mismo y 225 en dar la vuelta al Sol.\n\nFuentes:\n- NASA Venus Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html\n- NASA Venus Fact Sheet: día solar 2.802 h ≈ 116,75 días; velocidad de rotación ecuatorial 6,52 km/h; rotación retrógrada.\n- NASA Earth Fact Sheet (velocidad ecuatorial 1.674,4 km/h): https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html\n\n#shorts #datos #curiosidades #espacio #venus #bolitalab",
   "hashtags": [
     "#shorts",
     "#datos",
@@ -52,11 +52,51 @@
             }
           ]
         }
+      },
+      {
+        "texto": "Y además gira al revés que casi todos los planetas.",
+        "visual": {
+          "tipo": "frase",
+          "texto": "Gira al revés",
+          "enfasis": [
+            "revés"
+          ]
+        }
+      },
+      {
+        "texto": "El ecuador de la Tierra gira a casi mil setecientos kilómetros por hora; el de Venus, a seis y medio, como alguien caminando.",
+        "visual": {
+          "tipo": "comparar",
+          "sufijo": " km/h",
+          "items": [
+            {
+              "etiqueta": "Tierra",
+              "valor": 1674,
+              "color": "cian"
+            },
+            {
+              "etiqueta": "Venus",
+              "valor": 6.5,
+              "color": "naranja"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Sumando el giro y la órbita, de un amanecer al siguiente pasan ciento diecisiete días terrestres.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 117,
+          "sufijo": " días",
+          "etiqueta": "de un amanecer al siguiente en Venus"
+        }
       }
     ],
-    "remate": "Y además gira al revés que casi todos los planetas.",
+    "remate": "Allí el Sol sale por el oeste y se pone por el este.",
     "fuentes": [
-      "NASA Venus Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html"
+      "NASA Venus Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html",
+      "NASA Venus Fact Sheet: día solar 2.802 h ≈ 116,75 días; velocidad de rotación ecuatorial 6,52 km/h; rotación retrógrada.",
+      "NASA Earth Fact Sheet (velocidad ecuatorial 1.674,4 km/h): https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
     ]
   }
 }

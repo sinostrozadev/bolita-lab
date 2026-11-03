@@ -1,0 +1,96 @@
+{
+  "plantilla": "dato",
+  "id": "2026-11-03-dato-billon-de-segundos",
+  "titulo": "Un billón de segundos son más de 31.000 años",
+  "descripcion": "Un millón de segundos son unos 11,6 días; mil millones de segundos, unos 31,7 años; un billón de segundos, unos 31.700 años: seis veces toda la historia escrita.\n\nFuentes:\n- Cálculo directo: 1.000.000.000.000 s / 31.557.600 s por año juliano ≈ 31.688 años; 1.000.000 s / 86.400 ≈ 11,6 días; 10⁹ s ≈ 31,7 años\n- Britannica, Cuneiform (la escritura más antigua, hacia 3200 a. C., ≈ 5.200 años; 31.688 / 5.200 ≈ 6): https://www.britannica.com/topic/cuneiform\n- Britannica, Mammoth (vivieron en Eurasia durante el Pleistoceno; se extinguieron hace unos 4.000 años): https://www.britannica.com/animal/mammoth-extinct-mammal\n\n#shorts #datos #curiosidades #dinero #matematicas #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#dinero",
+    "#matematicas",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "2026-11-03-dato-billon-de-segundos",
+    "color": "lima",
+    "gancho": "¿Cuánto es realmente un billón?",
+    "escenas": [
+      {
+        "texto": "Un millón de segundos son once días y medio.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 11.6,
+          "sufijo": "días",
+          "etiqueta": "un millón de segundos"
+        }
+      },
+      {
+        "texto": "Mil millones de segundos son casi treinta y dos años.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 31.7,
+          "sufijo": "años",
+          "etiqueta": "mil millones de segundos"
+        }
+      },
+      {
+        "texto": "Un billón de segundos son más de treinta y un mil años.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 31688,
+          "sufijo": "años",
+          "etiqueta": "un billón de segundos"
+        }
+      },
+      {
+        "texto": "Míralo en barras: el millón ni se ve, mil millones apenas asoma y el billón lo llena todo.",
+        "visual": {
+          "tipo": "comparar",
+          "sufijo": " años",
+          "items": [
+            {
+              "etiqueta": "Millón",
+              "valor": 0.03
+            },
+            {
+              "etiqueta": "Mil millones",
+              "valor": 31.7,
+              "color": "cian"
+            },
+            {
+              "etiqueta": "Billón",
+              "valor": 31688,
+              "color": "lima"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "La escritura más antigua tiene apenas unos cinco mil años.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 5000,
+          "sufijo": " años",
+          "etiqueta": "historia escrita (cuneiforme, hacia 3200 a. C.)"
+        }
+      },
+      {
+        "texto": "Toda la historia escrita cabría seis veces en un billón de segundos.",
+        "visual": {
+          "tipo": "frase",
+          "texto": "Seis veces toda la historia escrita",
+          "enfasis": [
+            "seis"
+          ]
+        }
+      }
+    ],
+    "remate": "Hace un billón de segundos, tus antepasados convivían con mamuts.",
+    "fuentes": [
+      "Cálculo directo: 1.000.000.000.000 s / 31.557.600 s por año juliano ≈ 31.688 años; 1.000.000 s / 86.400 ≈ 11,6 días; 10⁹ s ≈ 31,7 años",
+      "Britannica, Cuneiform (la escritura más antigua, hacia 3200 a. C., ≈ 5.200 años; 31.688 / 5.200 ≈ 6): https://www.britannica.com/topic/cuneiform",
+      "Britannica, Mammoth (vivieron en Eurasia durante el Pleistoceno; se extinguieron hace unos 4.000 años): https://www.britannica.com/animal/mammoth-extinct-mammal"
+    ]
+  }
+}

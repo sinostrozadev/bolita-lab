@@ -2,7 +2,7 @@
   "plantilla": "dato",
   "id": "pendiente-dato-pulpo-tres-corazones",
   "titulo": "Un pulpo tiene tres corazones y sangre azul",
-  "descripcion": "Los pulpos tienen tres corazones: dos bombean a las branquias y uno al resto del cuerpo. Su sangre contiene hemocianina, que es azulada.\n\nFuentes:\n- Monterey Bay Aquarium, Octopus facts: https://www.montereybayaquarium.org/animals/animal-guide/invertebrates/giant-pacific-octopus\n- Smithsonian Ocean, Octopus: https://ocean.si.edu/ocean-life/invertebrates/octopuses\n\n#shorts #datos #curiosidades #animales #pulpo #bolitalab",
+  "descripcion": "Los pulpos tienen tres corazones: dos bombean a las branquias y uno al resto del cuerpo. Su sangre contiene hemocianina, que es azulada.\n\nFuentes:\n- Monterey Bay Aquarium, Octopus facts: https://www.montereybayaquarium.org/animals/animal-guide/invertebrates/giant-pacific-octopus\n- Smithsonian Ocean, Octopus: https://ocean.si.edu/ocean-life/invertebrates/octopuses\n- Britannica, Hemocyanin (proteína con cobre; incolora sin oxígeno y azul con oxígeno; menor capacidad de transporte que la hemoglobina): https://www.britannica.com/science/hemocyanin\n\n#shorts #datos #curiosidades #animales #pulpo #bolitalab",
   "hashtags": [
     "#shorts",
     "#datos",
@@ -37,18 +37,57 @@
         }
       },
       {
-        "texto": "Y su sangre no es roja: es azul, por el cobre que lleva.",
+        "texto": "Y su sangre no es roja: es azul, por el cobre de una proteína llamada hemocianina.",
         "visual": {
           "tipo": "icono",
           "forma": "corazon",
           "etiqueta": "sangre azul"
+        }
+      },
+      {
+        "texto": "El pulpo usa cobre y tú usas hierro: por eso tu sangre es roja.",
+        "visual": {
+          "tipo": "lista",
+          "items": [
+            "Pulpo: cobre, sangre azul",
+            "Tú: hierro, sangre roja"
+          ]
+        }
+      },
+      {
+        "texto": "Sin oxígeno, su sangre es casi transparente; al cargarlo, se vuelve azul.",
+        "visual": {
+          "tipo": "frase",
+          "texto": "Transparente… y luego azul",
+          "enfasis": [
+            "azul"
+          ]
+        }
+      },
+      {
+        "texto": "Esa sangre lleva el oxígeno peor que la tuya: tú tienes un corazón, el pulpo necesita tres.",
+        "visual": {
+          "tipo": "comparar",
+          "sufijo": "",
+          "items": [
+            {
+              "etiqueta": "Tú",
+              "valor": 1
+            },
+            {
+              "etiqueta": "Pulpo",
+              "valor": 3,
+              "color": "cian"
+            }
+          ]
         }
       }
     ],
     "remate": "Cuando nada, el corazón principal se detiene, por eso prefiere caminar.",
     "fuentes": [
       "Monterey Bay Aquarium, Octopus facts: https://www.montereybayaquarium.org/animals/animal-guide/invertebrates/giant-pacific-octopus",
-      "Smithsonian Ocean, Octopus: https://ocean.si.edu/ocean-life/invertebrates/octopuses"
+      "Smithsonian Ocean, Octopus: https://ocean.si.edu/ocean-life/invertebrates/octopuses",
+      "Britannica, Hemocyanin (proteína con cobre; incolora sin oxígeno y azul con oxígeno; menor capacidad de transporte que la hemoglobina): https://www.britannica.com/science/hemocyanin"
     ]
   }
 }

@@ -2,7 +2,7 @@
   "plantilla": "dato",
   "id": "pendiente-dato-rayo-mas-caliente-que-el-sol",
   "titulo": "Un rayo es 5 veces más caliente que la superficie del Sol",
-  "descripcion": "El canal de un rayo calienta el aire a casi 30.000 °C (unos 27.700 °C), frente a unos 5.500 °C de la superficie solar.\n\nFuentes:\n- NOAA National Weather Service, Lightning Safety: https://www.weather.gov/safety/lightning-science-overview\n- NASA Sun Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html\n\n#shorts #datos #curiosidades #ciencia #rayos #bolitalab",
+  "descripcion": "El canal de un rayo calienta el aire a casi 30.000 °C (unos 27.700 °C), frente a unos 5.500 °C de la superficie solar.\n\nFuentes:\n- NOAA National Weather Service, Lightning Safety: https://www.weather.gov/safety/lightning-science-overview\n- NASA Sun Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html\n- NWS: el rayo calienta el aire a unos 50.000 °F ≈ 27.700 °C, unas 5 veces la superficie del Sol (≈5.500 °C, 5.772 K).\n- NWS, Understanding Lightning: un rayo típico ≈ 300 millones de voltios y 30.000 amperes: https://www.weather.gov/safety/lightning-science-overview\n- NWS, Thunder: el sonido recorre ~1 km cada 3 s: https://www.weather.gov/safety/lightning-science-thunder\n- Christian et al. 2003, J. Geophys. Res. 108(D1):4005 (NASA, Optical Transient Detector: 44 ± 5 rayos por segundo en el planeta → >1.000 en ~30 s).\n\n#shorts #datos #curiosidades #ciencia #rayos #bolitalab",
   "hashtags": [
     "#shorts",
     "#datos",
@@ -52,13 +52,46 @@
             }
           ]
         }
+      },
+      {
+        "texto": "Y un rayo típico lleva unos trescientos millones de voltios.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 300,
+          "sufijo": " M de voltios",
+          "etiqueta": "un rayo típico"
+        }
+      },
+      {
+        "texto": "Ese calor hace explotar el aire: el trueno es una onda de choque.",
+        "visual": {
+          "tipo": "frase",
+          "texto": "El trueno es aire que explota",
+          "enfasis": [
+            "trueno"
+          ]
+        }
+      },
+      {
+        "texto": "Ves el rayo, cuentas los segundos hasta el trueno y divides por tres: son los kilómetros que te separan.",
+        "visual": {
+          "tipo": "lista",
+          "items": [
+            "Ves el rayo",
+            "Cuentas segundos",
+            "Divides por tres = km"
+          ]
+        }
       }
     ],
-    "remate": "Por eso el trueno es una onda de choque del aire.",
+    "remate": "Mientras veías este video, cayeron más de mil rayos en la Tierra.",
     "fuentes": [
       "NOAA National Weather Service, Lightning Safety: https://www.weather.gov/safety/lightning-science-overview",
       "NASA Sun Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
-      "NWS: el rayo calienta el aire a unos 50.000 °F ≈ 27.700 °C, unas 5 veces la superficie del Sol (≈5.500 °C, 5.772 K)."
+      "NWS: el rayo calienta el aire a unos 50.000 °F ≈ 27.700 °C, unas 5 veces la superficie del Sol (≈5.500 °C, 5.772 K).",
+      "NWS, Understanding Lightning: un rayo típico ≈ 300 millones de voltios y 30.000 amperes: https://www.weather.gov/safety/lightning-science-overview",
+      "NWS, Thunder: el sonido recorre ~1 km cada 3 s: https://www.weather.gov/safety/lightning-science-thunder",
+      "Christian et al. 2003, J. Geophys. Res. 108(D1):4005 (NASA, Optical Transient Detector: 44 ± 5 rayos por segundo en el planeta → >1.000 en ~30 s)."
     ]
   }
 }

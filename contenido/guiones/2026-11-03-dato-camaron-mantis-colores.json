@@ -1,0 +1,95 @@
+{
+  "plantilla": "dato",
+  "id": "2026-11-03-dato-camaron-mantis-colores",
+  "titulo": "El camarón mantis tiene 12 receptores de color; tú, solo 3",
+  "descripcion": "Los camarones mantis tienen entre 12 y 16 tipos de fotorreceptores; los humanos, 3 tipos de conos. Pero distinguen peor colores parecidos, y su golpe acelera a más de 10.000 g.\n\nFuentes:\n- Marshall & Oberwinkler, Nature 1999, Ultraviolet vision in a mantis shrimp\n- Smithsonian Ocean, Mantis shrimp: https://ocean.si.edu/ocean-life/invertebrates/mantis-shrimp\n- Thoen et al. 2014, Science 343:411 (A different form of color vision in mantis shrimp: distinguen peor colores cercanos que nosotros).\n- Patek, Korff & Caldwell 2004, Nature 428:819 (Deadly strike mechanism of a mantis shrimp): golpe a 23 m/s ≈ 83 km/h y ~10.400 g; el agua cavita.\n- Patek & Caldwell 2005, J. Exp. Biol. 208:3655 (Extreme impact and cavitation forces of a biological hammer): el colapso de la burbuja de cavitación da un segundo impacto.\n\n#shorts #datos #curiosidades #animales #ojos #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#animales",
+    "#ojos",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "2026-11-03-dato-camaron-mantis-colores",
+    "color": "magenta",
+    "gancho": "Hay un animal que ve colores que no existen para ti.",
+    "escenas": [
+      {
+        "texto": "Tus ojos tienen tres tipos de conos para ver el color.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 3,
+          "sufijo": "tipos",
+          "etiqueta": "conos de color humanos"
+        }
+      },
+      {
+        "texto": "El camarón mantis tiene entre doce y dieciséis tipos de fotorreceptores.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 12,
+          "sufijo": "o más",
+          "etiqueta": "fotorreceptores del camarón mantis"
+        }
+      },
+      {
+        "texto": "Tú tienes tres; el mantis, doce o más. Y además ve luz ultravioleta y polarizada.",
+        "visual": {
+          "tipo": "comparar",
+          "items": [
+            {
+              "etiqueta": "Tú",
+              "valor": 3
+            },
+            {
+              "etiqueta": "Mantis",
+              "valor": 12,
+              "color": "magenta"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Pero en las pruebas distingue peor que tú dos colores parecidos.",
+        "visual": {
+          "tipo": "frase",
+          "texto": "Ve más… pero distingue peor",
+          "enfasis": [
+            "peor"
+          ]
+        }
+      },
+      {
+        "texto": "Y su golpe acelera como una bala de calibre veintidós: más de diez mil veces la gravedad.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 10400,
+          "sufijo": " g",
+          "etiqueta": "aceleración de su golpe",
+          "dice": "diez"
+        }
+      },
+      {
+        "texto": "El golpe va a más de ochenta kilómetros por hora, forma una burbuja que estalla y da un doble impacto.",
+        "visual": {
+          "tipo": "lista",
+          "items": [
+            "Golpe a 83 km/h",
+            "Burbuja de cavitación",
+            "Doble impacto"
+          ]
+        }
+      }
+    ],
+    "remate": "Ve colores que no imaginas… y golpea como una bala.",
+    "fuentes": [
+      "Marshall & Oberwinkler, Nature 1999, Ultraviolet vision in a mantis shrimp",
+      "Smithsonian Ocean, Mantis shrimp: https://ocean.si.edu/ocean-life/invertebrates/mantis-shrimp",
+      "Thoen et al. 2014, Science 343:411 (A different form of color vision in mantis shrimp: distinguen peor colores cercanos que nosotros).",
+      "Patek, Korff & Caldwell 2004, Nature 428:819 (Deadly strike mechanism of a mantis shrimp): golpe a 23 m/s ≈ 83 km/h y ~10.400 g; el agua cavita.",
+      "Patek & Caldwell 2005, J. Exp. Biol. 208:3655 (Extreme impact and cavitation forces of a biological hammer): el colapso de la burbuja de cavitación da un segundo impacto."
+    ]
+  }
+}

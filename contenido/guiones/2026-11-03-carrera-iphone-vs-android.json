@@ -1,6 +1,6 @@
 {
   "plantilla": "carrera",
-  "id": "carrera-iphone-vs-android",
+  "id": "2026-11-03-carrera-iphone-vs-android",
   "titulo": "¿iPhone, Samsung, Xiaomi o Pixel? 📱 ¿Qué celular gana?",
   "descripcion": "iPhone contra cinco marcas Android en una carrera de bolitas de neón con física real. ¿Gana tu celular? Sonido en cada rebote. Defiende tu marca en los comentarios.",
   "hashtags": [
@@ -13,7 +13,7 @@
     "#android"
   ],
   "props": {
-    "id": "carrera-iphone-vs-android",
+    "id": "2026-11-03-carrera-iphone-vs-android",
     "gancho": "¿iPhone o Android?",
     "tema": "tecnología",
     "participantes": [

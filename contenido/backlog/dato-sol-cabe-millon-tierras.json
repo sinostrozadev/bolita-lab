@@ -2,7 +2,7 @@
   "plantilla": "dato",
   "id": "pendiente-dato-sol-cabe-millon-tierras",
   "titulo": "En el Sol caben más de un millón de Tierras",
-  "descripcion": "El volumen del Sol equivale a unas 1.300.000 Tierras. Y en Betelgeuse cabrían cientos de millones de Soles.\n\nFuentes:\n- NASA Sun Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html\n- Joyce et al. 2020, ApJ 902:63 (radio de Betelgeuse ≈ 764 radios solares)\n\n#shorts #datos #curiosidades #espacio #sol #bolitalab",
+  "descripcion": "El volumen del Sol equivale a unas 1.300.000 Tierras. Y en Betelgeuse cabrían cientos de millones de Soles.\n\nFuentes:\n- NASA Sun Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html\n- Joyce et al. 2020, ApJ 902:63 (radio de Betelgeuse ≈ 764 radios solares → ~4×10⁸ Soles en volumen). Nota: el Sol es más grande que ~90 % de las estrellas de la Vía Láctea, por eso no se dice que sea \"pequeña\".\n- NASA Sun Fact Sheet: radio 695.700 km (109,1 radios terrestres), volumen 1.304.000 Tierras, masa 333.000 Tierras.\n- NASA, Sun: Facts (el Sol tiene el 99,8 % de la masa del sistema solar): https://science.nasa.gov/sun/facts/\n- Escala: puerta de 2 m / 109 ≈ 1,8 cm, el tamaño de una moneda.\n\n#shorts #datos #curiosidades #espacio #sol #bolitalab",
   "hashtags": [
     "#shorts",
     "#datos",
@@ -42,6 +42,15 @@
         }
       },
       {
+        "texto": "Es ciento nueve veces más ancho: si el Sol fuera una puerta, la Tierra sería una moneda.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 109,
+          "sufijo": "×",
+          "etiqueta": "más ancho que la Tierra"
+        }
+      },
+      {
         "texto": "En su volumen caben más de un millón de Tierras.",
         "visual": {
           "tipo": "cifra",
@@ -49,12 +58,35 @@
           "sufijo": "",
           "etiqueta": "Tierras dentro del Sol (≈1,3 millones)"
         }
+      },
+      {
+        "texto": "Y concentra el noventa y nueve coma ocho por ciento de la masa del sistema solar.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 99.8,
+          "sufijo": "%",
+          "etiqueta": "de la masa del sistema solar"
+        }
+      },
+      {
+        "texto": "En resumen: ciento nueve Tierras de ancho, un millón trescientas mil de volumen y trescientas treinta mil de masa.",
+        "visual": {
+          "tipo": "lista",
+          "items": [
+            "Ancho: 109 Tierras",
+            "Volumen: 1,3 millones",
+            "Masa: 333.000 Tierras"
+          ]
+        }
       }
     ],
     "remate": "Y hay estrellas, como Betelgeuse, donde cabrían cientos de millones de Soles.",
     "fuentes": [
       "NASA Sun Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
-      "Joyce et al. 2020, ApJ 902:63 (radio de Betelgeuse ≈ 764 radios solares → ~4×10⁸ Soles en volumen). Nota: el Sol es más grande que ~90 % de las estrellas de la Vía Láctea, por eso no se dice que sea \"pequeña\"."
+      "Joyce et al. 2020, ApJ 902:63 (radio de Betelgeuse ≈ 764 radios solares → ~4×10⁸ Soles en volumen). Nota: el Sol es más grande que ~90 % de las estrellas de la Vía Láctea, por eso no se dice que sea \"pequeña\".",
+      "NASA Sun Fact Sheet: radio 695.700 km (109,1 radios terrestres), volumen 1.304.000 Tierras, masa 333.000 Tierras.",
+      "NASA, Sun: Facts (el Sol tiene el 99,8 % de la masa del sistema solar): https://science.nasa.gov/sun/facts/",
+      "Escala: puerta de 2 m / 109 ≈ 1,8 cm, el tamaño de una moneda."
     ]
   }
 }

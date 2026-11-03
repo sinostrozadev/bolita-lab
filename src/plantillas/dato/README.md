@@ -32,7 +32,7 @@ Los items de lista/comparar/escala (y el énfasis de `frase`) entran cuando la v
 - Fondo: degradado radial del color a la deriva + 48 partículas deterministas + viñeta. Siempre hay algo moviéndose.
 - Duración = voz + pausas de 0,25 s + 72 frames de `<Cierre/>`. `calculateMetadata` lee `voz/<id>/tiempos.json` con fetch (si no existe, estima tiempos para el Studio).
 - Audio: la voz va en `<Audio>` por línea (volumen 1); la cama+SFX en otro `<Audio>` (0,9). La cama se sintetiza a 0,09 y los SFX a 0,5, sin normalizar a pico: la cama+SFX queda ~8–10 dB por debajo de la voz (medido: voz ≈ −20 dBFS RMS, cama+SFX ≈ −28/−30 dBFS RMS).
-- Duración mínima práctica: el guion debe sumar >= 25 s con voz (los tres primeros videos quedaron en 29–32 s).
+- Duración mínima práctica: el guion debe sumar >= 25 s con voz (los tres primeros videos quedaron en 29–32 s). `preparar-dato.mts` lo exige: tras generar la voz calcula voz + pausas + cierre y, si queda fuera de 25–58 s, sale con código 1 ("guion demasiado corto: X s, mínimo 25") y no escribe props, así el diario lo marca `error`. Regla práctica: ~90–110 palabras habladas en 6 escenas ≈ 30–38 s (la voz va a ~3 palabras/s).
 
 ## Voz
 `es-MX-JorgeNeural` (por defecto, a +6 % de velocidad): clara, neutra y sin marcado acento regional; suena natural con cifras. Alternativas permitidas en `guion.ts`.

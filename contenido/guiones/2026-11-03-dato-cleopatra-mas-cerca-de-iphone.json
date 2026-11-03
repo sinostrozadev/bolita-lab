@@ -1,0 +1,105 @@
+{
+  "plantilla": "dato",
+  "id": "2026-11-03-dato-cleopatra-mas-cerca-de-iphone",
+  "titulo": "Cleopatra vivió más cerca del iPhone que de las pirámides",
+  "descripcion": "La Gran Pirámide se construyó hacia 2560 a. C.; Cleopatra murió en 30 a. C.; el primer iPhone salió en 2007. Y el T. rex vivió más cerca de nosotros que del estegosaurio.\n\nFuentes:\n- Britannica, Great Pyramid of Giza: https://www.britannica.com/topic/Pyramid-of-Khufu\n- Britannica, Cleopatra: https://www.britannica.com/biography/Cleopatra-queen-of-Egypt\n- Apple Newsroom, 2007: https://www.apple.com/newsroom/2007/01/09Apple-Reinvents-the-Phone-with-iPhone/\n- Cálculo: de 2560 a. C. a 30 a. C. ≈ 2.530 años; de 30 a. C. a 2007 = 2.036 años (no hay año 0).\n- Britannica, Tyrannosaurus (vivió hace 68–66 millones de años): https://www.britannica.com/animal/Tyrannosaurus\n- Britannica, Stegosaurus (Jurásico tardío, hace ~155–150 millones de años; ≈ 80 M años antes que el T. rex): https://www.britannica.com/animal/Stegosaurus\n\n#shorts #datos #curiosidades #historia #egipto #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#historia",
+    "#egipto",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "2026-11-03-dato-cleopatra-mas-cerca-de-iphone",
+    "color": "naranja",
+    "gancho": "Cleopatra vivió más cerca de ti que de las pirámides.",
+    "escenas": [
+      {
+        "texto": "La Gran Pirámide se construyó hacia el año dos mil quinientos sesenta antes de Cristo.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 2560,
+          "sufijo": "a. C.",
+          "etiqueta": "construcción de la Gran Pirámide"
+        }
+      },
+      {
+        "texto": "Cleopatra murió en el año treinta antes de Cristo: unos dos mil quinientos años después.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 2530,
+          "sufijo": "años",
+          "etiqueta": "de la pirámide a Cleopatra"
+        }
+      },
+      {
+        "texto": "De Cleopatra a nosotros pasaron unos dos mil cincuenta años.",
+        "visual": {
+          "tipo": "comparar",
+          "sufijo": " años",
+          "items": [
+            {
+              "etiqueta": "Pirámide–Cleopatra",
+              "valor": 2530,
+              "color": "naranja"
+            },
+            {
+              "etiqueta": "Cleopatra–hoy",
+              "valor": 2055,
+              "color": "cian"
+            }
+          ]
+        }
+      },
+      {
+        "texto": "El primer iPhone salió en dos mil siete: apenas dos mil treinta y seis años después de su muerte.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 2036,
+          "sufijo": " años",
+          "etiqueta": "de Cleopatra al primer iPhone",
+          "dice": "treinta"
+        }
+      },
+      {
+        "texto": "Con los dinosaurios pasa igual: el tiranosaurio vivió hace unos sesenta y seis millones de años.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 66,
+          "sufijo": " M años",
+          "etiqueta": "del tiranosaurio a hoy"
+        }
+      },
+      {
+        "texto": "Pero el estegosaurio vivió unos ochenta millones de años antes que él. Más lejos que tú.",
+        "visual": {
+          "tipo": "comparar",
+          "sufijo": " M años",
+          "items": [
+            {
+              "etiqueta": "Estegosaurio",
+              "valor": 80,
+              "color": "naranja"
+            },
+            {
+              "etiqueta": "Tú",
+              "valor": 66,
+              "color": "cian"
+            }
+          ]
+        }
+      }
+    ],
+    "remate": "Y para Cleopatra, las pirámides ya eran historia antigua.",
+    "fuentes": [
+      "Britannica, Great Pyramid of Giza: https://www.britannica.com/topic/Pyramid-of-Khufu",
+      "Britannica, Cleopatra: https://www.britannica.com/biography/Cleopatra-queen-of-Egypt",
+      "Apple Newsroom, 2007: https://www.apple.com/newsroom/2007/01/09Apple-Reinvents-the-Phone-with-iPhone/",
+      "Cálculo: de 2560 a. C. a 30 a. C. ≈ 2.530 años; de 30 a. C. a 2007 = 2.036 años (no hay año 0).",
+      "Britannica, Tyrannosaurus (vivió hace 68–66 millones de años): https://www.britannica.com/animal/Tyrannosaurus",
+      "Britannica, Stegosaurus (Jurásico tardío, hace ~155–150 millones de años; ≈ 80 M años antes que el T. rex): https://www.britannica.com/animal/Stegosaurus"
+    ]
+  }
+}
