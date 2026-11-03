@@ -1,0 +1,8 @@
+node_modules/
+salida/
+public/voz/
+public/audio/generado/
+secrets/
+.env
+*.log
+.remotion/
