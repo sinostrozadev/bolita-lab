@@ -22,7 +22,7 @@ de cada mp4, listos para copiar/pegar en YouTube Studio (2 min por video).
    miniaturas personalizadas (las compilaciones suben la suya) y programación.
 
 Desde Windows, los archivos de WSL se abren en el Explorador como
-`\\wsl$\Ubuntu\home\santiago\idea\salida\marca\` (o `explorer.exe .` dentro de esa carpeta).
+`\\wsl$\Debian\home\santiago\idea\salida\marca\` (o `explorer.exe .` dentro de esa carpeta).
 
 ## 2. [ ] Proyecto de Google Cloud + credencial OAuth (15 min)
 1. <https://console.cloud.google.com/projectcreate> → nombre `bolita-lab` → Crear. Selecciónalo arriba.
