@@ -1,0 +1,22 @@
+{
+  "plantilla": "bola",
+  "id": "pendiente-bola-marcha-crecer-2",
+  "titulo": "2 bolitas crecen con la Marcha Turca: ¿cuándo dejan de caber?",
+  "descripcion": "Dos bolitas de neón crecen en cada rebote y chocan entre sí dentro de un anillo cerrado, al ritmo de la Marcha Turca de Mozart. ¿Cuántos rebotes hasta que llenen el círculo?\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #mozart #marchaturca",
+  "hashtags": [
+    "#shorts",
+    "#satisfying",
+    "#fisica",
+    "#bolita",
+    "#neon",
+    "#mozart",
+    "#marchaturca"
+  ],
+  "props": {
+    "id": "pendiente-bola-marcha-crecer-2",
+    "gancho": "Cada rebote las agranda. ¿Cuándo no caben?",
+    "melodia": "marchaturca",
+    "modo": "crecer",
+    "bolas": 2
+  }
+}

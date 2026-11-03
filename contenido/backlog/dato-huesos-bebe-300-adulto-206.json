@@ -1,0 +1,52 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-huesos-bebe-300-adulto-206",
+  "titulo": "Naces con unos 300 huesos y de adulto tienes 206",
+  "descripcion": "Al nacer tenemos alrededor de 300 huesos, muchos de cartílago, que se fusionan hasta quedar 206 en la adultez.\n\nFuentes:\n- Cleveland Clinic, Bones: https://my.clevelandclinic.org/health/body/21868-bones\n- Nemours KidsHealth, Your bones: https://kidshealth.org/en/teens/bones-muscles-joints.html\n\n#shorts #datos #curiosidades #cuerpohumano #huesos #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#cuerpohumano",
+    "#huesos",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-huesos-bebe-300-adulto-206",
+    "color": "lima",
+    "gancho": "Perdiste cerca de cien huesos sin darte cuenta.",
+    "escenas": [
+      {
+        "texto": "Un recién nacido tiene alrededor de trescientos huesos.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 300,
+          "sufijo": "",
+          "etiqueta": "huesos al nacer (aprox.)"
+        }
+      },
+      {
+        "texto": "Muchos son de cartílago y se van fusionando mientras creces.",
+        "visual": {
+          "tipo": "icono",
+          "forma": "persona",
+          "etiqueta": "creciendo"
+        }
+      },
+      {
+        "texto": "De adulto quedan doscientos seis.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 206,
+          "sufijo": "",
+          "etiqueta": "huesos de un adulto"
+        }
+      }
+    ],
+    "remate": "Perder huesos es, en realidad, crecer.",
+    "fuentes": [
+      "Cleveland Clinic, Bones: https://my.clevelandclinic.org/health/body/21868-bones",
+      "Nemours KidsHealth, Your bones: https://kidshealth.org/en/teens/bones-muscles-joints.html"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "plantilla": "carrera",
+  "id": "carrera-que-color-favorito",
+  "titulo": "¿Qué color gana la carrera? 🎨 El tuyo, ¿llega primero?",
+  "descripcion": "Seis colores, seis bolitas de neón y un tablero lleno de clavijas. ¿Tu color favorito llega primero? Física real y sonido en cada rebote. Dinos en los comentarios cuál apoyabas.",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#satisfying",
+    "#bolitas",
+    "#fisica",
+    "#colores",
+    "#favorito"
+  ],
+  "props": {
+    "id": "carrera-que-color-favorito",
+    "gancho": "¿Cuál es tu color?",
+    "tema": "colores",
+    "participantes": [
+      {
+        "etiqueta": "CELESTE",
+        "color": "cian"
+      },
+      {
+        "etiqueta": "VERDE",
+        "color": "lima"
+      },
+      {
+        "etiqueta": "AMARILLO",
+        "color": "amarillo"
+      },
+      {
+        "etiqueta": "NARANJA",
+        "color": "naranja"
+      },
+      {
+        "etiqueta": "ROSADO",
+        "color": "magenta"
+      },
+      {
+        "etiqueta": "MORADO",
+        "color": "violeta"
+      }
+    ]
+  }
+}

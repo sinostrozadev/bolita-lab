@@ -1,0 +1,47 @@
+{
+  "plantilla": "carrera",
+  "id": "2026-11-05-carrera-dias-semana",
+  "titulo": "¿Qué día de la semana gana? 📅 Carrera de bolitas",
+  "descripcion": "Siete días no, pero seis sí: ¿llega primero el lunes o el viernes? Una carrera de bolitas de neón con física real. Cuéntanos qué día apoyabas.",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#satisfying",
+    "#bolitas",
+    "#fisica",
+    "#semana",
+    "#lunes",
+    "#viernes"
+  ],
+  "props": {
+    "id": "2026-11-05-carrera-dias-semana",
+    "gancho": "¿Qué día de la semana gana?",
+    "tema": "días de la semana",
+    "participantes": [
+      {
+        "etiqueta": "LUNES",
+        "color": "cian"
+      },
+      {
+        "etiqueta": "MARTES",
+        "color": "lima"
+      },
+      {
+        "etiqueta": "MIÉRCOLES",
+        "color": "amarillo"
+      },
+      {
+        "etiqueta": "JUEVES",
+        "color": "naranja"
+      },
+      {
+        "etiqueta": "VIERNES",
+        "color": "magenta"
+      },
+      {
+        "etiqueta": "SÁBADO",
+        "color": "violeta"
+      }
+    ]
+  }
+}

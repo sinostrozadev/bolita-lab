@@ -1,0 +1,42 @@
+{
+  "plantilla": "carrera",
+  "id": "carrera-helados-chocolate-vainilla-fresa-menta-limon",
+  "titulo": "¿Chocolate, vainilla, fresa, menta o limón? ¿Qué helado gana? 🍦",
+  "descripcion": "Cinco sabores de helado convertidos en bolitas de neón bajan por un tablero lleno de clavijas. ¿Tu sabor favorito llega primero o se queda atascado? Física real y un sonido por cada rebote. Apuesta por el tuyo en los comentarios antes de ver el final.",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#satisfying",
+    "#bolitas",
+    "#fisica",
+    "#helado",
+    "#sabores"
+  ],
+  "props": {
+    "id": "carrera-helados-chocolate-vainilla-fresa-menta-limon",
+    "gancho": "¿Qué sabor de helado gana?",
+    "tema": "helados",
+    "participantes": [
+      {
+        "etiqueta": "CHOCOLATE",
+        "color": "naranja"
+      },
+      {
+        "etiqueta": "VAINILLA",
+        "color": "amarillo"
+      },
+      {
+        "etiqueta": "FRESA",
+        "color": "magenta"
+      },
+      {
+        "etiqueta": "MENTA",
+        "color": "lima"
+      },
+      {
+        "etiqueta": "LIMÓN",
+        "color": "cian"
+      }
+    ]
+  }
+}

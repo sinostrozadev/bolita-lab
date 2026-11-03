@@ -1,0 +1,42 @@
+{
+  "plantilla": "carrera",
+  "id": "2026-11-06-carrera-cafe-te-mate",
+  "titulo": "¿Café, té, mate, cola o jugo? ☕ ¿Qué bebida gana la carrera?",
+  "descripcion": "Café, té, mate, cola y jugo: cinco bolitas de neón bajan por un tablero de clavijas. ¿Tu bebida favorita llega primero? Física real y sonido en cada rebote. Apuesta antes del final y defiéndela en los comentarios.",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#satisfying",
+    "#bolitas",
+    "#fisica",
+    "#cafe",
+    "#mate"
+  ],
+  "props": {
+    "id": "2026-11-06-carrera-cafe-te-mate",
+    "gancho": "¿Qué bebida gana?",
+    "tema": "bebidas",
+    "participantes": [
+      {
+        "etiqueta": "CAFÉ",
+        "color": "cian"
+      },
+      {
+        "etiqueta": "TÉ",
+        "color": "lima"
+      },
+      {
+        "etiqueta": "MATE",
+        "color": "amarillo"
+      },
+      {
+        "etiqueta": "COLA",
+        "color": "naranja"
+      },
+      {
+        "etiqueta": "JUGO",
+        "color": "magenta"
+      }
+    ]
+  }
+}

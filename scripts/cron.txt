@@ -1,0 +1,17 @@
+# Bolita Lab — líneas para `crontab -e`. NO uses `crontab scripts/cron.txt`: pisaría tu crontab entero.
+# Copia desde SHELL hasta el final. Las horas son las del sistema, que en esta máquina ya es
+# America/Santiago (`date` lo confirma; /etc/timezone = America/Santiago).
+SHELL=/bin/bash
+PATH=/home/santiago/.nvm/versions/node/v22.14.0/bin:/home/santiago/.local/bin:/usr/local/bin:/usr/bin:/bin
+HOME=/home/santiago
+
+# Diario 03:30: marca huérfanos, renderiza hasta tener 3 'listo' (de a uno, esperando RAM),
+# genera guiones si el backlog baja de 6 (claude -p) y sube a YouTube o actualiza PARA-SUBIR-A-MANO.md.
+30 3 * * * cd /home/santiago/idea && /home/santiago/idea/node_modules/.bin/tsx /home/santiago/idea/scripts/diario.mts >> /home/santiago/idea/salida/logs/cron.log 2>&1
+
+# Compilación semanal, domingos 04:30: video largo 1920×1080 con los últimos 14 Shorts (~8–10 min).
+# Se genera sola; se sube con `subir --compilacion` (o a mano: queda en PARA-SUBIR-A-MANO.md).
+30 4 * * 0 cd /home/santiago/idea && /home/santiago/idea/node_modules/.bin/tsx /home/santiago/idea/scripts/compilar.mts --n 14 >> /home/santiago/idea/salida/logs/cron.log 2>&1 && /home/santiago/idea/node_modules/.bin/tsx /home/santiago/idea/scripts/subir.mts exportar >> /home/santiago/idea/salida/logs/cron.log 2>&1
+
+# Resumen de estado cada mañana a las 08:00 (mirar con: cat /home/santiago/idea/salida/logs/estado.log).
+0 8 * * * cd /home/santiago/idea && /home/santiago/idea/node_modules/.bin/tsx /home/santiago/idea/scripts/estado.mts > /home/santiago/idea/salida/logs/estado.log 2>&1

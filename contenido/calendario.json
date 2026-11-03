@@ -1,0 +1,20 @@
+{
+  "zonaHoraria": "America/Santiago",
+  "comentario": "Ranuras de publicación (dias: 0=domingo … 6=sábado). Normal: 1 Short diario a las 18:00 y un 2.º a las 12:00 sábados y domingos. Hasta 'dobleHasta' (inclusive, fecha local) se usan 'ranurasDoble': 2 Shorts al día, 12:00 y 18:00 (las dos primeras semanas del canal; ajusta la fecha al día real de lanzamiento + 13). Los videos largos (compilaciones) usan 'ranurasLargo' y no ocupan ranuras de Shorts. La rotación de plantillas es cíclica.",
+  "ranuras": [
+    { "dias": [0, 1, 2, 3, 4, 5, 6], "hora": "18:00" },
+    { "dias": [6, 0], "hora": "12:00" }
+  ],
+  "dobleHasta": "2026-11-16",
+  "ranurasDoble": [
+    { "dias": [0, 1, 2, 3, 4, 5, 6], "hora": "12:00" },
+    { "dias": [0, 1, 2, 3, 4, 5, 6], "hora": "18:00" }
+  ],
+  "ranurasLargo": [
+    { "dias": [0], "hora": "10:00" }
+  ],
+  "rotacion": ["bola", "dato", "carrera"],
+  "minimoBandeja": 3,
+  "minimoBacklog": 6,
+  "margenMinutos": 20
+}

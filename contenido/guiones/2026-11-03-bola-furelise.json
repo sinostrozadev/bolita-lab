@@ -1,0 +1,14 @@
+{
+  "plantilla": "bola",
+  "id": "2026-11-03-bola-furelise",
+  "titulo": "¿Cuántos rebotes aguanta antes de escapar? Para Elisa en neón",
+  "descripcion": "Una bolita de neón rebota dentro de un anillo que gira con un hueco. Cada rebote toca la siguiente nota de Para Elisa. ¿En qué rebote se escapa?\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #furelise #beethoven",
+  "hashtags": ["#shorts", "#satisfying", "#fisica", "#bolita", "#neon", "#furelise", "#beethoven"],
+  "props": {
+    "id": "2026-11-03-bola-furelise",
+    "gancho": "¿Cuántos rebotes antes de escapar?",
+    "melodia": "furelise",
+    "modo": "escape",
+    "bolas": 1
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "plantilla": "bola",
+  "id": "pendiente-bola-marcha-escape-3",
+  "titulo": "3 bolitas y la Marcha Turca: ¿cuál encuentra la salida?",
+  "descripcion": "Tres bolitas de neón chocan dentro de un anillo con un hueco que gira. Una de ellas va tocando la Marcha Turca de Mozart. Solo una escapa: elige tu color antes del final.\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #mozart #marchaturca",
+  "hashtags": [
+    "#shorts",
+    "#satisfying",
+    "#fisica",
+    "#bolita",
+    "#neon",
+    "#mozart",
+    "#marchaturca"
+  ],
+  "props": {
+    "id": "pendiente-bola-marcha-escape-3",
+    "gancho": "Marcha Turca a 3 bolitas. ¿Cuál escapa?",
+    "melodia": "marchaturca",
+    "modo": "escape",
+    "bolas": 3
+  }
+}

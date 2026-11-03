@@ -1,0 +1,64 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-rayo-mas-caliente-que-el-sol",
+  "titulo": "Un rayo es 5 veces más caliente que la superficie del Sol",
+  "descripcion": "El canal de un rayo calienta el aire a casi 30.000 °C (unos 27.700 °C), frente a unos 5.500 °C de la superficie solar.\n\nFuentes:\n- NOAA National Weather Service, Lightning Safety: https://www.weather.gov/safety/lightning-science-overview\n- NASA Sun Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html\n\n#shorts #datos #curiosidades #ciencia #rayos #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#ciencia",
+    "#rayos",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-rayo-mas-caliente-que-el-sol",
+    "color": "amarillo",
+    "gancho": "Algo en la Tierra es más caliente que la superficie del Sol.",
+    "escenas": [
+      {
+        "texto": "La superficie del Sol está a unos cinco mil quinientos grados.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 5500,
+          "sufijo": "°C",
+          "etiqueta": "superficie del Sol"
+        }
+      },
+      {
+        "texto": "Un rayo calienta el aire a casi treinta mil grados.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 27700,
+          "sufijo": "°C",
+          "etiqueta": "aire en un rayo"
+        }
+      },
+      {
+        "texto": "Cinco veces más caliente, durante una fracción de segundo.",
+        "visual": {
+          "tipo": "comparar",
+          "sufijo": " °C",
+          "items": [
+            {
+              "etiqueta": "Sol",
+              "valor": 5500,
+              "color": "naranja"
+            },
+            {
+              "etiqueta": "Rayo",
+              "valor": 27700,
+              "color": "amarillo"
+            }
+          ]
+        }
+      }
+    ],
+    "remate": "Por eso el trueno es una onda de choque del aire.",
+    "fuentes": [
+      "NOAA National Weather Service, Lightning Safety: https://www.weather.gov/safety/lightning-science-overview",
+      "NASA Sun Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
+      "NWS: el rayo calienta el aire a unos 50.000 °F ≈ 27.700 °C, unas 5 veces la superficie del Sol (≈5.500 °C, 5.772 K)."
+    ]
+  }
+}

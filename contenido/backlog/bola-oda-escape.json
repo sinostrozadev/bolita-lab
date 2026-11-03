@@ -1,0 +1,22 @@
+{
+  "plantilla": "bola",
+  "id": "pendiente-bola-oda-escape",
+  "titulo": "¿En qué rebote se escapa? La Oda a la Alegría en neón",
+  "descripcion": "Una bolita de neón rebota dentro de un anillo con un hueco que gira. Cada rebote toca la siguiente nota de la Oda a la Alegría de Beethoven. Adivina el rebote en los comentarios.\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #beethoven #odaalaalegria",
+  "hashtags": [
+    "#shorts",
+    "#satisfying",
+    "#fisica",
+    "#bolita",
+    "#neon",
+    "#beethoven",
+    "#odaalaalegria"
+  ],
+  "props": {
+    "id": "pendiente-bola-oda-escape",
+    "gancho": "¿En qué rebote se escapa?",
+    "melodia": "odaalegria",
+    "modo": "escape",
+    "bolas": 1
+  }
+}

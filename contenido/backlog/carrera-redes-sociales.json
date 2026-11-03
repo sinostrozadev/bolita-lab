@@ -1,0 +1,46 @@
+{
+  "plantilla": "carrera",
+  "id": "carrera-redes-sociales",
+  "titulo": "¿TikTok, Instagram, YouTube o X? 📲 ¿Qué red social gana?",
+  "descripcion": "Seis redes sociales, seis bolitas de neón y un tablero lleno de clavijas. ¿La que más usas llega primero? Física real y sonido en cada rebote. Comenta cuál apoyabas.",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#satisfying",
+    "#bolitas",
+    "#fisica",
+    "#redessociales",
+    "#tiktok"
+  ],
+  "props": {
+    "id": "carrera-redes-sociales",
+    "gancho": "¿Qué red social gana?",
+    "tema": "redes sociales",
+    "participantes": [
+      {
+        "etiqueta": "TIKTOK",
+        "color": "cian"
+      },
+      {
+        "etiqueta": "INSTAGRAM",
+        "color": "lima"
+      },
+      {
+        "etiqueta": "YOUTUBE",
+        "color": "amarillo"
+      },
+      {
+        "etiqueta": "X",
+        "color": "naranja"
+      },
+      {
+        "etiqueta": "FACEBOOK",
+        "color": "magenta"
+      },
+      {
+        "etiqueta": "SNAPCHAT",
+        "color": "violeta"
+      }
+    ]
+  }
+}

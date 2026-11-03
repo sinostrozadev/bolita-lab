@@ -1,8 +1,9 @@
-node_modules/
-salida/
-public/voz/
-public/audio/generado/
-secrets/
 .env
 *.log
+node_modules/
+public/audio/generado/
+public/sim/
+public/voz/
 .remotion/
+salida/
+secrets/

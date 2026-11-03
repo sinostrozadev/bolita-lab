@@ -1,0 +1,54 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-pulpo-tres-corazones",
+  "titulo": "Un pulpo tiene tres corazones y sangre azul",
+  "descripcion": "Los pulpos tienen tres corazones: dos bombean a las branquias y uno al resto del cuerpo. Su sangre contiene hemocianina, que es azulada.\n\nFuentes:\n- Monterey Bay Aquarium, Octopus facts: https://www.montereybayaquarium.org/animals/animal-guide/invertebrates/giant-pacific-octopus\n- Smithsonian Ocean, Octopus: https://ocean.si.edu/ocean-life/invertebrates/octopuses\n\n#shorts #datos #curiosidades #animales #pulpo #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#animales",
+    "#pulpo",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-pulpo-tres-corazones",
+    "color": "cian",
+    "gancho": "Un animal con tres corazones.",
+    "escenas": [
+      {
+        "texto": "El pulpo tiene tres corazones.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 3,
+          "sufijo": "",
+          "etiqueta": "corazones"
+        }
+      },
+      {
+        "texto": "Dos mandan la sangre a las branquias y uno al resto del cuerpo.",
+        "visual": {
+          "tipo": "lista",
+          "items": [
+            "Corazón 1: branquias",
+            "Corazón 2: branquias",
+            "Corazón 3: cuerpo"
+          ]
+        }
+      },
+      {
+        "texto": "Y su sangre no es roja: es azul, por el cobre que lleva.",
+        "visual": {
+          "tipo": "icono",
+          "forma": "corazon",
+          "etiqueta": "sangre azul"
+        }
+      }
+    ],
+    "remate": "Cuando nada, el corazón principal se detiene, por eso prefiere caminar.",
+    "fuentes": [
+      "Monterey Bay Aquarium, Octopus facts: https://www.montereybayaquarium.org/animals/animal-guide/invertebrates/giant-pacific-octopus",
+      "Smithsonian Ocean, Octopus: https://ocean.si.edu/ocean-life/invertebrates/octopuses"
+    ]
+  }
+}

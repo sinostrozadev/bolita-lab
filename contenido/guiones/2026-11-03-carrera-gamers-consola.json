@@ -1,0 +1,42 @@
+{
+  "plantilla": "carrera",
+  "id": "2026-11-03-carrera-gamers-consola",
+  "titulo": "¿PlayStation, Xbox, Nintendo o PC? 🎮 ¿Cuál gana?",
+  "descripcion": "PlayStation, Xbox, Nintendo, PC y celular en una carrera de bolitas de neón con física real. ¿Gana tu plataforma? Sonido en cada rebote. Defiéndela en los comentarios.",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#satisfying",
+    "#bolitas",
+    "#fisica",
+    "#gaming",
+    "#playstation"
+  ],
+  "props": {
+    "id": "2026-11-03-carrera-gamers-consola",
+    "gancho": "¿Qué consola gana?",
+    "tema": "videojuegos",
+    "participantes": [
+      {
+        "etiqueta": "PLAYSTATION",
+        "color": "cian"
+      },
+      {
+        "etiqueta": "XBOX",
+        "color": "lima"
+      },
+      {
+        "etiqueta": "NINTENDO",
+        "color": "amarillo"
+      },
+      {
+        "etiqueta": "PC",
+        "color": "naranja"
+      },
+      {
+        "etiqueta": "CELULAR",
+        "color": "magenta"
+      }
+    ]
+  }
+}

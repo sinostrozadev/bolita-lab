@@ -1,0 +1,22 @@
+{
+  "plantilla": "bola",
+  "id": "pendiente-bola-oda-crecer-2",
+  "titulo": "2 bolitas crecen hasta no caber: ¿cuántos rebotes? Oda a la Alegría",
+  "descripcion": "Dos bolitas de neón crecen en cada rebote dentro de un anillo cerrado, al ritmo de la Oda a la Alegría de Beethoven. Escribe tu número antes del final.\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #beethoven #odaalaalegria",
+  "hashtags": [
+    "#shorts",
+    "#satisfying",
+    "#fisica",
+    "#bolita",
+    "#neon",
+    "#beethoven",
+    "#odaalaalegria"
+  ],
+  "props": {
+    "id": "pendiente-bola-oda-crecer-2",
+    "gancho": "2 bolitas crecen. ¿Cuántos rebotes hasta llenarlo?",
+    "melodia": "odaalegria",
+    "modo": "crecer",
+    "bolas": 2
+  }
+}

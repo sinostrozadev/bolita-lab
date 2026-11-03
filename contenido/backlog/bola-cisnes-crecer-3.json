@@ -1,0 +1,22 @@
+{
+  "plantilla": "bola",
+  "id": "pendiente-bola-cisnes-crecer-3",
+  "titulo": "3 bolitas crecen en cada rebote: ¿cuánto tardan en llenar el círculo?",
+  "descripcion": "Tres bolitas de neón crecen en cada rebote y chocan entre sí dentro de un anillo cerrado. Una de ellas va tocando El lago de los cisnes de Chaikovski. ¿Cuántos rebotes hasta que llenen el círculo?\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #chaikovski #lagodeloscisnes",
+  "hashtags": [
+    "#shorts",
+    "#satisfying",
+    "#fisica",
+    "#bolita",
+    "#neon",
+    "#chaikovski",
+    "#lagodeloscisnes"
+  ],
+  "props": {
+    "id": "pendiente-bola-cisnes-crecer-3",
+    "gancho": "3 bolitas crecen. ¿Cuántos rebotes hasta llenarlo?",
+    "melodia": "cisnes",
+    "modo": "crecer",
+    "bolas": 3
+  }
+}

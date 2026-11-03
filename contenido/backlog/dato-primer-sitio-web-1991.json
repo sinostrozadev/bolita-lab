@@ -1,0 +1,54 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-primer-sitio-web-1991",
+  "titulo": "El primer sitio web de la historia sigue explicando qué es la web",
+  "descripcion": "El primer sitio web, creado por Tim Berners-Lee en el CERN, se publicó en 1991 y explicaba el proyecto World Wide Web.\n\nFuentes:\n- CERN, The birth of the Web: https://home.cern/science/computing/birth-web\n- CERN, The first website: https://info.cern.ch/\n\n#shorts #datos #curiosidades #tecnologia #internet #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#tecnologia",
+    "#internet",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-primer-sitio-web-1991",
+    "color": "cian",
+    "gancho": "¿Sabes cuál fue la primera página web?",
+    "escenas": [
+      {
+        "texto": "En mil novecientos noventa y uno, un físico del CERN publicó la primera página web.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 1991,
+          "sufijo": "",
+          "etiqueta": "año del primer sitio web"
+        }
+      },
+      {
+        "texto": "No tenía imágenes: solo texto y enlaces que explicaban qué era la web.",
+        "visual": {
+          "tipo": "lista",
+          "items": [
+            "Solo texto",
+            "Enlaces",
+            "Cómo usar la web"
+          ]
+        }
+      },
+      {
+        "texto": "Su dirección todavía funciona hoy.",
+        "visual": {
+          "tipo": "icono",
+          "forma": "rayo",
+          "etiqueta": "info.cern.ch"
+        }
+      }
+    ],
+    "remate": "Y la web se entregó gratis al mundo en mil novecientos noventa y tres.",
+    "fuentes": [
+      "CERN, The birth of the Web: https://home.cern/science/computing/birth-web",
+      "CERN, The first website: https://info.cern.ch/"
+    ]
+  }
+}

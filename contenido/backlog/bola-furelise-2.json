@@ -1,0 +1,22 @@
+{
+  "plantilla": "bola",
+  "id": "pendiente-bola-furelise-2",
+  "titulo": "Para Elisa a dos bolitas: ¿cuál sale primero por el hueco?",
+  "descripcion": "Dos bolitas de neón rebotan y chocan dentro de un anillo con un hueco que gira. Cada rebote toca una nota de Para Elisa de Beethoven. Solo una escapa: apuesta por un color.\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #beethoven #furelise",
+  "hashtags": [
+    "#shorts",
+    "#satisfying",
+    "#fisica",
+    "#bolita",
+    "#neon",
+    "#beethoven",
+    "#furelise"
+  ],
+  "props": {
+    "id": "pendiente-bola-furelise-2",
+    "gancho": "2 bolitas, 1 salida. ¿Cuál gana?",
+    "melodia": "furelise",
+    "modo": "escape",
+    "bolas": 2
+  }
+}

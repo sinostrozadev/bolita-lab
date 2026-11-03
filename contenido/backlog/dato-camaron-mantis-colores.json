@@ -1,0 +1,62 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-camaron-mantis-colores",
+  "titulo": "El camarón mantis tiene 12 receptores de color; tú, solo 3",
+  "descripcion": "Los camarones mantis tienen entre 12 y 16 tipos de fotorreceptores; los humanos, 3 tipos de conos.\n\nFuentes:\n- Marshall & Oberwinkler, Nature 1999, Ultraviolet vision in a mantis shrimp\n- Smithsonian Ocean, Mantis shrimp: https://ocean.si.edu/ocean-life/invertebrates/mantis-shrimp\n\n#shorts #datos #curiosidades #animales #ojos #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#animales",
+    "#ojos",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-camaron-mantis-colores",
+    "color": "magenta",
+    "gancho": "Hay un animal que ve colores que no existen para ti.",
+    "escenas": [
+      {
+        "texto": "Tus ojos tienen tres tipos de conos para ver el color.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 3,
+          "sufijo": "tipos",
+          "etiqueta": "conos de color humanos"
+        }
+      },
+      {
+        "texto": "El camarón mantis tiene entre doce y dieciséis tipos de fotorreceptores.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 12,
+          "sufijo": "o más",
+          "etiqueta": "fotorreceptores del camarón mantis"
+        }
+      },
+      {
+        "texto": "Ve luz ultravioleta y luz polarizada.",
+        "visual": {
+          "tipo": "comparar",
+          "items": [
+            {
+              "etiqueta": "Tú",
+              "valor": 3
+            },
+            {
+              "etiqueta": "Mantis",
+              "valor": 12,
+              "color": "magenta"
+            }
+          ]
+        }
+      }
+    ],
+    "remate": "Aunque no está claro que por eso distinga más colores.",
+    "fuentes": [
+      "Marshall & Oberwinkler, Nature 1999, Ultraviolet vision in a mantis shrimp",
+      "Smithsonian Ocean, Mantis shrimp: https://ocean.si.edu/ocean-life/invertebrates/mantis-shrimp",
+      "Thoen et al. 2014, Science 343:411 (A different form of color vision in mantis shrimp: distinguen peor colores cercanos que nosotros)."
+    ]
+  }
+}

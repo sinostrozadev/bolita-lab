@@ -1,0 +1,39 @@
+{
+  "plantilla": "carrera",
+  "id": "2026-11-04-carrera-mascotas",
+  "titulo": "¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas",
+  "descripcion": "Perro vs Gato vs Hámster vs Loro: cuatro bolitas de neón bajan por un tablero de clavijas. ¿Tu mascota gana? Física real, sonido en cada rebote. Defiende a la tuya en los comentarios.",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#satisfying",
+    "#bolitas",
+    "#fisica",
+    "#mascotas",
+    "#perro",
+    "#gato"
+  ],
+  "props": {
+    "id": "2026-11-04-carrera-mascotas",
+    "gancho": "¿Perro, gato, hámster o loro?",
+    "tema": "mascotas",
+    "participantes": [
+      {
+        "etiqueta": "PERRO",
+        "color": "cian"
+      },
+      {
+        "etiqueta": "GATO",
+        "color": "lima"
+      },
+      {
+        "etiqueta": "HÁMSTER",
+        "color": "amarillo"
+      },
+      {
+        "etiqueta": "LORO",
+        "color": "naranja"
+      }
+    ]
+  }
+}

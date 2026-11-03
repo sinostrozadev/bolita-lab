@@ -1,0 +1,60 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-sol-cabe-millon-tierras",
+  "titulo": "En el Sol caben más de un millón de Tierras",
+  "descripcion": "El volumen del Sol equivale a unas 1.300.000 Tierras. Y en Betelgeuse cabrían cientos de millones de Soles.\n\nFuentes:\n- NASA Sun Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html\n- Joyce et al. 2020, ApJ 902:63 (radio de Betelgeuse ≈ 764 radios solares)\n\n#shorts #datos #curiosidades #espacio #sol #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#espacio",
+    "#sol",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-sol-cabe-millon-tierras",
+    "color": "amarillo",
+    "gancho": "El Sol es mucho más grande de lo que crees.",
+    "escenas": [
+      {
+        "texto": "El Sol es una esfera de un millón cuatrocientos mil kilómetros de ancho.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 1392000,
+          "sufijo": "km",
+          "etiqueta": "diámetro del Sol"
+        }
+      },
+      {
+        "texto": "La Tierra mide poco más de doce mil.",
+        "visual": {
+          "tipo": "escala",
+          "items": [
+            {
+              "etiqueta": "Sol",
+              "radio": 696000
+            },
+            {
+              "etiqueta": "Tierra",
+              "radio": 6371
+            }
+          ]
+        }
+      },
+      {
+        "texto": "En su volumen caben más de un millón de Tierras.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 1300000,
+          "sufijo": "",
+          "etiqueta": "Tierras dentro del Sol (≈1,3 millones)"
+        }
+      }
+    ],
+    "remate": "Y hay estrellas, como Betelgeuse, donde cabrían cientos de millones de Soles.",
+    "fuentes": [
+      "NASA Sun Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
+      "Joyce et al. 2020, ApJ 902:63 (radio de Betelgeuse ≈ 764 radios solares → ~4×10⁸ Soles en volumen). Nota: el Sol es más grande que ~90 % de las estrellas de la Vía Láctea, por eso no se dice que sea \"pequeña\"."
+    ]
+  }
+}

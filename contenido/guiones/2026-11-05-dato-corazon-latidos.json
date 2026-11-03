@@ -1,0 +1,90 @@
+{
+  "plantilla": "dato",
+  "id": "2026-11-05-dato-corazon-latidos",
+  "titulo": "Tu corazón late casi 3.000 millones de veces en tu vida",
+  "descripcion": "Un corazón adulto late unas 100.000 veces al día y mueve unos 7.000 litros de sangre: casi 3.000 millones de latidos en 80 años. Un ratón no llega a los mil millones; el humano es una excepción entre los mamíferos.\n(Cifras de ratón y elefante: estimaciones por frecuencia cardiaca x esperanza de vida.)\n\nFuentes:\n- American Heart Association, frecuencia cardiaca en reposo de un adulto 60-100 lpm: https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/all-about-heart-rate-pulse\n- Levine HJ. Rest heart rate and life expectancy. J Am Coll Cardiol 1997;30(4):1104-6 (los mamíferos acumulan del orden de mil millones de latidos; el humano es la excepción).\n- Texas Heart Institute, Heart Anatomy (unos 2.000 galones de sangre al día): https://www.texasheart.org/heart-health/heart-information-center/topics/heart-anatomy/\n\n#shorts #datos #curiosidades #corazon #cuerpohumano #biologia #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#corazon",
+    "#cuerpohumano",
+    "#biologia",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "2026-11-05-dato-corazon-latidos",
+    "color": "magenta",
+    "gancho": "¿Cuántas veces late tu corazón en toda tu vida?",
+    "escenas": [
+      {
+        "texto": "Un corazón adulto en reposo late entre sesenta y cien veces por minuto.",
+        "visual": {
+          "tipo": "icono",
+          "forma": "corazon",
+          "etiqueta": "60 a 100 por minuto"
+        }
+      },
+      {
+        "texto": "A setenta por minuto, son unos cien mil latidos cada día.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 100800,
+          "etiqueta": "latidos al día, a 70 por minuto",
+          "dice": "cien"
+        }
+      },
+      {
+        "texto": "Y en ese mismo día mueve unos siete mil litros de sangre.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 7000,
+          "sufijo": " litros",
+          "etiqueta": "sangre bombeada al día (~5 L/min)",
+          "dice": "siete"
+        }
+      },
+      {
+        "texto": "En ochenta años, casi tres mil millones.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 2900,
+          "sufijo": " millones",
+          "etiqueta": "latidos en 80 años",
+          "dice": "tres"
+        }
+      },
+      {
+        "texto": "Un ratón no llega a mil millones. Un elefante, cerca de mil millones. Tú, casi tres mil.",
+        "visual": {
+          "tipo": "comparar",
+          "sufijo": " M",
+          "items": [
+            {
+              "etiqueta": "Ratón",
+              "valor": 600,
+              "color": "cian"
+            },
+            {
+              "etiqueta": "Elefante",
+              "valor": 1000,
+              "color": "naranja"
+            },
+            {
+              "etiqueta": "Tú",
+              "valor": 2900,
+              "color": "magenta"
+            }
+          ]
+        }
+      }
+    ],
+    "remate": "Somos una excepción: nos tocó el triple de latidos.",
+    "fuentes": [
+      "https://www.heart.org/en/health-topics/high-blood-pressure/the-facts-about-high-blood-pressure/all-about-heart-rate-pulse",
+      "Levine HJ. J Am Coll Cardiol 1997;30(4):1104-6.",
+      "https://www.texasheart.org/heart-health/heart-information-center/topics/heart-anatomy/",
+      "Cálculo: 70 lpm x 1.440 min = 100.800 al día; x 365 x 80 años = 2.940 millones. Ratón ~600 lpm x 2 años ≈ 630 millones; elefante ~30 lpm x 65 años ≈ 1.020 millones (aproximado). Sangre: ~5 L/min en reposo x 1.440 min ≈ 7.200 L al día (Texas Heart Institute: ~2.000 galones ≈ 7.500 L)."
+    ]
+  }
+}

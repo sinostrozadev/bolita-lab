@@ -1,0 +1,52 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-billon-de-segundos",
+  "titulo": "Un billón de segundos son más de 31.000 años",
+  "descripcion": "Un millón de segundos son unos 11,6 días; mil millones de segundos, unos 31,7 años; un billón de segundos, unos 31.700 años.\n\nFuentes:\n- Cálculo directo: 1.000.000.000.000 s / 31.557.600 s por año juliano ≈ 31.688 años\n\n#shorts #datos #curiosidades #dinero #matematicas #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#dinero",
+    "#matematicas",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-billon-de-segundos",
+    "color": "lima",
+    "gancho": "¿Cuánto es realmente un billón?",
+    "escenas": [
+      {
+        "texto": "Un millón de segundos son once días y medio.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 11.6,
+          "sufijo": "días",
+          "etiqueta": "un millón de segundos"
+        }
+      },
+      {
+        "texto": "Mil millones de segundos son casi treinta y dos años.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 31.7,
+          "sufijo": "años",
+          "etiqueta": "mil millones de segundos"
+        }
+      },
+      {
+        "texto": "Un billón de segundos son más de treinta y un mil años.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 31688,
+          "sufijo": "años",
+          "etiqueta": "un billón de segundos"
+        }
+      }
+    ],
+    "remate": "Hace un billón de segundos, aún no existía la escritura.",
+    "fuentes": [
+      "Cálculo directo: 1.000.000.000.000 s / 31.557.600 s por año juliano ≈ 31.688 años"
+    ]
+  }
+}

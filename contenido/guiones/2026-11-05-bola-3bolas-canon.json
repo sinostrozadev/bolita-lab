@@ -1,0 +1,14 @@
+{
+  "plantilla": "bola",
+  "id": "2026-11-05-bola-3bolas-canon",
+  "titulo": "3 bolitas, un hueco: ¿cuál escapa primero? Canon de Pachelbel",
+  "descripcion": "Tres bolitas de neón chocan entre sí dentro de un anillo con un hueco que gira. Cada rebote toca una nota del Canon de Pachelbel. Solo una escapa.\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #pachelbel #canon",
+  "hashtags": ["#shorts", "#satisfying", "#fisica", "#bolita", "#neon", "#pachelbel", "#canon"],
+  "props": {
+    "id": "2026-11-05-bola-3bolas-canon",
+    "gancho": "3 bolitas. 1 hueco. ¿Cuál escapa primero?",
+    "melodia": "canon",
+    "modo": "escape",
+    "bolas": 3
+  }
+}

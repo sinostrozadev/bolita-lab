@@ -1,0 +1,62 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-venus-dia-mas-largo-que-ano",
+  "titulo": "En Venus un día dura más que un año entero",
+  "descripcion": "Venus tarda 243 días terrestres en girar sobre sí mismo y 225 en dar la vuelta al Sol.\n\nFuentes:\n- NASA Venus Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html\n\n#shorts #datos #curiosidades #espacio #venus #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#espacio",
+    "#venus",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-venus-dia-mas-largo-que-ano",
+    "color": "naranja",
+    "gancho": "En Venus, el día dura más que el año.",
+    "escenas": [
+      {
+        "texto": "Venus tarda doscientos cuarenta y tres días terrestres en girar una vez sobre sí mismo.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 243,
+          "sufijo": "días",
+          "etiqueta": "una rotación de Venus"
+        }
+      },
+      {
+        "texto": "Pero da la vuelta al Sol en solo doscientos veinticinco días.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 225,
+          "sufijo": "días",
+          "etiqueta": "un año en Venus"
+        }
+      },
+      {
+        "texto": "Un día más largo que el año.",
+        "visual": {
+          "tipo": "comparar",
+          "sufijo": " días",
+          "items": [
+            {
+              "etiqueta": "Día",
+              "valor": 243,
+              "color": "naranja"
+            },
+            {
+              "etiqueta": "Año",
+              "valor": 225,
+              "color": "cian"
+            }
+          ]
+        }
+      }
+    ],
+    "remate": "Y además gira al revés que casi todos los planetas.",
+    "fuentes": [
+      "NASA Venus Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/venusfact.html"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "plantilla": "carrera",
+  "id": "carrera-que-signo-del-zodiaco-llega-primero",
+  "titulo": "¿Qué signo del zodiaco llega primero? Carrera de bolitas",
+  "descripcion": "Seis signos del zodiaco bajan a toda velocidad por un tablero de clavijas. Cada rebote suena, cada choque cambia el orden. ¿El tuyo gana o se queda atrás? Apuesta en los comentarios antes de que termine.",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#satisfying",
+    "#bolitas",
+    "#fisica",
+    "#zodiaco",
+    "#signos"
+  ],
+  "props": {
+    "id": "carrera-que-signo-del-zodiaco-llega-primero",
+    "gancho": "¿Qué signo gana?",
+    "tema": "signos del zodiaco",
+    "participantes": [
+      {
+        "etiqueta": "ARIES",
+        "color": "naranja"
+      },
+      {
+        "etiqueta": "GÉMINIS",
+        "color": "amarillo"
+      },
+      {
+        "etiqueta": "LEO",
+        "color": "magenta"
+      },
+      {
+        "etiqueta": "LIBRA",
+        "color": "cian"
+      },
+      {
+        "etiqueta": "ESCORPIO",
+        "color": "violeta"
+      },
+      {
+        "etiqueta": "ACUARIO",
+        "color": "lima"
+      }
+    ]
+  }
+}

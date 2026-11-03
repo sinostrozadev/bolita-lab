@@ -1,0 +1,91 @@
+{
+  "plantilla": "dato",
+  "id": "2026-11-03-dato-tierra-luna",
+  "titulo": "Si la Tierra fuera una pelota de básquet, ¿dónde estaría la Luna?",
+  "descripcion": "Si la Tierra fuera una pelota de básquet, la Luna sería una pelota de tenis… a más de 7 metros. La Estación Espacial, en cambio, ¡a menos de un centímetro! Y en ese hueco caben todos los demás planetas del sistema solar, en fila.\n\nFuentes:\n- NASA Planetary Fact Sheet (diámetros y distancia Tierra–Luna): https://nssdc.gsfc.nasa.gov/planetary/factsheet/\n- NASA Moon Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html\n- NASA, Estación Espacial Internacional (órbita ~400 km): https://www.nasa.gov/reference/international-space-station-facts-and-figures/\n\n#shorts #datos #curiosidades #espacio #luna #astronomia #bolitalab",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#espacio",
+    "#luna",
+    "#astronomia",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "2026-11-03-dato-tierra-luna",
+    "color": "cian",
+    "gancho": "Si la Tierra fuera una pelota de básquet…",
+    "escenas": [
+      {
+        "texto": "La Luna sería una pelota de tenis.",
+        "visual": {
+          "tipo": "escala",
+          "items": [
+            {
+              "etiqueta": "Tierra",
+              "radio": 12742
+            },
+            {
+              "etiqueta": "Luna",
+              "radio": 3474
+            }
+          ]
+        }
+      },
+      {
+        "texto": "Y estaría a más de siete metros de distancia. Mucho más lejos de lo que casi todos dibujan.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 7.2,
+          "sufijo": " m",
+          "etiqueta": "Luna a escala: tenis a 7,2 m del básquet"
+        }
+      },
+      {
+        "texto": "En cambio, la Estación Espacial orbitaría a menos de un centímetro del balón.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 0.8,
+          "sufijo": " cm",
+          "etiqueta": "Estación Espacial a escala (~400 km)",
+          "dice": "centímetro"
+        }
+      },
+      {
+        "texto": "En la realidad son trescientos ochenta y cuatro mil kilómetros, en promedio.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 384400,
+          "sufijo": " km",
+          "etiqueta": "distancia Tierra–Luna"
+        }
+      },
+      {
+        "texto": "Tanto espacio, que ahí caben todos los demás planetas del sistema solar, puestos uno al lado del otro.",
+        "visual": {
+          "tipo": "comparar",
+          "items": [
+            {
+              "etiqueta": "Tierra–Luna",
+              "valor": 384400
+            },
+            {
+              "etiqueta": "7 planetas en fila",
+              "valor": 380016,
+              "color": "naranja"
+            }
+          ],
+          "sufijo": " km"
+        }
+      }
+    ],
+    "remate": "Y todavía sobran cuatro mil kilómetros.",
+    "fuentes": [
+      "https://nssdc.gsfc.nasa.gov/planetary/factsheet/",
+      "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+      "https://www.nasa.gov/reference/international-space-station-facts-and-figures/",
+      "Suma de diámetros medios (NASA Fact Sheet): Mercurio 4.879 + Venus 12.104 + Marte 6.779 + Júpiter 139.822 + Saturno 116.464 + Urano 50.724 + Neptuno 49.244 = 380.016 km, frente a 384.400 km de distancia media Tierra–Luna (sobran ~4.400 km). Con diámetros ecuatoriales no cabrían: el dato vale con diámetros medios. Estación Espacial: órbita ~400–420 km → 408/12.742 × 24 cm ≈ 0,8 cm a escala. Luna: 3.474/12.742 × 24 cm ≈ 6,5 cm; 384.400/12.742 × 24 cm ≈ 7,24 m."
+    ]
+  }
+}

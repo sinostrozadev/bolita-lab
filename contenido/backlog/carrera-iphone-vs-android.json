@@ -1,0 +1,46 @@
+{
+  "plantilla": "carrera",
+  "id": "carrera-iphone-vs-android",
+  "titulo": "¿iPhone, Samsung, Xiaomi o Pixel? 📱 ¿Qué celular gana?",
+  "descripcion": "iPhone contra cinco marcas Android en una carrera de bolitas de neón con física real. ¿Gana tu celular? Sonido en cada rebote. Defiende tu marca en los comentarios.",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#satisfying",
+    "#bolitas",
+    "#fisica",
+    "#iphone",
+    "#android"
+  ],
+  "props": {
+    "id": "carrera-iphone-vs-android",
+    "gancho": "¿iPhone o Android?",
+    "tema": "tecnología",
+    "participantes": [
+      {
+        "etiqueta": "IPHONE",
+        "color": "cian"
+      },
+      {
+        "etiqueta": "SAMSUNG",
+        "color": "lima"
+      },
+      {
+        "etiqueta": "XIAOMI",
+        "color": "amarillo"
+      },
+      {
+        "etiqueta": "PIXEL",
+        "color": "naranja"
+      },
+      {
+        "etiqueta": "MOTOROLA",
+        "color": "magenta"
+      },
+      {
+        "etiqueta": "HUAWEI",
+        "color": "violeta"
+      }
+    ]
+  }
+}
