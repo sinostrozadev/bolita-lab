@@ -60,10 +60,11 @@ export const Imagen: React.FC<Props> = ({ imagen, frame, frames, color, variante
   if (imagen.forma === 'completa') {
     // De fondo, oscurecida: el texto gigante va encima y tiene que leerse como siempre.
     return (
-      <AbsoluteFill style={{ opacity: Math.min(1, e) * 0.92, overflow: 'hidden' }}>
-        {foto}
+      <AbsoluteFill style={{ opacity: Math.min(1, e) * 0.95, overflow: 'hidden' }}>
+        {/* Las fotos nocturnas (cielo, estrellas) se perdían bajo el oscurecido: se aclaran un poco. */}
+        <AbsoluteFill style={{ filter: 'brightness(1.25)' }}>{foto}</AbsoluteFill>
         <AbsoluteFill style={{ background: color, mixBlendMode: 'soft-light', opacity: 0.35 }} />
-        <AbsoluteFill style={{ background: 'rgba(11,11,18,0.5)' }} />
+        <AbsoluteFill style={{ background: 'rgba(11,11,18,0.32)' }} />
         <AbsoluteFill style={{ background: `linear-gradient(180deg, ${PALETA.fondo} 0%, rgba(11,11,18,0.25) 22%, rgba(11,11,18,0.25) 60%, ${PALETA.fondo} 100%)` }} />
         <AbsoluteFill style={{ background: 'radial-gradient(75% 55% at 50% 45%, transparent 35%, rgba(11,11,18,0.85) 100%)' }} />
       </AbsoluteFill>

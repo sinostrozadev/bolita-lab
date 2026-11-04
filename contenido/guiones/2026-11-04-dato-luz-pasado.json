@@ -17,7 +17,8 @@
     "color": "violeta",
     "gancho": "Lo que ves en el cielo… ya pasó.",
     "imagenGancho": {
-      "buscar": "Milky Way night sky",
+      "buscar": "Milky Way arch",
+      "archivo": "File:The Milky Way arch in the steppes of Kazakhstan.jpg",
       "forma": "completa"
     },
     "escenas": [
@@ -30,7 +31,8 @@
         },
         "imagen": {
           "buscar": "Full moon",
-          "forma": "circulo"
+          "forma": "circulo",
+          "archivo": "File:Full Moon Luc Viatour.jpg"
         }
       },
       {
@@ -43,7 +45,8 @@
         },
         "imagen": {
           "buscar": "Sun Solar Dynamics Observatory",
-          "forma": "circulo"
+          "forma": "circulo",
+          "archivo": "File:The Sun by the Atmospheric Imaging Assembly of NASA's Solar Dynamics Observatory - 20100819.jpg"
         }
       },
       {
@@ -56,7 +59,8 @@
         },
         "imagen": {
           "buscar": "Proxima Centauri Hubble",
-          "forma": "circulo"
+          "forma": "circulo",
+          "archivo": "File:New shot of Proxima Centauri, our nearest neighbour (10581847073).jpg"
         }
       },
       {
@@ -83,7 +87,8 @@
     ],
     "remate": "Mirar el cielo es mirar al pasado.",
     "imagenRemate": {
-      "buscar": "starry night sky",
+      "buscar": "Milky Way ESO",
+      "archivo": "File:ESO - Milky Way.jpg",
       "forma": "completa"
     },
     "fuentes": [

@@ -18,7 +18,8 @@
     "gancho": "¿Cuántas veces late tu corazón en toda tu vida?",
     "imagenGancho": {
       "buscar": "human heart model",
-      "forma": "circulo"
+      "forma": "circulo",
+      "archivo": "File:Heart frontally PDA.jpg"
     },
     "escenas": [
       {
@@ -82,7 +83,8 @@
           ]
         },
         "imagen": {
-          "buscar": "African elephant"
+          "buscar": "African elephant",
+          "archivo": "File:African bush elephants (Loxodonta africana) female with six-week-old baby.jpg"
         }
       }
     ],

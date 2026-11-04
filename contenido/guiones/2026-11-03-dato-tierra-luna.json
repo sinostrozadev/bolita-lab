@@ -18,7 +18,8 @@
     "gancho": "Si la Tierra fuera una pelota de básquet…",
     "imagenGancho": {
       "buscar": "Earth and Moon from space",
-      "forma": "circulo"
+      "forma": "circulo",
+      "archivo": "File:Earth, Moon and Lunar Module, AS11-44-6643.jpg"
     },
     "escenas": [
       {
@@ -56,7 +57,9 @@
           "dice": "centímetro"
         },
         "imagen": {
-          "buscar": "International Space Station"
+          "buscar": "International Space Station",
+          "archivo": "File:STS-133 International Space Station after undocking 7.jpg",
+          "encuadre": "abajo"
         }
       },
       {
@@ -69,7 +72,8 @@
         },
         "imagen": {
           "buscar": "Full moon",
-          "forma": "circulo"
+          "forma": "circulo",
+          "archivo": "File:Full Moon Luc Viatour.jpg"
         }
       },
       {
