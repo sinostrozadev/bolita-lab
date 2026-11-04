@@ -64,6 +64,16 @@ Los campos marcados **[SANTIAGO]** solo los sabe él.
    `npx tsx scripts/subir.mts subir --id <id> --publicar-en <fecha>` hasta verlo programado.
 
 ## Estado
-- 2026-11-04: respuestas redactadas. Falta: publicar el sitio (Santiago crea el repo público
-  `sinostrozadev/bolitalab` con GitHub Pages; el contenido ya está listo en `sitio/`),
-  capturas y envío (datos legales ya recibidos, en secrets/).
+- 2026-11-04 01:40: respuestas redactadas; sitio publicado en GitHub Pages.
+- 2026-11-04 03:10: **formulario RELLENO en el piloto** (http://localhost:8777/ver) con todo lo de arriba
+  y la evidencia adjunta: privacidad.png, inicio-con-enlace.png, terminos.pdf, oauth-y-subida.pdf
+  (selector de cuenta + aviso de app en prueba + lista de Studio), subir.mts.pdf, y los dos diagramas
+  obligatorios de la sección 6 (`diagrama-arquitectura.png`, `diagrama-flujo-usuario.png`, fuentes en
+  `herramientas/navegador/auditoria/`). Si la pestaña se cae: `herramientas/navegador/auditoria/rellenar.sh`.
+  Ajustes respecto al borrador: organización y empresa matriz = "Yo" (lo pide el formulario para persona
+  física); `youtube.search.list` desmarcado; el formulario salió en español (misma estructura).
+- **Lo que queda para Santiago (consentimientos, Claude no puede darlos):** (1) sección 4, casilla
+  "Aceptación obligatoria"; (2) sección 5, "He leído y acepto las políticas adicionales sobre métricas";
+  (3) sección 7 (declaraciones) y el botón **Enviar**. Opcional antes de enviar: pasar el aviso de
+  "Google hasn't verified this app" con Continue para que Claude capture la pantalla de permisos y la
+  agregue al PDF de OAuth.
