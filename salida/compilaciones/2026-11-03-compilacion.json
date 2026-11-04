@@ -1,0 +1,119 @@
+{
+  "id": "2026-11-03-compilacion",
+  "plantilla": "compilacion",
+  "tipo": "largo",
+  "titulo": "14 Shorts de Bolita Lab: rebotes, carreras y datos increíbles",
+  "descripcion": "Recopilación de Bolita Lab: 14 Shorts seguidos, sin cortes. Bolitas de neón que rebotan al ritmo de melodías clásicas, carreras con física real y datos sorprendentes con fuente.\n\nCapítulos:\n00:00 ¿Chocolate, vainilla, fresa, menta o limón? ¿Qué helado gana? 🍦\n00:35 ¿iPhone, Samsung, Xiaomi o Pixel? 📱 ¿Qué celular gana?\n01:17 ¿Qué mes del año gana la carrera? 🏁 Carrera de bolitas\n01:49 ¿Messi, CR7, Neymar o Mbappé? ⚽ ¿Quién gana la carrera?\n02:21 Un billón de segundos son más de 31.000 años\n02:51 El camarón mantis tiene 12 receptores de color; tú, solo 3\n03:28 Cleopatra vivió más cerca del iPhone que de las pirámides\n04:07 Si la Tierra fuera una pelota de básquet, ¿dónde estaría la Luna?\n04:37 La bolita crece con cada rebote hasta llenar el círculo (Marcha Turca)\n05:27 ¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas\n06:00 Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso\n06:32 3 bolitas, un hueco: ¿cuál escapa primero? Canon de Pachelbel\n07:09 ¿Qué día de la semana gana? 📅 Carrera de bolitas\n07:39 Tu corazón late casi 3.000 millones de veces en tu vida\n\nLas fuentes de cada dato están en la descripción de su Short.\n\nSimulaciones físicas deterministas y sonido sincronizado a cada rebote. Música de dominio público.\nSuscríbete: hay un Short nuevo cada día.",
+  "hashtags": [
+    "#bolitalab",
+    "#satisfying",
+    "#simulacion",
+    "#fisica",
+    "#datoscuriosos"
+  ],
+  "duracionSeg": 489.2,
+  "estado": "listo",
+  "videos": [
+    "2026-11-03-carrera-helados-chocolate-vainilla-fresa-menta-limon",
+    "2026-11-03-carrera-iphone-vs-android",
+    "2026-11-03-carrera-meses",
+    "2026-11-03-carrera-messi-cr7-neymar",
+    "2026-11-03-dato-billon-de-segundos",
+    "2026-11-03-dato-camaron-mantis-colores",
+    "2026-11-03-dato-cleopatra-mas-cerca-de-iphone",
+    "2026-11-03-dato-tierra-luna",
+    "2026-11-04-bola-marcha-crecer",
+    "2026-11-04-carrera-mascotas",
+    "2026-11-04-dato-luz-pasado",
+    "2026-11-05-bola-3bolas-canon",
+    "2026-11-05-carrera-dias-semana",
+    "2026-11-05-dato-corazon-latidos"
+  ],
+  "miniatura": "salida/marca/miniatura-compilacion.png",
+  "capitulos": [
+    {
+      "inicio": 0,
+      "marca": "00:00",
+      "titulo": "¿Chocolate, vainilla, fresa, menta o limón? ¿Qué helado gana? 🍦",
+      "id": "2026-11-03-carrera-helados-chocolate-vainilla-fresa-menta-limon"
+    },
+    {
+      "inicio": 35.66666666666667,
+      "marca": "00:35",
+      "titulo": "¿iPhone, Samsung, Xiaomi o Pixel? 📱 ¿Qué celular gana?",
+      "id": "2026-11-03-carrera-iphone-vs-android"
+    },
+    {
+      "inicio": 77.5,
+      "marca": "01:17",
+      "titulo": "¿Qué mes del año gana la carrera? 🏁 Carrera de bolitas",
+      "id": "2026-11-03-carrera-meses"
+    },
+    {
+      "inicio": 109.06666666666666,
+      "marca": "01:49",
+      "titulo": "¿Messi, CR7, Neymar o Mbappé? ⚽ ¿Quién gana la carrera?",
+      "id": "2026-11-03-carrera-messi-cr7-neymar"
+    },
+    {
+      "inicio": 141.86666666666667,
+      "marca": "02:21",
+      "titulo": "Un billón de segundos son más de 31.000 años",
+      "id": "2026-11-03-dato-billon-de-segundos"
+    },
+    {
+      "inicio": 171.66666666666669,
+      "marca": "02:51",
+      "titulo": "El camarón mantis tiene 12 receptores de color; tú, solo 3",
+      "id": "2026-11-03-dato-camaron-mantis-colores"
+    },
+    {
+      "inicio": 208.0666666666667,
+      "marca": "03:28",
+      "titulo": "Cleopatra vivió más cerca del iPhone que de las pirámides",
+      "id": "2026-11-03-dato-cleopatra-mas-cerca-de-iphone"
+    },
+    {
+      "inicio": 247.4666666666667,
+      "marca": "04:07",
+      "titulo": "Si la Tierra fuera una pelota de básquet, ¿dónde estaría la Luna?",
+      "id": "2026-11-03-dato-tierra-luna"
+    },
+    {
+      "inicio": 277.6666666666667,
+      "marca": "04:37",
+      "titulo": "La bolita crece con cada rebote hasta llenar el círculo (Marcha Turca)",
+      "id": "2026-11-04-bola-marcha-crecer"
+    },
+    {
+      "inicio": 327.1333333333333,
+      "marca": "05:27",
+      "titulo": "¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas",
+      "id": "2026-11-04-carrera-mascotas"
+    },
+    {
+      "inicio": 360.3,
+      "marca": "06:00",
+      "titulo": "Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso",
+      "id": "2026-11-04-dato-luz-pasado"
+    },
+    {
+      "inicio": 392.3666666666667,
+      "marca": "06:32",
+      "titulo": "3 bolitas, un hueco: ¿cuál escapa primero? Canon de Pachelbel",
+      "id": "2026-11-05-bola-3bolas-canon"
+    },
+    {
+      "inicio": 429.1,
+      "marca": "07:09",
+      "titulo": "¿Qué día de la semana gana? 📅 Carrera de bolitas",
+      "id": "2026-11-05-carrera-dias-semana"
+    },
+    {
+      "inicio": 459.90000000000003,
+      "marca": "07:39",
+      "titulo": "Tu corazón late casi 3.000 millones de veces en tu vida",
+      "id": "2026-11-05-dato-corazon-latidos"
+    }
+  ]
+}

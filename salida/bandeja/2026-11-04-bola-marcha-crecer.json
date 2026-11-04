@@ -1,0 +1,17 @@
+{
+  "id": "2026-11-04-bola-marcha-crecer",
+  "plantilla": "bola",
+  "titulo": "La bolita crece con cada rebote hasta llenar el círculo (Marcha Turca)",
+  "descripcion": "Cada rebote toca una nota de la Marcha Turca de Mozart y la bolita crece un poco más. ¿Cuántos rebotes hasta que no quepa?\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #mozart #marchaturca",
+  "hashtags": [
+    "#shorts",
+    "#satisfying",
+    "#fisica",
+    "#bolita",
+    "#neon",
+    "#mozart",
+    "#marchaturca"
+  ],
+  "duracionSeg": 49.4,
+  "estado": "listo"
+}
