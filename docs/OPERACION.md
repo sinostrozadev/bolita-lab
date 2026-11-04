@@ -11,9 +11,11 @@ generar-guiones ─► contenido/backlog/<plantilla>-<slug>.json          (id "p
                ─► remotion render (--concurrency=1)          ─► salida/bandeja/<id>.mp4 + <id>.json (estado 'listo')
                ─► subir --todos  (o, sin token, solo exportar) ─► YouTube (privado + publishAt) / PARA-SUBIR-A-MANO.md
      compilar ─► salida/compilaciones/<fecha>-compilacion.mp4 + .json (video largo, tipo 'largo')
+      revisar ─► salida/revisiones/<fecha>.md (+ fotogramas/, metricas.json) y, si todo queda verde, un commit
+                 "revisión semanal <fecha>" con las mejoras (docs/MEJORA-CONTINUA.md)
 ```
 
-Archivos: `scripts/{diario,subir,generar-guiones,compilar,estado}.mts`, utilidades en
+Archivos: `scripts/{diario,subir,generar-guiones,compilar,estado,revisar}.mts`, utilidades en
 `scripts/lib/operacion.mts`, calendario en `contenido/calendario.json`, cron en `scripts/cron.txt`.
 Logs en `salida/logs/<fecha>.log` (diario) y `salida/logs/cron.log` (todo lo que lanza el cron).
 
@@ -35,6 +37,7 @@ Logs en `salida/logs/<fecha>.log` (diario) y `salida/logs/cron.log` (todo lo que
 | Subir compilación | `npx tsx scripts/subir.mts subir --compilacion salida/compilaciones/<x>.mp4` |
 | Lista para subir a mano | `npx tsx scripts/subir.mts exportar` → `salida/bandeja/PARA-SUBIR-A-MANO.md` |
 | Compilación | `npx tsx scripts/compilar.mts [--n 14] [--listos] [--ids a,b] [--dry-run]` |
+| Revisión semanal (informe + mejoras) | `npx tsx scripts/revisar.mts [--desde AAAA-MM-DD] [--sin-aplicar] [--dry-run] [--excluir ruta1,ruta2] [--modelo opus]` |
 
 Variables: `BOLITA_MEMORIA_MIN_MB` (por defecto 1200), `BOLITA_CONCURRENCIA` (por defecto 1),
 `BOLITA_RENDER_MAX_MIN` (por defecto 90), `FFMPEG_BIN` (opcional, ffmpeg alternativo para compilar).
@@ -99,6 +102,46 @@ descripción con capítulos, `tipo:'largo'`, `miniatura` si existe `salida/marca
 y Node compone el fondo; ~25 fps de proceso, ~300 MB de RAM (10 min de video ≈ 7 min).
 Capítulos: YouTube exige ≥ 3, de ≥ 10 s, el primero en 00:00 (la intro se funde con el primero).
 
+## Revisión semanal (`revisar.mts`)
+Cumple `docs/MEJORA-CONTINUA.md` §5 sin que nadie lo pida (cron lunes 05:00).
+1. **Evidencia:** los Shorts de la bandeja subidos (`subidoEn`) o renderizados (fecha del mp4) desde `--desde`
+   (por defecto, últimos 7 días). Por video, 6 fotogramas (0 s, 1,5 s, 25 %, 50 %, 75 %, último) a 540 px →
+   `salida/revisiones/<fecha>/fotogramas/<id>-<1..6>.jpg` y una hoja de contacto con los 6 en fila → `<id>-hoja.jpg`.
+   Usa el ffmpeg de Remotion (`LD_LIBRARY_PATH` a su carpeta); como ese build no trae `tile`/`hstack`, la hoja
+   se compone en Node con frames crudos. No necesita `sharp`.
+2. **Métricas (opcional):** Data API `videos.list` (vistas, likes, comentarios) y YouTube Analytics
+   (`views`, `averageViewPercentage`, `averageViewDuration`, `subscribersGained` por video) con el mismo token de
+   `subir.mts` → `metricas.json`. Si falla (API sin habilitar, sin token, cuota), lo anota con la instrucción
+   exacta y sigue. "Visto vs deslizado" no existe en la API: solo en Studio.
+3. **Revisión:** `claude -p --model opus --output-format json --permission-mode dontAsk` con el contrato completo,
+   los guiones, las métricas y las rutas de las hojas (Claude las abre con Read: ve imágenes). Todo lo que no
+   esté en `--allowedTools` se deniega: lectura libre salvo `secrets/`; edición solo en `src/`, `scripts/`,
+   `contenido/backlog/`, `contenido/calendario.json`, `package.json`, `docs/DECISIONES.md` y `docs/ESTRATEGIA.md` (nunca `subir.mts`, `revisar.mts`, `MEJORA-CONTINUA.md`);
+   Bash solo `npx tsc --noEmit`, `git diff/status` y `ls`. Con `--sin-aplicar`, solo Read/Glob/Grep/WebSearch/WebFetch.
+   Cubre también el §2b: busca en la web 5–10 Shorts virales recientes del nicho (WebSearch/WebFetch) y los
+   convierte en reglas, propone/adopta herramientas gratuitas y evalúa la estrategia (puede tocar
+   `docs/ESTRATEGIA.md` y `contenido/calendario.json` si las métricas lo justifican). El informe trae las secciones
+   "Referentes virales", "Herramientas" y "Estrategia". Paquetes npm: Claude los agrega al `package.json` del
+   worktree y los declara en un bloque ```` ```instalar ````; **los instala el script** en el checkout principal con
+   `npm install --no-save` (Claude no puede correr npm: en el worktree podaría el `node_modules` compartido).
+   Lo que cueste dinero o pida una cuenta de Santiago queda marcado **requiere a Santiago**.
+4. **Aplicar con red de seguridad:** Claude trabaja en un **git worktree** propio
+   (`salida/revisiones/<fecha>/arbol`, rama `revision/<fecha>` desde la rama principal, `node_modules` enlazado),
+   así nunca pisa el árbol principal ni lo que otra sesión tenga sin commitear. Luego `tsc --noEmit` en el
+   worktree; render de prueba de cada plantilla tocada (detectada con `git status`: `src/plantillas/<p>/`,
+   `preparar-/simular-<p>`, y todas si cambia `src/marca`, `src/lib`, `Root.tsx`) con el último guion de esa
+   plantilla, `--concurrency=1`, dentro de `flock /tmp/bolita-render.lock` y esperando ≥ 1500 MB libres
+   (`BOLITA_REVISION_MEMORIA_MB`), a `salida/pruebas/revision-<fecha>-<p>.mp4`, y exige 25–58 s. Si algo falla:
+   `git checkout -- . && git clean -fd` en el worktree y queda anotado. Si todo está verde: commit
+   `revisión semanal <fecha>` en la rama y `merge --ff-only` a la rama principal (si git se niega porque pisaría
+   cambios locales, la rama queda para mergear a mano). **Nunca push.** El worktree se borra al final.
+5. **Informe:** `salida/revisiones/<fecha>.md` (tabla de videos, métricas, la revisión de Claude con
+   "3 cosas bien / 5 mejoras / cambios aplicados" y el resultado de cada verificación) + una línea en `cron.log`.
+
+`--dry-run` lista videos, el comando exacto de claude con sus permisos y el plan de git, sin escribir nada.
+`--excluir src/plantillas/dato` (o `BOLITA_REVISION_EXCLUIR`) protege carpetas que otra sesión está editando.
+Tiempo máximo de claude: `BOLITA_REVISION_CLAUDE_MIN` (60). Log en `salida/logs/revision-<fecha>.log`.
+
 ## Fallos típicos
 
 | Síntoma | Causa y arreglo |
@@ -115,6 +158,8 @@ Capítulos: YouTube exige ≥ 3, de ≥ 10 s, el primero en 00:00 (la intro se f
 | `preparar-dato` falla con error de voz / `msedge-tts` | El servicio de voz Edge (no oficial) cayó o limita. Reintentar más tarde. Plan B en `docs/DECISIONES.md`. |
 | `claude -p terminó con código …` al generar | `claude` no está en el PATH del cron (revisar `scripts/cron.txt`) o no hay sesión: correr `claude` una vez a mano. |
 | `Ya hay un diario corriendo` | Otro diario vivo (esperar) o lock viejo: se reemplaza solo si el pid no existe. |
+| Informe dice `Analytics API: ✗ … has not been used in project` | Habilitar la YouTube Analytics API en el proyecto `bolita-lab` (URL exacta en el informe). No hace falta reautorizar. |
+| Revisión: `⚠ no pude hacer fast-forward` | La rama principal avanzó o tiene cambios locales en los mismos archivos. Los cambios quedan en `revision/<fecha>`: `git merge revision/<fecha>`. |
 | Aviso `zod: installed 3.25… required 4.6.7` en renders | Aviso de Remotion por la versión de zod; no bloquea. Los mensajes de error del diario ya lo filtran. |
 
 **Reintentar un guion con error:** mira el motivo en `salida/bandeja/<id>.json`, arregla la causa, borra ese json
@@ -127,7 +172,7 @@ un fallo cada noche en silencio; `estado.mts` y los logs los muestran.
 
 ## Cron
 `scripts/cron.txt` — copiar a mano con `crontab -e` (no usar `crontab archivo`). Diario 03:30, compilación
-domingos 04:30, estado 08:00. La zona del sistema ya es America/Santiago. Rutas absolutas y PATH con
+domingos 04:30, revisión semanal lunes 05:00, estado 08:00. La zona del sistema ya es America/Santiago. Rutas absolutas y PATH con
 `/home/santiago/.nvm/versions/node/v22.14.0/bin` (node) y `/home/santiago/.local/bin` (claude).
 WSL: el cron solo corre con WSL encendido; si la PC estuvo apagada, `npx tsx scripts/diario.mts` a mano recupera el día.
 

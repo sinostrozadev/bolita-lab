@@ -80,16 +80,20 @@ Pega **todas** las líneas de `/home/santiago/idea/scripts/cron.txt` desde `SHEL
 - `claude` debe tener la sesión iniciada (para generar guiones): si `salida/logs/cron.log` muestra errores de
   `claude -p`, abre `claude` una vez en la terminal.
 
-## 6. [ ] Revisión semanal (10 min, cada lunes)
-1. `cd /home/santiago/idea && npx tsx scripts/estado.mts` → que no haya ✗ (errores, credenciales, huérfanos).
-2. YouTube Studio → Analytics → Contenido → Shorts (últimos 7 días). Según `docs/ESTRATEGIA.md` §5:
-   - **Visto vs. deslizado:** > 70 % bien; < 55 % → cambiar el gancho de esa plantilla.
-   - **Retención media:** > 80 % en simulaciones (`bola`, `carrera`), > 65 % en `dato`.
-   - **Suscriptores por cada 1.000 vistas:** > 3 excelente; bajo → reforzar el cierre.
-   - **Comentarios:** ¿las carreras generan "yo apoyaba al X"? Si no, el tema no polariza.
-   - **Content ID:** 0 reclamos (Studio → Contenido → Derechos de autor).
-3. Anota qué plantilla y qué gancho ganaron y pásamelo (o pega capturas): ajusto el backlog, la rotación y
-   `contenido/calendario.json` (duplicar lo que retiene > 80 %, matar lo que retiene < 60 %).
+## 6. [x] Revisión semanal — AHORA LA HACE EL SCRIPT (cron lunes 05:00, `scripts/revisar.mts`)
+Desde 2026-11-04 no tienes que revisar nada a mano ni pedírmelo (`docs/MEJORA-CONTINUA.md`). Cada lunes el
+script mira los videos de la semana (6 fotogramas por video), baja las métricas por API, me pide la revisión
+(3 cosas bien, 5 mejoras), se compara con los Shorts virales del nicho (búsqueda web), propone herramientas
+nuevas (instala las gratuitas), evalúa la estrategia y aplica las mejoras que pasan `tsc` + un render de prueba,
+con commit propio. Solo te consulta lo que cueste dinero o necesite una cuenta tuya (marcado **requiere a Santiago**).
+1. **Lo único que haces:** leer `salida/revisiones/<fecha>.md` (2 min). Ahí están las mejoras, qué se aplicó
+   y si algo se revirtió. Para ver qué cambió en el código: `git log --oneline` (commits "revisión semanal …").
+2. **Una vez (2 min):** habilitar la **YouTube Analytics API** en el proyecto `bolita-lab` para que la revisión
+   tenga retención y suscriptores por video:
+   <https://console.developers.google.com/apis/api/youtubeanalytics.googleapis.com/overview?project=786643510790>
+   → **Habilitar**. No hace falta volver a autorizar.
+3. Lo que la API no da y sigue siendo tuyo (opcional, si entras a Studio): **visto vs. deslizado** de Shorts y
+   **Content ID** (0 reclamos). Si ves algo raro, pégame la captura.
 4. Domingo/lunes: la compilación semanal queda en `salida/compilaciones/` y al final de
    `PARA-SUBIR-A-MANO.md`. Súbela (`npx tsx scripts/subir.mts subir --compilacion salida/compilaciones/<fecha>-compilacion.mp4`
    cuando la API esté auditada, o a mano). Fija en cada Short un comentario con pregunta (30 s desde el celular).

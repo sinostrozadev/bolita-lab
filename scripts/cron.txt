@@ -15,3 +15,8 @@ HOME=/home/santiago
 
 # Resumen de estado cada mañana a las 08:00 (mirar con: cat /home/santiago/idea/salida/logs/estado.log).
 0 8 * * * cd /home/santiago/idea && /home/santiago/idea/node_modules/.bin/tsx /home/santiago/idea/scripts/estado.mts > /home/santiago/idea/salida/logs/estado.log 2>&1
+
+# Revisión semanal de calidad, lunes 05:00 (docs/MEJORA-CONTINUA.md §5): fotogramas de la última semana, métricas
+# por API, revisión con claude -p (Opus) y mejoras aplicadas en una rama aparte solo si pasan tsc + render de prueba.
+# Informe en salida/revisiones/<fecha>.md.
+0 5 * * 1 cd /home/santiago/idea && /home/santiago/idea/node_modules/.bin/tsx /home/santiago/idea/scripts/revisar.mts >> /home/santiago/idea/salida/logs/cron.log 2>&1
