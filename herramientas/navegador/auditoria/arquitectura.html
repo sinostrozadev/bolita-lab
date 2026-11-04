@@ -1,0 +1,30 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+body{font-family:Inter,Arial,sans-serif;background:#fff;color:#111;margin:0;padding:36px;width:1328px}
+h1{font-size:26px;margin:0 0 4px} .sub{color:#555;margin:0 0 28px;font-size:15px}
+.row{display:flex;align-items:center;gap:0;margin-bottom:22px}
+.box{border:2px solid #333;border-radius:12px;padding:14px 18px;min-width:220px;background:#f7f8fb}
+.box b{display:block;font-size:16px;margin-bottom:4px} .box span{font-size:13px;color:#444;line-height:1.35}
+.arrow{width:70px;text-align:center;font-size:13px;color:#333;position:relative}
+.arrow:before{content:"";display:block;height:2px;background:#333;margin:0 4px}
+.arrow:after{content:"";position:absolute;right:2px;top:-5px;border:6px solid transparent;border-left:9px solid #333}
+.arrow i{display:block;font-style:normal;margin-top:6px;font-size:12px}
+.owner{border-color:#1a73e8;background:#e8f0fe} .yt{border-color:#c00;background:#fdecec}
+.note{border:1px dashed #888;border-radius:10px;padding:12px 16px;font-size:13px;color:#333;margin-top:10px;max-width:1100px}
+.legend{font-size:13px;color:#555;margin-top:18px}
+</style></head><body>
+<h1>Bolita Lab Uploader — Architecture diagram</h1>
+<p class="sub">Google Cloud project 786643510790 · API client "Bolita Lab Uploader" · single user: the channel owner (youtube.com/@bolitalab)</p>
+<div class="row">
+  <div class="box owner"><b>Channel owner (Santiago)</b><span>Runs the command-line tool on his own computer.<br>Only human user of the client.</span></div>
+  <div class="arrow"><i>runs</i></div>
+  <div class="box"><b>Content pipeline (Node.js + Remotion)</b><span>Writes scripts, simulates physics, renders MP4 Shorts + thumbnails.<br>No YouTube API calls here.</span></div>
+  <div class="arrow"><i>mp4 + metadata</i></div>
+  <div class="box"><b>Upload tool — scripts/subir.mts</b><span>CLI, OAuth 2.0 (desktop app).<br>Token stored locally in secrets/youtube-token.json (owner-only file, chmod 600).</span></div>
+  <div class="arrow"><i>HTTPS</i></div>
+  <div class="box yt"><b>YouTube Data API v3</b><span>videos.insert · thumbnails.set<br>channels.list (mine=true) · videos.list (own videos)</span></div>
+  <div class="arrow"><i>publishes to</i></div>
+  <div class="box yt"><b>Owner's channel @bolitalab</b><span>Scheduled Shorts (publishAt).<br>No other channel is ever accessed.</span></div>
+</div>
+<div class="note"><b>Data flow and storage.</b> The only YouTube user data handled is the owner's OAuth token and the IDs/titles/public statistics of the owner's own videos, stored locally in JSON files to plan the publication calendar. Nothing is transmitted to third parties, no database or server exists, and the tool is not distributed or exposed on the internet. Access can be revoked at any time at myaccount.google.com/permissions.</div>
+<p class="legend">Blue = owner · Red = YouTube · Grey = local software on the owner's computer. Public website (privacy policy and terms): https://sinostrozadev.github.io/bolitalab/</p>
+</body></html>

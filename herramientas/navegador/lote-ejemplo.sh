@@ -29,5 +29,7 @@ done <<'LISTA'
 2026-11-05-dato-corazon-latidos 2026-11-11 12:00
 2026-11-04-carrera-mascotas 2026-11-11 18:00
 2026-11-05-carrera-dias-semana 2026-11-12 12:00
+2026-11-04-bola-marcha-crecer 2026-11-12 18:00
+2026-11-05-bola-3bolas-canon 2026-11-13 12:00
 LISTA
 echo "LOTE COMPLETO"; touch LOTE4-OK

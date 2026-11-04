@@ -1,0 +1,38 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+body{font-family:Inter,Arial,sans-serif;background:#fff;color:#111;margin:0;padding:36px;width:1328px}
+h1{font-size:26px;margin:0 0 4px} .sub{color:#555;margin:0 0 26px;font-size:15px}
+h2{font-size:17px;margin:22px 0 10px;color:#1a73e8}
+.flow{display:flex;align-items:stretch;flex-wrap:wrap;gap:0}
+.step{border:2px solid #333;border-radius:12px;padding:12px 14px;width:200px;background:#f7f8fb;font-size:13px;line-height:1.35}
+.step b{display:block;font-size:14px;margin-bottom:4px} .step em{color:#1a73e8;font-style:normal;font-size:12px}
+.arrow{width:46px;align-self:center;position:relative;height:2px;background:#333;margin:0 2px}
+.arrow:after{content:"";position:absolute;right:-2px;top:-5px;border:6px solid transparent;border-left:9px solid #333}
+.yt{border-color:#c00;background:#fdecec} .owner{border-color:#1a73e8;background:#e8f0fe}
+.note{border:1px dashed #888;border-radius:10px;padding:10px 14px;font-size:13px;color:#333;margin-top:14px;max-width:1150px}
+</style></head><body>
+<h1>Bolita Lab Uploader — User flow diagrams</h1>
+<p class="sub">There is exactly one user: the channel owner. There is no sign-up, no public UI and no other users' data.</p>
+<h2>Flow A — One-time authorization (OAuth 2.0, desktop app)</h2>
+<div class="flow">
+  <div class="step owner"><b>1. Owner runs</b><code>npx tsx scripts/subir.mts autorizar</code><em>Local terminal</em></div><div class="arrow"></div>
+  <div class="step"><b>2. Tool prints the Google OAuth URL</b>Scopes: youtube.upload, youtube. Owner opens it in the browser.</div><div class="arrow"></div>
+  <div class="step yt"><b>3. Google account chooser</b>Owner picks the channel's brand account "Bolita Lab".</div><div class="arrow"></div>
+  <div class="step yt"><b>4. Consent screen</b>Google shows the requested permissions; owner clicks Continue.</div><div class="arrow"></div>
+  <div class="step"><b>5. Redirect to 127.0.0.1:8765</b>Tool exchanges the code for tokens and stores them in secrets/youtube-token.json (owner-only).</div>
+</div>
+<h2>Flow B — Daily upload of a rendered Short (automated, on the owner's computer)</h2>
+<div class="flow">
+  <div class="step"><b>1. Pipeline renders a Short</b>MP4 + title, description, tags, publish date written to a local JSON.</div><div class="arrow"></div>
+  <div class="step"><b>2. Upload tool reads the JSON</b><code>subir.mts subir --id … --publicar-en …</code></div><div class="arrow"></div>
+  <div class="step yt"><b>3. videos.insert</b>Resumable upload; privacyStatus=private + publishAt (scheduled).</div><div class="arrow"></div>
+  <div class="step yt"><b>4. thumbnails.set</b>Custom thumbnail for the video.</div><div class="arrow"></div>
+  <div class="step"><b>5. Local state updated</b>Video ID and dates saved in the JSON; owner sees it in YouTube Studio as "Scheduled".</div>
+</div>
+<h2>Flow C — Weekly planning (read-only, own channel)</h2>
+<div class="flow">
+  <div class="step"><b>1. Weekly review script</b>Runs on Monday on the owner's computer.</div><div class="arrow"></div>
+  <div class="step yt"><b>2. channels.list (mine=true) + videos.list</b>Public statistics of the owner's own videos only.</div><div class="arrow"></div>
+  <div class="step"><b>3. Local report</b>Used to choose next week's topics. Nothing is shared or published.</div>
+</div>
+<div class="note"><b>Revocation.</b> The owner can revoke access at myaccount.google.com/permissions at any time; the tool then stops working until re-authorized.</div>
+</body></html>
