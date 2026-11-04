@@ -69,7 +69,9 @@ no ocurre. Hasta que aprueben, sube a mano con `salida/bandeja/PARA-SUBIR-A-MANO
      datos de otros usuarios ni los almacena o vende."
    - Métodos de la API: `videos.insert`, `thumbnails.set`, `channels.list` (solo `mine=true`).
    - Enlace al canal y, si lo piden, una captura del flujo (la terminal con `subir`).
-3. Es gratis; la respuesta tarda días o semanas. Al aprobarse, los videos nuevos se publican solos. Los que
+3. Es gratis; la respuesta tarda días o semanas. **Al aprobarse:** `touch /home/santiago/idea/secrets/api-auditada`
+   (hasta que exista ese archivo el diario NO sube por API: quedaría todo privado y gastaría el cupo diario) y, en la
+   nube, `BOLITA_SUBIR=1` (paso 7). Desde ahí los videos nuevos se publican solos. Los que
    quedaron bloqueados hay que volver a subirlos (o, si Studio lo permite, ponerlos públicos a mano).
 4. Cuota por defecto: 10.000 unidades/día, ~1.600 por subida (≈6 videos/día): sobra para 2 Shorts diarios.
 

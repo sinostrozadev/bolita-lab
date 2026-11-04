@@ -24,6 +24,9 @@ export const DIR_SECRETS = path.join(RAIZ, 'secrets');
 export const ARCHIVO_CALENDARIO = path.join(DIR_CONTENIDO, 'calendario.json');
 export const ARCHIVO_CLIENTE_YT = path.join(DIR_SECRETS, 'youtube-client.json');
 export const ARCHIVO_TOKEN_YT = path.join(DIR_SECRETS, 'youtube-token.json');
+// Marcador que crea Santiago cuando Google aprueba la auditoría de la API (docs/SANTIAGO.md §4):
+// sin él, nada se sube por API (quedaría privado y gastaría el cupo diario).
+export const ARCHIVO_API_AUDITADA = path.join(DIR_SECRETS, 'api-auditada');
 const DIR_COMPOSITOR = path.join(RAIZ, 'node_modules', '@remotion', 'compositor-linux-x64-gnu');
 const FFMPEG_REMOTION = path.join(DIR_COMPOSITOR, 'ffmpeg');
 /**

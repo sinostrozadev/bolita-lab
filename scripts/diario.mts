@@ -26,7 +26,7 @@ import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { agregarCreditos } from './imagenes-dato.mjs';
 import {
-  ARCHIVO_TOKEN_YT, DIR_BANDEJA, DIR_GUIONES, DIR_SALIDA, DIR_TRABAJO, RAIZ,
+  ARCHIVO_API_AUDITADA, ARCHIVO_TOKEN_YT, DIR_BANDEJA, DIR_GUIONES, DIR_SALIDA, DIR_TRABAJO, RAIZ,
   asegurarDirectorios, cargarCalendario, composicionDe, correr, crearLog, detectarHuerfanos, duracionVideo,
   enLaNube, escribirJson, existeSecreto, fechaHoyLocal, leerBacklog, leerBandeja, memoriaDisponibleMb, ordenRotacion,
   resumenSalida, siguientePlantilla, slugificar,
@@ -301,6 +301,10 @@ const pasoSubir = async (log: Log) => {
   const subir = path.join(RAIZ, 'scripts', 'subir.mts');
   if (opc['sin-subir']) {
     log(`(c) --sin-subir: no se sube; exportar → salida/bandeja/PARA-SUBIR-A-MANO.md (${listos} listo(s)).`);
+  } else if (!existeSecreto(ARCHIVO_API_AUDITADA)) {
+    // Hasta que Google apruebe la auditoría del proyecto, todo lo subido por API queda privado y
+    // consume el cupo diario de subidas. Mientras tanto se sube por YouTube Studio (herramientas/navegador).
+    log(`(c) API sin auditar (falta ${rel(ARCHIVO_API_AUDITADA)}): no se sube por API; exportar → PARA-SUBIR-A-MANO.md (${listos} listo(s)).`);
   } else if (existeSecreto(ARCHIVO_TOKEN_YT)) {
     log(`(c) Token de YouTube presente: subir --todos (${listos} listo(s)).`);
     const r = await correr(TSX, [subir, 'subir', '--todos', ...(opc['dry-run'] ? ['--dry-run'] : [])], { log, timeoutMs: TIEMPO_SUBIR });
