@@ -51,7 +51,12 @@ Avanzado → Ir a Bolita Lab). El código llega solo a `127.0.0.1:8765` (WSL com
 llega, copia de la barra de direcciones el valor `code=...` de la URL final (aunque la página dé error) y pégalo
 en la terminal. Debe terminar con `✓ Canal autorizado: Bolita Lab`. Comprueba con `npx tsx scripts/estado.mts`.
 
-## 4. [ ] Solicitar la auditoría de la API (10 min, hazlo apenas tengas el paso 2)
+## 4. [ ] Solicitar la auditoría de la API — LO LLENA CLAUDE; tú solo das 2 clics
+Estado 2026-11-04: las respuestas están en `docs/AUDITORIA-API.md`, el sitio público con privacidad y
+términos ya está en <https://sinostrozadev.github.io/bolitalab/>, y Claude rellena el formulario en el
+navegador piloto. **Lo tuyo:** (a) en <https://console.cloud.google.com/auth/audience?project=bolita-lab>
+clic en **Publish app** → Confirm (Claude no puede aceptar eso por ti; sin esto el token caduca cada 7 días),
+(b) el clic final de **Submit** del formulario cuando Claude te avise que está listo en http://localhost:8777/ver.
 **Importante:** mientras el proyecto de Google Cloud no esté auditado, **todo video subido por API queda bloqueado
 en privado** (YouTube lo marca "restringido por la política de servicios de la API") y la publicación programada
 no ocurre. Hasta que aprueben, sube a mano con `salida/bandeja/PARA-SUBIR-A-MANO.md`.
