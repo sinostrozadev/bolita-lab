@@ -104,6 +104,7 @@ const autorizar = async () => {
 
   const codigo = await Promise.race([esperarCodigoServidor(), esperarCodigoStdin()]);
   const { tokens } = await cliente.getToken(codigo);
+  cliente.setCredentials(tokens);
   if (!tokens.refresh_token) {
     console.error('⚠ Google no devolvió refresh_token. Revoca el acceso en https://myaccount.google.com/permissions y vuelve a correr autorizar.');
   }

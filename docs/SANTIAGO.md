@@ -7,7 +7,7 @@ Mientras no hagas los pasos 2–4, la fábrica **igual produce**: el diario rend
 mantiene `salida/bandeja/PARA-SUBIR-A-MANO.md` con título, descripción, hashtags, hora y la ruta
 de cada mp4, listos para copiar/pegar en YouTube Studio (2 min por video).
 
-## 1. [ ] Crear el canal @bolitalab (5 min)
+## 1. [x] Crear el canal @bolitalab — HECHO 2026-11-04 (canal de marca `UCi1_1_ItZCLY4axLshZcuZQ`, https://www.youtube.com/@bolitalab; logo, banner, descripción, país, keywords y audiencia "no para niños" ya configurados)
 1. Entra a <https://www.youtube.com> con la cuenta Google que será dueña del canal.
 2. Avatar → **Crear un canal** → nombre **Bolita Lab** → Crear.
 3. YouTube Studio (<https://studio.youtube.com>) → **Personalización**:
@@ -24,7 +24,7 @@ de cada mp4, listos para copiar/pegar en YouTube Studio (2 min por video).
 Desde Windows, los archivos de WSL se abren en el Explorador como
 `\\wsl$\Debian\home\santiago\idea\salida\marca\` (o `explorer.exe .` dentro de esa carpeta).
 
-## 2. [ ] Proyecto de Google Cloud + credencial OAuth (15 min)
+## 2. [x] Proyecto de Google Cloud + credencial OAuth — HECHO 2026-11-04 (proyecto `bolita-lab`, cliente `bolita-lab-desktop`, JSON en `secrets/youtube-client.json`; app en modo Prueba con tu correo como usuario de prueba)
 1. <https://console.cloud.google.com/projectcreate> → nombre `bolita-lab` → Crear. Selecciónalo arriba.
 2. **Habilitar la API:** <https://console.cloud.google.com/apis/library/youtube.googleapis.com> →
    **YouTube Data API v3** → Habilitar.
@@ -42,7 +42,7 @@ Desde Windows, los archivos de WSL se abren en el Explorador como
    chmod 600 /home/santiago/idea/secrets/youtube-client.json
    ```
 
-## 3. [ ] Autorizar la app (2 min)
+## 3. [x] Autorizar la app — HECHO 2026-11-04 (token en `secrets/youtube-token.json`, verificado: la API responde "Bolita Lab @bolitalab")
 ```bash
 cd /home/santiago/idea && npx tsx scripts/subir.mts autorizar
 ```
@@ -68,7 +68,7 @@ no ocurre. Hasta que aprueben, sube a mano con `salida/bandeja/PARA-SUBIR-A-MANO
    quedaron bloqueados hay que volver a subirlos (o, si Studio lo permite, ponerlos públicos a mano).
 4. Cuota por defecto: 10.000 unidades/día, ~1.600 por subida (≈6 videos/día): sobra para 2 Shorts diarios.
 
-## 5. [ ] Activar el cron (2 min)
+## 5. [x] Activar el cron — HECHO 2026-11-04 (las 3 líneas instaladas, servicio activo)
 ```bash
 crontab -e
 ```
