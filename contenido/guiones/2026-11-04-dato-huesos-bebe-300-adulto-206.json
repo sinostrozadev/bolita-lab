@@ -16,8 +16,9 @@
     "color": "lima",
     "gancho": "Perdiste cerca de cien huesos sin darte cuenta.",
     "imagenGancho": {
-      "buscar": "human skeleton",
-      "forma": "circulo"
+      "buscar": "adult human skeleton",
+      "archivo": "File:Human skeletons.jpg",
+      "forma": "completa"
     },
     "escenas": [
       {
@@ -27,6 +28,11 @@
           "valor": 300,
           "sufijo": "",
           "etiqueta": "huesos al nacer (aprox.)"
+        },
+        "imagen": {
+          "buscar": "fetal skeleton",
+          "archivo": "File:NMHM IMG 2058-fetal-skeletons-4-5-7-months (9699410157).jpg",
+          "forma": "marco"
         }
       },
       {
@@ -35,6 +41,11 @@
           "tipo": "icono",
           "forma": "persona",
           "etiqueta": "creciendo"
+        },
+        "imagen": {
+          "buscar": "child hand radiograph",
+          "archivo": "File:X-ray of the hand of an 8 year old male - case 1 - dorsoplantar.jpg",
+          "forma": "marco"
         }
       },
       {
@@ -45,6 +56,12 @@
           "enfasis": [
             "fontanelas"
           ]
+        },
+        "imagen": {
+          "buscar": "fontanelle skull",
+          "archivo": "File:Sobo 1909 105.png",
+          "forma": "marco",
+          "encuadre": "arriba"
         }
       },
       {
@@ -54,6 +71,12 @@
           "valor": 206,
           "sufijo": "",
           "etiqueta": "huesos de un adulto"
+        },
+        "imagen": {
+          "buscar": "human skeleton",
+          "archivo": "File:Human Skeleton 2.jpg",
+          "forma": "marco",
+          "encuadre": "arriba"
         }
       },
       {
@@ -76,6 +99,11 @@
               "valor": 100
             }
           ]
+        },
+        "imagen": {
+          "buscar": "bones of the hand and foot",
+          "archivo": "File:Johann Conrad Zeller - Bones of the hand and foot, c1833 -Wellcome Collection.jpg",
+          "forma": "marco"
         }
       },
       {
@@ -85,10 +113,20 @@
           "valor": 25,
           "sufijo": " años",
           "etiqueta": "edad aprox. en que la clavícula termina de fusionarse"
+        },
+        "imagen": {
+          "buscar": "clavicle bone",
+          "archivo": "File:Clavicula - dex.jpg",
+          "forma": "marco"
         }
       }
     ],
     "remate": "Perder huesos es, en realidad, crecer.",
+    "imagenRemate": {
+      "buscar": "adult human skeleton",
+      "archivo": "File:Human skeletons.jpg",
+      "forma": "completa"
+    },
     "fuentes": [
       "Cleveland Clinic, Bones: https://my.clevelandclinic.org/health/body/21868-bones",
       "Nemours KidsHealth, Your bones: https://kidshealth.org/en/teens/bones-muscles-joints.html",

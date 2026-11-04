@@ -2,7 +2,7 @@
   "id": "2026-11-04-dato-huesos-bebe-300-adulto-206",
   "plantilla": "dato",
   "titulo": "Naces con unos 300 huesos y de adulto tienes 206",
-  "descripcion": "Al nacer tenemos alrededor de 300 huesos, muchos de cartílago, que se fusionan hasta quedar 206 en la adultez.\n\nFuentes:\n- Cleveland Clinic, Bones: https://my.clevelandclinic.org/health/body/21868-bones\n- Nemours KidsHealth, Your bones: https://kidshealth.org/en/teens/bones-muscles-joints.html\n- Cleveland Clinic, Fontanelle (la anterior se cierra hacia los 18–24 meses): https://my.clevelandclinic.org/health/body/23209-fontanelle\n- Cleveland Clinic: cada mano tiene 27 huesos y cada pie 26 → 54 + 52 = 106 de 206.\n- Webb & Suchey 1985, Am. J. Phys. Anthropol. 68:457 (la epífisis medial de la clavícula se fusiona por completo hacia los ~22–30 años; es de las últimas).\n\n#shorts #datos #curiosidades #cuerpohumano #huesos #bolitalab",
+  "descripcion": "Al nacer tenemos alrededor de 300 huesos, muchos de cartílago, que se fusionan hasta quedar 206 en la adultez.\n\nFuentes:\n- Cleveland Clinic, Bones: https://my.clevelandclinic.org/health/body/21868-bones\n- Nemours KidsHealth, Your bones: https://kidshealth.org/en/teens/bones-muscles-joints.html\n- Cleveland Clinic, Fontanelle (la anterior se cierra hacia los 18–24 meses): https://my.clevelandclinic.org/health/body/23209-fontanelle\n- Cleveland Clinic: cada mano tiene 27 huesos y cada pie 26 → 54 + 52 = 106 de 206.\n- Webb & Suchey 1985, Am. J. Phys. Anthropol. 68:457 (la epífisis medial de la clavícula se fusiona por completo hacia los ~22–30 años; es de las últimas).\n\nImágenes: Wikimedia Commons\n- Human skeletons · Tiia Monto · CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0) · https://commons.wikimedia.org/wiki/File:Human_skeletons.jpg\n- NMHM IMG 2058-fetal-skeletons-4-5-7-months (9699410157) · Joe Loong from Reston, USA · CC BY-SA 2.0 (https://creativecommons.org/licenses/by-sa/2.0) · https://commons.wikimedia.org/wiki/File:NMHM_IMG_2058-fetal-skeletons-4-5-7-months_(9699410157).jpg\n- X-ray of the hand of an 8 year old male - case 1 - dorsoplantar · Staff at the Department of Radiology, UC San Diego Health . · Public domain · https://commons.wikimedia.org/wiki/File:X-ray_of_the_hand_of_an_8_year_old_male_-_case_1_-_dorsoplantar.jpg\n- Sobo 1909 105 · Dr. Johannes Sobotta · Public domain · https://commons.wikimedia.org/wiki/File:Sobo_1909_105.png\n- Human Skeleton 2 · Mr Khubaib Sani · CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0) · https://commons.wikimedia.org/wiki/File:Human_Skeleton_2.jpg\n- Johann Conrad Zeller - Bones of the hand and foot, c1833 -Wellcome Collection · Johann Conrad Zeller · Public domain · https://commons.wikimedia.org/wiki/File:Johann_Conrad_Zeller_-_Bones_of_the_hand_and_foot,_c1833_-Wellcome_Collection.jpg\n- Clavicula - dex · MAKY.OREL · CC0 · https://commons.wikimedia.org/wiki/File:Clavicula_-_dex.jpg\n\n#shorts #datos #curiosidades #cuerpohumano #huesos #bolitalab",
   "hashtags": [
     "#shorts",
     "#datos",
@@ -13,6 +13,5 @@
   ],
   "duracionSeg": 33.4,
   "estado": "listo",
-  "tipo": "short",
-  "artefacto": "`shorts-2026-11-04` del run https://github.com/sinostrozadev/bolita-lab/actions/runs/41774243108"
+  "tipo": "short"
 }
