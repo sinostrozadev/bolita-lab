@@ -19,23 +19,43 @@
     "participantes": [
       {
         "etiqueta": "CAFÉ",
-        "color": "cian"
+        "color": "cian",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "☕"
+        }
       },
       {
         "etiqueta": "TÉ",
-        "color": "lima"
+        "color": "lima",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🍵"
+        }
       },
       {
         "etiqueta": "MATE",
-        "color": "amarillo"
+        "color": "amarillo",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🧉"
+        }
       },
       {
         "etiqueta": "COLA",
-        "color": "naranja"
+        "color": "naranja",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🥤"
+        }
       },
       {
         "etiqueta": "JUGO",
-        "color": "magenta"
+        "color": "magenta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🧃"
+        }
       }
     ]
   }

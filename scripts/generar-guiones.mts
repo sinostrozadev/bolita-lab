@@ -85,7 +85,12 @@ const EDITORIAL = `REGLAS EDITORIALES (obligatorias):
 - Variedad: no repitas temas, mecánicas, melodías ni títulos de la lista de usados. Cambia de ángulo entre guiones.
 - La descripción: 2–4 líneas, natural, SIN hashtags (van en el campo hashtags). hashtags: 4–8, en minúsculas, siempre incluye "#shorts".
 - Duración objetivo 25–55 s. Respeta límites de longitud del schema (los .max() son duros).
-- Nunca incluyas contenido para niños ("made for kids"), ni marcas registradas, ni música con derechos.`;
+- Nunca incluyas contenido para niños ("made for kids"), ni música con derechos. Marcas registradas: solo como competidores de una carrera, para identificarlas (nada de patrocinios ni afirmaciones sobre ellas).
+- Plantilla "carrera": CADA participante lleva "icono" (identidad visual dentro de la bolita, el marcador y el final):
+  · Si el competidor ES una marca → {"tipo":"marca","slug":"<slug de simple-icons>"}: el slug es el nombre del archivo en simpleicons.org en minúsculas y sin espacios (apple, samsung, xiaomi, google para Pixel, motorola, huawei, playstation, steam, tiktok, instagram, youtube, x, facebook, snapchat, netflix, spotify, mcdonalds, cocacola, starbucks...). simple-icons NO tiene xbox, nintendo, microsoft ni windows: para esos usa emoji o texto. Si no estás seguro de que el slug exista, usa emoji o texto.
+  · Si no es marca (meses, días, sabores, comidas, mascotas, países, estaciones, signos) → {"tipo":"emoji","valor":"🍫"}: UN emoji que se reconozca al instante (países: su bandera 🇨🇱).
+  · Personas reales (futbolistas, artistas): NUNCA su cara; usa la bandera de su país o {"tipo":"texto","valor":"CR7"} (1–3 caracteres).
+  · No repitas el mismo emoji dentro de una carrera; el icono y el color deben "contar" lo mismo que la etiqueta.`;
 
 const construirPrompt = (plantilla: Plantilla, n: number, schema: string, rutaSchema: string, ejemplos: Guion[], usados: string[]) => {
   const convenciones = fs.readFileSync(path.join(RAIZ, 'docs', 'CONVENCIONES.md'), 'utf8');

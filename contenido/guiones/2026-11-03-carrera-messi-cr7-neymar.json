@@ -19,23 +19,43 @@
     "participantes": [
       {
         "etiqueta": "MESSI",
-        "color": "cian"
+        "color": "cian",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇦🇷"
+        }
       },
       {
         "etiqueta": "CR7",
-        "color": "lima"
+        "color": "lima",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇵🇹"
+        }
       },
       {
         "etiqueta": "NEYMAR",
-        "color": "amarillo"
+        "color": "amarillo",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇧🇷"
+        }
       },
       {
         "etiqueta": "MBAPPÉ",
-        "color": "naranja"
+        "color": "naranja",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇫🇷"
+        }
       },
       {
         "etiqueta": "HAALAND",
-        "color": "magenta"
+        "color": "magenta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇳🇴"
+        }
       }
     ]
   }

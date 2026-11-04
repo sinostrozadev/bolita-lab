@@ -19,23 +19,43 @@
     "participantes": [
       {
         "etiqueta": "PLAYSTATION",
-        "color": "cian"
+        "color": "cian",
+        "icono": {
+          "tipo": "marca",
+          "slug": "playstation"
+        }
       },
       {
         "etiqueta": "XBOX",
-        "color": "lima"
+        "color": "lima",
+        "icono": {
+          "tipo": "texto",
+          "valor": "X"
+        }
       },
       {
         "etiqueta": "NINTENDO",
-        "color": "amarillo"
+        "color": "amarillo",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🍄"
+        }
       },
       {
         "etiqueta": "PC",
-        "color": "naranja"
+        "color": "naranja",
+        "icono": {
+          "tipo": "marca",
+          "slug": "steam"
+        }
       },
       {
         "etiqueta": "CELULAR",
-        "color": "magenta"
+        "color": "magenta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "📱"
+        }
       }
     ]
   }

@@ -20,19 +20,35 @@
     "participantes": [
       {
         "etiqueta": "PERRO",
-        "color": "cian"
+        "color": "cian",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🐶"
+        }
       },
       {
         "etiqueta": "GATO",
-        "color": "lima"
+        "color": "lima",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🐱"
+        }
       },
       {
         "etiqueta": "HÁMSTER",
-        "color": "amarillo"
+        "color": "amarillo",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🐹"
+        }
       },
       {
         "etiqueta": "LORO",
-        "color": "naranja"
+        "color": "naranja",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🦜"
+        }
       }
     ]
   }

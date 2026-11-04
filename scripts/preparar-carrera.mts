@@ -4,6 +4,7 @@
  * Uso: npx tsx scripts/preparar-carrera.mts <ruta-guion.json>
  *
  * Lee el envoltorio `{plantilla:'carrera', id, titulo, descripcion, hashtags, props}`,
+ * resuelve los iconos de los competidores (logos de simple-icons inline, ver scripts/lib/iconos.mts),
  * simula la física + sintetiza el audio (public/sim y public/audio/generado) y escribe
  * `salida/trabajo/<id>.props.json` con los props validados. Sale con código 0.
  *
@@ -15,6 +16,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { CIERRE_FRAMES } from '../src/plantillas/carrera/tipos';
 import { leerProps, prepararSimulacion } from './simular-carrera.mjs';
+import { resolverIconos } from './lib/iconos.mjs';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -26,7 +28,8 @@ if (envoltorio.plantilla && envoltorio.plantilla !== 'carrera') {
   console.error(`El guion es de la plantilla "${envoltorio.plantilla}", no "carrera".`);
   process.exit(2);
 }
-const props = leerProps(path.resolve(ruta));
+// Los logos (simple-icons) quedan inline en los props: el render no lee archivos sueltos.
+const props = resolverIconos(leerProps(path.resolve(ruta)));
 const sim = prepararSimulacion(props);
 
 const destino = path.join(RAIZ, 'salida/trabajo', `${props.id}.props.json`);

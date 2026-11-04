@@ -19,27 +19,51 @@
     "participantes": [
       {
         "etiqueta": "TIKTOK",
-        "color": "cian"
+        "color": "cian",
+        "icono": {
+          "tipo": "marca",
+          "slug": "tiktok"
+        }
       },
       {
         "etiqueta": "INSTAGRAM",
-        "color": "lima"
+        "color": "lima",
+        "icono": {
+          "tipo": "marca",
+          "slug": "instagram"
+        }
       },
       {
         "etiqueta": "YOUTUBE",
-        "color": "amarillo"
+        "color": "amarillo",
+        "icono": {
+          "tipo": "marca",
+          "slug": "youtube"
+        }
       },
       {
         "etiqueta": "X",
-        "color": "naranja"
+        "color": "naranja",
+        "icono": {
+          "tipo": "marca",
+          "slug": "x"
+        }
       },
       {
         "etiqueta": "FACEBOOK",
-        "color": "magenta"
+        "color": "magenta",
+        "icono": {
+          "tipo": "marca",
+          "slug": "facebook"
+        }
       },
       {
         "etiqueta": "SNAPCHAT",
-        "color": "violeta"
+        "color": "violeta",
+        "icono": {
+          "tipo": "marca",
+          "slug": "snapchat"
+        }
       }
     ]
   }

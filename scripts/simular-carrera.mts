@@ -52,7 +52,8 @@ const VENTAJA_MAX_SEG = 1.5;
 const CARRERAS_VALIDAS_MAX = 20;
 /** Histéresis del marcador: una bola adelanta a otra solo si la supera por estos píxeles. */
 const HISTERESIS_PX = 24;
-const RADIO_BOLA = 27;
+/** 32 (antes 27): el icono del competidor va dentro de la bola y a 27 px no se leía. */
+const RADIO_BOLA = 32;
 const RADIO_CLAVIJA = 13;
 const REST_CLAVIJA = 0.6;
 const REST_PARED = 0.55;

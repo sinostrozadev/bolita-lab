@@ -21,13 +21,37 @@ npx remotion render src/index.ts Carrera salida/bandeja/<id>.mp4 --props=salida/
 |---|---|
 | `id` | nombra `public/sim/<id>.json` y el wav |
 | `gancho` | pregunta en pantalla los primeros 1,5 s (≤60 car.) |
-| `participantes` | 4–6 `{ etiqueta (≤18), color: lima·cian·magenta·naranja·violeta·amarillo }` |
+| `participantes` | 4–6 `{ etiqueta (≤18), color: lima·cian·magenta·naranja·violeta·amarillo, icono? }` |
 | `semilla?` | si falta, `semillaDesde(id)` |
 | `tema?` | informativo |
 
 Los guiones del backlog (`contenido/backlog/carrera-<slug>.json`) llevan `id` = nombre de
 archivo: el pipeline le quita `carrera-` y antepone la fecha al promover.
 **Colores:** si la etiqueta ES un color (p. ej. "AMARILLO"), usa ese neón; nunca "ROJO" en cian.
+
+## Iconos: identidad visual de cada competidor (2026-11-04)
+Cada participante lleva `icono` (schema `IconoCompetidor` en `guion.ts`). Se ve dentro de la
+bolita (≈55 % del diámetro, centrado, sin rotar), en su etiqueta, en la mini-bolita del marcador
+y grande en el final, donde "salta" con `spring` al llegar la ganadora al centro.
+
+| tipo | ejemplo | cuándo |
+|---|---|---|
+| `marca` | `{ "tipo": "marca", "slug": "apple" }` | el competidor ES una marca. Slug = archivo de [simple-icons](https://simpleicons.org) (CC0). **No existen**: xbox, nintendo, microsoft, windows |
+| `emoji` | `{ "tipo": "emoji", "valor": "🍫" }` | sin marca: meses, sabores, mascotas, países (bandera), signos |
+| `texto` | `{ "tipo": "texto", "valor": "PC" }` | 1–3 caracteres cuando no hay logo ni emoji claro |
+
+- `scripts/preparar-carrera.mts` (vía `scripts/lib/iconos.mts`) busca el slug en simple-icons y
+  deja `svg: { path, hex, titulo }` **inline en los props**. Slug inexistente o competidor sin
+  icono → `texto` con las iniciales + aviso `[iconos] ⚠` por consola. No escribas `svg` a mano.
+- Color del logo (`Icono.tsx`, `colorSobre`): el color oficial de la marca si contrasta ≥ 3:1 con
+  el neón de la bolita; si no (o si es negro/blanco puro), tinta oscura o blanca, la que más contraste.
+- Emoji con la fuente **Noto Color Emoji** del sistema (`~/.local/share/fonts/NotoColorEmoji.ttf`).
+  Si sale en blanco y negro o como cuadro, falta esa fuente en la máquina.
+- **Personas reales:** nunca fotos; bandera de su país o iniciales ("CR7").
+- Logotipos de texto anchos (ancho/alto > 2,2; p. ej. `samsung`): en tamaños chicos (bolita,
+  marcador) se muestra su inicial y en el final el logotipo completo. En la etiqueta no se repite
+  un icono que sea solo letras ("S SAMSUNG"): ahí va únicamente el nombre.
+- Las bolas miden **radio 32** (antes 27) para que el icono se lea: ≈35 px de logo en 1080 de ancho.
 
 ## Simulación (`scripts/simular-carrera.mts`)
 - Física propia a paso fijo 1/600 s, todo con `crearAzar(semilla)`: mismo guion → mismo video.
@@ -54,6 +78,7 @@ acorde) en el cruce. Normalizado a −1 dBFS con limitador suave.
 - Bolas con degradado radial, brillo especular, halo y glow; estela de 5 copias.
 - Clavijas con glow suave; la golpeada se ilumina 120 ms (7 frames) del color de la bola
   (índice exacto de clavija en el evento, no búsqueda por cercanía).
+- Icono del competidor dentro de cada bola (`Icono.tsx`), también en etiqueta, marcador y final.
 - Etiquetas junto a cada bola, siempre dentro de la zona segura y sin pisarse; si una bola
   está fuera de cuadro su etiqueta queda en el borde con ▲/▼.
 - Marcador top 3 arriba a la izquierda: las posiciones se deslizan (~14 frames) y la que sube

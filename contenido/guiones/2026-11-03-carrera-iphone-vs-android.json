@@ -19,27 +19,51 @@
     "participantes": [
       {
         "etiqueta": "IPHONE",
-        "color": "cian"
+        "color": "cian",
+        "icono": {
+          "tipo": "marca",
+          "slug": "apple"
+        }
       },
       {
         "etiqueta": "SAMSUNG",
-        "color": "lima"
+        "color": "lima",
+        "icono": {
+          "tipo": "marca",
+          "slug": "samsung"
+        }
       },
       {
         "etiqueta": "XIAOMI",
-        "color": "amarillo"
+        "color": "amarillo",
+        "icono": {
+          "tipo": "marca",
+          "slug": "xiaomi"
+        }
       },
       {
         "etiqueta": "PIXEL",
-        "color": "naranja"
+        "color": "naranja",
+        "icono": {
+          "tipo": "marca",
+          "slug": "google"
+        }
       },
       {
         "etiqueta": "MOTOROLA",
-        "color": "magenta"
+        "color": "magenta",
+        "icono": {
+          "tipo": "marca",
+          "slug": "motorola"
+        }
       },
       {
         "etiqueta": "HUAWEI",
-        "color": "violeta"
+        "color": "violeta",
+        "icono": {
+          "tipo": "marca",
+          "slug": "huawei"
+        }
       }
     ]
   }

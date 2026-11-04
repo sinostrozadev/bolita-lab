@@ -20,27 +20,51 @@
     "participantes": [
       {
         "etiqueta": "LUNES",
-        "color": "cian"
+        "color": "cian",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "😴"
+        }
       },
       {
         "etiqueta": "MARTES",
-        "color": "lima"
+        "color": "lima",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "☕"
+        }
       },
       {
         "etiqueta": "MIÉRCOLES",
-        "color": "amarillo"
+        "color": "amarillo",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🐪"
+        }
       },
       {
         "etiqueta": "JUEVES",
-        "color": "naranja"
+        "color": "naranja",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🍕"
+        }
       },
       {
         "etiqueta": "VIERNES",
-        "color": "magenta"
+        "color": "magenta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🎉"
+        }
       },
       {
         "etiqueta": "SÁBADO",
-        "color": "violeta"
+        "color": "violeta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🛋️"
+        }
       }
     ]
   }

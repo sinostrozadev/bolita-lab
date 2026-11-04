@@ -3,18 +3,68 @@
   "id": "2026-11-03-carrera-meses",
   "titulo": "¿Qué mes del año gana la carrera? 🏁 Carrera de bolitas",
   "descripcion": "6 meses, 6 bolitas de neón y un tablero lleno de clavijas. ¿Tu mes de cumpleaños llega primero? Física real, sonido en cada rebote. Comenta qué mes apoyabas.",
-  "hashtags": ["#shorts", "#carrera", "#satisfying", "#bolitas", "#fisica", "#meses", "#cumpleaños"],
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#satisfying",
+    "#bolitas",
+    "#fisica",
+    "#meses",
+    "#cumpleaños"
+  ],
   "props": {
     "id": "2026-11-03-carrera-meses",
     "gancho": "¿Qué mes gana la carrera?",
     "tema": "meses",
     "participantes": [
-      { "etiqueta": "ENERO", "color": "cian" },
-      { "etiqueta": "MARZO", "color": "lima" },
-      { "etiqueta": "JUNIO", "color": "amarillo" },
-      { "etiqueta": "AGOSTO", "color": "naranja" },
-      { "etiqueta": "OCTUBRE", "color": "magenta" },
-      { "etiqueta": "DICIEMBRE", "color": "violeta" }
+      {
+        "etiqueta": "ENERO",
+        "color": "cian",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🎆"
+        }
+      },
+      {
+        "etiqueta": "MARZO",
+        "color": "lima",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🍀"
+        }
+      },
+      {
+        "etiqueta": "JUNIO",
+        "color": "amarillo",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "⚽"
+        }
+      },
+      {
+        "etiqueta": "AGOSTO",
+        "color": "naranja",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🪁"
+        }
+      },
+      {
+        "etiqueta": "OCTUBRE",
+        "color": "magenta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🎃"
+        }
+      },
+      {
+        "etiqueta": "DICIEMBRE",
+        "color": "violeta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🎄"
+        }
+      }
     ]
   }
 }

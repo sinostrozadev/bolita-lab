@@ -19,27 +19,51 @@
     "participantes": [
       {
         "etiqueta": "CHILE",
-        "color": "cian"
+        "color": "cian",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇨🇱"
+        }
       },
       {
         "etiqueta": "ARGENTINA",
-        "color": "lima"
+        "color": "lima",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇦🇷"
+        }
       },
       {
         "etiqueta": "MÉXICO",
-        "color": "amarillo"
+        "color": "amarillo",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇲🇽"
+        }
       },
       {
         "etiqueta": "COLOMBIA",
-        "color": "naranja"
+        "color": "naranja",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇨🇴"
+        }
       },
       {
         "etiqueta": "PERÚ",
-        "color": "magenta"
+        "color": "magenta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇵🇪"
+        }
       },
       {
         "etiqueta": "BRASIL",
-        "color": "violeta"
+        "color": "violeta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇧🇷"
+        }
       }
     ]
   }

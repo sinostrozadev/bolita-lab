@@ -19,27 +19,51 @@
     "participantes": [
       {
         "etiqueta": "ARIES",
-        "color": "naranja"
+        "color": "naranja",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♈"
+        }
       },
       {
         "etiqueta": "GÉMINIS",
-        "color": "amarillo"
+        "color": "amarillo",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♊"
+        }
       },
       {
         "etiqueta": "LEO",
-        "color": "magenta"
+        "color": "magenta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♌"
+        }
       },
       {
         "etiqueta": "LIBRA",
-        "color": "cian"
+        "color": "cian",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♎"
+        }
       },
       {
         "etiqueta": "ESCORPIO",
-        "color": "violeta"
+        "color": "violeta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♏"
+        }
       },
       {
         "etiqueta": "ACUARIO",
-        "color": "lima"
+        "color": "lima",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♒"
+        }
       }
     ]
   }

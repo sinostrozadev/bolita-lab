@@ -19,27 +19,51 @@
     "participantes": [
       {
         "etiqueta": "PIZZA",
-        "color": "cian"
+        "color": "cian",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🍕"
+        }
       },
       {
         "etiqueta": "BURGER",
-        "color": "lima"
+        "color": "lima",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🍔"
+        }
       },
       {
         "etiqueta": "SUSHI",
-        "color": "amarillo"
+        "color": "amarillo",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🍣"
+        }
       },
       {
         "etiqueta": "TACOS",
-        "color": "naranja"
+        "color": "naranja",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🌮"
+        }
       },
       {
         "etiqueta": "PASTA",
-        "color": "magenta"
+        "color": "magenta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🍝"
+        }
       },
       {
         "etiqueta": "HELADO",
-        "color": "violeta"
+        "color": "violeta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🍦"
+        }
       }
     ]
   }

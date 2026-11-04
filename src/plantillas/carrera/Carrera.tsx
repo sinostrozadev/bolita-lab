@@ -5,7 +5,8 @@ import { cargarFuentes } from '../../marca/fuentes';
 import { MarcaDeAgua } from '../../marca/MarcaDeAgua';
 import { Cierre } from '../../marca/Cierre';
 import { crearAzar } from '../../lib/azar';
-import type { GuionCarrera } from './guion';
+import type { GuionCarrera, IconoCompetidor } from './guion';
+import { Icono, iconoAportaJuntoAlNombre } from './Icono';
 import { CIERRE_FRAMES, type SimulacionCarrera } from './tipos';
 
 /** Ruta pública del JSON de simulación de un guion. */
@@ -31,6 +32,10 @@ const ETIQ_MIN = MARCADOR_TOP + PUESTOS * FILA + 50;
 const ETIQ_MAX = ALTO_PANTALLA - seguro.abajo - 30;
 const ETIQ_FUENTE = 32;
 const ETIQ_ALTO = 48;
+/** Icono dentro de la bolita: fracción del diámetro. */
+const ICONO_EN_BOLA = 0.55;
+/** Icono dentro de la etiqueta (px). */
+const ETIQ_ICONO = 30;
 
 /** Hook: carga la simulación precalculada con delayRender. */
 const useSimulacion = (id: string) => {
@@ -144,13 +149,13 @@ const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; frame: number; co
 interface CajaEtiqueta { i: number; x: number; y: number; w: number }
 
 /** Coloca las etiquetas junto a su bola, sin salirse de la zona segura ni pisarse entre sí. */
-const colocarEtiquetas = (sim: SimulacionCarrera, f: number, cam: number, etiquetas: string[]): CajaEtiqueta[] => {
+const colocarEtiquetas = (sim: SimulacionCarrera, f: number, cam: number, etiquetas: string[], conIcono: boolean[]): CajaEtiqueta[] => {
   const r = sim.tablero.radioBola;
   const cajas: CajaEtiqueta[] = [];
   sim.posiciones.forEach((pos, i) => {
     const [x, y] = pos[f];
     const sy = y - cam;
-    const w = etiquetas[i].length * ETIQ_FUENTE * 0.72 + 34;
+    const w = etiquetas[i].length * ETIQ_FUENTE * 0.72 + 34 + (conIcono[i] ? ETIQ_ICONO + 8 : 0);
     const derecha = x + r + 14;
     const izquierda = x - r - 14 - w;
     let lx: number;
@@ -173,10 +178,11 @@ const colocarEtiquetas = (sim: SimulacionCarrera, f: number, cam: number, etique
   return cajas;
 };
 
-const Bolas: React.FC<{ sim: SimulacionCarrera; cam: number; frame: number; colores: string[]; etiquetas: string[]; mostrarEtiquetas: number }> = ({ sim, cam, frame, colores, etiquetas, mostrarEtiquetas }) => {
+const Bolas: React.FC<{ sim: SimulacionCarrera; cam: number; frame: number; colores: string[]; etiquetas: string[]; iconos: (IconoCompetidor | undefined)[]; mostrarEtiquetas: number }> = ({ sim, cam, frame, colores, etiquetas, iconos, mostrarEtiquetas }) => {
   const f = fr(sim, frame);
   const r = sim.tablero.radioBola;
-  const cajas = mostrarEtiquetas > 0 ? colocarEtiquetas(sim, f, cam, etiquetas) : [];
+  const cajas = mostrarEtiquetas > 0 ? colocarEtiquetas(sim, f, cam, etiquetas, iconos.map(iconoAportaJuntoAlNombre)) : [];
+  const tamIcono = r * 2 * ICONO_EN_BOLA;
   return (
     <AbsoluteFill>
       {sim.posiciones.map((pos, i) => {
@@ -200,9 +206,14 @@ const Bolas: React.FC<{ sim: SimulacionCarrera; cam: number; frame: number; colo
             {/* Cuerpo: degradado radial con brillo especular */}
             <div style={{
               position: 'absolute', left: x - r, top: sy - r, width: r * 2, height: r * 2, borderRadius: '50%',
-              background: `radial-gradient(circle at 34% 30%, #FFFFFF 0, #FFFFFFCC 12%, ${color} 45%, ${color} 78%, ${color}AA 100%)`,
+              // Con icono, el brillo especular se achica para no lavar el logo.
+              background: iconos[i]
+                ? `radial-gradient(circle at 26% 20%, #FFFFFFCC 0, #FFFFFF55 6%, ${color} 18%, ${color} 80%, ${color}BB 100%)`
+                : `radial-gradient(circle at 34% 30%, #FFFFFF 0, #FFFFFFCC 12%, ${color} 45%, ${color} 78%, ${color}AA 100%)`,
               boxShadow: `0 0 16px ${color}, 0 0 40px ${color}, 0 0 80px ${color}88`,
             }} />
+            {/* Identidad: logo / emoji / iniciales, centrado y sin rotar (siempre legible) */}
+            <Icono icono={iconos[i]} tam={tamIcono} fondo={color} style={{ position: 'absolute', left: x - tamIcono / 2, top: sy - tamIcono / 2 }} />
           </React.Fragment>
         );
       })}
@@ -212,14 +223,14 @@ const Bolas: React.FC<{ sim: SimulacionCarrera; cam: number; frame: number; colo
           display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap', opacity: mostrarEtiquetas,
           fontFamily: TIPO.display, fontWeight: 800, fontSize: ETIQ_FUENTE, letterSpacing: 0.5, color: PALETA.fondo,
           background: colores[c.i], boxShadow: `0 0 16px ${colores[c.i]}AA`,
-        }}>{etiquetas[c.i]}</div>
+        }}>{iconoAportaJuntoAlNombre(iconos[c.i]) && <Icono icono={iconos[c.i]} tam={ETIQ_ICONO} fondo={colores[c.i]} style={{ marginLeft: -6 }} />}{etiquetas[c.i]}</div>
       ))}
     </AbsoluteFill>
   );
 };
 
 /** Marcador en vivo: las posiciones se DESLIZAN (media móvil del puesto) y la que sube "salta". */
-const Marcador: React.FC<{ sim: SimulacionCarrera; frame: number; colores: string[]; etiquetas: string[]; opacidad: number }> = ({ sim, frame, colores, etiquetas, opacidad }) => {
+const Marcador: React.FC<{ sim: SimulacionCarrera; frame: number; colores: string[]; etiquetas: string[]; iconos: (IconoCompetidor | undefined)[]; opacidad: number }> = ({ sim, frame, colores, etiquetas, iconos, opacidad }) => {
   const VENTANA = 14;
   const n = sim.posiciones.length;
   const puestoEn = (i: number, f: number) => sim.ranking[fr(sim, f)].indexOf(i);
@@ -259,7 +270,10 @@ const Marcador: React.FC<{ sim: SimulacionCarrera; frame: number; colores: strin
             border: `2px solid ${colores[i]}`, boxShadow: `0 0 ${12 + pulso * 24}px ${colores[i]}${lider ? 'AA' : '66'}`,
             fontSize: 30, fontWeight: 800, color: PALETA.tinta,
           }}>
-            <span style={{ width: 22, height: 22, borderRadius: '50%', background: `radial-gradient(circle at 35% 30%, #fff 0, ${colores[i]} 50%)`, boxShadow: `0 0 10px ${colores[i]}` }} />
+            {/* Mini bolita con el icono del competidor */}
+            <span style={{ width: 42, height: 42, marginLeft: -6, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, background: `radial-gradient(circle at 34% 30%, #FFFFFFAA 0, ${colores[i]} 40%)`, boxShadow: `0 0 12px ${colores[i]}` }}>
+              <Icono icono={iconos[i]} tam={26} fondo={colores[i]} />
+            </span>
             {etiquetas[i]}
           </div>
         );
@@ -288,7 +302,7 @@ const Gancho: React.FC<{ texto: string }> = ({ texto }) => {
   );
 };
 
-const Celebracion: React.FC<{ sim: SimulacionCarrera; color: string; etiqueta: string; origen: { x: number; y: number; tam: number } }> = ({ sim, color, etiqueta, origen }) => {
+const Celebracion: React.FC<{ sim: SimulacionCarrera; color: string; etiqueta: string; icono?: IconoCompetidor; origen: { x: number; y: number; tam: number } }> = ({ sim, color, etiqueta, icono, origen }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const k = frame - sim.frameGanadora;
@@ -314,6 +328,9 @@ const Celebracion: React.FC<{ sim: SimulacionCarrera; color: string; etiqueta: s
   const cy = interpolate(viaje, [0, 1], [origen.y, 800]);
   const tam = interpolate(viaje, [0, 1], [origen.tam, 300]);
   const textoIn = spring({ frame: k - 26, fps, config: { damping: 12, stiffness: 120 } });
+  // El logo de la ganadora "salta" dentro de la bola grande cuando llega al centro.
+  const iconoIn = spring({ frame: k - 18, fps, config: { damping: 9, stiffness: 140 } });
+  const tamIcono = tam * ICONO_EN_BOLA * (0.85 + 0.15 * iconoIn);
   const salida = interpolate(frame, [sim.duracionFrames - 14, sim.duracionFrames], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
   const fuente = Math.min(132, (ANCHO - 2 * seguro.lados) / (etiqueta.length * 0.68));
   const ventaja = sim.ventajaSeg < 1.5 ? `por ${sim.ventajaSeg.toFixed(2).replace('.', ',')} s` : '';
@@ -327,8 +344,14 @@ const Celebracion: React.FC<{ sim: SimulacionCarrera; color: string; etiqueta: s
       <div style={{ position: 'absolute', left: cx - tam * 1.6, top: cy - tam * 1.6, width: tam * 3.2, height: tam * 3.2, borderRadius: '50%', background: `radial-gradient(circle, ${color}55 0%, ${color}18 40%, transparent 70%)` }} />
       <div style={{
         position: 'absolute', left: cx - tam / 2, top: cy - tam / 2, width: tam, height: tam, borderRadius: '50%',
-        background: `radial-gradient(circle at 34% 30%, #FFFFFF 0, #FFFFFFCC 12%, ${color} 45%, ${color} 80%)`,
+        background: icono
+          ? `radial-gradient(circle at 26% 20%, #FFFFFFCC 0, #FFFFFF55 6%, ${color} 18%, ${color} 82%)`
+          : `radial-gradient(circle at 34% 30%, #FFFFFF 0, #FFFFFFCC 12%, ${color} 45%, ${color} 80%)`,
         boxShadow: `0 0 40px ${color}, 0 0 120px ${color}, 0 0 220px ${color}66`,
+      }} />
+      <Icono icono={icono} tam={tamIcono} fondo={color} style={{
+        position: 'absolute', left: cx - tamIcono / 2, top: cy - tamIcono / 2,
+        transform: `scale(${Math.max(0, iconoIn)}) rotate(${(1 - iconoIn) * -25}deg)`,
       }} />
       {particulas.map((p, i) => {
         const t = k - 4 - p.retraso;
@@ -359,6 +382,7 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
   const sim = useSimulacion(props.id);
   const colores = useMemo(() => props.participantes.map((p) => PALETA.neon[p.color]), [props.participantes]);
   const etiquetas = useMemo(() => props.participantes.map((p) => p.etiqueta), [props.participantes]);
+  const iconos = useMemo(() => props.participantes.map((p) => p.icono), [props.participantes]);
 
   if (!sim) return <AbsoluteFill style={{ background: PALETA.fondo }} />;
 
@@ -392,15 +416,15 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
       {/* Mundo (tablero + bolas), con zoom hacia la meta en la cámara lenta */}
       <AbsoluteFill style={{ transformOrigin: '0 0', transform: `translate(${ax}px, ${ay}px) scale(${z}) translate(${-ax}px, ${-ay}px)` }}>
         <Tablero sim={sim} cam={cam} frame={frame} colores={colores} />
-        <Bolas sim={sim} cam={cam} frame={frame} colores={colores} etiquetas={etiquetas} mostrarEtiquetas={celebrando ? 0 : hud} />
+        <Bolas sim={sim} cam={cam} frame={frame} colores={colores} etiquetas={etiquetas} iconos={iconos} mostrarEtiquetas={celebrando ? 0 : hud} />
       </AbsoluteFill>
       {/* Viñeta de cámara lenta */}
       {lenta && <AbsoluteFill style={{ boxShadow: `inset 0 0 240px ${colores[ganadora]}30` }} />}
 
-      {!celebrando && <Marcador sim={sim} frame={frame} colores={colores} etiquetas={etiquetas} opacidad={hud * marcadorIn} />}
+      {!celebrando && <Marcador sim={sim} frame={frame} colores={colores} etiquetas={etiquetas} iconos={iconos} opacidad={hud * marcadorIn} />}
       {frame < 90 && <Gancho texto={props.gancho} />}
 
-      {celebrando && <Celebracion sim={sim} color={colores[ganadora]} etiqueta={etiquetas[ganadora]} origen={origen} />}
+      {celebrando && <Celebracion sim={sim} color={colores[ganadora]} etiqueta={etiquetas[ganadora]} icono={iconos[ganadora]} origen={origen} />}
 
       <Sequence from={sim.duracionFrames} durationInFrames={CIERRE_FRAMES} layout="none">
         <Cierre color={colores[ganadora]} />
