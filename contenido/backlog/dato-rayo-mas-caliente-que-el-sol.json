@@ -15,6 +15,10 @@
     "id": "pendiente-dato-rayo-mas-caliente-que-el-sol",
     "color": "amarillo",
     "gancho": "Algo en la Tierra es más caliente que la superficie del Sol.",
+    "imagenGancho": {
+      "buscar": "lightning strike",
+      "forma": "completa"
+    },
     "escenas": [
       {
         "texto": "La superficie del Sol está a unos cinco mil quinientos grados.",
@@ -23,6 +27,10 @@
           "valor": 5500,
           "sufijo": "°C",
           "etiqueta": "superficie del Sol"
+        },
+        "imagen": {
+          "buscar": "Sun Solar Dynamics Observatory",
+          "forma": "circulo"
         }
       },
       {
@@ -32,6 +40,9 @@
           "valor": 27700,
           "sufijo": "°C",
           "etiqueta": "aire en un rayo"
+        },
+        "imagen": {
+          "buscar": "lightning bolt"
         }
       },
       {
@@ -70,6 +81,9 @@
           "enfasis": [
             "trueno"
           ]
+        },
+        "imagen": {
+          "buscar": "thunderstorm lightning"
         }
       },
       {

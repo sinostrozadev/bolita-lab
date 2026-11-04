@@ -9,7 +9,7 @@ import { tamanoPorLargo } from './util';
  * Gancho y remate: la frase se ve gigante desde el primer frame y cada palabra se enciende
  * en neón cuando la voz la dice. El remate entra "de golpe" (slam) con un anillo de impacto.
  */
-export const TextoGigante: React.FC<{ linea: LineaTiempo; frameLocal: number; frames: number; color: string; modo: 'gancho' | 'remate' }> = ({ linea, frameLocal, frames, color, modo }) => {
+export const TextoGigante: React.FC<{ linea: LineaTiempo; frameLocal: number; frames: number; color: string; modo: 'gancho' | 'remate'; bajar?: number }> = ({ linea, frameLocal, frames, color, modo, bajar = 0 }) => {
   const { fps } = useVideoConfig();
   const t = frameLocal / fps;
   const actual = indicePalabraActual(linea.palabras, t);
@@ -28,7 +28,7 @@ export const TextoGigante: React.FC<{ linea: LineaTiempo; frameLocal: number; fr
       )}
       <div style={{
         width: FORMATO.ancho - FORMATO.seguro.lados * 2 - 40, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', gap: `${fontSize * 0.08}px ${fontSize * 0.26}px`,
-        transform: `translateY(${deriva - 60}px) scale(${modo === 'remate' ? 1.5 - 0.5 * slam : 1})`,
+        transform: `translateY(${deriva - 60 + bajar}px) scale(${modo === 'remate' ? 1.5 - 0.5 * slam : 1})`,
         fontFamily: TIPO.display, fontWeight: TIPO.pesoDisplay, fontSize, lineHeight: 1.05, letterSpacing: -2, textAlign: 'center',
       }}>
         {linea.palabras.map((p, i) => {
@@ -48,7 +48,7 @@ export const TextoGigante: React.FC<{ linea: LineaTiempo; frameLocal: number; fr
         })}
       </div>
       {/* Línea neón de apoyo que crece bajo el texto */}
-      <div style={{ position: 'absolute', top: '50%', marginTop: fontSize * 1.6, width: interpolate(frameLocal, [4, 30], [0, 320], { extrapolateRight: 'clamp', extrapolateLeft: 'clamp' }), height: 8, borderRadius: 4, background: color, boxShadow: `0 0 24px ${color}`, opacity: 0.9 }} />
+      <div style={{ position: 'absolute', top: '50%', marginTop: fontSize * 1.6 + bajar, width: interpolate(frameLocal, [4, 30], [0, 320], { extrapolateRight: 'clamp', extrapolateLeft: 'clamp' }), height: 8, borderRadius: 4, background: color, boxShadow: `0 0 24px ${color}`, opacity: 0.9 }} />
     </AbsoluteFill>
   );
 };

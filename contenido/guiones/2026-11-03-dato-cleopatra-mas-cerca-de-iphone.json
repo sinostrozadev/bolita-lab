@@ -15,6 +15,12 @@
     "id": "2026-11-03-dato-cleopatra-mas-cerca-de-iphone",
     "color": "naranja",
     "gancho": "Cleopatra vivió más cerca de ti que de las pirámides.",
+    "imagenGancho": {
+      "buscar": "Cleopatra bust Berlin",
+      "archivo": "File:Bust of Cleopatra VII - Altes Museum - Berlin - Germany 2017.jpg",
+      "forma": "circulo",
+      "encuadre": "arriba"
+    },
     "escenas": [
       {
         "texto": "La Gran Pirámide se construyó hacia el año dos mil quinientos sesenta antes de Cristo.",
@@ -23,6 +29,11 @@
           "valor": 2560,
           "sufijo": "a. C.",
           "etiqueta": "construcción de la Gran Pirámide"
+        },
+        "imagen": {
+          "buscar": "Pyramids of Giza",
+          "archivo": "File:All Gizah Pyramids.jpg",
+          "encuadre": "abajo"
         }
       },
       {
@@ -32,6 +43,12 @@
           "valor": 2530,
           "sufijo": "años",
           "etiqueta": "de la pirámide a Cleopatra"
+        },
+        "imagen": {
+          "buscar": "Cleopatra statue",
+          "archivo": "File:Bust of Cleopatra at the Royal Ontario Museum.jpg",
+          "forma": "circulo",
+          "encuadre": "arriba"
         }
       },
       {
@@ -61,6 +78,12 @@
           "sufijo": " años",
           "etiqueta": "de Cleopatra al primer iPhone",
           "dice": "treinta"
+        },
+        "imagen": {
+          "buscar": "Original iPhone",
+          "archivo": "File:Original iPhone docked.jpg",
+          "forma": "circulo",
+          "encuadre": "centro"
         }
       },
       {
@@ -70,6 +93,10 @@
           "valor": 66,
           "sufijo": " M años",
           "etiqueta": "del tiranosaurio a hoy"
+        },
+        "imagen": {
+          "buscar": "Tyrannosaurus rex skeleton",
+          "archivo": "File:Tyrannosaurus rex skeleton (cast of specimen MOR 555) at Cleveland Museum of Natural History.jpg"
         }
       },
       {
@@ -89,10 +116,19 @@
               "color": "cian"
             }
           ]
+        },
+        "imagen": {
+          "buscar": "Stegosaurus skeleton",
+          "archivo": "File:Stegosaurus ungulatus.jpg"
         }
       }
     ],
     "remate": "Y para Cleopatra, las pirámides ya eran historia antigua.",
+    "imagenRemate": {
+      "buscar": "Pyramids of Giza painting",
+      "archivo": "File:The Great Sphinx, Pyramids of Gizeh-1839) by David Roberts, RA.jpg",
+      "forma": "completa"
+    },
     "fuentes": [
       "Britannica, Great Pyramid of Giza: https://www.britannica.com/topic/Pyramid-of-Khufu",
       "Britannica, Cleopatra: https://www.britannica.com/biography/Cleopatra-queen-of-Egypt",

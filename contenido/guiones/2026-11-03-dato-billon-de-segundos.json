@@ -15,6 +15,10 @@
     "id": "2026-11-03-dato-billon-de-segundos",
     "color": "lima",
     "gancho": "¿Cuánto es realmente un billón?",
+    "imagenGancho": {
+      "buscar": "hourglass",
+      "forma": "circulo"
+    },
     "escenas": [
       {
         "texto": "Un millón de segundos son once días y medio.",
@@ -73,6 +77,9 @@
           "valor": 5000,
           "sufijo": " años",
           "etiqueta": "historia escrita (cuneiforme, hacia 3200 a. C.)"
+        },
+        "imagen": {
+          "buscar": "cuneiform clay tablet"
         }
       },
       {
@@ -87,6 +94,10 @@
       }
     ],
     "remate": "Hace un billón de segundos, tus antepasados convivían con mamuts.",
+    "imagenRemate": {
+      "buscar": "Mammoth Royal BC Museum",
+      "forma": "completa"
+    },
     "fuentes": [
       "Cálculo directo: 1.000.000.000.000 s / 31.557.600 s por año juliano ≈ 31.688 años; 1.000.000 s / 86.400 ≈ 11,6 días; 10⁹ s ≈ 31,7 años",
       "Britannica, Cuneiform (la escritura más antigua, hacia 3200 a. C., ≈ 5.200 años; 31.688 / 5.200 ≈ 6): https://www.britannica.com/topic/cuneiform",

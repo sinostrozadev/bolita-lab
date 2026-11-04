@@ -15,6 +15,9 @@
     "id": "pendiente-dato-pulpo-tres-corazones",
     "color": "cian",
     "gancho": "Un animal con tres corazones.",
+    "imagenGancho": {
+      "buscar": "common octopus"
+    },
     "escenas": [
       {
         "texto": "El pulpo tiene tres corazones.",
@@ -23,6 +26,10 @@
           "valor": 3,
           "sufijo": "",
           "etiqueta": "corazones"
+        },
+        "imagen": {
+          "buscar": "Octopus vulgaris",
+          "forma": "circulo"
         }
       },
       {
@@ -84,6 +91,10 @@
       }
     ],
     "remate": "Cuando nada, el corazón principal se detiene, por eso prefiere caminar.",
+    "imagenRemate": {
+      "buscar": "octopus seabed",
+      "forma": "completa"
+    },
     "fuentes": [
       "Monterey Bay Aquarium, Octopus facts: https://www.montereybayaquarium.org/animals/animal-guide/invertebrates/giant-pacific-octopus",
       "Smithsonian Ocean, Octopus: https://ocean.si.edu/ocean-life/invertebrates/octopuses",

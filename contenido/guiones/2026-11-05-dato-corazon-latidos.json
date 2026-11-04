@@ -16,6 +16,10 @@
     "id": "2026-11-05-dato-corazon-latidos",
     "color": "magenta",
     "gancho": "¿Cuántas veces late tu corazón en toda tu vida?",
+    "imagenGancho": {
+      "buscar": "human heart model",
+      "forma": "circulo"
+    },
     "escenas": [
       {
         "texto": "Un corazón adulto en reposo late entre sesenta y cien veces por minuto.",
@@ -76,6 +80,9 @@
               "color": "magenta"
             }
           ]
+        },
+        "imagen": {
+          "buscar": "African elephant"
         }
       }
     ],

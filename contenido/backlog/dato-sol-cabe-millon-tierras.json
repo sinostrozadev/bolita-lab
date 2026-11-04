@@ -15,6 +15,10 @@
     "id": "pendiente-dato-sol-cabe-millon-tierras",
     "color": "amarillo",
     "gancho": "El Sol es mucho más grande de lo que crees.",
+    "imagenGancho": {
+      "buscar": "Sun Solar Dynamics Observatory",
+      "forma": "circulo"
+    },
     "escenas": [
       {
         "texto": "El Sol es una esfera de un millón cuatrocientos mil kilómetros de ancho.",
@@ -39,6 +43,10 @@
               "radio": 6371
             }
           ]
+        },
+        "imagen": {
+          "buscar": "Blue Marble Earth",
+          "forma": "circulo"
         }
       },
       {
@@ -81,6 +89,10 @@
       }
     ],
     "remate": "Y hay estrellas, como Betelgeuse, donde cabrían cientos de millones de Soles.",
+    "imagenRemate": {
+      "buscar": "Betelgeuse",
+      "forma": "completa"
+    },
     "fuentes": [
       "NASA Sun Fact Sheet: https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html",
       "Joyce et al. 2020, ApJ 902:63 (radio de Betelgeuse ≈ 764 radios solares → ~4×10⁸ Soles en volumen). Nota: el Sol es más grande que ~90 % de las estrellas de la Vía Láctea, por eso no se dice que sea \"pequeña\".",

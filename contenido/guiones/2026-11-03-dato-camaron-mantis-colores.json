@@ -15,6 +15,9 @@
     "id": "2026-11-03-dato-camaron-mantis-colores",
     "color": "magenta",
     "gancho": "Hay un animal que ve colores que no existen para ti.",
+    "imagenGancho": {
+      "buscar": "mantis shrimp"
+    },
     "escenas": [
       {
         "texto": "Tus ojos tienen tres tipos de conos para ver el color.",
@@ -23,6 +26,10 @@
           "valor": 3,
           "sufijo": "tipos",
           "etiqueta": "conos de color humanos"
+        },
+        "imagen": {
+          "buscar": "human eye iris",
+          "forma": "circulo"
         }
       },
       {
@@ -32,6 +39,9 @@
           "valor": 12,
           "sufijo": "o más",
           "etiqueta": "fotorreceptores del camarón mantis"
+        },
+        "imagen": {
+          "buscar": "Odontodactylus scyllarus"
         }
       },
       {
@@ -69,6 +79,9 @@
           "sufijo": " g",
           "etiqueta": "aceleración de su golpe",
           "dice": "diez"
+        },
+        "imagen": {
+          "buscar": "mantis shrimp claw"
         }
       },
       {

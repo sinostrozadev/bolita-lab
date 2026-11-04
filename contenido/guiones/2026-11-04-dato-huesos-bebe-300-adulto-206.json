@@ -15,6 +15,10 @@
     "id": "2026-11-04-dato-huesos-bebe-300-adulto-206",
     "color": "lima",
     "gancho": "Perdiste cerca de cien huesos sin darte cuenta.",
+    "imagenGancho": {
+      "buscar": "human skeleton",
+      "forma": "circulo"
+    },
     "escenas": [
       {
         "texto": "Un recién nacido tiene alrededor de trescientos huesos.",

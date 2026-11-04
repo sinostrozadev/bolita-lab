@@ -15,6 +15,10 @@
     "id": "pendiente-dato-venus-dia-mas-largo-que-ano",
     "color": "naranja",
     "gancho": "En Venus, el día dura más que el año.",
+    "imagenGancho": {
+      "buscar": "Venus globe",
+      "forma": "circulo"
+    },
     "escenas": [
       {
         "texto": "Venus tarda doscientos cuarenta y tres días terrestres en girar una vez sobre sí mismo.",
@@ -23,6 +27,10 @@
           "valor": 243,
           "sufijo": "días",
           "etiqueta": "una rotación de Venus"
+        },
+        "imagen": {
+          "buscar": "Venus Mariner 10",
+          "forma": "circulo"
         }
       },
       {
@@ -80,6 +88,10 @@
               "color": "naranja"
             }
           ]
+        },
+        "imagen": {
+          "buscar": "Earth from space",
+          "forma": "circulo"
         }
       },
       {

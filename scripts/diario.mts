@@ -24,6 +24,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { parseArgs } from 'node:util';
+import { agregarCreditos } from './imagenes-dato.mjs';
 import {
   ARCHIVO_TOKEN_YT, DIR_BANDEJA, DIR_GUIONES, DIR_SALIDA, DIR_TRABAJO, RAIZ,
   asegurarDirectorios, cargarCalendario, composicionDe, correr, crearLog, detectarHuerfanos, duracionVideo,
@@ -147,6 +148,14 @@ const promover = (g: Guion & { ruta: string }, fecha: string, log: Log): Guion &
   return { ...nuevo, ruta: destino };
 };
 
+/** Si preparar-<plantilla> dejó `creditos` (atribución de imágenes de Commons) en el json de props, los agrega a la descripción. */
+const descripcionConCreditos = (descripcion: string, rutaProps: string): string => {
+  try {
+    const { creditos } = JSON.parse(fs.readFileSync(rutaProps, 'utf8')) as { creditos?: string };
+    return agregarCreditos(descripcion, creditos);
+  } catch { return descripcion; }
+};
+
 const renderizarUno = async (g: Guion & { ruta: string }, log: Log): Promise<boolean> => {
   const salidaMp4 = path.join(DIR_BANDEJA, `${g.id}.mp4`);
   const props = path.join(DIR_TRABAJO, `${g.id}.props.json`);
@@ -188,7 +197,7 @@ const renderizarUno = async (g: Guion & { ruta: string }, log: Log): Promise<boo
       let duracionSeg = 0;
       try { duracionSeg = Math.round((await duracionVideo(salidaMp4)) * 10) / 10; } catch (e) { log(`  ⚠ ${(e as Error).message}`); }
       const entrada: EntradaBandeja = {
-        id: g.id, plantilla: g.plantilla, titulo: g.titulo, descripcion: g.descripcion, hashtags: g.hashtags,
+        id: g.id, plantilla: g.plantilla, titulo: g.titulo, descripcion: descripcionConCreditos(g.descripcion, props), hashtags: g.hashtags,
         duracionSeg, estado: 'listo', tipo: 'short',
         ...(process.env.BOLITA_ARTEFACTO ? { artefacto: process.env.BOLITA_ARTEFACTO } : {}),
       };

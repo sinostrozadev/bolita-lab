@@ -138,12 +138,17 @@ export const palabraDeCifra = (palabras: Palabra[], dice?: string): number => {
   return palabras.findIndex((p) => NUMEROS.test(normalizar(p.texto)));
 };
 
-/** Cuándo empieza el conteo de una cifra: el número "aterriza" ~0,35 s después de que la voz empieza a decirlo. */
+/**
+ * Conteo de una cifra: arranca al inicio de la escena (nunca se queda un "0" quieto en pantalla
+ * esperando a la voz) y "aterriza" ~0,35 s después de que la voz empieza a decir el número.
+ * Si el número se dice tarde, el conteo es más largo; con el ease-out cúbico igual llega al
+ * 87 % a mitad de camino, así que se lee una cifra grande casi desde el principio.
+ */
 export const conteoDeCifra = (linea: LineaTiempo, dice?: string) => {
-  const dur = duracionConteo(linea.duracionHablada);
+  const desde = 0.15;
   const i = palabraDeCifra(linea.palabras, dice);
-  const desde = i >= 0 ? Math.max(0.15, Math.min(linea.palabras[i].inicio + 0.35, linea.duracionHablada) - dur) : 0.15;
-  return { desde, dur, indice: i };
+  const aterriza = i >= 0 ? Math.min(linea.palabras[i].inicio + 0.35, linea.duracionHablada) : desde + duracionConteo(linea.duracionHablada);
+  return { desde, dur: Math.max(0.9, aterriza - desde), indice: i };
 };
 
 export const marcasDeEscena = (escena: GuionDato['escenas'][number], linea: LineaTiempo): { entradas: number[]; enfasis: number[] } => {

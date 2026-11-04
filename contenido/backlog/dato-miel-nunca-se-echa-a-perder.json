@@ -15,6 +15,10 @@
     "id": "pendiente-dato-miel-nunca-se-echa-a-perder",
     "color": "amarillo",
     "gancho": "Hay una comida que casi nunca caduca.",
+    "imagenGancho": {
+      "buscar": "honey jar",
+      "forma": "circulo"
+    },
     "escenas": [
       {
         "texto": "Las abejas parten del néctar, que puede tener hasta un ochenta por ciento de agua.",
@@ -23,6 +27,9 @@
           "valor": 80,
           "sufijo": "%",
           "etiqueta": "agua en el néctar (hasta)"
+        },
+        "imagen": {
+          "buscar": "honey bee flower"
         }
       },
       {
@@ -32,6 +39,9 @@
           "valor": 20,
           "sufijo": "%",
           "etiqueta": "agua máxima aproximada en la miel"
+        },
+        "imagen": {
+          "buscar": "honeycomb bees"
         }
       },
       {
@@ -69,10 +79,18 @@
           "tipo": "icono",
           "forma": "reloj",
           "etiqueta": "cristalizada no es vencida"
+        },
+        "imagen": {
+          "buscar": "crystallized honey",
+          "forma": "circulo"
         }
       }
     ],
     "remate": "En tumbas egipcias hallaron miel de unos tres mil años.",
+    "imagenRemate": {
+      "buscar": "Egyptian tomb painting",
+      "forma": "completa"
+    },
     "fuentes": [
       "National Geographic, Why honey never spoils: https://www.nationalgeographic.com/science/article/why-honey-never-spoils",
       "Smithsonian Magazine, Does honey ever go bad?: https://www.smithsonianmag.com/science-nature/the-science-behind-honeys-eternal-shelf-life-1218690/",

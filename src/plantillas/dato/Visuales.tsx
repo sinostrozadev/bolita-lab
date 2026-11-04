@@ -12,9 +12,28 @@ const ANCHO = FORMATO.ancho - FORMATO.seguro.lados * 2;
 /** Franja del visual: entre la marca de agua y los subtítulos. */
 const ZONA = { top: 330, alto: 900 };
 
-const Zona: React.FC<{ children: React.ReactNode; alineacion?: 'center' | 'flex-start' }> = ({ children, alineacion = 'center' }) => (
-  <div style={{ position: 'absolute', left: FORMATO.seguro.lados, width: ANCHO, top: ZONA.top, height: ZONA.alto, display: 'flex', flexDirection: 'column', justifyContent: alineacion, alignItems: 'center' }}>{children}</div>
-);
+/**
+ * Dónde dibujar el visual. Por defecto la franja grande; si la escena tiene foto en marco o
+ * círculo, el visual baja a la franja bajo la imagen en modo `compacto`.
+ */
+export type Disposicion = { top: number; alto: number; compacto: boolean };
+const DisposicionCtx = React.createContext<Disposicion>({ ...ZONA, compacto: false });
+export const DisposicionVisual = DisposicionCtx.Provider;
+
+/**
+ * Contenedor del visual. `altoNatural` = alto aproximado del contenido a tamaño normal: en modo
+ * compacto se escala para que quepa en la franja (sin medir el DOM, así es determinista).
+ */
+const Zona: React.FC<{ children: React.ReactNode; alineacion?: 'center' | 'flex-start'; altoNatural?: number }> = ({ children, alineacion = 'center', altoNatural }) => {
+  const d = React.useContext(DisposicionCtx);
+  const k = d.compacto && altoNatural ? Math.min(1, d.alto / altoNatural) : 1;
+  return (
+    <div style={{ position: 'absolute', left: FORMATO.seguro.lados, width: ANCHO, top: d.top, height: d.alto, display: 'flex', flexDirection: 'column', justifyContent: alineacion, alignItems: 'center' }}>
+      {k < 1 ? <div style={{ transform: `scale(${k})`, transformOrigin: 'center center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: ANCHO, flexShrink: 0 }}>{children}</div> : children}
+    </div>
+  );
+};
+const useCompacto = () => React.useContext(DisposicionCtx).compacto;
 
 const resorte = (frame: number, fps: number, retraso = 0, amortiguacion = 12, rigidez = 170) =>
   spring({ frame: frame - retraso, fps, config: { damping: amortiguacion, stiffness: rigidez } });
@@ -35,8 +54,9 @@ export const VisualCifra: React.FC<P<'cifra'>> = ({ v, frame, color, bloque }) =
   const p = interpolate(frame, [ini, ini + dur * fps], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
   const eased = 1 - Math.pow(1 - p, 3);
   const dec = decimalesDe(v.valor);
-  const actual = v.valor * eased;
   const esAnio = Number.isInteger(v.valor) && v.valor >= 1000 && v.valor <= 3000 && /^(a\. ?C\.|d\. ?C\.)?$/.test((v.sufijo ?? '').trim()); // años: sin punto de miles
+  // Un año no "crece desde 0" (se leería "153 a. C."): rueda desde el 80 % como un calendario.
+  const actual = esAnio ? v.valor * (0.8 + 0.2 * eased) : v.valor * eased;
   const numero = esAnio ? String(Math.round(actual)) : formatear(dec ? Math.round(actual * 10 ** dec) / 10 ** dec : Math.round(actual), dec);
   const texto = `${v.prefijo ?? ''}${numero}`;
   // Aterrizaje: oscilación amortiguada 1 → 1,08 → 0,98 → 1 (rebote mínimo, vuelve a 1).
@@ -49,6 +69,24 @@ export const VisualCifra: React.FC<P<'cifra'>> = ({ v, frame, color, bloque }) =
   const unidad = (v.sufijo ?? '').trim();
   const R = 330;
   const circ = 2 * Math.PI * R;
+  if (useCompacto()) {
+    // Bajo una foto: sin el anillo (no cabe); la cifra gigante + una barra neón que se llena con el conteo.
+    const fs = Math.min(170, 820 / (numeroFinal.length * 0.6));
+    return (
+      <Zona altoNatural={fs * 1.45 + 130}>
+        <div style={{ transform: `scale(${entrada})`, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: 22, fontFamily: TIPO.display, fontWeight: TIPO.pesoDisplay, color: PALETA.tinta, lineHeight: 1, whiteSpace: 'nowrap', transform: `scale(${rebote})`, textShadow: `0 0 ${30 + 40 * destello}px ${color}, 0 0 ${80 + 80 * destello}px ${color}77, 0 6px 18px rgba(0,0,0,0.8)` }}>
+            <span style={{ fontSize: fs, letterSpacing: -4 }}>{texto}</span>
+            {unidad && <span style={{ fontSize: Math.max(60, fs * 0.42), color }}>{unidad}</span>}
+          </div>
+          <div style={{ marginTop: 18, width: 620, height: 12, borderRadius: 6, background: `${color}22`, overflow: 'hidden' }}>
+            <div style={{ width: `${eased * 100}%`, height: '100%', borderRadius: 6, background: color, boxShadow: `0 0 18px ${color}` }} />
+          </div>
+        </div>
+        <div style={{ marginTop: 18, maxWidth: 900 }}><Etiqueta texto={v.etiqueta} op={interpolate(frame, [6, 20], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })} /></div>
+      </Zona>
+    );
+  }
   return (
     <Zona>
       <div style={{ position: 'relative', width: 760, height: 760, display: 'flex', justifyContent: 'center', alignItems: 'center', transform: `scale(${entrada})` }}>
@@ -73,9 +111,10 @@ export const VisualComparar: React.FC<P<'comparar'>> = ({ v, frame, color, bloqu
   const max = Math.max(...v.items.map((i) => i.valor), 1e-9);
   const n = v.items.length;
   const altoBarra = n <= 3 ? 120 : n === 4 ? 100 : 84;
+  const gapFilas = n <= 3 ? 56 : 36;
   return (
-    <Zona>
-      <div style={{ width: ANCHO - 20, display: 'flex', flexDirection: 'column', gap: n <= 3 ? 56 : 36 }}>
+    <Zona altoNatural={n * (72 + altoBarra) + (n - 1) * gapFilas}>
+      <div style={{ width: ANCHO - 20, display: 'flex', flexDirection: 'column', gap: gapFilas }}>
         {v.items.map((it, i) => {
           const c = it.color ? colorDe(it.color, color) : i === 0 ? color : neonSecundario(color, i - 1);
           const ini = frameEntrada(bloque, i, fps);
@@ -89,7 +128,8 @@ export const VisualComparar: React.FC<P<'comparar'>> = ({ v, frame, color, bloqu
             <div key={i} style={{ opacity: aparece, transform: `translateX(${(1 - aparece) * -60}px)` }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontFamily: TIPO.display, fontWeight: TIPO.pesoDisplay, marginBottom: 10 }}>
                 <span style={{ fontSize: 52, color: PALETA.tinta }}>{it.etiqueta}</span>
-                <span style={{ fontSize: 56, color: c, textShadow: `0 0 20px ${c}88` }}>{valor}{v.sufijo ?? ''}</span>
+                {/* El valor aparece cuando su barra empieza a crecer: nunca se lee un "0" esperando a la voz. */}
+                <span style={{ fontSize: 56, color: c, textShadow: `0 0 20px ${c}88`, opacity: Math.min(1, Math.max(0, e) * 4) }}>{valor}{v.sufijo ?? ''}</span>
               </div>
               <div style={{ height: altoBarra, borderRadius: altoBarra / 2, background: 'rgba(255,255,255,0.07)', overflow: 'hidden', position: 'relative' }}>
                 <div style={{ width: `${Math.max(frac, 0.015) * 100}%`, height: '100%', borderRadius: altoBarra / 2, background: `linear-gradient(90deg, ${c}99, ${c})`, boxShadow: `0 0 36px ${c}99` }}>
@@ -113,7 +153,7 @@ export const VisualEscala: React.FC<P<'escala'>> = ({ v, frame, color, bloque })
   const suma = v.items.reduce((a, i) => a + i.radio * 2, 0);
   const k = Math.min(660 / (maxR * 2), (ANCHO - 20 - gap * (n - 1)) / suma);
   return (
-    <Zona>
+    <Zona altoNatural={maxR * 2 * k + 100}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap, width: ANCHO }}>
         {v.items.map((it, i) => {
           const c = i === 0 ? color : neonSecundario(color, i - 1);
@@ -138,7 +178,7 @@ export const VisualLista: React.FC<P<'lista'>> = ({ v, frame, color, bloque }) =
   const n = v.items.length;
   const fontSize = n <= 4 ? 58 : 48;
   return (
-    <Zona>
+    <Zona altoNatural={n * 125 + (n - 1) * (n <= 4 ? 34 : 24)}>
       <div style={{ width: ANCHO - 20, display: 'flex', flexDirection: 'column', gap: n <= 4 ? 34 : 24 }}>
         {v.items.map((it, i) => {
           const c = i === 0 ? color : neonSecundario(color, i - 1);
@@ -162,13 +202,15 @@ export const VisualFrase: React.FC<P<'frase'>> = ({ v, frame, color, bloque }) =
   const palabras = v.texto.split(/\s+/).filter(Boolean);
   const claves = new Set((v.enfasis ?? []).flatMap((e) => e.split(/\s+/).map(normalizar)).filter(Boolean));
   const fontSize = tamanoPorLargo(v.texto, 120, 72, 30);
+  // Líneas aproximadas (≈0,55 em por letra en 940 px) para escalar en modo compacto.
+  const lineas = Math.max(1, Math.ceil((v.texto.length * fontSize * 0.55) / (ANCHO - 20)));
   // Momento en que se "enciende" cada énfasis (cuando la voz lo dice).
   const encendido = (w: string) => {
     const idx = (v.enfasis ?? []).findIndex((e) => e.split(/\s+/).map(normalizar).includes(normalizar(w)));
     return idx >= 0 ? frameEntrada(bloque, idx, fps) : 0;
   };
   return (
-    <Zona>
+    <Zona altoNatural={lineas * fontSize * 1.2}>
       <div style={{ width: ANCHO - 20, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: `${fontSize * 0.12}px ${fontSize * 0.28}px`, fontFamily: TIPO.display, fontWeight: TIPO.pesoDisplay, fontSize, lineHeight: 1.05, letterSpacing: -2, textAlign: 'center' }}>
         {palabras.map((w, i) => {
           const enf = claves.has(normalizar(w));
@@ -191,9 +233,10 @@ export const VisualIcono: React.FC<P<'icono'>> = ({ v, frame, color }) => {
   const flota = Math.sin(frame / 32) * 14;
   // Respira: escala 1 → 1,03 → 1 en un ciclo de 2 s, en bucle.
   const respira = 1 + 0.015 * (1 - Math.cos((2 * Math.PI * frame) / (2 * fps)));
-  const tam = 560;
+  // Con foto, el icono es secundario: más chico (la foto ya cuenta la idea).
+  const tam = useCompacto() ? 300 : 560;
   return (
-    <Zona>
+    <Zona altoNatural={tam + 140 + (v.etiqueta ? 70 : 0)}>
       <div style={{ position: 'relative', width: tam + 140, height: tam + 140, display: 'flex', justifyContent: 'center', alignItems: 'center', transform: `translateY(${flota}px) scale(${e * respira}) rotate(${(1 - e) * -25}deg)` }}>
         <div style={{ position: 'absolute', width: tam * 0.8, height: tam * 0.8, borderRadius: '50%', background: `radial-gradient(circle, ${color}55 0%, ${color}18 45%, transparent 70%)`, filter: 'blur(20px)', opacity: 0.8 + 0.2 * Math.sin(frame / 20) }} />
         <svg width={tam + 140} height={tam + 140} viewBox="-350 -350 700 700" style={{ position: 'absolute' }}>

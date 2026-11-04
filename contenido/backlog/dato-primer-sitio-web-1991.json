@@ -15,6 +15,9 @@
     "id": "pendiente-dato-primer-sitio-web-1991",
     "color": "cian",
     "gancho": "¿Sabes cuál fue la primera página web?",
+    "imagenGancho": {
+      "buscar": "first web server"
+    },
     "escenas": [
       {
         "texto": "En mil novecientos noventa y uno, un físico del CERN publicó la primera página web.",
@@ -23,6 +26,9 @@
           "valor": 1991,
           "sufijo": "",
           "etiqueta": "año del primer sitio web"
+        },
+        "imagen": {
+          "buscar": "CERN Tim Berners-Lee"
         }
       },
       {

@@ -16,6 +16,10 @@
     "id": "2026-11-03-dato-tierra-luna",
     "color": "cian",
     "gancho": "Si la Tierra fuera una pelota de básquet…",
+    "imagenGancho": {
+      "buscar": "Earth and Moon from space",
+      "forma": "circulo"
+    },
     "escenas": [
       {
         "texto": "La Luna sería una pelota de tenis.",
@@ -50,6 +54,9 @@
           "sufijo": " cm",
           "etiqueta": "Estación Espacial a escala (~400 km)",
           "dice": "centímetro"
+        },
+        "imagen": {
+          "buscar": "International Space Station"
         }
       },
       {
@@ -59,6 +66,10 @@
           "valor": 384400,
           "sufijo": " km",
           "etiqueta": "distancia Tierra–Luna"
+        },
+        "imagen": {
+          "buscar": "Full moon",
+          "forma": "circulo"
         }
       },
       {

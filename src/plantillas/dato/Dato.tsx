@@ -6,18 +6,23 @@ import { cargarFuentes } from '../../marca/fuentes';
 import { MarcaDeAgua } from '../../marca/MarcaDeAgua';
 import { Cierre } from '../../marca/Cierre';
 import { semillaDesde } from '../../lib/azar';
-import { GuionDato } from './guion';
+import { GuionDato, ImagenesDato, type ImagenResuelta } from './guion';
 import { FRAMES_CIERRE, estimarTiempos, planificar, type Tiempos } from './plan';
 import { Fondo } from './Fondo';
 import { Subtitulos } from './Subtitulos';
 import { TextoGigante } from './TextoGigante';
-import { VisualDe } from './Visuales';
+import { DisposicionVisual, VisualDe } from './Visuales';
+import { Imagen, ZONA_BAJO_IMAGEN } from './Imagen';
 import { colorDe } from './util';
 
 /** Props de la composición: el guion + lo que calcula `calculateMetadata`. */
 export const PropsDato = GuionDato.extend({
   duracionFrames: z.number().optional(),
   tiempos: z.any().optional(),
+  /** Fotos de Commons ya descargadas, por índice de línea (0 = gancho). Las escribe preparar-dato. */
+  imagenes: ImagenesDato.optional(),
+  /** Atribución de las fotos para la descripción (no se usa en el render). */
+  creditos: z.string().optional(),
 });
 export type PropsDato = z.infer<typeof PropsDato>;
 
@@ -43,6 +48,8 @@ export const Dato: React.FC<PropsDato> = (props) => {
   const tiempos: Tiempos = props.tiempos ?? estimarTiempos(props);
   const plan = useMemo(() => planificar(props, tiempos, FPS), [props, tiempos]);
   const hayVoz = !!props.tiempos;
+  const imagenes = props.imagenes ?? {};
+  const n = props.escenas.length;
   return (
     <AbsoluteFill style={{ background: PALETA.fondo }}>
       <Fondo color={color} semilla={semillaDesde(props.id)} />
@@ -53,15 +60,15 @@ export const Dato: React.FC<PropsDato> = (props) => {
         </Sequence>
       ))}
       <Sequence from={plan.gancho.desde} durationInFrames={plan.gancho.frames}>
-        <GanchoRemate linea={plan.gancho.linea} frames={plan.gancho.frames} color={color} modo="gancho" />
+        <GanchoRemate linea={plan.gancho.linea} frames={plan.gancho.frames} color={color} modo="gancho" imagen={imagenes['0']} />
       </Sequence>
       {plan.escenas.map((b) => (
         <Sequence key={b.indiceEscena} from={b.desde} durationInFrames={b.frames}>
-          <Escena bloque={b} visual={props.escenas[b.indiceEscena].visual} color={color} />
+          <Escena bloque={b} visual={props.escenas[b.indiceEscena].visual} color={color} imagen={imagenes[String(b.indiceEscena + 1)]} />
         </Sequence>
       ))}
       <Sequence from={plan.remate.desde} durationInFrames={plan.remate.frames}>
-        <GanchoRemate linea={plan.remate.linea} frames={plan.remate.frames} color={color} modo="remate" />
+        <GanchoRemate linea={plan.remate.linea} frames={plan.remate.frames} color={color} modo="remate" imagen={imagenes[String(n + 1)]} />
       </Sequence>
       <MarcaDeAgua />
       <Sequence from={plan.cierreDesde} durationInFrames={FRAMES_CIERRE}>
@@ -75,16 +82,28 @@ import { useCurrentFrame } from 'remotion';
 import type { BloqueEscena } from './plan';
 import type { VisualDato } from './guion';
 
-const GanchoRemate: React.FC<{ linea: BloqueEscena['linea']; frames: number; color: string; modo: 'gancho' | 'remate' }> = ({ linea, frames, color, modo }) => {
-  const frame = useCurrentFrame();
-  return <TextoGigante linea={linea} frameLocal={frame} frames={frames} color={color} modo={modo} />;
-};
+/** Si la foto va en tarjeta (marco/círculo), el texto gigante baja para quedar debajo de ella. */
+const BAJAR_TEXTO = 200;
 
-const Escena: React.FC<{ bloque: BloqueEscena; visual: VisualDato; color: string }> = ({ bloque, visual, color }) => {
+const GanchoRemate: React.FC<{ linea: BloqueEscena['linea']; frames: number; color: string; modo: 'gancho' | 'remate'; imagen?: ImagenResuelta }> = ({ linea, frames, color, modo, imagen }) => {
   const frame = useCurrentFrame();
   return (
     <AbsoluteFill>
-      <VisualDe v={visual} frame={frame} frames={bloque.frames} color={color} bloque={bloque} />
+      {imagen && <Imagen imagen={imagen} frame={frame} frames={frames} color={color} variante={modo === 'gancho' ? 0 : 1} inmediata={modo === 'gancho'} />}
+      <TextoGigante linea={linea} frameLocal={frame} frames={frames} color={color} modo={modo} bajar={imagen && imagen.forma !== 'completa' ? BAJAR_TEXTO : 0} />
+    </AbsoluteFill>
+  );
+};
+
+const Escena: React.FC<{ bloque: BloqueEscena; visual: VisualDato; color: string; imagen?: ImagenResuelta }> = ({ bloque, visual, color, imagen }) => {
+  const frame = useCurrentFrame();
+  const enTarjeta = !!imagen && imagen.forma !== 'completa';
+  return (
+    <AbsoluteFill>
+      {imagen && <Imagen imagen={imagen} frame={frame} frames={bloque.frames} color={color} variante={bloque.indiceEscena + 1} />}
+      <DisposicionVisual value={enTarjeta ? { ...ZONA_BAJO_IMAGEN, compacto: true } : { top: 330, alto: 900, compacto: false }}>
+        <VisualDe v={visual} frame={frame} frames={bloque.frames} color={color} bloque={bloque} />
+      </DisposicionVisual>
       <Subtitulos linea={bloque.linea} frameLocal={frame} color={color} enfasis={bloque.enfasis} />
     </AbsoluteFill>
   );

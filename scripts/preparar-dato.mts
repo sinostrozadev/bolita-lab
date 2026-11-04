@@ -1,14 +1,16 @@
 /**
  * Prepara un guion de la plantilla "dato" para renderizar:
  *   npx tsx scripts/preparar-dato.mts contenido/guiones/<guion>.json
- * Corre la voz (msedge-tts) y la cama + SFX, y escribe salida/trabajo/<id>.props.json
- * (guion + duracionFrames + tiempos). Luego:
+ * Corre la voz (msedge-tts), las imágenes de archivo (Wikimedia Commons, `imagenes-dato.mts`) y la
+ * cama + SFX, y escribe salida/trabajo/<id>.props.json (guion + duracionFrames + tiempos + imagenes +
+ * creditos). `creditos` es el texto de atribución que el diario agrega a la descripción. Luego:
  *   npx remotion render src/index.ts Dato salida/bandeja/<id>.mp4 --props=salida/trabajo/<id>.props.json
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { generarVoz, leerGuion } from './voz.mjs';
 import { generarSonido } from './sonido-dato.mjs';
+import { prepararImagenes } from './imagenes-dato.mjs';
 import { FRAMES_CIERRE } from '../src/plantillas/dato/plan';
 import { FORMATO } from '../src/marca/tokens';
 
@@ -33,7 +35,9 @@ if (estimadoSeg > MAX_SEG) {
   process.exit(1);
 }
 const plan = generarSonido(guion.id, guion, tiempos);
-const finales = { ...guion, duracionFrames: plan.duracionFrames, tiempos };
+// Imágenes: si Commons no responde o no hay una válida, la escena cae a su visual de siempre.
+const { imagenes, creditos } = await prepararImagenes(guion.id, guion);
+const finales = { ...guion, duracionFrames: plan.duracionFrames, tiempos, imagenes, creditos };
 const salida = path.join(raiz, 'salida/trabajo', `${guion.id}.props.json`);
 fs.mkdirSync(path.dirname(salida), { recursive: true });
 fs.writeFileSync(salida, JSON.stringify(finales, null, 2) + '\n');
