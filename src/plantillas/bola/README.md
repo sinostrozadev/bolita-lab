@@ -42,11 +42,18 @@ RMS ≈ −16/−19 dBFS.
 Fondo con viñeta radial tintada del color actual; anillo con halo difuso + línea nítida + brillo
 interior; flash de 100 ms del color de la bola; bola con degradado radial (brillo arriba-izquierda)
 y triple glow; estela de 4 copias; 6–10 partículas por rebote que se apagan en 0,3 s; contador
-"REBOTES: n" con pop de escala; gancho con spring que sale a los 1,5 s; `<MarcaDeAgua/>` y
-`<Cierre/>` en los últimos 72 frames.
+"REBOTES: n" con pop de escala; `<MarcaDeAgua/>` y `<Cierre/>` en los últimos 72 frames.
+
+## Gancho (frame 0)
+`props.gancho` se ve **completo desde el frame 0**: texto gigante (Bricolage 800, 104/92/76/64 px
+según largo ≤ 22/32/46/más) sobre una placa oscura, arriba en la zona segura (top 280, bajo la marca
+de agua y sobre el anillo), con glow del color inicial de la bola. Las palabras parten al 88 % de
+su tamaño y solo brincan un poco (nunca opacidad 0). Dura 108 frames (1,8 s) y se va con **corte
+limpio**; recién ahí entra el contador "REBOTES" con pop. Ganchos cortos (≤ 46 caracteres) se ven
+en 2–3 líneas sin tapar el anillo; más largos se achican.
 
 ## Uso
-Props: `id`, `gancho` (≤ 90; > 58 caracteres se dibuja más chico), `melodia` (furelise,
+Props: `id`, `gancho` (≤ 90; ideal ≤ 46 para que se lea gigante en el frame 0), `melodia` (furelise,
 marchaturca, odaalegria, canon, cisnes), `modo`, `bolas` (1–3), opcionales `semilla`,
 `velocidadHueco`, `anchoHueco`.
 

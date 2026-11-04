@@ -15,7 +15,10 @@ import { Cierre } from '../../marca/Cierre';
 import { CAMPOS_POR_BOLA, type EventoSim, type GuionBola, type SimBola } from './guion';
 
 const FRAMES_CIERRE = 72;
-const FRAMES_GANCHO = 90;
+/** El gancho se ve desde el frame 0 y se va con un corte limpio a los 1,8 s (como en carrera). */
+const FRAMES_GANCHO = 108;
+/** Borde superior del gancho: bajo la marca de agua y sobre el anillo (su borde está en y ≈ 555). */
+const GANCHO_TOP = FORMATO.seguro.arriba + 60;
 /** Flash del anillo: 100 ms. Partículas: 0,3 s. */
 const FRAMES_FLASH = 6;
 const FRAMES_PARTICULA = 18;
@@ -157,6 +160,46 @@ const Pelota: React.FC<{ x: number; y: number; r: number; color: string; opacida
   );
 };
 
+/**
+ * Gancho: la pregunta del guion en texto gigante, legible YA en el frame 0 (las palabras parten
+ * casi en su tamaño final y solo "brincan" un poco, como `dato/TextoGigante` y `carrera/Gancho`),
+ * sobre una placa oscura en la zona segura de arriba, mientras la bola arranca debajo.
+ * Se va con un corte limpio en FRAMES_GANCHO; el contador entra después.
+ */
+const Gancho: React.FC<{ texto: string; color: string }> = ({ texto, color }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const palabras = texto.split(/\s+/).filter(Boolean);
+  const largo = texto.length;
+  // Más chico que en carrera: arriba solo hay ~300 px libres antes del anillo.
+  const fontSize = largo <= 22 ? 104 : largo <= 32 ? 92 : largo <= 46 ? 76 : 64;
+  const deriva = Math.sin(frame / 40) * 4;
+  return (
+    <div style={{
+      position: 'absolute', left: FORMATO.seguro.lados, right: FORMATO.seguro.lados, top: GANCHO_TOP,
+      display: 'flex', flexDirection: 'column', alignItems: 'center', transform: `translateY(${deriva}px)`,
+    }}>
+      <div style={{
+        padding: '16px 28px 20px', borderRadius: 34, background: hexA(PALETA.fondo, 0.88),
+        boxShadow: `0 0 24px 8px ${hexA(PALETA.fondo, 0.7)}, 0 0 40px ${hexA(color, 0.2)}`,
+        display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: `${fontSize * 0.04}px ${fontSize * 0.24}px`,
+        fontFamily: TIPO.display, fontWeight: TIPO.pesoDisplay, fontSize, lineHeight: 1.04, letterSpacing: -2, textAlign: 'center', color: PALETA.tinta,
+      }}>
+        {palabras.map((p, i) => {
+          const brinco = spring({ frame: frame - i * 3, fps, config: { damping: 12, stiffness: 240 } });
+          const entrada = 0.88 + 0.12 * brinco; // nunca parte de cero: se lee en el frame 0
+          return (
+            <span key={i} style={{
+              display: 'inline-block', transform: `translateY(${(1 - entrada) * 40}px) scale(${0.6 + 0.4 * entrada})`,
+              textShadow: `0 0 26px ${color}, 0 0 64px ${hexA(color, 0.53)}, 0 4px 12px rgba(0,0,0,0.7)`,
+            }}>{p}</span>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 const Texto: React.FC<{ children: React.ReactNode; top: number; tam: number; color?: string; escala?: number; opacidad?: number; familia?: string; sombra?: string; peso?: number }> = ({ children, top, tam, color = PALETA.tinta, escala = 1, opacidad = 1, familia = TIPO.display, sombra, peso = TIPO.pesoDisplay }) => (
   <div style={{
     position: 'absolute', top, left: FORMATO.seguro.lados, width: FORMATO.ancho - FORMATO.seguro.lados * 2,
@@ -211,9 +254,9 @@ export const Bola: React.FC<GuionBola> = (props) => {
   const pulso = ultimoRebote ? spring({ frame: frame - ultimoRebote.frame, fps, config: { damping: 9, stiffness: 300 } }) : 1;
   const escalaContador = ultimoRebote ? 1 + 0.18 * (1 - pulso) : 1;
 
-  // Gancho: entra con spring, sale a los 1,5 s.
-  const entradaGancho = spring({ frame, fps, config: { damping: 14, stiffness: 140 } });
-  const salidaGancho = interpolate(frame, [FRAMES_GANCHO - 14, FRAMES_GANCHO], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  // El contador entra (con pop) recién cuando se va el gancho: mientras, el gancho ocupa ese espacio.
+  const entradaContador = spring({ frame: frame - FRAMES_GANCHO, fps, config: { damping: 12, stiffness: 200 } });
+  const colorGancho = NEONES[sim.cuadros[0][3] % NEONES.length];
 
   // Final: zoom-out (escape) o expansión (crecer).
   // Escape: zoom 1,15 hacia el punto de fuga durante la cámara lenta (el sim ya trae 0,5 s a 0,12×).
@@ -281,15 +324,13 @@ export const Bola: React.FC<GuionBola> = (props) => {
       {/* Flash de pantalla en el clímax */}
       {flashPantalla > 0 && <AbsoluteFill style={{ background: colorClimax, opacity: flashPantalla, mixBlendMode: 'screen' }} />}
 
-      {/* Gancho (primeros 1,5 s) */}
-      {frame < FRAMES_GANCHO && (
-        <Texto top={280} tam={props.gancho.length > 58 ? 52 : 62} escala={0.8 + 0.2 * entradaGancho} opacidad={entradaGancho * salidaGancho}>{props.gancho}</Texto>
-      )}
-      {/* Contador */}
-      <Texto top={frame < FRAMES_GANCHO ? 430 : 300 + 130 * (1 - interpolate(frame, [FRAMES_GANCHO, FRAMES_GANCHO + 20], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }))} tam={76} escala={escalaContador} color={sobreLleno ? PALETA.fondo : PALETA.tinta} opacidad={fadeCierre}
+      {/* Gancho (frame 0 → 1,8 s, corte limpio) */}
+      {frame < FRAMES_GANCHO && <Gancho texto={props.gancho} color={colorGancho} />}
+      {/* Contador: entra cuando se va el gancho */}
+      {frame >= FRAMES_GANCHO && <Texto top={300} tam={76} escala={escalaContador * (0.7 + 0.3 * entradaContador)} color={sobreLleno ? PALETA.fondo : PALETA.tinta} opacidad={fadeCierre * Math.min(1, entradaContador)}
         sombra={sobreLleno ? 'none' : `0 0 30px ${hexA(colorFlash, 0.5 + 0.5 * flash)}, 0 4px 18px rgba(0,0,0,0.6)`}>
         REBOTES: <span style={{ color: sobreLleno ? PALETA.fondo : colorFlash }}>{contador}</span>
-      </Texto>
+      </Texto>}
 
       {/* Cartel del clímax */}
       {enFinal && (
