@@ -32,6 +32,10 @@ const ETIQ_MIN = MARCADOR_TOP + PUESTOS * FILA + 50;
 const ETIQ_MAX = ALTO_PANTALLA - seguro.abajo - 30;
 const ETIQ_FUENTE = 32;
 const ETIQ_ALTO = 48;
+/** El gancho (la pregunta) se ve desde el frame 0 y se va con un corte limpio a los 1,8 s. */
+const GANCHO_FRAMES = 108;
+/** Etiquetas: se apagan si la bola tiene otra a menos de 1,5 diámetros (si no, se montan). */
+const ETIQ_SEPARACION = [1.6, 1.9];
 /** Icono dentro de la bolita: fracción del diámetro. */
 const ICONO_EN_BOLA = 0.55;
 /** Icono dentro de la etiqueta (px). */
@@ -56,6 +60,8 @@ const useSimulacion = (id: string) => {
 };
 
 const ORDINAL = ['1.º', '2.º', '3.º', '4.º', '5.º', '6.º'];
+/** Fila con el resto del resultado, bajo "GANA" y sobre la UI inferior de YouTube. */
+const RESULTADO_TOP = 1330;
 const fr = (sim: SimulacionCarrera, frame: number) => Math.max(0, Math.min(frame, sim.duracionFrames - 1));
 
 /** Zoom de la llegada: punto fijo (en pantalla) y factor para un frame. */
@@ -146,7 +152,7 @@ const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; frame: number; co
   );
 };
 
-interface CajaEtiqueta { i: number; x: number; y: number; w: number }
+interface CajaEtiqueta { i: number; x: number; y: number; w: number; op: number }
 
 /** Coloca las etiquetas junto a su bola, sin salirse de la zona segura ni pisarse entre sí. */
 const colocarEtiquetas = (sim: SimulacionCarrera, f: number, cam: number, etiquetas: string[], conIcono: boolean[]): CajaEtiqueta[] => {
@@ -164,7 +170,12 @@ const colocarEtiquetas = (sim: SimulacionCarrera, f: number, cam: number, etique
     else lx = Math.max(seguro.lados, Math.min(ANCHO - seguro.lados - w, x - w / 2));
     // Bolas rezagadas (bajo el marcador o fuera de cuadro): sin etiqueta; el marcador ya las nombra.
     if (sy < ETIQ_MIN - 2 * r || sy > ALTO_PANTALLA) return;
-    cajas.push({ i, x: lx, y: Math.max(ETIQ_MIN, Math.min(ETIQ_MAX, sy)), w });
+    // Bolas apiñadas (p. ej. la salida): sin etiqueta; el icono dentro de la bola ya las identifica.
+    let cerca = Infinity;
+    sim.posiciones.forEach((otra, j) => { if (j !== i) cerca = Math.min(cerca, Math.hypot(otra[f][0] - x, otra[f][1] - y)); });
+    const op = interpolate(cerca / (2 * r), ETIQ_SEPARACION, [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+    if (op <= 0) return;
+    cajas.push({ i, x: lx, y: Math.max(ETIQ_MIN, Math.min(ETIQ_MAX, sy)), w, op });
   });
   // Separación vertical de las que se solapan en horizontal.
   const orden = [...cajas].sort((a, b) => a.y - b.y || a.i - b.i);
@@ -220,7 +231,7 @@ const Bolas: React.FC<{ sim: SimulacionCarrera; cam: number; frame: number; colo
       {cajas.map((c) => (
         <div key={`e${c.i}`} style={{
           position: 'absolute', top: c.y, left: c.x, transform: 'translateY(-50%)', height: ETIQ_ALTO - 8, padding: '0 17px', borderRadius: 999,
-          display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap', opacity: mostrarEtiquetas,
+          display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap', opacity: mostrarEtiquetas * c.op,
           fontFamily: TIPO.display, fontWeight: 800, fontSize: ETIQ_FUENTE, letterSpacing: 0.5, color: PALETA.fondo,
           background: colores[c.i], boxShadow: `0 0 16px ${colores[c.i]}AA`,
         }}>{iconoAportaJuntoAlNombre(iconos[c.i]) && <Icono icono={iconos[c.i]} tam={ETIQ_ICONO} fondo={colores[c.i]} style={{ marginLeft: -6 }} />}{etiquetas[c.i]}</div>
@@ -248,8 +259,14 @@ const Marcador: React.FC<{ sim: SimulacionCarrera; frame: number; colores: strin
     }
     return { i, pos, pulso, actual: puestoEn(i, frame) };
   });
+  // Panel oscuro detrás: el tablero (clavijas, rampas) nunca se ve a través del marcador.
+  const anchoPanel = 66 + 42 + 12 + Math.max(...etiquetas.map((e) => e.length)) * 22 + 52;
   return (
     <div style={{ position: 'absolute', top: MARCADOR_TOP, left: seguro.lados, width: 560, height: PUESTOS * FILA + 10, opacity: opacidad, fontFamily: TIPO.display }}>
+      <div style={{
+        position: 'absolute', left: -20, top: -12, width: anchoPanel + 20, height: PUESTOS * FILA + 16, borderRadius: 30,
+        background: `${PALETA.fondo}E6`, boxShadow: `0 0 28px 14px ${PALETA.fondo}CC`,
+      }} />
       {Array.from({ length: PUESTOS }, (_, k) => (
         <div key={`o${k}`} style={{
           position: 'absolute', left: 0, top: k * FILA, height: FILA - 8, width: 62, display: 'flex', alignItems: 'center',
@@ -266,7 +283,7 @@ const Marcador: React.FC<{ sim: SimulacionCarrera; frame: number; colores: strin
             position: 'absolute', left: 66, top: pos * FILA, height: FILA - 8, display: 'flex', alignItems: 'center', gap: 12,
             padding: '0 20px 0 12px', borderRadius: 999, opacity: op, whiteSpace: 'nowrap',
             transform: `scale(${1 + 0.12 * pulso})`, transformOrigin: '0 50%',
-            background: `linear-gradient(90deg, ${colores[i]}${lider ? '40' : '22'}, ${PALETA.fondo2}E6 70%)`,
+            background: `linear-gradient(90deg, ${colores[i]}${lider ? '40' : '22'}, ${PALETA.fondo2} 70%), ${PALETA.fondo2}`,
             border: `2px solid ${colores[i]}`, boxShadow: `0 0 ${12 + pulso * 24}px ${colores[i]}${lider ? 'AA' : '66'}`,
             fontSize: 30, fontWeight: 800, color: PALETA.tinta,
           }}>
@@ -282,27 +299,47 @@ const Marcador: React.FC<{ sim: SimulacionCarrera; frame: number; colores: strin
   );
 };
 
+/**
+ * Gancho: la pregunta del guion en texto gigante, legible YA en el frame 0 (como el gancho de
+ * `dato`: las palabras parten casi en su tamaño final y solo "brincan" un poco), arriba en la
+ * zona segura mientras la carrera arranca debajo. Se va con un corte limpio en GANCHO_FRAMES.
+ */
 const Gancho: React.FC<{ texto: string }> = ({ texto }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const entrada = spring({ frame, fps, config: { damping: 11, stiffness: 220 } });
-  const salida = interpolate(frame, [72, 90], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  const palabras = texto.split(/\s+/).filter(Boolean);
+  const largo = texto.length;
+  const fontSize = largo <= 22 ? 118 : largo <= 32 ? 104 : largo <= 46 ? 90 : 78;
+  const deriva = Math.sin(frame / 40) * 4;
+  const linea = interpolate(frame, [2, 26], [0, 300], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  const color = PALETA.neon.cian;
   return (
     <div style={{
-      position: 'absolute', left: seguro.lados, right: seguro.lados, top: seguro.arriba + 70, display: 'flex', justifyContent: 'center',
-      transform: `scale(${0.6 + 0.4 * entrada}) rotate(${(1 - entrada) * -6}deg)`, opacity: Math.min(entrada, salida),
+      position: 'absolute', left: seguro.lados, right: seguro.lados, top: seguro.arriba + 64, display: 'flex', flexDirection: 'column', alignItems: 'center',
+      transform: `translateY(${deriva}px)`,
     }}>
       <div style={{
-        padding: '22px 36px', borderRadius: 36, background: `${PALETA.fondo}C8`, border: `3px solid ${PALETA.neon.cian}88`,
-        boxShadow: `0 0 40px ${PALETA.neon.cian}44`, textAlign: 'center',
-        fontFamily: TIPO.display, fontWeight: 800, fontSize: 88, lineHeight: 1.05, color: PALETA.tinta,
-        textShadow: `0 0 24px ${PALETA.neon.cian}, 0 0 60px ${PALETA.neon.cian}88`,
-      }}>{texto}</div>
+        padding: '26px 34px 30px', borderRadius: 40, background: `${PALETA.fondo}E0`, boxShadow: `0 0 40px 18px ${PALETA.fondo}C0, 0 0 50px ${color}33`,
+        display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: `${fontSize * 0.04}px ${fontSize * 0.24}px`,
+        fontFamily: TIPO.display, fontWeight: TIPO.pesoDisplay, fontSize, lineHeight: 1.04, letterSpacing: -2, textAlign: 'center', color: PALETA.tinta,
+      }}>
+        {palabras.map((p, i) => {
+          const brinco = spring({ frame: frame - i * 3, fps, config: { damping: 12, stiffness: 240 } });
+          const entrada = 0.88 + 0.12 * brinco; // nunca parte de cero: se lee en el frame 0
+          return (
+            <span key={i} style={{
+              display: 'inline-block', transform: `translateY(${(1 - entrada) * 40}px) scale(${0.6 + 0.4 * entrada})`,
+              textShadow: `0 0 26px ${color}, 0 0 64px ${color}88, 0 4px 12px rgba(0,0,0,0.7)`,
+            }}>{p}</span>
+          );
+        })}
+      </div>
+      <div style={{ marginTop: 18, width: linea, height: 8, borderRadius: 4, background: color, boxShadow: `0 0 24px ${color}` }} />
     </div>
   );
 };
 
-const Celebracion: React.FC<{ sim: SimulacionCarrera; color: string; etiqueta: string; icono?: IconoCompetidor; origen: { x: number; y: number; tam: number } }> = ({ sim, color, etiqueta, icono, origen }) => {
+const Celebracion: React.FC<{ sim: SimulacionCarrera; color: string; etiqueta: string; icono?: IconoCompetidor; colores: string[]; iconos: (IconoCompetidor | undefined)[]; origen: { x: number; y: number; tam: number } }> = ({ sim, color, etiqueta, icono, colores, iconos, origen }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
   const k = frame - sim.frameGanadora;
@@ -369,6 +406,24 @@ const Celebracion: React.FC<{ sim: SimulacionCarrera; color: string; etiqueta: s
         <div style={{ fontFamily: TIPO.display, fontWeight: 800, fontSize: fuente, lineHeight: 1.05, color, whiteSpace: 'nowrap', textShadow: `0 0 30px ${color}, 0 0 80px ${color}99` }}>{etiqueta}</div>
         {ventaja && <div style={{ marginTop: 18, fontFamily: TIPO.texto, fontWeight: 700, fontSize: 44, color: PALETA.tintaSuave }}>{ventaja}</div>}
       </div>
+      {/* Resultado: el resto en orden de llegada (y, las que no llegaron, por posición en pista) */}
+      <div style={{ position: 'absolute', left: seguro.lados, right: seguro.lados, top: RESULTADO_TOP, display: 'flex', justifyContent: 'center', gap: 26 }}>
+        {sim.orden.slice(1).map((b, j) => {
+          const e = spring({ frame: k - 44 - j * 5, fps, config: { damping: 11, stiffness: 160 } });
+          return (
+            <div key={b} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, opacity: Math.min(1, e), transform: `translateY(${(1 - e) * 40}px) scale(${0.5 + 0.5 * e})` }}>
+              <div style={{
+                width: 92, height: 92, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: `radial-gradient(circle at 26% 20%, #FFFFFFCC 0, #FFFFFF55 6%, ${colores[b]} 18%, ${colores[b]} 82%)`,
+                boxShadow: `0 0 14px ${colores[b]}, 0 0 34px ${colores[b]}88`,
+              }}>
+                <Icono icono={iconos[b]} tam={52} fondo={colores[b]} />
+              </div>
+              <div style={{ fontFamily: TIPO.texto, fontWeight: 700, fontSize: 32, color: PALETA.tinta }}>{ORDINAL[j + 1]}</div>
+            </div>
+          );
+        })}
+      </div>
       </AbsoluteFill>
     </AbsoluteFill>
   );
@@ -393,7 +448,9 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
   // Etiquetas y marcador se apagan durante la cámara lenta: el foco es la meta.
   const hud = interpolate(frame, [sim.camaraLenta.desde, sim.frameGanadora], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
   // El marcador entra cuando se va el gancho (mientras, el gancho ocupa ese espacio).
-  const marcadorIn = interpolate(frame, [80, 100], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  const marcadorIn = interpolate(frame, [GANCHO_FRAMES, GANCHO_FRAMES + 16], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  // Las etiquetas entran cuando se va el gancho (al inicio las bolas están juntas).
+  const etiquetasIn = interpolate(frame, [GANCHO_FRAMES, GANCHO_FRAMES + 14], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
   // Dónde está la ganadora en pantalla al cruzar (con zoom): de ahí parte hacia el centro.
   const zg = zoomEn(sim, sim.frameGanadora);
   const pg = sim.posiciones[ganadora][fr(sim, sim.frameGanadora)];
@@ -416,20 +473,25 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
       {/* Mundo (tablero + bolas), con zoom hacia la meta en la cámara lenta */}
       <AbsoluteFill style={{ transformOrigin: '0 0', transform: `translate(${ax}px, ${ay}px) scale(${z}) translate(${-ax}px, ${-ay}px)` }}>
         <Tablero sim={sim} cam={cam} frame={frame} colores={colores} />
-        <Bolas sim={sim} cam={cam} frame={frame} colores={colores} etiquetas={etiquetas} iconos={iconos} mostrarEtiquetas={celebrando ? 0 : hud} />
+        <Bolas sim={sim} cam={cam} frame={frame} colores={colores} etiquetas={etiquetas} iconos={iconos} mostrarEtiquetas={celebrando ? 0 : hud * etiquetasIn} />
       </AbsoluteFill>
       {/* Viñeta de cámara lenta */}
       {lenta && <AbsoluteFill style={{ boxShadow: `inset 0 0 240px ${colores[ganadora]}30` }} />}
 
       {!celebrando && <Marcador sim={sim} frame={frame} colores={colores} etiquetas={etiquetas} iconos={iconos} opacidad={hud * marcadorIn} />}
-      {frame < 90 && <Gancho texto={props.gancho} />}
+      {frame < GANCHO_FRAMES && <Gancho texto={props.gancho} />}
 
-      {celebrando && <Celebracion sim={sim} color={colores[ganadora]} etiqueta={etiquetas[ganadora]} icono={iconos[ganadora]} origen={origen} />}
+      {celebrando && <Celebracion sim={sim} color={colores[ganadora]} etiqueta={etiquetas[ganadora]} icono={iconos[ganadora]} colores={colores} iconos={iconos} origen={origen} />}
 
       <Sequence from={sim.duracionFrames} durationInFrames={CIERRE_FRAMES} layout="none">
         <Cierre color={colores[ganadora]} />
       </Sequence>
 
+      {/* Placa oscura detrás de la marca de agua: las clavijas no la atraviesan */}
+      <div style={{
+        position: 'absolute', top: seguro.arriba - 8, right: seguro.lados - 14, width: 262, height: 56, borderRadius: 999,
+        background: `${PALETA.fondo}E0`, boxShadow: `0 0 22px 12px ${PALETA.fondo}C0`,
+      }} />
       <MarcaDeAgua />
       <Html5Audio src={rutaAudio(props.id)} />
     </AbsoluteFill>

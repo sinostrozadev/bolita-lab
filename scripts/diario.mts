@@ -180,8 +180,12 @@ const renderizarUno = async (g: Guion & { ruta: string }, log: Log): Promise<boo
   const argsRender = [
     'render', 'src/index.ts', composicion, salidaMp4,
     `--props=${props}`, '--codec=h264', '--crf=18', `--concurrency=${CONCURRENCIA}`, '--log=error',
-    // timeout alto: con la máquina cargada un frame puede tardar más de los 30 s por defecto.
-    '--timeout=120000',
+    // timeout alto: con la máquina cargada un frame puede tardar más de los 30 s por defecto
+    // (con 120 s igual se cortó un render de carrera el 2026-11-04).
+    '--timeout=180000',
+    // veryfast: x264 con menos lookahead usa mucha menos RAM; con el preset por defecto el
+    // kernel mató a ffmpeg por OOM (≈950 MB) en un render de carrera. Con crf 18 la calidad sobra.
+    '--x264-preset=veryfast',
   ];
   let r = { codigo: 1, salida: '' };
   for (let intento = 1; intento <= 2; intento++) {

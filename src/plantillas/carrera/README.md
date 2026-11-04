@@ -87,5 +87,16 @@ acorde) en el cruce. Normalizado a −1 dBFS con limitador suave.
   al centro y crece; 90 papelitos de confeti determinista con gravedad desde dos cañones;
   "GANA: <etiqueta>" (tamaño auto) + ventaja. Luego `<Cierre/>` (72 frames). `<MarcaDeAgua/>` siempre.
 
+## Arranque y final (2026-11-04)
+- **Gancho en el frame 0:** la pregunta del guion en texto gigante sobre placa oscura, arriba en la
+  zona segura, legible desde el primer frame; se queda 1,8 s (`GANCHO_FRAMES`) mientras la carrera
+  arranca debajo y se va con corte limpio. Marcador y etiquetas entran recién después.
+- **Etiquetas:** se apagan si su bola tiene otra a menos de 1,6–1,9 diámetros (no se montan); el
+  icono dentro de la bola sigue identificándola.
+- **Capas:** el marcador lleva panel opaco y la marca de agua una placa oscura: el tablero no se ve a
+  través de ellos.
+- **Resultado:** bajo "GANA" aparece la fila con el resto (2.º, 3.º…) con su icono: orden real de
+  llegada y, las que no cruzaron cuando terminó el video, por posición en pista. Sin "(no llega)".
+
 ## Duración del video
 `frames hasta el cruce (incluye cámara lenta) + 2,5 s de celebración + 1,2 s de cierre` ≈ 30–50 s.

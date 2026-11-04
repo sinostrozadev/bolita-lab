@@ -547,7 +547,7 @@ export const prepararSimulacion = (guion: GuionCarrera): SimulacionCarrera => {
     ` · ${intentos} intento(s), semilla ${semilla}, g=${gravedad.toFixed(0)} · ${golpes} golpes, ${choques} choques` +
     ` · video ${((sim.duracionFrames + CIERRE_FRAMES) / FPS).toFixed(1)} s`,
   );
-  console.log(`[carrera] orden: ${orden.map((i, k) => `${k + 1}.º ${guion.participantes[i].etiqueta}${sim.llegadas[i] < 0 ? ' (no llega)' : ''}`).join(' · ')}`);
+  console.log(`[carrera] orden: ${orden.map((i, k) => `${k + 1}.º ${guion.participantes[i].etiqueta}${sim.llegadas[i] < 0 ? ' (por posición en pista)' : ''}`).join(' · ')}`);
   console.log(`[carrera] → ${path.relative(RAIZ, rutaSim)} · ${path.relative(RAIZ, rutaWav)}`);
   return sim;
 };
