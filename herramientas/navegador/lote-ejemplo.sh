@@ -31,5 +31,6 @@ done <<'LISTA'
 2026-11-05-carrera-dias-semana 2026-11-12 12:00
 2026-11-04-bola-marcha-crecer 2026-11-12 18:00
 2026-11-05-bola-3bolas-canon 2026-11-13 12:00
+2026-11-04-dato-huesos-bebe-300-adulto-206 2026-11-13 18:00
 LISTA
 echo "LOTE COMPLETO"; touch LOTE4-OK
