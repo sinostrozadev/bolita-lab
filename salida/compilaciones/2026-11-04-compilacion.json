@@ -1,0 +1,28 @@
+{
+  "id": "2026-11-04-compilacion",
+  "plantilla": "compilacion",
+  "tipo": "largo",
+  "titulo": "1 datos que no vas a creer, explicados con bolitas | Bolita Lab",
+  "descripcion": "Recopilación de Bolita Lab: 1 Shorts seguidos, sin cortes. Bolitas de neón que rebotan al ritmo de melodías clásicas y datos sorprendentes con fuente.\n\nCapítulos:\n00:00 Naces con unos 300 huesos y de adulto tienes 206\n\nLas fuentes de cada dato están en la descripción de su Short.\n\nSimulaciones físicas deterministas y sonido sincronizado a cada rebote. Música de dominio público.\nSuscríbete: hay un Short nuevo cada día.",
+  "hashtags": [
+    "#bolitalab",
+    "#satisfying",
+    "#simulacion",
+    "#fisica",
+    "#datoscuriosos"
+  ],
+  "duracionSeg": 33.4,
+  "estado": "listo",
+  "videos": [
+    "2026-11-04-dato-huesos-bebe-300-adulto-206"
+  ],
+  "capitulos": [
+    {
+      "inicio": 0,
+      "marca": "00:00",
+      "titulo": "Naces con unos 300 huesos y de adulto tienes 206",
+      "id": "2026-11-04-dato-huesos-bebe-300-adulto-206"
+    }
+  ],
+  "artefacto": "`compilacion-2026-11-04` del run https://github.com/sinostrozadev/bolita-lab/actions/runs/41774832322"
+}
