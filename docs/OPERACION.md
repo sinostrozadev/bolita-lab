@@ -160,6 +160,9 @@ Tiempo máximo de claude: `BOLITA_REVISION_CLAUDE_MIN` (60). Log en `salida/logs
 | `Ya hay un diario corriendo` | Otro diario vivo (esperar) o lock viejo: se reemplaza solo si el pid no existe. |
 | Informe dice `Analytics API: ✗ … has not been used in project` | Habilitar la YouTube Analytics API en el proyecto `bolita-lab` (URL exacta en el informe). No hace falta reautorizar. |
 | Revisión: `⚠ no pude hacer fast-forward` | La rama principal avanzó o tiene cambios locales en los mismos archivos. Los cambios quedan en `revision/<fecha>`: `git merge revision/<fecha>`. |
+| Actions: `Faltan los secrets YOUTUBE_CLIENT_JSON y/o YOUTUBE_TOKEN_JSON` | Subida encendida sin secrets: cargarlos (docs/SANTIAGO.md) o volver `BOLITA_SUBIR` a `0`. |
+| Actions: `✗ no se pudo pushear el estado tras 3 intentos` | Conflicto real con un push humano en los mismos archivos. Los mp4 quedan en el artifact, pero el estado de ese run no llegó al repo: los guiones siguen en el backlog y el próximo run los vuelve a renderizar. Si la subida estaba encendida, revisar en Studio que no queden duplicados. |
+| Actions: artifact no sube / "storage quota" | Se llenaron los 500 MB de artifacts del plan gratis: borrar artifacts viejos (Actions → run → Artifacts) o bajar `retention-days`. |
 | Aviso `zod: installed 3.25… required 4.6.7` en renders | Aviso de Remotion por la versión de zod; no bloquea. Los mensajes de error del diario ya lo filtran. |
 
 **Reintentar un guion con error:** mira el motivo en `salida/bandeja/<id>.json`, arregla la causa, borra ese json
@@ -175,6 +178,63 @@ un fallo cada noche en silencio; `estado.mts` y los logs los muestran.
 domingos 04:30, revisión semanal lunes 05:00, estado 08:00. La zona del sistema ya es America/Santiago. Rutas absolutas y PATH con
 `/home/santiago/.nvm/versions/node/v22.14.0/bin` (node) y `/home/santiago/.local/bin` (claude).
 WSL: el cron solo corre con WSL encendido; si la PC estuvo apagada, `npx tsx scripts/diario.mts` a mano recupera el día.
+
+## Producción en la nube (GitHub Actions)
+Para que la fábrica no dependa del PC: los mismos scripts corren en runners de GitHub
+(<https://github.com/sinostrozadev/bolita-lab/actions>). El cron local sigue activo hasta la auditoría
+de la API (docs/DECISIONES.md, 2026-11-04).
+
+| Workflow | Cuándo | Qué hace |
+|---|---|---|
+| `.github/workflows/producir.yml` ("Producir Shorts") | push a `master` que toque `contenido/backlog/**` o `contenido/calendario.json`; a mano (`cuantos`, `subir`); diario 06:30 UTC (03:30 Chile) | `diario.mts --sin-guiones --cuantos N [--sin-subir]` → `hojas.mts` → artifact + commit del estado |
+| `.github/workflows/compilar.yml` ("Compilar semanal") | domingos 07:30 UTC (04:30 Chile) y a mano (`n`) | baja los mp4 de los artifacts `shorts-*` de los últimos 14 días, `compilar.mts --n 14`, `subir exportar` → artifact + commit |
+
+**Reglas del diseño**
+- Todo lo que es código corre en Actions; los guiones llegan **ya escritos** al backlog (en la nube no hay
+  `claude -p`: se generan en una sesión local o con `generar-guiones` y se pushean). Cada push al backlog
+  dispara una producción de 2 Shorts.
+- **Estado = archivos commiteados.** Cualquier ejecutor arranca del último `master` y sabe en qué va. El bot
+  (`bolita-bot`, mensaje fijo `bot: producción <fecha>` / `bot: compilación <fecha>`) commitea solo:
+  `contenido/backlog/` y `contenido/guiones/` (el guion consumido se mueve, como en local),
+  `salida/bandeja/<id>.json` (listo/subido, `videoId`, `publicarEn`, `artefacto`),
+  `salida/bandeja/PARA-SUBIR-A-MANO.md`, `salida/revisiones/hojas/<id>.jpg` (6 fotogramas en fila, ≤150 KB)
+  y `salida/compilaciones/*.json`. Script: `.github/scripts/commit-bot.sh` (`git add -A` de esas rutas,
+  `git pull --rebase origin master`, hasta 3 pushes). `.gitignore` deja fuera todo lo pesado de `salida/`.
+- **Los mp4 no se commitean**: van al artifact `shorts-<fecha>` (14 días) del run; la compilación a
+  `compilacion-<fecha>`. Cada json lleva en `artefacto` el nombre y la URL del run donde está su mp4.
+- `BOLITA_NUBE=1` (lo pone el workflow): los json 'listo' sin mp4 son normales (no se marcan huérfanos), un
+  render fallido hace fallar el workflow (lo ya producido igual se commitea: los pasos de hojas, artifact y
+  commit corren con `always()`), y `exportar` lista los 'listo' cuyo mp4 está en un artifact.
+- Sin bucles: el push del bot usa `GITHUB_TOKEN`, que no dispara workflows; además los `paths` no incluyen
+  `salida/` y el job se salta si el último commit empieza con `bot:`. Para encadenar workflows: `gh workflow run`.
+- `concurrency: producir` (sin cancelar) evita dos producciones a la vez; `timeout-minutes: 90`.
+- Runner `ubuntu-latest` (2 vCPU / 7 GB): render con `--concurrency=2` (`BOLITA_CONCURRENCIA=2`). Se instala
+  `fonts-noto-color-emoji` (emoji a color de `carrera`) y el Chrome headless con `npx remotion browser ensure`.
+  Las fuentes de marca vienen de Google Fonts en tiempo de render (`src/marca/fuentes.ts`): no hay que instalarlas.
+
+**Subida a YouTube (apagada por defecto).** Se enciende si el run se lanza con `subir=true` o si la variable
+de repo `BOLITA_SUBIR` vale `1` (Settings → Secrets and variables → Actions → Variables). Entonces el workflow
+escribe `secrets/youtube-client.json` y `secrets/youtube-token.json` desde los secrets `YOUTUBE_CLIENT_JSON` y
+`YOUTUBE_TOKEN_JSON` (si faltan, falla con mensaje claro), corre el diario sin `--sin-subir` (→ `subir --todos`
+de lo renderizado en ese run) y borra `secrets/` al final. Mientras Google no audite el proyecto todo lo que sube
+la API queda privado: por eso está en `0`. Solo sube lo renderizado en el mismo run (los 'listo' de runs
+anteriores ya no tienen el mp4 en el runner: se suben a mano desde su artifact).
+
+**Comandos útiles**
+```bash
+gh workflow run producir.yml -f cuantos=1 -f subir=false     # producir ya
+gh run list --workflow producir.yml -L 5                      # últimos runs
+gh run watch <run-id>   ·   gh run view <run-id> --log-failed
+gh run download <run-id> -n shorts-AAAA-MM-DD -D ~/shorts     # bajar los mp4 de un run
+gh workflow run compilar.yml -f n=14                          # compilación a mano
+```
+
+**Límites (plan gratuito de cuenta personal, repo privado):** 2.000 min/mes de Actions y 500 MB de
+almacenamiento de artifacts. Ver "Fallos típicos".
+Medido (run de prueba 2026-11-04, 1 Short `dato` de 33 s): **5 min 16 s** en total (preparación ~1 min de
+instalación, voz + sonido 4 s, render 4 min 33 s con concurrency 2, hojas/artifact/commit 5 s); el mp4 pesa
+~10 MB. Estimado: 2 Shorts/día ≈ 10–11 min por run ≈ 330 min/mes (+ ~10 min por cada push al backlog y
+~20–40 min por compilación semanal). Artifacts: ~20 MB/día × 14 días ≈ 280 MB + la compilación.
 
 ## Agregar una plantilla nueva (`serie`, por ejemplo)
 1. `src/plantillas/serie/guion.ts` (schema zod `GuionSerie`; opcional `EnvoltorioSerie`), `index.tsx` con

@@ -98,6 +98,30 @@ con commit propio. Solo te consulta lo que cueste dinero o necesite una cuenta t
    `PARA-SUBIR-A-MANO.md`. Súbela (`npx tsx scripts/subir.mts subir --compilacion salida/compilaciones/<fecha>-compilacion.mp4`
    cuando la API esté auditada, o a mano). Fija en cada Short un comentario con pregunta (30 s desde el celular).
 
+## 7. Producción en la nube (GitHub Actions) — ya funciona sola
+Desde el 2026-11-04 los Shorts también se renderizan en GitHub, sin tu PC. Se ven en
+<https://github.com/sinostrozadev/bolita-lab/actions> ("Producir Shorts" a diario y con cada push al
+backlog; "Compilar semanal" los domingos). Detalle técnico: `docs/OPERACION.md` → "Producción en la nube".
+
+- **Bajar los mp4 de un run:** en la página del run, abajo, sección **Artifacts** → `shorts-<fecha>` (zip
+  con los mp4; duran 14 días). O por terminal:
+  `gh run download <run-id> -R sinostrozadev/bolita-lab -n shorts-<fecha> -D ~/shorts`.
+  Para revisar sin bajar nada: `salida/revisiones/hojas/<id>.jpg` (6 fotogramas por video) en el repo.
+- **Lista para subir a mano:** `salida/bandeja/PARA-SUBIR-A-MANO.md` en el repo; cada video dice en qué
+  artifact está su mp4.
+- **Credenciales de YouTube para la nube** (si las cambias o el token caduca, repite esto desde
+  `/home/santiago/idea`):
+  ```bash
+  gh secret set YOUTUBE_CLIENT_JSON -R sinostrozadev/bolita-lab < secrets/youtube-client.json
+  gh secret set YOUTUBE_TOKEN_JSON  -R sinostrozadev/bolita-lab < secrets/youtube-token.json
+  ```
+- **Encender la subida automática desde la nube** (solo cuando Google apruebe la auditoría del paso 4;
+  antes, todo lo subido por API queda privado): Settings → Secrets and variables → Actions → **Variables** →
+  `BOLITA_SUBIR` = `1` (hoy está en `0`). Por terminal:
+  `gh api -X PATCH repos/sinostrozadev/bolita-lab/actions/variables/BOLITA_SUBIR -f name=BOLITA_SUBIR -f value=1`.
+  Al encenderla, apaga la línea del diario en tu `crontab -e` para que no suban los dos.
+- **Producir ya, a mano:** Actions → "Producir Shorts" → **Run workflow** (`cuantos`, `subir`).
+
 ## Si algo se rompe
 - `TOKEN INVÁLIDO O REVOCADO`: borra `secrets/youtube-token.json` y repite el paso 3.
 - Dos primeras semanas = 2 Shorts al día (12:00 y 18:00). Si el canal arranca en otra fecha que el 3 de
