@@ -1,0 +1,134 @@
+# Producción de Shorts en la nube (docs/OPERACION.md § "Producción en la nube").
+# Renderiza guiones del backlog (voz, sonido, simulación, mp4), deja el estado commiteado
+# (salida/bandeja/<id>.json, backlog/guiones movidos, hoja de contacto, PARA-SUBIR-A-MANO.md) y
+# publica los mp4 como artifact "shorts-<fecha>" (14 días). La subida a YouTube está APAGADA salvo
+# que se pida con el input `subir` o la variable de repo BOLITA_SUBIR = 1.
+name: Producir Shorts
+
+on:
+  push:
+    branches: [master]
+    # Solo lo que produce un humano (guiones nuevos o cambios de calendario). NUNCA salida/:
+    # así el commit del bot no podría disparar este workflow aunque se pusheara con otro token.
+    paths:
+      - 'contenido/backlog/**'
+      - 'contenido/calendario.json'
+  workflow_dispatch:
+    inputs:
+      cuantos:
+        description: 'Cuántos Shorts renderizar'
+        default: '2'
+        type: string
+      subir:
+        description: 'Subir a YouTube (queda privado mientras Google no audite el proyecto)'
+        default: false
+        type: boolean
+  schedule:
+    - cron: '30 6 * * *' # 06:30 UTC = 03:30 en Chile (respaldo diario)
+
+permissions:
+  contents: write
+
+concurrency:
+  group: producir
+  cancel-in-progress: false
+
+jobs:
+  producir:
+    # Cinturón y tirantes contra bucles: un push cuyo último commit es del bot no produce.
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'bot:')
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    env:
+      BOLITA_NUBE: '1'
+      BOLITA_CONCURRENCIA: '2' # runner: 2 vCPU / 7 GB
+      BOLITA_MEMORIA_MIN_MB: '1500'
+      BOLITA_RENDER_MAX_MIN: '40'
+      CUANTOS: ${{ inputs.cuantos || '2' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master # siempre el último estado, aunque lo dispare un push anterior
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Fecha (Chile) y nombre del artifact
+        id: fecha
+        run: |
+          fecha=$(TZ=America/Santiago date +%F)
+          echo "fecha=$fecha" >> "$GITHUB_OUTPUT"
+          echo "BOLITA_ARTEFACTO=\`shorts-$fecha\` del run ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" >> "$GITHUB_ENV"
+
+      - name: Fuentes del sistema (emoji a color para carrera)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends fonts-noto-color-emoji > /dev/null
+          fc-list | grep -qi "Noto Color Emoji" && echo "✓ Noto Color Emoji"
+
+      - name: Dependencias
+        run: npm ci --no-audit --no-fund
+
+      - name: Chrome headless de Remotion
+        run: npx remotion browser ensure
+
+      - name: ¿Se sube a YouTube?
+        id: subida
+        run: |
+          if [ "${{ inputs.subir }}" = "true" ] || [ "${{ vars.BOLITA_SUBIR }}" = "1" ]; then
+            echo "subir=1" >> "$GITHUB_OUTPUT"; echo "Subida ENCENDIDA"
+          else
+            echo "subir=0" >> "$GITHUB_OUTPUT"; echo "Subida apagada (input subir=false y BOLITA_SUBIR≠1): solo PARA-SUBIR-A-MANO.md"
+          fi
+
+      - name: Credenciales de YouTube
+        if: steps.subida.outputs.subir == '1'
+        env:
+          CLIENTE: ${{ secrets.YOUTUBE_CLIENT_JSON }}
+          TOKEN: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+        run: |
+          if [ -z "$CLIENTE" ] || [ -z "$TOKEN" ]; then
+            echo "::error::Faltan los secrets YOUTUBE_CLIENT_JSON y/o YOUTUBE_TOKEN_JSON (ver docs/SANTIAGO.md, 'Producción en la nube')."
+            exit 1
+          fi
+          umask 077
+          mkdir -p secrets
+          printf '%s' "$CLIENTE" > secrets/youtube-client.json
+          printf '%s' "$TOKEN" > secrets/youtube-token.json
+          node -e 'for (const f of ["secrets/youtube-client.json","secrets/youtube-token.json"]) JSON.parse(require("fs").readFileSync(f,"utf8"))' \
+            || { echo "::error::Algún secret de YouTube no es JSON válido."; exit 1; }
+          echo "✓ credenciales escritas en secrets/ (no se commitean: .gitignore)"
+
+      - name: Producir (render + estado)
+        id: diario
+        run: |
+          banderas="--sin-guiones --cuantos $CUANTOS"
+          [ "${{ steps.subida.outputs.subir }}" = "1" ] || banderas="$banderas --sin-subir"
+          npx tsx scripts/diario.mts $banderas
+
+      - name: Hojas de contacto
+        if: always() && steps.diario.outcome != 'skipped'
+        run: npx tsx scripts/hojas.mts
+
+      - name: Publicar mp4 como artifact
+        if: always() && steps.diario.outcome != 'skipped'
+        uses: actions/upload-artifact@v4
+        with:
+          name: shorts-${{ steps.fecha.outputs.fecha }}
+          path: salida/bandeja/*.mp4
+          retention-days: 14
+          compression-level: 0 # el mp4 ya viene comprimido
+          if-no-files-found: warn
+
+      - name: Borrar credenciales
+        if: always()
+        run: rm -rf secrets
+
+      - name: Commit del estado
+        if: always() && steps.diario.outcome != 'skipped'
+        run: |
+          .github/scripts/commit-bot.sh "bot: producción ${{ steps.fecha.outputs.fecha }}" \
+            contenido/backlog contenido/guiones salida/bandeja salida/revisiones/hojas
+

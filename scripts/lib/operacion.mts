@@ -367,6 +367,9 @@ export const ordenarParaPublicar = <T extends { id: string; plantilla: string }>
  * margen de `graciaMin` desde la última modificación del json por si un render lo escribe antes del mp4.
  */
 export const detectarHuerfanos = (marcar = true, graciaMin = 10): EntradaConRuta[] => {
+  // En la nube (GitHub Actions) los mp4 viven en los artifacts de cada run, no en el checkout:
+  // un json 'listo' sin mp4 es lo normal y no debe pasar a 'error'.
+  if (enLaNube()) return [];
   const ahora = Date.now();
   const huerfanos = leerBandeja(true).filter(
     (e) => e.estado === 'listo' && !e.mp4Existe && ahora - fs.statSync(e.rutaJson).mtimeMs > graciaMin * 60_000,
@@ -535,6 +538,12 @@ export const infoVideo = async (ruta: string): Promise<{ duracion: number; ancho
     tieneAudio: j.streams.some((s) => s.codec_type === 'audio'),
   };
 };
+
+/**
+ * true si corre en la producción en la nube (workflow producir.yml define BOLITA_NUBE=1): ahí los
+ * mp4 no están en el checkout (van a artifacts) y la bandeja se lee solo por sus json commiteados.
+ */
+export const enLaNube = () => process.env.BOLITA_NUBE === '1';
 
 export const existeSecreto = (ruta: string) => fs.existsSync(ruta) && fs.statSync(ruta).size > 0;
 

@@ -1,0 +1,82 @@
+# Compilación semanal en la nube: video largo 1920×1080 con los últimos Shorts.
+# Los mp4 no están en el repo: se bajan de los artifacts "shorts-*" de los últimos 14 días.
+# La compilación queda como artifact "compilacion-<fecha>" (14 días); su json y la lista manual
+# (PARA-SUBIR-A-MANO.md) quedan commiteados. No sube a YouTube.
+name: Compilar semanal
+
+on:
+  schedule:
+    - cron: '30 7 * * 0' # domingos 07:30 UTC = 04:30 en Chile
+  workflow_dispatch:
+    inputs:
+      n:
+        description: 'Cuántos Shorts incluir'
+        default: '14'
+        type: string
+
+permissions:
+  contents: write
+  actions: read # para bajar artifacts de otros runs
+
+concurrency:
+  group: compilar
+  cancel-in-progress: false
+
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      BOLITA_NUBE: '1'
+      GH_TOKEN: ${{ github.token }}
+      N: ${{ inputs.n || '14' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Fecha (Chile)
+        id: fecha
+        run: echo "fecha=$(TZ=America/Santiago date +%F)" >> "$GITHUB_OUTPUT"
+
+      - name: Dependencias
+        run: npm ci --no-audit --no-fund
+
+      - name: Bajar los Shorts de los últimos 14 días
+        run: .github/scripts/bajar-shorts.sh 14
+
+      - name: Compilar
+        id: compilar
+        run: npx tsx scripts/compilar.mts --n "$N"
+
+      - name: Marcar dónde está el mp4 de la compilación
+        if: steps.compilar.outcome == 'success'
+        run: |
+          url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          for j in salida/compilaciones/${{ steps.fecha.outputs.fecha }}-compilacion*.json; do
+            [ -f "$j" ] || continue
+            node -e 'const fs=require("fs");const [f,a]=process.argv.slice(1);const j=JSON.parse(fs.readFileSync(f,"utf8"));j.artefacto=a;fs.writeFileSync(f,JSON.stringify(j,null,2)+"\n")' \
+              "$j" "\`compilacion-${{ steps.fecha.outputs.fecha }}\` del run $url"
+          done
+          npx tsx scripts/subir.mts exportar
+
+      - name: Publicar compilación como artifact
+        if: steps.compilar.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: compilacion-${{ steps.fecha.outputs.fecha }}
+          path: salida/compilaciones/*.mp4
+          retention-days: 14
+          compression-level: 0
+          if-no-files-found: error
+
+      - name: Commit del estado
+        if: always() && steps.compilar.outcome == 'success'
+        run: |
+          .github/scripts/commit-bot.sh "bot: compilación ${{ steps.fecha.outputs.fecha }}" \
+            salida/compilaciones salida/bandeja/PARA-SUBIR-A-MANO.md

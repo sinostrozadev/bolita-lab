@@ -3,6 +3,12 @@
  * correr a mano.
  *
  *   npx tsx scripts/diario.mts [--solo-render] [--solo-subir] [--sin-generar] [--n K] [--dry-run]
+ *                              [--sin-guiones] [--cuantos K] [--sin-subir]
+ *
+ * --sin-guiones = --sin-generar y --cuantos K = --n K (nombres que usa .github/workflows/producir.yml).
+ * --sin-subir: no llama a `subir --todos` aunque haya token; igual actualiza PARA-SUBIR-A-MANO.md.
+ * Con BOLITA_NUBE=1 (GitHub Actions) los mp4 van a artifacts y no se marcan huérfanos; si además
+ * hay BOLITA_ARTEFACTO, cada entrada nueva de la bandeja lo guarda en `artefacto` (dónde bajar el mp4).
  *
  * (0) Marca como 'error' los .json 'listo' de la bandeja que no tienen mp4 (renders interrumpidos).
  * (a) Si la bandeja tiene menos de `minimoBandeja` videos 'listo' (o se pasó --n K: exactamente K
@@ -21,7 +27,7 @@ import { parseArgs } from 'node:util';
 import {
   ARCHIVO_TOKEN_YT, DIR_BANDEJA, DIR_GUIONES, DIR_SALIDA, DIR_TRABAJO, RAIZ,
   asegurarDirectorios, cargarCalendario, composicionDe, correr, crearLog, detectarHuerfanos, duracionVideo,
-  escribirJson, existeSecreto, fechaHoyLocal, leerBacklog, leerBandeja, memoriaDisponibleMb, ordenRotacion,
+  enLaNube, escribirJson, existeSecreto, fechaHoyLocal, leerBacklog, leerBandeja, memoriaDisponibleMb, ordenRotacion,
   resumenSalida, siguientePlantilla, slugificar,
   type EntradaBandeja, type Guion, type Log, type Plantilla,
 } from './lib/operacion.mjs';
@@ -32,13 +38,22 @@ const { values: opc } = parseArgs({
     'solo-render': { type: 'boolean', default: false },
     'solo-subir': { type: 'boolean', default: false },
     'sin-generar': { type: 'boolean', default: false },
+    /** Alias de --sin-generar (sin `claude -p`: en la nube los guiones llegan hechos al backlog). */
+    'sin-guiones': { type: 'boolean', default: false },
+    /** No sube a YouTube (solo exporta la lista manual). */
+    'sin-subir': { type: 'boolean', default: false },
     /** Renderiza exactamente K videos seguidos (aunque la bandeja ya tenga el mínimo). */
     n: { type: 'string' },
+    /** Alias de --n. */
+    cuantos: { type: 'string' },
     /** Tope de renders cuando se rellena la bandeja hasta el mínimo (por defecto = minimoBandeja). */
     'max-renders': { type: 'string' },
     'dry-run': { type: 'boolean', default: false },
   },
 });
+
+if (opc.cuantos !== undefined && opc.n === undefined) opc.n = opc.cuantos;
+if (opc['sin-guiones']) opc['sin-generar'] = true;
 
 const ARCHIVO_LOCK = path.join(DIR_SALIDA, 'diario.lock');
 const TSX = path.join(RAIZ, 'node_modules', '.bin', 'tsx');
@@ -175,6 +190,7 @@ const renderizarUno = async (g: Guion & { ruta: string }, log: Log): Promise<boo
       const entrada: EntradaBandeja = {
         id: g.id, plantilla: g.plantilla, titulo: g.titulo, descripcion: g.descripcion, hashtags: g.hashtags,
         duracionSeg, estado: 'listo', tipo: 'short',
+        ...(process.env.BOLITA_ARTEFACTO ? { artefacto: process.env.BOLITA_ARTEFACTO } : {}),
       };
       escribirJson(path.join(DIR_BANDEJA, `${g.id}.json`), entrada); // json SIEMPRE después del mp4
       log(`  ✓ listo ${g.id} (${duracionSeg}s de video, ${((Date.now() - inicio) / 1000).toFixed(0)}s de render)`);
@@ -225,11 +241,14 @@ const pasoRender = async (log: Log) => {
     log(`(a) Render ${renders + 1}/${tope}${forzados ? ' (--n)' : ''} · bandeja: ${listos} listo(s) · ${elegido.plantilla} ← ${rel(elegido.ruta)}`);
     if (opc['dry-run']) { log(`  [dry-run] se promovería a ${fecha}-${elegido.plantilla}-${slugDeBacklog(elegido)} y se renderizaría.`); return; }
     const g = promover(elegido, fecha, log);
+    let ok = false;
     try {
-      await renderizarUno(g, log);
+      ok = await renderizarUno(g, log);
     } catch (e) {
       marcarError(g, `excepción: ${(e as Error).message}`, log);
     }
+    // En la nube un render fallido hace fallar el workflow (visible en Actions); en el cron local, no.
+    if (!ok && enLaNube()) process.exitCode = 1;
     renders++;
   }
   log(`(a) ${renders} render(s) en esta corrida (tope ${tope}).`);
@@ -267,10 +286,15 @@ const pasoGenerar = async (log: Log) => {
 const pasoSubir = async (log: Log) => {
   const listos = leerBandeja().filter((e) => e.estado === 'listo' && e.mp4Existe).length;
   const subir = path.join(RAIZ, 'scripts', 'subir.mts');
-  if (existeSecreto(ARCHIVO_TOKEN_YT)) {
+  if (opc['sin-subir']) {
+    log(`(c) --sin-subir: no se sube; exportar → salida/bandeja/PARA-SUBIR-A-MANO.md (${listos} listo(s)).`);
+  } else if (existeSecreto(ARCHIVO_TOKEN_YT)) {
     log(`(c) Token de YouTube presente: subir --todos (${listos} listo(s)).`);
     const r = await correr(TSX, [subir, 'subir', '--todos', ...(opc['dry-run'] ? ['--dry-run'] : [])], { log, timeoutMs: TIEMPO_SUBIR });
-    if (r.codigo !== 0) log(`  ✗ subir terminó con código ${r.codigo}: ${resumenSalida(r.salida, 2)}`);
+    if (r.codigo !== 0) {
+      log(`  ✗ subir terminó con código ${r.codigo}: ${resumenSalida(r.salida, 2)}`);
+      if (enLaNube()) process.exitCode = 1;
+    }
   } else {
     log(`(c) Sin ${rel(ARCHIVO_TOKEN_YT)}: exportar → salida/bandeja/PARA-SUBIR-A-MANO.md (${listos} listo(s)).`);
   }
@@ -284,7 +308,7 @@ const main = async () => {
   asegurarDirectorios();
   const zona = cargarCalendario().zonaHoraria;
   const log = crearLog(fechaHoyLocal(zona), zona);
-  const banderas = ['solo-render', 'solo-subir', 'sin-generar', 'dry-run'].filter((k) => opc[k as keyof typeof opc]).map((k) => `--${k}`);
+  const banderas = ['solo-render', 'solo-subir', 'sin-generar', 'sin-subir', 'dry-run'].filter((k) => opc[k as keyof typeof opc]).map((k) => `--${k}`);
   if (opc.n) banderas.push(`--n ${opc.n}`);
   log(`══ diario ${banderas.join(' ')} (pid ${process.pid}, RAM disponible ${memoriaDisponibleMb()} MB)`);
   if (!tomarLock(log)) process.exit(3);

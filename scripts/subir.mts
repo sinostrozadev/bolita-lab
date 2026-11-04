@@ -20,7 +20,7 @@ import { google } from 'googleapis';
 import type { OAuth2Client, Credentials } from 'google-auth-library';
 import {
   ARCHIVO_CLIENTE_YT, ARCHIVO_TOKEN_YT, DIR_BANDEJA, DIR_SECRETS, RAIZ,
-  asegurarDirectorios, cargarCalendario, categoriaDe, detectarHuerfanos, escribirJson, existeSecreto, formatoDuracion,
+  asegurarDirectorios, cargarCalendario, categoriaDe, detectarHuerfanos, enLaNube, escribirJson, existeSecreto, formatoDuracion,
   formatoLocal, guardarEntrada, leerBandeja, leerJson, normalizarHashtag, ordenarParaPublicar, quitarHashtagsFinales,
   siguienteRanura, type Calendario, type EntradaConRuta,
 } from './lib/operacion.mjs';
@@ -443,11 +443,15 @@ const subir = async () => {
 };
 
 // ---------------------------------------------------------------- pendientes / exportar
-/** Videos 'listo' con mp4, en orden de publicación (rotación) y con la ranura que les tocaría. */
+/**
+ * Videos 'listo' con mp4, en orden de publicación (rotación) y con la ranura que les tocaría.
+ * En la nube (BOLITA_NUBE=1) el mp4 está en un artifact del run, así que basta el json.
+ */
 const planPublicacion = (calendario: Calendario, conCompilaciones = false) => {
   const bandeja = leerBandeja(conCompilaciones);
-  const shorts = ordenarParaPublicar(bandeja.filter((e) => e.estado === 'listo' && e.mp4Existe && e.tipo !== 'largo'), calendario);
-  const largos = bandeja.filter((e) => e.estado === 'listo' && e.mp4Existe && e.tipo === 'largo');
+  const conVideo = (e: EntradaConRuta) => e.mp4Existe || enLaNube();
+  const shorts = ordenarParaPublicar(bandeja.filter((e) => e.estado === 'listo' && conVideo(e) && e.tipo !== 'largo'), calendario);
+  const largos = bandeja.filter((e) => e.estado === 'listo' && conVideo(e) && e.tipo === 'largo');
   const asignadas: Date[] = [];
   const asignadasLargo: Date[] = [];
   const conRanura = (e: EntradaConRuta) => {
@@ -498,7 +502,9 @@ export const exportar = (silencioso = false) => {
     lineas.push(
       `## ${n}. ${e.titulo}`,
       '',
-      `- **Archivo:** \`${e.rutaMp4}\``,
+      enLaNube()
+        ? `- **Archivo:** \`${path.basename(e.rutaMp4)}\` dentro del artifact ${typeof e.artefacto === 'string' ? e.artefacto : '(sin dato: búscalo en los runs de Actions)'}`
+        : `- **Archivo:** \`${e.rutaMp4}\``,
       `- **Programar para:** ${formatoLocal(ranura, zona)}`,
       `- **Id:** \`${e.id}\` · **Plantilla:** ${e.tipo === 'largo' ? 'compilación (video largo)' : e.plantilla} · **Duración:** ${formatoDuracion(e.duracionSeg)} · **Categoría:** ${meta.categoryId === '28' ? 'Ciencia y tecnología' : 'Entretenimiento'}`,
       ...(rutaMiniatura(e) ? [`- **Miniatura:** \`${rutaMiniatura(e)}\``] : []),

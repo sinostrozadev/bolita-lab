@@ -8,7 +8,7 @@
  *    --desde (por defecto, hace 7 días). Por video, 6 fotogramas (0 s, 1,5 s, 25 %, 50 %, 75 %, último)
  *    a 540 px de ancho → salida/revisiones/<fecha>/fotogramas/<id>-<n>.jpg, y una hoja de contacto con
  *    los 6 en fila → <id>-hoja.jpg. Usa el ffmpeg de Remotion (no tiene `tile`/`hstack`: la hoja se
- *    compone en Node con frames crudos, como compilar.mts).
+ *    compone en Node con frames crudos, como compilar.mts; ver scripts/lib/fotogramas.mts).
  * 2. Métricas (opcional, nunca rompe): Data API videos.list (vistas, likes, comentarios) y YouTube
  *    Analytics (views, averageViewPercentage, averageViewDuration, subscribersGained por video).
  *    → salida/revisiones/<fecha>/metricas.json. Si Analytics no está habilitada, el informe dice cómo.
@@ -33,7 +33,6 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
 import { parseArgs } from 'node:util';
 import { google } from 'googleapis';
 import type { OAuth2Client, Credentials } from 'google-auth-library';
@@ -43,6 +42,7 @@ import {
   infoVideo, leerBandeja, leerJson, memoriaDisponibleMb, resumenSalida,
   type EntradaConRuta, type Log, type Plantilla,
 } from './lib/operacion.mjs';
+import { ETIQUETAS, FFMPEG_R, extraerFotogramas } from './lib/fotogramas.mjs';
 
 const { values: opc } = parseArgs({
   args: process.argv.slice(2),
@@ -56,10 +56,6 @@ const { values: opc } = parseArgs({
 });
 
 const MIN = 60_000;
-const DIR_COMPOSITOR = path.join(RAIZ, 'node_modules', '@remotion', 'compositor-linux-x64-gnu');
-const FFMPEG_R = path.join(DIR_COMPOSITOR, 'ffmpeg');
-const ENV_FFMPEG = { LD_LIBRARY_PATH: [DIR_COMPOSITOR, process.env.LD_LIBRARY_PATH].filter(Boolean).join(':') };
-const ANCHO = 540;
 const LOCK_RENDER = '/tmp/bolita-render.lock';
 const MEMORIA_RENDER_MB = parseInt(process.env.BOLITA_REVISION_MEMORIA_MB ?? '1500', 10);
 const TIEMPO_CLAUDE = parseInt(process.env.BOLITA_REVISION_CLAUDE_MIN ?? '60', 10) * MIN;
@@ -92,20 +88,6 @@ const inicioRango = (): Date => {
   return new Date(Date.now() - 7 * 24 * 60 * MIN);
 };
 
-// ---------------------------------------------------------------- procesos binarios
-/** Ejecuta un comando y devuelve stdout binario (ffmpeg → frames crudos). */
-const correrBinario = (comando: string, args: string[], entrada?: Buffer): Promise<{ codigo: number; datos: Buffer; error: string }> =>
-  new Promise((resolver) => {
-    const hijo = spawn(comando, args, { env: { ...process.env, ...ENV_FFMPEG }, stdio: [entrada ? 'pipe' : 'ignore', 'pipe', 'pipe'] });
-    const trozos: Buffer[] = [];
-    let error = '';
-    hijo.stdout?.on('data', (b: Buffer) => trozos.push(b));
-    hijo.stderr?.on('data', (b: Buffer) => { error += b.toString(); });
-    hijo.on('error', (e) => resolver({ codigo: 127, datos: Buffer.alloc(0), error: String(e) }));
-    hijo.on('close', (codigo) => resolver({ codigo: codigo ?? 1, datos: Buffer.concat(trozos), error }));
-    if (entrada) hijo.stdin?.end(entrada);
-  });
-
 const git = (args: string[], cwd = RAIZ) => correr('git', args, { cwd, silencioso: true });
 
 // ---------------------------------------------------------------- 1. evidencia
@@ -126,58 +108,6 @@ const seleccionarVideos = (desde: Date): EntradaConRuta[] =>
       const render = fs.statSync(e.rutaMp4).mtime;
       return (subido && subido >= desde) || render >= desde;
     });
-
-/** Instantes de los 6 fotogramas que pide MEJORA-CONTINUA §1.1. */
-const instantes = (d: number) => [0, Math.min(1.5, Math.max(0, d - 0.1)), d * 0.25, d * 0.5, d * 0.75, Math.max(0, d - 0.1)];
-const ETIQUETAS = ['0 s', '1,5 s', '25 %', '50 %', '75 %', 'último'];
-
-/** Extrae un fotograma escalado como RGB crudo. */
-const fotogramaCrudo = async (mp4: string, t: number, alto: number): Promise<Buffer> => {
-  const r = await correrBinario(FFMPEG_R, [
-    '-v', 'error', '-ss', t.toFixed(3), '-i', mp4, '-frames:v', '1',
-    // Este ffmpeg no trae el muxer "rawvideo": image2pipe + códec rawvideo (como compilar.mts).
-    '-vf', `scale=${ANCHO}:${alto}`, '-c:v', 'rawvideo', '-pix_fmt', 'rgb24', '-f', 'image2pipe', 'pipe:1',
-  ]);
-  if (r.codigo !== 0 || r.datos.length !== ANCHO * alto * 3) throw new Error(`ffmpeg (fotograma ${t.toFixed(1)} s): ${r.error.trim().split('\n').pop() || `tamaño ${r.datos.length}`}`);
-  return r.datos;
-};
-
-/** Codifica RGB crudo a JPG (escalado opcional). */
-const aJpg = async (crudo: Buffer, ancho: number, alto: number, destino: string, escala?: string) => {
-  const r = await correrBinario(FFMPEG_R, [
-    '-v', 'error', '-y', '-f', 'image2pipe', '-frame_size', String(ancho * alto * 3), '-c:v', 'rawvideo',
-    '-pixel_format', 'rgb24', '-video_size', `${ancho}x${alto}`, '-i', 'pipe:0',
-    '-frames:v', '1', '-vf', `${escala ? `scale=${escala},` : ''}format=yuvj420p`, '-q:v', '4', destino,
-  ], crudo);
-  if (r.codigo !== 0) throw new Error(`ffmpeg (jpg): ${r.error.trim().split('\n').pop()}`);
-};
-
-/** 6 fotogramas + hoja de contacto (6 en fila) de un mp4. Devuelve rutas. */
-const extraerFotogramas = async (mp4: string, base: string, dir: string, duracion: number, proporcion: number) => {
-  fs.mkdirSync(dir, { recursive: true });
-  const alto = Math.round((ANCHO * proporcion) / 2) * 2;
-  const crudos: Buffer[] = [];
-  const rutas: string[] = [];
-  for (const [n, t] of instantes(duracion).entries()) {
-    const crudo = await fotogramaCrudo(mp4, t, alto);
-    const destino = path.join(dir, `${base}-${n + 1}.jpg`);
-    await aJpg(crudo, ANCHO, alto, destino);
-    crudos.push(crudo);
-    rutas.push(destino);
-  }
-  // Hoja de contacto: concatenar fila a fila los 6 frames (sin filtros de ffmpeg que este build no trae).
-  const anchoHoja = ANCHO * crudos.length;
-  const hoja = Buffer.alloc(anchoHoja * alto * 3);
-  const fila = ANCHO * 3;
-  for (let y = 0; y < alto; y++) {
-    crudos.forEach((c, k) => c.copy(hoja, y * anchoHoja * 3 + k * fila, y * fila, (y + 1) * fila));
-    // separador oscuro de 4 px entre fotogramas
-    for (let k = 1; k < crudos.length; k++) hoja.fill(0, y * anchoHoja * 3 + k * fila, y * anchoHoja * 3 + k * fila + 12);
-  }
-  const rutaHoja = path.join(dir, `${base}-hoja.jpg`);
-  await aJpg(hoja, anchoHoja, alto, rutaHoja, `${Math.round(anchoHoja * 2 / 3 / 2) * 2}:-2`);
-  return { rutas, hoja: rutaHoja };
-};
 
 const leerGuionDe = (id: string): Record<string, unknown> | null => {
   const ruta = path.join(DIR_GUIONES, `${id}.json`);
