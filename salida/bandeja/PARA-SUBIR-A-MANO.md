@@ -1,6 +1,6 @@
 # Videos listos para subir a mano (YouTube Studio)
 
-Generado: 2026-11-04 02:58 (America/Santiago) · 9 Short(s) + 1 video(s) largo(s), en orden de calendario.
+Generado: 2026-11-04 03:30 (America/Santiago) · 10 Short(s) + 1 video(s) largo(s), en orden de calendario.
 
 Cómo: YouTube Studio → **Crear → Subir videos** → elige el archivo indicado. Copia el título y la
 descripción **tal cual** (la descripción ya trae los hashtags al final). En "Público": **No, no es
@@ -106,44 +106,48 @@ Simulación física determinista hecha en Bolita Lab.
 shorts, satisfying, fisica, bolita, neon, mozart, marchaturca
 ```
 
-## 4. Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso
+## 4. Naces con unos 300 huesos y de adulto tienes 206
 
-- **Archivo:** `/home/santiago/idea/salida/bandeja/2026-11-04-dato-luz-pasado.mp4`
+- **Archivo:** `/home/santiago/idea/salida/bandeja/2026-11-04-dato-huesos-bebe-300-adulto-206.mp4`
 - **Programar para:** 2026-11-10 18:00 (America/Santiago)
-- **Id:** `2026-11-04-dato-luz-pasado` · **Plantilla:** dato · **Duración:** 00:32 · **Categoría:** Ciencia y tecnología
+- **Id:** `2026-11-04-dato-huesos-bebe-300-adulto-206` · **Plantilla:** dato · **Duración:** 00:33 · **Categoría:** Ciencia y tecnología
 
 **Título:**
 ```
-Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso
+Naces con unos 300 huesos y de adulto tienes 206
 ```
 
 **Descripción:**
 ```
-La luz del Sol tarda 8 minutos y 19 segundos en llegar hasta ti, y la de Próxima Centauri, 4,24 años. Cuando miras el cielo, miras el pasado.
+Al nacer tenemos alrededor de 300 huesos, muchos de cartílago, que se fusionan hasta quedar 206 en la adultez.
 
 Fuentes:
-- NASA, Sun Fact Sheet (distancia media Sol–Tierra 149,6 millones de km; la luz tarda unos 499 s): https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html
-- NASA, Moon Fact Sheet (distancia media 384.400 km, luz ≈ 1,28 s): https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
-- NASA, Proxima Centauri (a 4,24 años luz): https://science.nasa.gov/exoplanets/proxima-centauri-b/
+- Cleveland Clinic, Bones: https://my.clevelandclinic.org/health/body/21868-bones
+- Nemours KidsHealth, Your bones: https://kidshealth.org/en/teens/bones-muscles-joints.html
+- Cleveland Clinic, Fontanelle (la anterior se cierra hacia los 18–24 meses): https://my.clevelandclinic.org/health/body/23209-fontanelle
+- Cleveland Clinic: cada mano tiene 27 huesos y cada pie 26 → 54 + 52 = 106 de 206.
+- Webb & Suchey 1985, Am. J. Phys. Anthropol. 68:457 (la epífisis medial de la clavícula se fusiona por completo hacia los ~22–30 años; es de las últimas).
 
 Imágenes: Wikimedia Commons
-- The Milky Way arch in the steppes of Kazakhstan · Astrobond · CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0) · https://commons.wikimedia.org/wiki/File:The_Milky_Way_arch_in_the_steppes_of_Kazakhstan.jpg
-- Full Moon Luc Viatour · Luc Viatour · CC BY-SA 3.0 (http://creativecommons.org/licenses/by-sa/3.0/) · https://commons.wikimedia.org/wiki/File:Full_Moon_Luc_Viatour.jpg
-- The Sun by the Atmospheric Imaging Assembly of NASA's Solar Dynamics Observatory - 20100819 · NASA/SDO (AIA) · Public domain · https://commons.wikimedia.org/wiki/File:The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg
-- New shot of Proxima Centauri, our nearest neighbour (10581847073) · Hubble ESA · CC BY 2.0 (https://creativecommons.org/licenses/by/2.0) · https://commons.wikimedia.org/wiki/File:New_shot_of_Proxima_Centauri,_our_nearest_neighbour_(10581847073).jpg
-- ESO - Milky Way · ESO/ S. Brunier · CC BY 4.0 (https://creativecommons.org/licenses/by/4.0) · https://commons.wikimedia.org/wiki/File:ESO_-_Milky_Way.jpg
+- Human skeletons · Tiia Monto · CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0) · https://commons.wikimedia.org/wiki/File:Human_skeletons.jpg
+- NMHM IMG 2058-fetal-skeletons-4-5-7-months (9699410157) · Joe Loong from Reston, USA · CC BY-SA 2.0 (https://creativecommons.org/licenses/by-sa/2.0) · https://commons.wikimedia.org/wiki/File:NMHM_IMG_2058-fetal-skeletons-4-5-7-months_(9699410157).jpg
+- X-ray of the hand of an 8 year old male - case 1 - dorsoplantar · Staff at the Department of Radiology, UC San Diego Health . · Public domain · https://commons.wikimedia.org/wiki/File:X-ray_of_the_hand_of_an_8_year_old_male_-_case_1_-_dorsoplantar.jpg
+- Sobo 1909 105 · Dr. Johannes Sobotta · Public domain · https://commons.wikimedia.org/wiki/File:Sobo_1909_105.png
+- Human Skeleton 2 · Mr Khubaib Sani · CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0) · https://commons.wikimedia.org/wiki/File:Human_Skeleton_2.jpg
+- Johann Conrad Zeller - Bones of the hand and foot, c1833 -Wellcome Collection · Johann Conrad Zeller · Public domain · https://commons.wikimedia.org/wiki/File:Johann_Conrad_Zeller_-_Bones_of_the_hand_and_foot,_c1833_-Wellcome_Collection.jpg
+- Clavicula - dex · MAKY.OREL · CC0 · https://commons.wikimedia.org/wiki/File:Clavicula_-_dex.jpg
 
-#shorts #datos #curiosidades #espacio #estrellas #astronomia #bolitalab
+#shorts #datos #curiosidades #cuerpohumano #huesos #bolitalab
 ```
 
 **Hashtags:**
 ```
-#shorts #datos #curiosidades #espacio #estrellas #astronomia #bolitalab
+#shorts #datos #curiosidades #cuerpohumano #huesos #bolitalab
 ```
 
 **Etiquetas** (campo "Etiquetas" de Studio):
 ```
-shorts, datos, curiosidades, espacio, estrellas, astronomia, bolitalab
+shorts, datos, curiosidades, cuerpohumano, huesos, bolitalab
 ```
 
 ## 5. ¿Messi, CR7, Neymar o Mbappé? ⚽ ¿Quién gana la carrera?
@@ -203,10 +207,78 @@ Simulación física determinista hecha en Bolita Lab.
 shorts, satisfying, fisica, bolita, neon, pachelbel, canon
 ```
 
-## 7. Tu corazón late casi 3.000 millones de veces en tu vida
+## 7. Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso
+
+- **Archivo:** `/home/santiago/idea/salida/bandeja/2026-11-04-dato-luz-pasado.mp4`
+- **Programar para:** 2026-11-12 12:00 (America/Santiago)
+- **Id:** `2026-11-04-dato-luz-pasado` · **Plantilla:** dato · **Duración:** 00:32 · **Categoría:** Ciencia y tecnología
+
+**Título:**
+```
+Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso
+```
+
+**Descripción:**
+```
+La luz del Sol tarda 8 minutos y 19 segundos en llegar hasta ti, y la de Próxima Centauri, 4,24 años. Cuando miras el cielo, miras el pasado.
+
+Fuentes:
+- NASA, Sun Fact Sheet (distancia media Sol–Tierra 149,6 millones de km; la luz tarda unos 499 s): https://nssdc.gsfc.nasa.gov/planetary/factsheet/sunfact.html
+- NASA, Moon Fact Sheet (distancia media 384.400 km, luz ≈ 1,28 s): https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html
+- NASA, Proxima Centauri (a 4,24 años luz): https://science.nasa.gov/exoplanets/proxima-centauri-b/
+
+Imágenes: Wikimedia Commons
+- The Milky Way arch in the steppes of Kazakhstan · Astrobond · CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0) · https://commons.wikimedia.org/wiki/File:The_Milky_Way_arch_in_the_steppes_of_Kazakhstan.jpg
+- Full Moon Luc Viatour · Luc Viatour · CC BY-SA 3.0 (http://creativecommons.org/licenses/by-sa/3.0/) · https://commons.wikimedia.org/wiki/File:Full_Moon_Luc_Viatour.jpg
+- The Sun by the Atmospheric Imaging Assembly of NASA's Solar Dynamics Observatory - 20100819 · NASA/SDO (AIA) · Public domain · https://commons.wikimedia.org/wiki/File:The_Sun_by_the_Atmospheric_Imaging_Assembly_of_NASA%27s_Solar_Dynamics_Observatory_-_20100819.jpg
+- New shot of Proxima Centauri, our nearest neighbour (10581847073) · Hubble ESA · CC BY 2.0 (https://creativecommons.org/licenses/by/2.0) · https://commons.wikimedia.org/wiki/File:New_shot_of_Proxima_Centauri,_our_nearest_neighbour_(10581847073).jpg
+- ESO - Milky Way · ESO/ S. Brunier · CC BY 4.0 (https://creativecommons.org/licenses/by/4.0) · https://commons.wikimedia.org/wiki/File:ESO_-_Milky_Way.jpg
+
+#shorts #datos #curiosidades #espacio #estrellas #astronomia #bolitalab
+```
+
+**Hashtags:**
+```
+#shorts #datos #curiosidades #espacio #estrellas #astronomia #bolitalab
+```
+
+**Etiquetas** (campo "Etiquetas" de Studio):
+```
+shorts, datos, curiosidades, espacio, estrellas, astronomia, bolitalab
+```
+
+## 8. ¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas
+
+- **Archivo:** `/home/santiago/idea/salida/bandeja/2026-11-04-carrera-mascotas.mp4`
+- **Programar para:** 2026-11-12 18:00 (America/Santiago)
+- **Id:** `2026-11-04-carrera-mascotas` · **Plantilla:** carrera · **Duración:** 00:31 · **Categoría:** Entretenimiento
+
+**Título:**
+```
+¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas
+```
+
+**Descripción:**
+```
+Perro vs Gato vs Hámster vs Loro: cuatro bolitas de neón bajan por un tablero de clavijas. ¿Tu mascota gana? Física real, sonido en cada rebote. Defiende a la tuya en los comentarios.
+
+#shorts #carrera #satisfying #bolitas #fisica #mascotas #perro #gato
+```
+
+**Hashtags:**
+```
+#shorts #carrera #satisfying #bolitas #fisica #mascotas #perro #gato
+```
+
+**Etiquetas** (campo "Etiquetas" de Studio):
+```
+shorts, carrera, satisfying, bolitas, fisica, mascotas, perro, gato
+```
+
+## 9. Tu corazón late casi 3.000 millones de veces en tu vida
 
 - **Archivo:** `/home/santiago/idea/salida/bandeja/2026-11-05-dato-corazon-latidos.mp4`
-- **Programar para:** 2026-11-12 12:00 (America/Santiago)
+- **Programar para:** 2026-11-13 12:00 (America/Santiago)
 - **Id:** `2026-11-05-dato-corazon-latidos` · **Plantilla:** dato · **Duración:** 00:29 · **Categoría:** Ciencia y tecnología
 
 **Título:**
@@ -241,38 +313,10 @@ Imágenes: Wikimedia Commons
 shorts, datos, curiosidades, corazon, cuerpohumano, biologia, bolitalab
 ```
 
-## 8. ¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas
-
-- **Archivo:** `/home/santiago/idea/salida/bandeja/2026-11-04-carrera-mascotas.mp4`
-- **Programar para:** 2026-11-12 18:00 (America/Santiago)
-- **Id:** `2026-11-04-carrera-mascotas` · **Plantilla:** carrera · **Duración:** 00:31 · **Categoría:** Entretenimiento
-
-**Título:**
-```
-¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas
-```
-
-**Descripción:**
-```
-Perro vs Gato vs Hámster vs Loro: cuatro bolitas de neón bajan por un tablero de clavijas. ¿Tu mascota gana? Física real, sonido en cada rebote. Defiende a la tuya en los comentarios.
-
-#shorts #carrera #satisfying #bolitas #fisica #mascotas #perro #gato
-```
-
-**Hashtags:**
-```
-#shorts #carrera #satisfying #bolitas #fisica #mascotas #perro #gato
-```
-
-**Etiquetas** (campo "Etiquetas" de Studio):
-```
-shorts, carrera, satisfying, bolitas, fisica, mascotas, perro, gato
-```
-
-## 9. ¿Qué día de la semana gana? 📅 Carrera de bolitas
+## 10. ¿Qué día de la semana gana? 📅 Carrera de bolitas
 
 - **Archivo:** `/home/santiago/idea/salida/bandeja/2026-11-05-carrera-dias-semana.mp4`
-- **Programar para:** 2026-11-13 12:00 (America/Santiago)
+- **Programar para:** 2026-11-13 18:00 (America/Santiago)
 - **Id:** `2026-11-05-carrera-dias-semana` · **Plantilla:** carrera · **Duración:** 00:37 · **Categoría:** Entretenimiento
 
 **Título:**
