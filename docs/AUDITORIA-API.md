@@ -92,3 +92,12 @@ Los campos marcados **[SANTIAGO]** solo los sabe él.
 - 2026-11-04 22:05: **Publish app → In production** (Santiago). Branding completado por Claude (URLs del sitio
   y dominio autorizado `sinostrozadev.github.io`). Pendiente: reautorizar para un refresh token sin caducidad
   de 7 días y actualizar el secreto `YOUTUBE_TOKEN_JSON` en GitHub.
+- 2026-11-04 22:30–22:55: reautorizado 2 veces con la app ya en producción y el token siguió llegando con
+  `refresh_token_expires_in = 604799` (7 días). La doc oficial solo asocia los 7 días al estado Testing, así que
+  se probó lo otro que estaba raro: en **Data Access** no había ningún scope declarado (el Verification Center
+  decía "no pide scopes sensibles"). Claude declaró `youtube` y `youtube.upload` y guardó ("Data access changes
+  saved"). Ahora el Verification Center dice "Verification required" — es la verificación OAuth, distinta de la
+  auditoría de la API; con un solo usuario la app funciona sin verificar (pantalla de "app no verificada" +
+  tope de 100 usuarios). 3er intento de reautorización lanzado (`autorizar3.log`). Si sigue en 7 días:
+  reintentar al día siguiente (propagación) y, en último caso, hacer que el diario avise cuando el token tenga
+  >5 días para reautorizar a tiempo.
