@@ -7,16 +7,16 @@ HOME=/home/santiago
 
 # Diario 03:30: marca huérfanos, renderiza hasta tener 3 'listo' (de a uno, esperando RAM),
 # genera guiones si el backlog baja de 6 (claude -p) y sube a YouTube o actualiza PARA-SUBIR-A-MANO.md.
-30 3 * * * cd /home/santiago/idea && /home/santiago/idea/node_modules/.bin/tsx /home/santiago/idea/scripts/diario.mts >> /home/santiago/idea/salida/logs/cron.log 2>&1
+30 3 * * * cd /home/santiago/projects/yt/bolita-lab && /home/santiago/projects/yt/bolita-lab/node_modules/.bin/tsx /home/santiago/projects/yt/bolita-lab/scripts/diario.mts >> /home/santiago/projects/yt/bolita-lab/salida/logs/cron.log 2>&1
 
 # Compilación semanal, domingos 04:30: video largo 1920×1080 con los últimos 14 Shorts (~8–10 min).
 # Se genera sola; se sube con `subir --compilacion` (o a mano: queda en PARA-SUBIR-A-MANO.md).
-30 4 * * 0 cd /home/santiago/idea && /home/santiago/idea/node_modules/.bin/tsx /home/santiago/idea/scripts/compilar.mts --n 14 >> /home/santiago/idea/salida/logs/cron.log 2>&1 && /home/santiago/idea/node_modules/.bin/tsx /home/santiago/idea/scripts/subir.mts exportar >> /home/santiago/idea/salida/logs/cron.log 2>&1
+30 4 * * 0 cd /home/santiago/projects/yt/bolita-lab && /home/santiago/projects/yt/bolita-lab/node_modules/.bin/tsx /home/santiago/projects/yt/bolita-lab/scripts/compilar.mts --n 14 >> /home/santiago/projects/yt/bolita-lab/salida/logs/cron.log 2>&1 && /home/santiago/projects/yt/bolita-lab/node_modules/.bin/tsx /home/santiago/projects/yt/bolita-lab/scripts/subir.mts exportar >> /home/santiago/projects/yt/bolita-lab/salida/logs/cron.log 2>&1
 
-# Resumen de estado cada mañana a las 08:00 (mirar con: cat /home/santiago/idea/salida/logs/estado.log).
-0 8 * * * cd /home/santiago/idea && /home/santiago/idea/node_modules/.bin/tsx /home/santiago/idea/scripts/estado.mts > /home/santiago/idea/salida/logs/estado.log 2>&1
+# Resumen de estado cada mañana a las 08:00 (mirar con: cat /home/santiago/projects/yt/bolita-lab/salida/logs/estado.log).
+0 8 * * * cd /home/santiago/projects/yt/bolita-lab && /home/santiago/projects/yt/bolita-lab/node_modules/.bin/tsx /home/santiago/projects/yt/bolita-lab/scripts/estado.mts > /home/santiago/projects/yt/bolita-lab/salida/logs/estado.log 2>&1
 
 # Revisión semanal de calidad, lunes 05:00 (docs/MEJORA-CONTINUA.md §5): fotogramas de la última semana, métricas
 # por API, revisión con claude -p (Opus) y mejoras aplicadas en una rama aparte solo si pasan tsc + render de prueba.
 # Informe en salida/revisiones/<fecha>.md.
-0 5 * * 1 cd /home/santiago/idea && /home/santiago/idea/node_modules/.bin/tsx /home/santiago/idea/scripts/revisar.mts >> /home/santiago/idea/salida/logs/cron.log 2>&1
+0 5 * * 1 cd /home/santiago/projects/yt/bolita-lab && /home/santiago/projects/yt/bolita-lab/node_modules/.bin/tsx /home/santiago/projects/yt/bolita-lab/scripts/revisar.mts >> /home/santiago/projects/yt/bolita-lab/salida/logs/cron.log 2>&1
