@@ -122,3 +122,28 @@ bolas de bandera del país" (275 K). Lección: los duelos "México vs Argentina"
    con la fórmula Ñerd de arriba.
 8. **Anti-repetitivo (YPP)**: no publicar variantes numeradas de la misma escena (estilo Nathan); cada Short cambia pista,
    mecánica o pregunta, y se registra en la lista de verificación de la skill `monetizacion-youtube`.
+
+## GeoGlobeTales — @GeoGlobeTales (analizado 2026-11-05, por web; el piloto no pudo cargar YouTube por RAM)
+
+- **Qué es:** geografía narrada en inglés, largos y Shorts. Canal creado 2023-11-20; al 2026-11-04: **2,07 M
+  suscriptores, 1.634 M de vistas, 168 videos** (≈ 1,5 por semana). Fuente: vidIQ
+  (https://vidiq.com/youtube-stats/channel/@geoglobetales/).
+- **Top 5:** "27 Years to Walk Around the World 😱 The Longest Distance in History🚶‍♂️" **61,1 M** (2025-09-06) ·
+  "The Darien Gap 🌍 The Most Dangerous Places on Earth" 48,2 M (2024-10-05) · "Spain's Strangest Borders 🤯"
+  47,0 M (2025-09-28) · "Population of the USA 🇺🇸 Why 80% of Americans Live East of This Line?" 38,5 M ·
+  "The Distance Between the US and Russia is Less Than You Think 🇺🇸 Diomede Islands📍" 36,7 M.
+- **El de 61 M:** la historia de **Karl Bushby** (Goliath Expedition): salió de **Punta Arenas, Chile, el 1 de
+  noviembre de 1998** para volver caminando a Hull, Inglaterra, sin barco ni avión (cruzó el estrecho de Bering
+  sobre el hielo, nadó el Caspio y el Canal de la Mancha, atravesó el Darién). **Llegó a casa de su madre el
+  lunes 2 de noviembre de 2026**, 28 años y ~50.000 km después (NBC, CBS, Al Jazeera, Quartz, 2026-11-02/03).
+  El video de GeoGlobeTales es de 2025, cuando aún faltaba el final: **la historia acaba de cerrarse** y el tema
+  vuelve a ser noticia. Para un canal en español hay un ángulo propio: **empezó en Chile**.
+- **Patrón de títulos:** cifra o superlativo + emoji + promesa concreta ("Why 80%…", "Less Than You Think").
+  Mapas con líneas y zonas coloreadas, voz narrada, una pregunta geográfica por video.
+- **Qué aprender:** (1) las historias humanas con mapa (una persona, una ruta, un tiempo absurdo) rinden más
+  que la geografía pura; (2) un tema de hace un año con desenlace nuevo = oportunidad de "segunda ola";
+  (3) el formato largo + Short del mismo tema duplica el alcance.
+- **Oportunidad concreta (para un canal nuevo de mapas/historia en español):** "El hombre que salió de Punta
+  Arenas y tardó 28 años en llegar a su casa" — versión Short (2–3 min, fórmula Ñerd) + versión larga (6–8 min)
+  con el desenlace del 2 de noviembre de 2026. Material: mapas propios (Natural Earth/OSM con atribución),
+  fotos de Commons con licencia, nada de clips de noticieros.
