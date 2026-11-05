@@ -84,3 +84,8 @@ Los campos marcados **[SANTIAGO]** solo los sabe él.
 - 2026-11-04 21:40: Santiago pasó el aviso → capturadas la pantalla de permisos y el detalle de scopes;
   `oauth-y-subida.pdf` rehecho (5 páginas) y readjuntado en `upload_1_4`. Evidencia COMPLETA. Solo faltan
   los consentimientos y Enviar.
+- **2026-11-04 21:50: FORMULARIO ENVIADO por Santiago.** Confirmación en pantalla ("Se ha enviado tu correo
+  electrónico. Gracias por enviar el formulario de Servicios de APIs de YouTube"), captura en
+  `salida/auditoria/formulario-enviado.png`. Google responde por correo a sinostrozadev@gmail.com (suele
+  tardar días; a veces piden aclaraciones; contestar en el mismo hilo). Al aprobarse: `touch secrets/api-auditada`
+  + `BOLITA_SUBIR=1` en GitHub + habilitar los workflows.

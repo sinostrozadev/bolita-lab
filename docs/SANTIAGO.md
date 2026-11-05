@@ -51,8 +51,13 @@ Avanzado → Ir a Bolita Lab). El código llega solo a `127.0.0.1:8765` (WSL com
 llega, copia de la barra de direcciones el valor `code=...` de la URL final (aunque la página dé error) y pégalo
 en la terminal. Debe terminar con `✓ Canal autorizado: Bolita Lab`. Comprueba con `npx tsx scripts/estado.mts`.
 
-## 4. [ ] Solicitar la auditoría de la API — LO LLENA CLAUDE; tú solo das 2 clics
-Estado 2026-11-04: las respuestas están en `docs/AUDITORIA-API.md`, el sitio público con privacidad y
+## 4. [x] Solicitar la auditoría de la API — ENVIADA el 2026-11-04 (Santiago pulsó Enviar)
+Falta solo **Publish app**: el botón está gris hasta completar **Branding** (App name "Bolita Lab", support
+email y developer contact = sinostrozadev@gmail.com, home page y enlaces de privacidad/términos del sitio
+público, authorized domain `sinostrozadev.github.io`, sin logo). Claude puede rellenar Branding desde el piloto;
+el clic de Publish app → Confirm es tuyo. La respuesta de Google llega por correo; al aprobarse:
+`touch /home/santiago/idea/secrets/api-auditada` y `BOLITA_SUBIR=1` en GitHub.
+Estado 2026-11-04 (histórico): las respuestas están en `docs/AUDITORIA-API.md`, el sitio público con privacidad y
 términos ya está en <https://sinostrozadev.github.io/bolitalab/>, y Claude rellena el formulario en el
 navegador piloto. **Lo tuyo:** (a) en <https://console.cloud.google.com/auth/audience?project=bolita-lab>
 clic en **Publish app** → Confirm (Claude no puede aceptar eso por ti; sin esto el token caduca cada 7 días),
