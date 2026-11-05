@@ -1,0 +1,114 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-rusia-vendio-alaska-por-2-centavos",
+  "titulo": "Rusia vendió Alaska por 2 centavos el acre: ¿por qué tan barato?",
+  "descripcion": "En 1867 Rusia vendió Alaska a Estados Unidos por 7,2 millones de dólares, menos de 2 centavos por acre. No fue por regalar hielo: acababa de perder la guerra de Crimea contra Gran Bretaña y no podía defender ni abastecer un territorio tan lejano. Treinta años después apareció el oro y en 1968 el mayor yacimiento de petróleo de Norteamérica.\n\nFuentes:\n- U.S. Department of State, Office of the Historian, Purchase of Alaska, 1867: https://history.state.gov/milestones/1866-1898/alaska-purchase\n- U.S. National Archives, Check for the Purchase of Alaska (1868): https://www.archives.gov/milestone-documents/check-for-the-purchase-of-alaska\n- Britannica, Crimean War (1853–1856): https://www.britannica.com/event/Crimean-War\n- Cálculo: 7.200.000 $ / 586.412 mi² (≈ 375 millones de acres) ≈ 1,9 centavos por acre\n- National Park Service, fiebre del oro de Nome (1898–1899); Bureau of Land Management / Alaska DNR, Prudhoe Bay (descubierto en 1968, el mayor yacimiento de petróleo de Norteamérica)",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#historia",
+    "#alaska",
+    "#mapas",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-rusia-vendio-alaska-por-2-centavos",
+    "color": "cian",
+    "gancho": "Mira este mapa: Rusia vendió Alaska por siete millones de dólares. ¿Por qué?",
+    "imagenGancho": {
+      "buscar": "Alaska locator map",
+      "forma": "completa"
+    },
+    "escenas": [
+      {
+        "texto": "Dicen que el zar la regaló porque era puro hielo. La verdad es más simple.",
+        "visual": {
+          "tipo": "frase",
+          "texto": "¿Puro hielo?",
+          "enfasis": [
+            "hielo"
+          ]
+        },
+        "imagen": {
+          "buscar": "Alaska glacier"
+        }
+      },
+      {
+        "texto": "Todo se explica con dos cosas: una guerra y una distancia. Primero, la guerra.",
+        "visual": {
+          "tipo": "lista",
+          "items": [
+            "Una guerra",
+            "Una distancia"
+          ]
+        }
+      },
+      {
+        "texto": "Rusia acababa de perder la guerra de Crimea contra Gran Bretaña y temía que se la quitaran gratis desde Canadá.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 1856,
+          "etiqueta": "fin de la guerra de Crimea (derrota rusa)",
+          "dice": "Crimea"
+        },
+        "imagen": {
+          "buscar": "Siege of Sevastopol painting"
+        }
+      },
+      {
+        "texto": "Segundo, la distancia. Según la Oficina del Historiador del Departamento de Estado, Alaska costaba más defenderla de lo que daba en pieles.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 1867,
+          "etiqueta": "tratado de compra, 30 de marzo de 1867",
+          "dice": "Alaska"
+        },
+        "imagen": {
+          "buscar": "William H. Seward",
+          "forma": "circulo",
+          "encuadre": "arriba"
+        }
+      },
+      {
+        "texto": "Pagaron siete millones doscientos mil dólares: menos de dos centavos por acre. La prensa lo llamó la locura de Seward.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 7200000,
+          "prefijo": "$",
+          "etiqueta": "precio de Alaska (≈ 1,9 centavos por acre)",
+          "dice": "siete"
+        },
+        "imagen": {
+          "buscar": "Alaska Purchase check"
+        }
+      },
+      {
+        "texto": "Y aquí está el giro: treinta años después apareció el oro, y en 1968, el mayor yacimiento de petróleo de Norteamérica.",
+        "visual": {
+          "tipo": "lista",
+          "items": [
+            "Oro en Nome (1898)",
+            "Petróleo en Prudhoe Bay (1968)",
+            "El mayor yacimiento de Norteamérica"
+          ]
+        },
+        "imagen": {
+          "buscar": "Prudhoe Bay oil field"
+        }
+      }
+    ],
+    "remate": "Rusia vendió hielo a dos centavos el acre. Estados Unidos compró oro y petróleo.",
+    "imagenRemate": {
+      "buscar": "Trans-Alaska Pipeline",
+      "forma": "completa"
+    },
+    "fuentes": [
+      "U.S. Department of State, Office of the Historian, Purchase of Alaska, 1867 (tratado del 30 de marzo de 1867, 7,2 millones de dólares, temor a Gran Bretaña tras Crimea, territorio difícil de defender): https://history.state.gov/milestones/1866-1898/alaska-purchase",
+      "U.S. National Archives, Check for the Purchase of Alaska (1868): https://www.archives.gov/milestone-documents/check-for-the-purchase-of-alaska",
+      "Britannica, Crimean War (1853–1856, derrota rusa frente a Gran Bretaña, Francia y el Imperio otomano): https://www.britannica.com/event/Crimean-War",
+      "Cálculo: 7.200.000 $ / 586.412 mi² (≈ 375 millones de acres) ≈ 1,9 centavos por acre",
+      "National Park Service, fiebre del oro de Nome (1898–1899); Bureau of Land Management / Alaska Department of Natural Resources, Prudhoe Bay (descubierto en 1968, el mayor yacimiento de petróleo de Norteamérica)"
+    ]
+  }
+}
