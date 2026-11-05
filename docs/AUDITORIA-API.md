@@ -77,3 +77,7 @@ Los campos marcados **[SANTIAGO]** solo los sabe él.
   (3) sección 7 (declaraciones) y el botón **Enviar**. Opcional antes de enviar: pasar el aviso de
   "Google hasn't verified this app" con Continue para que Claude capture la pantalla de permisos y la
   agregue al PDF de OAuth.
+- 2026-11-04 21:50: piloto reiniciado con soporte de pestañas (`/nueva`, `/usar?i=`, `/cerrar`) y formulario
+  vuelto a rellenar (7 adjuntos verificados) en la pestaña 0. En la pestaña 1 quedó el flujo OAuth en el aviso
+  "Google hasn't verified this app" esperando el **Continue de Santiago**; al pasarlo, Claude captura la
+  pantalla de permisos, rehace `oauth-y-subida.pdf` y lo vuelve a adjuntar en `upload_1_4`.

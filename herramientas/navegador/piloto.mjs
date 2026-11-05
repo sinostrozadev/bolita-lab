@@ -81,6 +81,10 @@ img.addEventListener('paste',async e=>{const t=(e.clipboardData||window.clipboar
     if (pathname === '/esperar') { await page.waitForTimeout(+(p.ms ?? 1000)); return responder(res, JSON.stringify({ ok: true })); }
     if (pathname === '/archivo') { await page.locator(p.sel).first().setInputFiles(p.ruta); await page.waitForTimeout(1500); return responder(res, JSON.stringify({ ok: true })); }
     if (pathname === '/paginas') return responder(res, JSON.stringify(ctx.pages().map((x) => x.url())));
+    // Pestañas: /nueva?url= abre otra y la deja activa; /usar?i=N activa la N-ésima (0 = la primera); /cerrar cierra la activa y vuelve a la primera.
+    if (pathname === '/nueva') { page = await ctx.newPage(); rota = false; vigilar(page); if (p.url) await page.goto(p.url, { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(() => {}); return responder(res, JSON.stringify({ i: ctx.pages().indexOf(page), url: page.url() })); }
+    if (pathname === '/usar') { const x = ctx.pages()[+(p.i ?? 0)]; if (!x || x.isClosed()) return responder(res, '{"error":"no existe esa pestaña"}'); page = x; rota = false; await page.bringToFront(); return responder(res, JSON.stringify({ i: +(p.i ?? 0), url: page.url() })); }
+    if (pathname === '/cerrar') { const vieja = page; const otras = ctx.pages().filter((x) => x !== vieja && !x.isClosed()); if (otras.length) { page = otras[0]; rota = false; await page.bringToFront(); } try { await vieja.close(); } catch {} return responder(res, JSON.stringify({ url: page.url(), pestañas: ctx.pages().length })); }
     if (pathname === '/salir') { await ctx.close(); responder(res, '{"ok":true}'); process.exit(0); }
     responder(res, JSON.stringify({ error: 'comando desconocido' }));
   } catch (e) { if (/crashed/i.test(String(e.message ?? e))) rota = true; res.writeHead(500, { 'content-type': 'application/json' }); res.end(JSON.stringify({ error: String(e.message ?? e) })); }
