@@ -59,6 +59,8 @@ if (opc['sin-guiones']) opc['sin-generar'] = true;
 const ARCHIVO_LOCK = path.join(DIR_SALIDA, 'diario.lock');
 const TSX = path.join(RAIZ, 'node_modules', '.bin', 'tsx');
 const REMOTION = path.join(RAIZ, 'node_modules', '.bin', 'remotion');
+/** Lock compartido entre canales: solo un render de Remotion a la vez en esta máquina (7,6 GB). */
+const LOCK_RENDER = '/tmp/bolita-render.lock';
 const CONCURRENCIA = process.env.BOLITA_CONCURRENCIA ?? '1';
 const MEMORIA_MIN_MB = parseInt(process.env.BOLITA_MEMORIA_MIN_MB ?? '1200', 10);
 const ESPERA_MEMORIA_MAX_MIN = 30;
@@ -196,7 +198,8 @@ const renderizarUno = async (g: Guion & { ruta: string }, log: Log): Promise<boo
     log(`  🎬 render ${composicion} → ${rel(salidaMp4)} (concurrency ${intento === 1 ? CONCURRENCIA : 1}, intento ${intento})`);
     const inicio = Date.now();
     const args = intento === 1 ? argsRender : argsRender.map((a) => (a.startsWith('--concurrency=') ? '--concurrency=1' : a));
-    r = await correr(REMOTION, args, { log, timeoutMs: TIEMPO_RENDER });
+    // flock -w: espera hasta 30 min a que termine otro render (de este u otro canal, p. ej. Línea Punteada) antes de empezar.
+    r = await correr('flock', ['-w', '1800', LOCK_RENDER, REMOTION, ...args], { log, timeoutMs: TIEMPO_RENDER });
     if (r.codigo === 0 && fs.existsSync(salidaMp4)) {
       let duracionSeg = 0;
       try { duracionSeg = Math.round((await duracionVideo(salidaMp4)) * 10) / 10; } catch (e) { log(`  ⚠ ${(e as Error).message}`); }
