@@ -20,6 +20,7 @@ salida/compilaciones/*
 !salida/compilaciones/*.json
 !salida/revisiones/
 salida/revisiones/*
+!salida/revisiones/ULTIMA.md
 !salida/revisiones/hojas/
 salida/revisiones/hojas/*
 !salida/revisiones/hojas/*.jpg

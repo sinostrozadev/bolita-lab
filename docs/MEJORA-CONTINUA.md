@@ -86,3 +86,11 @@ este repo la cumple sin que se la pidan.
   falla, revierte con `git checkout` y deja el detalle en la revisión. Commit automático solo
   si todo quedó verde.
 - Si Santiago quiere ver qué cambió: `git log --oneline` y `salida/revisiones/`.
+
+## 6. Skills y referentes (2026-11-05)
+
+El método de este documento vive también como skill de Santiago (`~/.claude/skills/mejora-continua-canal`), junto
+con `monetizacion-youtube` (lista de verificación por video y por tanda que se pasa en cada revisión),
+`canal-youtube-automatico`, `navegador-piloto` y `mejorar-skills-y-md-global`. Los canales referentes se anotan en
+`docs/REFERENTES.md` (primero: Ñerd). La última revisión se copia a `salida/revisiones/ULTIMA.md` para que Santiago
+tenga una sola ruta que abrir.

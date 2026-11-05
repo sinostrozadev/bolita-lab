@@ -664,7 +664,9 @@ ${claude.denegados.length ? `- Permisos denegados a Claude (intentó salir de lo
 `;
   fs.mkdirSync(DIR_REVISIONES, { recursive: true });
   fs.writeFileSync(ARCHIVO_INFORME, informe);
-  log(`✓ informe → ${rel(ARCHIVO_INFORME)}`);
+  // Una sola ruta fija para Santiago (skill mejora-continua-canal §7): la última revisión siempre en ULTIMA.md.
+  fs.writeFileSync(path.join(DIR_REVISIONES, 'ULTIMA.md'), informe);
+  log(`✓ informe → ${rel(ARCHIVO_INFORME)} (y salida/revisiones/ULTIMA.md)`);
 
   const estadoAplicar = !aplicar ? 'solo informe' : resultado.commit ? `commit ${resultado.commit}` : resultado.verde ? 'sin cambios' : 'revertido';
   lineaCron(`${videos.length} videos, ${videos.filter((v) => v.hoja).length} con fotogramas, Data API ${metricas.dataApi.ok ? 'ok' : 'no'}, Analytics ${a.ok ? 'ok' : 'no'}, claude ${claude.ok ? 'ok' : 'falló'}, ${estadoAplicar} → ${rel(ARCHIVO_INFORME)}`);
