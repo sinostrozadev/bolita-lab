@@ -52,7 +52,11 @@ llega, copia de la barra de direcciones el valor `code=...` de la URL final (aun
 en la terminal. Debe terminar con `✓ Canal autorizado: Bolita Lab`. Comprueba con `npx tsx scripts/estado.mts`.
 
 ## 4. [x] Solicitar la auditoría de la API — ENVIADA el 2026-11-04 (Santiago pulsó Enviar)
-Falta solo **Publish app**: el botón está gris hasta completar **Branding** (App name "Bolita Lab", support
+✅ **Publish app hecho el 2026-11-04 (In production).** Branding lo rellenó Claude desde el piloto.
+OJO: el token emitido en modo Testing conserva la caducidad de 7 días (`refresh_token_expires_in` en el
+json) → hay que **reautorizar** una vez con la app publicada (`autorizar` + pasar el aviso de app sin
+verificar: Advanced → Go to Bolita Lab → Continue) y volver a cargar `YOUTUBE_TOKEN_JSON` en GitHub.
+(Histórico) Faltaba **Publish app**: el botón está gris hasta completar **Branding** (App name "Bolita Lab", support
 email y developer contact = sinostrozadev@gmail.com, home page y enlaces de privacidad/términos del sitio
 público, authorized domain `sinostrozadev.github.io`, sin logo). Claude puede rellenar Branding desde el piloto;
 el clic de Publish app → Confirm es tuyo. La respuesta de Google llega por correo; al aprobarse:

@@ -89,3 +89,6 @@ Los campos marcados **[SANTIAGO]** solo los sabe él.
   `salida/auditoria/formulario-enviado.png`. Google responde por correo a sinostrozadev@gmail.com (suele
   tardar días; a veces piden aclaraciones; contestar en el mismo hilo). Al aprobarse: `touch secrets/api-auditada`
   + `BOLITA_SUBIR=1` en GitHub + habilitar los workflows.
+- 2026-11-04 22:05: **Publish app → In production** (Santiago). Branding completado por Claude (URLs del sitio
+  y dominio autorizado `sinostrozadev.github.io`). Pendiente: reautorizar para un refresh token sin caducidad
+  de 7 días y actualizar el secreto `YOUTUBE_TOKEN_JSON` en GitHub.
