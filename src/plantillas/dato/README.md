@@ -40,6 +40,16 @@ Cada idea con un sujeto concreto (persona, lugar, objeto, animal, astro) lleva u
 - Render (`Imagen.tsx`): Ken Burns (zoom 1 → 1,08 + paneo ≤ 2 %, sentido distinto por escena), tinte del neón (soft-light), viñeta hacia el fondo de la paleta, borde neón con glow que respira; entra con resorte (escala + opacidad) y sale con corte limpio. En el gancho la foto ya está al 75 % en el frame 0.
 - Composición con foto en marco/círculo: foto en y = 290–890 (debajo de la marca de agua), visual en modo **compacto** en y = 915–1280 (la cifra pierde el anillo y gana una barra neón; los demás visuales se escalan para caber), subtítulos en 1290–1550 como siempre. Con `completa` el visual queda en su franja normal. En gancho/remate con foto en tarjeta, el texto gigante baja 200 px.
 
+## Guion: fórmula narrativa (desde 2026-11-05)
+Sacada del referente **Ñerd** (Shorts de mapas/historia, 16 M de vistas en 2 semanas; su más visto, 4,1 M, es "¿Por qué Arizona se quedó a 60 km del mar sin tocarlo?"). `scripts/generar-guiones.mts` la exige en el prompt (`FORMULA_DATO`, solo para `dato`). Misma estructura de props y misma duración (25–58 s):
+1. **Gancho** (`gancho`, gigante en el frame 0): imperativo visual ("Mira…", "Fíjate en…") + el dato en ≤ 2 frases + "¿Por qué?". ~90 caracteres máx.; `imagenGancho` muestra lo que se manda a mirar.
+2. **Mito** (escena 1): lo que la gente cree → "La verdad es más rara / simple / peor."
+3. **Mapa de ruta** (escena 2, si hay 2–3 causas): "Todo se explica con dos cosas: X e Y." y luego "Primero, X." / "Segundo, Y.", una escena por causa.
+4. **Fuente nombrada en la voz** ("según la NASA", "según un estudio de la Universidad de X de 2019"), además de `fuentes` y la descripción: da valor educativo propio y protege la monetización.
+5. **Giro** (penúltima/última escena): "Y aquí está el giro:" + consecuencia inesperada o inversión.
+6. **Remate** (`remate`): una frase simétrica, dos mitades espejo ("X compró el camino del tren. Y se quedó con el camino al mar."). Sin llamados a suscribirse.
+7. **Estilo**: concreto, cifras redondeadas en la voz (la exacta puede ir en el visual), sin relleno; una idea = una escena = una imagen. ~90–110 palabras habladas.
+
 ## Cómo está armado
 - `plan.ts` (puro) calcula la línea de tiempo, las palabras enfatizadas de cada escena y los eventos de sonido; lo usan la composición y el script de audio, por eso quedan sincronizados: la palabra enfatizada suena con un tick/pop y hace un pop de escala en el subtítulo (y queda encendida en neón).
 - SFX: whoosh en cada cambio de escena, ticks del conteo siguiendo la curva ease-out + tick fuerte al decir el número, pop al aterrizar la cifra o al entrar cada item, riser 0,8 s antes del remate, golpe en gancho y remate, ding final.

@@ -92,6 +92,28 @@ const EDITORIAL = `REGLAS EDITORIALES (obligatorias):
   · Personas reales (futbolistas, artistas): NUNCA su cara; usa la bandera de su país o {"tipo":"texto","valor":"CR7"} (1–3 caracteres).
   · No repitas el mismo emoji dentro de una carrera; el icono y el color deben "contar" lo mismo que la etiqueta.`;
 
+/**
+ * Fórmula narrativa de "dato" (desde 2026-11-05), sacada del referente Ñerd (Shorts de mapas/historia,
+ * 4,1 M de vistas en su más visto). Solo entra en el prompt de "dato": bola y carrera no tienen voz.
+ */
+const FORMULA_DATO = `FÓRMULA NARRATIVA DE "dato" (obligatoria; la locución es gancho → escenas[].texto → remate, en ese orden):
+1. GANCHO (props.gancho, se ve gigante en el frame 0): empieza con un imperativo visual ("Mira…", "Fíjate en…", "Mira este mapa…") + el dato sorprendente + "¿Por qué?" (o "¿Cómo?"). Máximo 2 frases cortas y ~90 caracteres en total. imagenGancho muestra exactamente lo que se dice que mires.
+2. MITO (escena 1): la explicación obvia o la leyenda que la gente cree, y enseguida "La verdad es más rara." / "más simple." / "peor." (elige la que corresponda).
+3. MAPA DE RUTA (inicio de escena 2, solo si el dato tiene 2–3 causas): "Todo se explica con dos cosas: X e Y." Luego una escena por causa, abriendo con "Primero, X." / "Segundo, Y."
+4. FUENTE NOMBRADA EN LA VOZ: al menos una escena dice la fuente en voz alta, con institución y, si se puede, año ("según la NASA", "según un estudio de la Universidad de Oxford de 2019"). No basta con ponerla en la descripción o en props.fuentes (que siguen siendo obligatorias). Es lo que da valor educativo propio y protege la monetización.
+5. GIRO (penúltima o última escena): empieza con "Y aquí está el giro:" y da una consecuencia inesperada o una inversión del dato.
+6. REMATE (props.remate, se ve gigante): UNA frase de cierre SIMÉTRICA, dos mitades espejo que reutilizan la misma estructura ("Estados Unidos compró el camino del tren. México se quedó con el camino al mar."). Máximo ~100 caracteres. Nada de "¡Suscríbete!" ni preguntas al público.
+7. ESTILO: lenguaje concreto, cifras redondeadas en la voz ("unos 60 km", "casi 32 años"; el visual puede llevar la cifra exacta), cero relleno ("¿sabías que…?", "increíble", "curiosamente"). Cada escena = UNA idea = UNA imagen concreta en "imagen" (si la idea tiene sujeto visible). Total ~90–110 palabras habladas (≈ 30–38 s).
+EJEMPLO CORTO (solo la locución; no lo copies):
+  gancho: "Mira la frontera de Arizona: se queda a 60 km del mar sin tocarlo. ¿Por qué?"
+  escena 1: "Dicen que los topógrafos la trazaron borrachos. La verdad es más rara."
+  escena 2: "Todo se explica con dos cosas: un tren y una península. Primero, el tren."
+  escena 3: "Según la Oficina del Historiador del Departamento de Estado, Washington quería una ruta al Pacífico por el sur."
+  escena 4: "Segundo, la península. México se negó a vender Baja California y su salida al golfo."
+  escena 5: "Y aquí está el giro: Estados Unidos vino por medio norte de México y se fue con un desierto."
+  remate: "Estados Unidos compró el camino del tren. México se quedó con el camino al mar."`;
+
+
 const construirPrompt = (plantilla: Plantilla, n: number, schema: string, rutaSchema: string, ejemplos: Guion[], usados: string[]) => {
   const convenciones = fs.readFileSync(path.join(RAIZ, 'docs', 'CONVENCIONES.md'), 'utf8');
   return `Eres el guionista de "Bolita Lab", un canal de YouTube Shorts. Genera ${n} guion(es) NUEVOS para la plantilla "${plantilla}".
@@ -117,7 +139,7 @@ ${ejemplos.length ? ejemplos.map((g) => JSON.stringify(g, null, 2)).join('\n\n')
 ${usados.length ? usados.map((t) => `- ${t}`).join('\n') : '(ninguno)'}
 
 ${EDITORIAL}
-
+${plantilla === 'dato' ? `\n${FORMULA_DATO}\n` : ''}
 RESPONDE SOLO con un array JSON válido de ${n} objeto(s) con la forma del envoltorio. Sin texto antes ni después, sin comentarios, sin bloque de código markdown.`;
 };
 
