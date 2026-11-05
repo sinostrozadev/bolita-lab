@@ -101,3 +101,12 @@ Los campos marcados **[SANTIAGO]** solo los sabe él.
   tope de 100 usuarios). 3er intento de reautorización lanzado (`autorizar3.log`). Si sigue en 7 días:
   reintentar al día siguiente (propagación) y, en último caso, hacer que el diario avise cuando el token tenga
   >5 días para reautorizar a tiempo.
+- 2026-11-04 23:05: 3er intento (con scopes declarados): **sigue en 7 días**. Conclusión provisional: Google
+  aplica los 7 días también a apps en producción **sin verificar** que piden scopes sensibles (la doc oficial
+  no lo dice, pero es lo observado 3 veces). Salida definitiva = verificación OAuth de la app (Verification
+  Center → "Prepare for verification"), que para scopes de YouTube va de la mano de esta auditoría. Mientras:
+  `estado.mts` y `diario.mts` avisan de la caducidad (`caducidadTokenYT`), y reautorizar son 3 clics de
+  Santiago en el piloto. Token actual vence **2026-11-11 22:28**. Copia de seguridad del token de Testing en
+  `secrets/youtube-token.json.bak-testing`.
+- **Pendiente de Santiago (Claude no puede escribir secretos de GitHub):**
+  `cd /home/santiago/idea && gh secret set YOUTUBE_TOKEN_JSON -R sinostrozadev/bolita-lab < secrets/youtube-token.json`

@@ -26,7 +26,7 @@ import path from 'node:path';
 import { parseArgs } from 'node:util';
 import { agregarCreditos } from './imagenes-dato.mjs';
 import {
-  ARCHIVO_API_AUDITADA, ARCHIVO_TOKEN_YT, DIR_BANDEJA, DIR_GUIONES, DIR_SALIDA, DIR_TRABAJO, RAIZ,
+  ARCHIVO_API_AUDITADA, ARCHIVO_TOKEN_YT, DIR_BANDEJA, caducidadTokenYT, DIR_GUIONES, DIR_SALIDA, DIR_TRABAJO, RAIZ,
   asegurarDirectorios, cargarCalendario, composicionDe, correr, crearLog, detectarHuerfanos, duracionVideo,
   enLaNube, escribirJson, existeSecreto, fechaHoyLocal, leerBacklog, leerBandeja, memoriaDisponibleMb, ordenRotacion,
   resumenSalida, siguientePlantilla, slugificar,
@@ -306,6 +306,12 @@ const pasoSubir = async (log: Log) => {
     // consume el cupo diario de subidas. Mientras tanto se sube por YouTube Studio (herramientas/navegador).
     log(`(c) API sin auditar (falta ${rel(ARCHIVO_API_AUDITADA)}): no se sube por API; exportar → PARA-SUBIR-A-MANO.md (${listos} listo(s)).`);
   } else if (existeSecreto(ARCHIVO_TOKEN_YT)) {
+    const cad = caducidadTokenYT();
+    if (cad) {
+      const dias = (cad.getTime() - Date.now()) / 86_400_000;
+      if (dias < 0) log(`  ✗ El refresh token CADUCÓ el ${cad.toISOString()}: las subidas por API fallarán → npx tsx scripts/subir.mts autorizar`);
+      else if (dias < 2) log(`  ⚠ El refresh token caduca en ${dias.toFixed(1)} días (${cad.toISOString()}) → reautorizar YA: npx tsx scripts/subir.mts autorizar`);
+    }
     log(`(c) Token de YouTube presente: subir --todos (${listos} listo(s)).`);
     const r = await correr(TSX, [subir, 'subir', '--todos', ...(opc['dry-run'] ? ['--dry-run'] : [])], { log, timeoutMs: TIEMPO_SUBIR });
     if (r.codigo !== 0) {

@@ -77,7 +77,9 @@ const crearCliente = (): OAuth2Client => {
 
 const guardarToken = (tokens: Credentials) => {
   const previo = existeSecreto(ARCHIVO_TOKEN_YT) ? leerJson<Credentials>(ARCHIVO_TOKEN_YT) : {};
-  escribirJson(ARCHIVO_TOKEN_YT, { ...previo, ...tokens }, 0o600);
+  // emitido_en: para saber cuándo caduca el refresh token (ver caducidadTokenYT en lib/operacion).
+  const extra = tokens.refresh_token ? { emitido_en: Date.now() } : {};
+  escribirJson(ARCHIVO_TOKEN_YT, { ...previo, ...tokens, ...extra }, 0o600);
 };
 
 /** Cliente autenticado, con refresco automático del access token. */

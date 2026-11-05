@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {
-  ARCHIVO_CLIENTE_YT, ARCHIVO_TOKEN_YT, DIR_SALIDA, RAIZ, PLANTILLAS,
+  ARCHIVO_CLIENTE_YT, ARCHIVO_TOKEN_YT, DIR_SALIDA, RAIZ, PLANTILLAS, caducidadTokenYT,
   cargarCalendario, detectarHuerfanos, existeSecreto, formatoDuracion, formatoLocal, leerBacklog, leerBandeja,
   memoriaDisponibleMb, ordenarParaPublicar, proximasRanuras, siguientePlantilla, ultimosErrores,
 } from './lib/operacion.mjs';
@@ -54,6 +54,13 @@ console.log('\nCredenciales:');
 console.log(`  ${existeSecreto(ARCHIVO_CLIENTE_YT) ? '✓' : '✗'} ${rel(ARCHIVO_CLIENTE_YT)}  ${existeSecreto(ARCHIVO_CLIENTE_YT) ? '' : '(docs/SANTIAGO.md paso 2)'}`);
 console.log(`  ${existeSecreto(ARCHIVO_TOKEN_YT) ? '✓' : '✗'} ${rel(ARCHIVO_TOKEN_YT)}  ${existeSecreto(ARCHIVO_TOKEN_YT) ? '' : '(npx tsx scripts/subir.mts autorizar)'}`);
 if (!existeSecreto(ARCHIVO_TOKEN_YT)) console.log('  → mientras tanto el diario mantiene salida/bandeja/PARA-SUBIR-A-MANO.md');
+{
+  const cad = caducidadTokenYT();
+  if (cad) {
+    const dias = (cad.getTime() - Date.now()) / 86_400_000;
+    console.log(`  ${dias < 2 ? '✗' : '⚠'} el refresh token caduca el ${formatoLocal(cad, zona)} (${dias.toFixed(1)} días) → antes de eso: npx tsx scripts/subir.mts autorizar`);
+  }
+}
 
 // Lock y errores
 const lock = path.join(DIR_SALIDA, 'diario.lock');

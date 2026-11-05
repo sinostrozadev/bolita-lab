@@ -550,6 +550,21 @@ export const enLaNube = () => process.env.BOLITA_NUBE === '1';
 
 export const existeSecreto = (ruta: string) => fs.existsSync(ruta) && fs.statSync(ruta).size > 0;
 
+/**
+ * Cuándo caduca el refresh token de YouTube, o null si no caduca. Google manda `refresh_token_expires_in`
+ * (7 días) cuando la app OAuth está en modo Testing o sin verificar; `subir.mts autorizar` guarda `emitido_en`.
+ * Sin `emitido_en` se usa la fecha del archivo (el token se escribe al autorizar).
+ */
+export const caducidadTokenYT = (): Date | null => {
+  if (!existeSecreto(ARCHIVO_TOKEN_YT)) return null;
+  try {
+    const t = leerJson<{ refresh_token_expires_in?: number; emitido_en?: number }>(ARCHIVO_TOKEN_YT);
+    if (!t.refresh_token_expires_in) return null;
+    const emitido = t.emitido_en ?? fs.statSync(ARCHIVO_TOKEN_YT).mtimeMs;
+    return new Date(emitido + t.refresh_token_expires_in * 1000);
+  } catch { return null; }
+};
+
 /** MB disponibles según /proc/meminfo (MemAvailable). */
 export const memoriaDisponibleMb = (): number => {
   try {
