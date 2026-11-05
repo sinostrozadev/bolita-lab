@@ -109,4 +109,4 @@ Los campos marcados **[SANTIAGO]** solo los sabe él.
   Santiago en el piloto. Token actual vence **2026-11-11 22:28**. Copia de seguridad del token de Testing en
   `secrets/youtube-token.json.bak-testing`.
 - **Pendiente de Santiago (Claude no puede escribir secretos de GitHub):**
-  `cd /home/santiago/idea && gh secret set YOUTUBE_TOKEN_JSON -R sinostrozadev/bolita-lab < secrets/youtube-token.json`
+  `cd /home/santiago/projects/yt/bolita-lab && gh secret set YOUTUBE_TOKEN_JSON -R sinostrozadev/bolita-lab < secrets/youtube-token.json`

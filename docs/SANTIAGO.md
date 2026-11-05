@@ -12,10 +12,10 @@ de cada mp4, listos para copiar/pegar en YouTube Studio (2 min por video).
 2. Avatar → **Crear un canal** → nombre **Bolita Lab** → Crear.
 3. YouTube Studio (<https://studio.youtube.com>) → **Personalización**:
    - **Información básica → Handle:** `@bolitalab` (si está ocupado, `@bolitalab_` y avísame).
-   - **Descripción:** copia el párrafo de "Descripción" de `/home/santiago/idea/salida/marca/canal.md`.
+   - **Descripción:** copia el párrafo de "Descripción" de `/home/santiago/projects/yt/bolita-lab/salida/marca/canal.md`.
      Palabras clave: las de la misma ficha (Configuración → Canal → Información básica).
-   - **Foto de perfil:** `/home/santiago/idea/salida/marca/logo.png` (800×800).
-   - **Banner:** `/home/santiago/idea/salida/marca/banner.png` (2560×1440, el contenido va en la zona central).
+   - **Foto de perfil:** `/home/santiago/projects/yt/bolita-lab/salida/marca/logo.png` (800×800).
+   - **Banner:** `/home/santiago/projects/yt/bolita-lab/salida/marca/banner.png` (2560×1440, el contenido va en la zona central).
    - Idioma del canal: Español. País: Chile.
 4. **Configuración → Canal → Ajustes avanzados:** "No, configurar este canal como contenido que NO es para niños".
 5. **Verifica el canal con tu teléfono** (<https://www.youtube.com/verify>): habilita videos de más de 15 min,
@@ -36,15 +36,15 @@ Desde Windows, los archivos de WSL se abren en el Explorador como
      "Publicar app" (pasar a Producción); al autorizar verás "Google no verificó esta app" → Avanzado → Continuar.
 4. **Credencial:** <https://console.cloud.google.com/apis/credentials> → **Crear credenciales → ID de cliente de OAuth**
    → tipo **Aplicación de escritorio** → nombre `bolita-lab-desktop` → Crear → **Descargar JSON**.
-5. Guárdalo como `/home/santiago/idea/secrets/youtube-client.json`:
+5. Guárdalo como `/home/santiago/projects/yt/bolita-lab/secrets/youtube-client.json`:
    ```bash
-   cp "/mnt/c/Users/<tu-usuario>/Downloads/client_secret_"*.json /home/santiago/idea/secrets/youtube-client.json
-   chmod 600 /home/santiago/idea/secrets/youtube-client.json
+   cp "/mnt/c/Users/<tu-usuario>/Downloads/client_secret_"*.json /home/santiago/projects/yt/bolita-lab/secrets/youtube-client.json
+   chmod 600 /home/santiago/projects/yt/bolita-lab/secrets/youtube-client.json
    ```
 
 ## 3. [x] Autorizar la app — HECHO 2026-11-04 (token en `secrets/youtube-token.json`, verificado: la API responde "Bolita Lab @bolitalab")
 ```bash
-cd /home/santiago/idea && npx tsx scripts/subir.mts autorizar
+cd /home/santiago/projects/yt/bolita-lab && npx tsx scripts/subir.mts autorizar
 ```
 Abre la URL que imprime, elige la cuenta dueña del canal y acepta (si sale "Google no verificó esta app":
 Avanzado → Ir a Bolita Lab). El código llega solo a `127.0.0.1:8765` (WSL comparte localhost con Windows). Si no
@@ -60,7 +60,7 @@ verificar: Advanced → Go to Bolita Lab → Continue) y volver a cargar `YOUTUB
 email y developer contact = sinostrozadev@gmail.com, home page y enlaces de privacidad/términos del sitio
 público, authorized domain `sinostrozadev.github.io`, sin logo). Claude puede rellenar Branding desde el piloto;
 el clic de Publish app → Confirm es tuyo. La respuesta de Google llega por correo; al aprobarse:
-`touch /home/santiago/idea/secrets/api-auditada` y `BOLITA_SUBIR=1` en GitHub.
+`touch /home/santiago/projects/yt/bolita-lab/secrets/api-auditada` y `BOLITA_SUBIR=1` en GitHub.
 Estado 2026-11-04 (histórico): las respuestas están en `docs/AUDITORIA-API.md`, el sitio público con privacidad y
 términos ya está en <https://sinostrozadev.github.io/bolitalab/>, y Claude rellena el formulario en el
 navegador piloto. **Lo tuyo:** (a) en <https://console.cloud.google.com/auth/audience?project=bolita-lab>
@@ -78,7 +78,7 @@ no ocurre. Hasta que aprueben, sube a mano con `salida/bandeja/PARA-SUBIR-A-MANO
      datos de otros usuarios ni los almacena o vende."
    - Métodos de la API: `videos.insert`, `thumbnails.set`, `channels.list` (solo `mine=true`).
    - Enlace al canal y, si lo piden, una captura del flujo (la terminal con `subir`).
-3. Es gratis; la respuesta tarda días o semanas. **Al aprobarse:** `touch /home/santiago/idea/secrets/api-auditada`
+3. Es gratis; la respuesta tarda días o semanas. **Al aprobarse:** `touch /home/santiago/projects/yt/bolita-lab/secrets/api-auditada`
    (hasta que exista ese archivo el diario NO sube por API: quedaría todo privado y gastaría el cupo diario) y, en la
    nube, `BOLITA_SUBIR=1` (paso 7). Desde ahí los videos nuevos se publican solos. Los que
    quedaron bloqueados hay que volver a subirlos (o, si Studio lo permite, ponerlos públicos a mano).
@@ -88,11 +88,11 @@ no ocurre. Hasta que aprueben, sube a mano con `salida/bandeja/PARA-SUBIR-A-MANO
 ```bash
 crontab -e
 ```
-Pega **todas** las líneas de `/home/santiago/idea/scripts/cron.txt` desde `SHELL=` hasta el final y guarda.
+Pega **todas** las líneas de `/home/santiago/projects/yt/bolita-lab/scripts/cron.txt` desde `SHELL=` hasta el final y guarda.
 **No uses `crontab scripts/cron.txt`**: borraría lo que ya tengas en tu crontab.
 - Comprueba con `crontab -l`. El servicio cron ya está activo en esta máquina (`systemctl is-active cron`).
 - WSL: el cron solo corre si WSL está encendido a las 03:30. Si la PC estuvo apagada,
-  `cd /home/santiago/idea && npx tsx scripts/diario.mts` a mano recupera el día.
+  `cd /home/santiago/projects/yt/bolita-lab && npx tsx scripts/diario.mts` a mano recupera el día.
 - `claude` debe tener la sesión iniciada (para generar guiones): si `salida/logs/cron.log` muestra errores de
   `claude -p`, abre `claude` una vez en la terminal.
 
@@ -126,7 +126,7 @@ backlog; "Compilar semanal" los domingos). Detalle técnico: `docs/OPERACION.md`
 - **Lista para subir a mano:** `salida/bandeja/PARA-SUBIR-A-MANO.md` en el repo; cada video dice en qué
   artifact está su mp4.
 - **Credenciales de YouTube para la nube** (si las cambias o el token caduca, repite esto desde
-  `/home/santiago/idea`):
+  `/home/santiago/projects/yt/bolita-lab`):
   ```bash
   gh secret set YOUTUBE_CLIENT_JSON -R sinostrozadev/bolita-lab < secrets/youtube-client.json
   gh secret set YOUTUBE_TOKEN_JSON  -R sinostrozadev/bolita-lab < secrets/youtube-token.json

@@ -3,7 +3,7 @@
 # respuestas de docs/AUDITORIA-API.md y adjunta la evidencia de salida/auditoria/. Si la pestaña se cae,
 # correr esto de nuevo deja el formulario listo. Lo que NO hace (consentimientos, los da Santiago):
 # "Aceptación obligatoria" (sección 4), "He leído y acepto…" de métricas (sección 5), sección 7 y Enviar.
-set -e; cd "$(dirname "$0")/../../.."; B=http://127.0.0.1:8777; A=/home/santiago/idea/salida/auditoria
+set -e; cd "$(dirname "$0")/../../.."; B=http://127.0.0.1:8777; A=/home/santiago/projects/yt/bolita-lab/salida/auditoria
 python3 -c "import urllib.parse;print(urllib.parse.quote('https://support.google.com/youtube/contact/yt_api_form'))" | xargs -I{} curl -s -m 60 "$B/ir?url={}" >/dev/null; sleep 8
 # abrir las 6 secciones (son toggles de la interfaz, no consentimientos)
 curl -s -m 30 --get "$B/eval" --data-urlencode "js=(()=>{for(const e of document.querySelectorAll('input[type=checkbox]')){if(/^Secci.n [2-6]/.test(e.getAttribute('aria-label')||'')&&!e.checked)e.click();}return 1})()" >/dev/null; sleep 2

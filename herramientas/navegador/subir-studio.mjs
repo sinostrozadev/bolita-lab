@@ -3,7 +3,7 @@
 import fs from 'node:fs';
 
 const B = 'http://127.0.0.1:8777';
-const BANDEJA = '/home/santiago/idea/salida/bandeja';
+const BANDEJA = '/home/santiago/projects/yt/bolita-lab/salida/bandeja';
 const [id, fecha, hora] = process.argv.slice(2);
 if (!id || !fecha || !hora) { console.error('uso: node subir-studio.mjs <id> <YYYY-MM-DD> <HH:MM>'); process.exit(2); }
 
