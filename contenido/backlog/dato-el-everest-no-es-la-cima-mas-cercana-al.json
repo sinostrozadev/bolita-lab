@@ -1,0 +1,105 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-el-everest-no-es-la-cima-mas-cercana-al",
+  "titulo": "El Everest no es la cima más cercana al espacio: es el Chimborazo",
+  "descripcion": "El Everest es la montaña más alta sobre el nivel del mar, pero la Tierra está achatada: en el ecuador el radio mide unos 21 km más que en los polos. Por eso la cima del volcán Chimborazo, en Ecuador, queda unos 2 km más lejos del centro de la Tierra que la del Everest, aunque mide 2.500 m menos.\n\nFuentes:\n- NOAA National Ocean Service, What is the highest point on Earth as measured from Earth's center?: https://oceanservice.noaa.gov/facts/highestpoint.html\n- NASA Earth Fact Sheet (radio ecuatorial 6.378 km, polar 6.357 km): https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html\n- Altura oficial del Everest 8.848,86 m (medición conjunta Nepal–China, 2020); Chimborazo 6.263 m",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#geografia",
+    "#everest",
+    "#ecuador",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-el-everest-no-es-la-cima-mas-cercana-al",
+    "color": "cian",
+    "gancho": "Mira el Everest: no es el punto más alejado del centro de la Tierra. ¿Cómo?",
+    "imagenGancho": {
+      "buscar": "Mount Everest north face",
+      "forma": "completa"
+    },
+    "escenas": [
+      {
+        "texto": "Dicen que su cima es la más cercana al espacio. La verdad es más rara.",
+        "visual": {
+          "tipo": "frase",
+          "texto": "La cima más alta… no es la más lejana",
+          "enfasis": [
+            "lejana"
+          ]
+        },
+        "imagen": {
+          "buscar": "Mount Everest from Kala Patthar"
+        }
+      },
+      {
+        "texto": "Todo se explica con dos cosas: la forma de la Tierra y un volcán de Ecuador. Primero, la forma.",
+        "visual": {
+          "tipo": "icono",
+          "forma": "tierra",
+          "etiqueta": "la Tierra no es una esfera"
+        },
+        "imagen": {
+          "buscar": "Earth from space",
+          "forma": "circulo"
+        }
+      },
+      {
+        "texto": "Según la NOAA, la Tierra está achatada: el radio en el ecuador mide veintiún kilómetros más que en los polos.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 21,
+          "sufijo": " km",
+          "etiqueta": "más radio en el ecuador que en los polos",
+          "dice": "veintiún"
+        }
+      },
+      {
+        "texto": "Segundo, el volcán. El Chimborazo está casi en el ecuador y su cima queda dos kilómetros más lejos del centro de la Tierra que la del Everest.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 2.1,
+          "sufijo": " km",
+          "etiqueta": "más lejos del centro que el Everest",
+          "dice": "dos"
+        },
+        "imagen": {
+          "buscar": "Chimborazo volcano Ecuador"
+        }
+      },
+      {
+        "texto": "Y aquí está el giro: el Chimborazo es dos mil quinientos metros más bajo que el Everest y aun así es el punto más cercano al espacio.",
+        "visual": {
+          "tipo": "comparar",
+          "sufijo": " m",
+          "items": [
+            {
+              "etiqueta": "Everest",
+              "valor": 8849
+            },
+            {
+              "etiqueta": "Chimborazo",
+              "valor": 6263,
+              "color": "cian"
+            }
+          ]
+        },
+        "imagen": {
+          "buscar": "Chimborazo summit snow"
+        }
+      }
+    ],
+    "remate": "El Everest es la cima más alta sobre el mar. El Chimborazo, la más lejana del centro.",
+    "imagenRemate": {
+      "buscar": "Chimborazo",
+      "forma": "completa"
+    },
+    "fuentes": [
+      "NOAA National Ocean Service, What is the highest point on Earth as measured from Earth's center? (Chimborazo ≈ 6.384,4 km del centro; Everest ≈ 6.382,3 km; diferencia ≈ 2,1 km): https://oceanservice.noaa.gov/facts/highestpoint.html",
+      "NASA Earth Fact Sheet: radio ecuatorial 6.378,1 km, radio polar 6.356,8 km (≈ 21 km de diferencia): https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html",
+      "Altura del Everest 8.848,86 m (medición conjunta Nepal–China, 2020); Chimborazo 6.263 m sobre el nivel del mar"
+    ]
+  }
+}

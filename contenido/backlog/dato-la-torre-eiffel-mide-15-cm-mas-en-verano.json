@@ -1,0 +1,101 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-la-torre-eiffel-mide-15-cm-mas-en-verano",
+  "titulo": "La Torre Eiffel mide 15 cm más en verano que en invierno",
+  "descripcion": "Las 7.300 toneladas de hierro de la Torre Eiffel se dilatan con el calor: en verano la torre crece hasta 15 cm, y el sol, al calentar solo una cara, inclina la punta hasta 18 cm. Además, iba a demolerse a los 20 años: la salvó servir de antena de radio.\n\nFuentes:\n- Sitio oficial de la Torre Eiffel, La Tour Eiffel et la science / FAQ (dilatación hasta 15 cm, inclinación hasta 18 cm por el sol, 7.300 t de hierro): https://www.toureiffel.paris\n- Sitio oficial, Histoire: concesión de 20 años desde 1889, salvada por los experimentos de radiotelegrafía: https://www.toureiffel.paris/fr/le-monument/histoire",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#ciencia",
+    "#paris",
+    "#torreeiffel",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-la-torre-eiffel-mide-15-cm-mas-en-verano",
+    "color": "amarillo",
+    "gancho": "Mira la Torre Eiffel: en verano mide hasta 15 centímetros más. ¿Por qué?",
+    "imagenGancho": {
+      "buscar": "Eiffel Tower from Trocadero",
+      "forma": "completa"
+    },
+    "escenas": [
+      {
+        "texto": "Dicen que en invierno se hunde en el suelo. La verdad es más simple.",
+        "visual": {
+          "tipo": "frase",
+          "texto": "No se hunde: se estira",
+          "enfasis": [
+            "estira"
+          ]
+        },
+        "imagen": {
+          "buscar": "Eiffel Tower winter snow"
+        }
+      },
+      {
+        "texto": "Todo se explica con dos cosas: hierro y sol. Primero, el hierro.",
+        "visual": {
+          "tipo": "lista",
+          "items": [
+            "Hierro",
+            "Sol"
+          ]
+        },
+        "imagen": {
+          "buscar": "Eiffel Tower iron lattice"
+        }
+      },
+      {
+        "texto": "Según el sitio oficial de la torre, sus siete mil trescientas toneladas de hierro se dilatan con el calor y la torre crece hasta quince centímetros.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 15,
+          "sufijo": " cm",
+          "etiqueta": "más alta en un día de calor",
+          "dice": "quince"
+        },
+        "imagen": {
+          "buscar": "Eiffel Tower rivets"
+        }
+      },
+      {
+        "texto": "Segundo, el sol. Calienta solo una cara, ese lado se estira más y la punta se inclina hasta dieciocho centímetros, huyendo del sol.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 18,
+          "sufijo": " cm",
+          "etiqueta": "inclinación de la cima lejos del sol",
+          "dice": "dieciocho"
+        },
+        "imagen": {
+          "buscar": "Eiffel Tower top",
+          "forma": "circulo"
+        }
+      },
+      {
+        "texto": "Y aquí está el giro: la torre iba a durar solo veinte años. Se salvó porque sirvió como antena de radio.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 20,
+          "sufijo": " años",
+          "etiqueta": "permiso original (1889–1909)",
+          "dice": "veinte"
+        },
+        "imagen": {
+          "buscar": "Eiffel Tower radio antenna"
+        }
+      }
+    ],
+    "remate": "Cada verano la estira. Cada invierno la encoge.",
+    "imagenRemate": {
+      "buscar": "Eiffel Tower sunset",
+      "forma": "completa"
+    },
+    "fuentes": [
+      "Sitio oficial de la Torre Eiffel, La Tour Eiffel et la science / FAQ: con el calor la torre crece hasta 15 cm y la cima se inclina hasta 18 cm alejándose del sol; estructura de 7.300 t de hierro: https://www.toureiffel.paris",
+      "Sitio oficial de la Torre Eiffel, Histoire: concesión de 20 años desde la Exposición de 1889; se salvó de la demolición por los experimentos de radiotelegrafía: https://www.toureiffel.paris/fr/le-monument/histoire"
+    ]
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "plantilla": "dato",
+  "id": "pendiente-dato-en-el-canal-de-panama-vas-del-atlantico",
+  "titulo": "En el Canal de Panamá vas del Atlántico al Pacífico hacia el este",
+  "descripcion": "El istmo de Panamá corre de oeste a este y se tuerce como una S, así que el canal lo cruza de noroeste a sureste: la salida al Pacífico (Balboa) queda unos 35 km más al este que la entrada del Atlántico (Colón). Y el canal no está al nivel del mar: los barcos suben 26 m por esclusas hasta el lago Gatún y vuelven a bajar.\n\nFuentes:\n- Britannica, Panama Canal (recorrido de noroeste a sureste, unos 80 km): https://www.britannica.com/topic/Panama-Canal\n- Autoridad del Canal de Panamá, lago Gatún a 26 m (85 pies) sobre el nivel del mar: https://pancanal.com\n- Cálculo con coordenadas: Colón ≈ 9,36 N 79,90 O; Balboa ≈ 8,95 N 79,57 O → 0,33° de longitud ≈ 36 km hacia el este",
+  "hashtags": [
+    "#shorts",
+    "#datos",
+    "#curiosidades",
+    "#geografia",
+    "#panama",
+    "#mapas",
+    "#bolitalab"
+  ],
+  "props": {
+    "id": "pendiente-dato-en-el-canal-de-panama-vas-del-atlantico",
+    "color": "naranja",
+    "gancho": "Mira el Canal de Panamá: del Atlántico al Pacífico se navega hacia el este. ¿Por qué?",
+    "imagenGancho": {
+      "buscar": "Panama Canal map",
+      "forma": "completa"
+    },
+    "escenas": [
+      {
+        "texto": "Dicen que cruza América de oeste a este, como en el mapa. La verdad es más rara.",
+        "visual": {
+          "tipo": "frase",
+          "texto": "El Pacífico queda al este",
+          "enfasis": [
+            "este"
+          ]
+        },
+        "imagen": {
+          "buscar": "Miraflores Locks Panama Canal"
+        }
+      },
+      {
+        "texto": "Todo se explica con dos cosas: la forma del istmo y un río. Primero, el istmo.",
+        "visual": {
+          "tipo": "lista",
+          "items": [
+            "La forma del istmo",
+            "Un río"
+          ]
+        },
+        "imagen": {
+          "buscar": "Isthmus of Panama satellite"
+        }
+      },
+      {
+        "texto": "Según la Enciclopedia Británica, el istmo se tuerce tanto que el canal corre de noroeste a sureste, unos ochenta kilómetros.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 80,
+          "sufijo": " km",
+          "etiqueta": "de noroeste a sureste",
+          "dice": "ochenta"
+        },
+        "imagen": {
+          "buscar": "Panama map"
+        }
+      },
+      {
+        "texto": "Segundo, el río. El canal siguió el valle del Chagres hacia el sureste, y la salida al Pacífico quedó unos treinta y cinco kilómetros al este de la entrada.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 36,
+          "sufijo": " km",
+          "etiqueta": "la salida al Pacífico está al este de la entrada",
+          "dice": "treinta"
+        },
+        "imagen": {
+          "buscar": "Gatun Lake Panama"
+        }
+      },
+      {
+        "texto": "Y aquí está el giro: el canal no está al nivel del mar. Cada barco sube veintiséis metros por esclusas hasta un lago y baja del otro lado.",
+        "visual": {
+          "tipo": "cifra",
+          "valor": 26,
+          "sufijo": " m",
+          "etiqueta": "altura del lago Gatún sobre el mar",
+          "dice": "veintiséis"
+        },
+        "imagen": {
+          "buscar": "Gatun Locks"
+        }
+      }
+    ],
+    "remate": "En el resto del mundo el Pacífico queda al oeste. En Panamá, queda al este.",
+    "imagenRemate": {
+      "buscar": "Bridge of the Americas Panama",
+      "forma": "completa"
+    },
+    "fuentes": [
+      "Britannica, Panama Canal: recorre el istmo de noroeste a sureste, unos 80 km de Colón (Atlántico) a Balboa (Pacífico): https://www.britannica.com/topic/Panama-Canal",
+      "Autoridad del Canal de Panamá: el lago Gatún está a 26 m (85 pies) sobre el nivel del mar; las esclusas suben y bajan los barcos: https://pancanal.com",
+      "Cálculo con coordenadas: Colón ≈ 9,36 N 79,90 O; Balboa ≈ 8,95 N 79,57 O → 0,33° de longitud × 111 km × cos(9°) ≈ 36 km hacia el este"
+    ]
+  }
+}
