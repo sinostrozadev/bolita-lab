@@ -1,8 +1,7 @@
 # Bolita Lab — Estrategia del canal
 
 > Objetivo: entrar al Programa de Partners de YouTube (YPP). Requisito real (2026):
-> **1.000 suscriptores** y, además, **4.000 horas públicas de reproducción en 12 meses**
-> **o 10 millones de vistas públicas de Shorts en 90 días**. (No son 10.000: son 10 millones.)
+> **1.000 suscriptores + (4.000 h de largos en 12 meses **o** 10 M de vistas de Shorts en 90 días)**. (No son 10.000: son 10 millones.)
 > Hay un escalón previo a los 500 suscriptores + 3 subidas en 90 días que abre
 > membresías y Super Thanks, pero no los anuncios.
 
