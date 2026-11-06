@@ -25,7 +25,8 @@ import {
   siguienteRanura, type Calendario, type EntradaConRuta,
 } from './lib/operacion.mjs';
 
-const SCOPES = ['https://www.googleapis.com/auth/youtube.upload', 'https://www.googleapis.com/auth/youtube'];
+// force-ssl: leer y responder comentarios por API (commentThreads/comments). Al agregar un scope hay que volver a `autorizar`.
+const SCOPES = ['https://www.googleapis.com/auth/youtube.upload', 'https://www.googleapis.com/auth/youtube', 'https://www.googleapis.com/auth/youtube.force-ssl'];
 const PUERTO = 8765;
 const REDIRECT = `http://127.0.0.1:${PUERTO}`;
 const TROZO = 8 * 1024 * 1024; // múltiplo de 256 KiB, como exige la API

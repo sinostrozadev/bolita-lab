@@ -36,7 +36,9 @@ const horaStudio = `${((hh + 11) % 12) + 1}:${String(mm).padStart(2, '0')} ${hh 
 console.log(`→ ${id} · ${fechaStudio} ${horaStudio} · ${categoria}`);
 
 // 1. Abrir diálogo de subida y cargar el archivo (o retomar un borrador ya subido con BORRADOR=1)
-if (process.env.BORRADOR === '1') {
+if (process.env.CONTINUAR === '1') {
+  // El diálogo ya está abierto con el archivo cargado (p. ej. tras un fallo a mitad): se retoma desde el título.
+} else if (process.env.BORRADOR === '1') {
   await llamar(`/ir?url=${q('https://studio.youtube.com/channel/UCi1_1_ItZCLY4axLshZcuZQ/videos/short')}`);
   await hasta(() => evalJs(`Array.from(document.querySelectorAll('ytcp-video-row')).some(r=>/Edit draft/.test(r.innerText))`), 90000, 2000, 'fila del borrador');
   const fila = await evalJs(`Array.from(document.querySelectorAll('ytcp-video-row')).filter(r=>/Edit draft/.test(r.innerText)).map(r=>r.innerText.split(String.fromCharCode(10))[1]||r.innerText.slice(0,60))`);
@@ -53,8 +55,10 @@ await hasta(() => evalJs(`!!document.querySelector('#title-textarea #textbox')`)
 await esperar(2000);
 
 // 2. Título y descripción
-await llamar(`/escribir?sel=${q('#title-textarea #textbox')}&texto=${q(meta.titulo)}`);
-await llamar(`/escribir?sel=${q('#description-textarea #textbox')}&texto=${q(meta.descripcion)}`);
+if (process.env.CONTINUAR !== '1') {
+  await llamar(`/escribir?sel=${q('#title-textarea #textbox')}&texto=${q(meta.titulo)}`);
+  await llamar(`/escribir?sel=${q('#description-textarea #textbox')}&texto=${q(meta.descripcion)}`);
+}
 await esperar(1000);
 const [t, dsc] = await evalJs(`[document.querySelector('#title-textarea #textbox').innerText.trim(), document.querySelector('#description-textarea #textbox').innerText.trim()]`);
 if (t !== meta.titulo.trim()) fallo('título no coincide: ' + t);
@@ -65,21 +69,28 @@ const txt = await textoDialogo();
 if (!/not made for kids/.test(txt)) fallo('audiencia no quedó en "not made for kids"');
 
 // 4. Más opciones: etiquetas, idioma, categoría
-await llamar(`/clicktexto?texto=${q('Show more')}&exacto=1`);
-await esperar(1500);
-await llamar(`/escribir?sel=${q('ytcp-uploads-dialog input[aria-label=Tags]')}&texto=`);
-await llamar(`/tipear?t=${q(etiquetas)}`);
-await esperar(800);
-const r1 = await llamar(`/click?sel=${q('ytcp-uploads-dialog ytcp-dropdown-trigger:has-text("Video language")')}`);
-if (r1.error) fallo('idioma: ' + r1.error);
-await esperar(1200);
-await llamar(`/clicktexto?texto=${q('Spanish (Latin America)')}&exacto=1`);
-await esperar(1000);
-const r2 = await llamar(`/click?sel=${q('ytcp-uploads-dialog ytcp-dropdown-trigger:has-text("People & Blogs")')}`);
-if (r2.error) fallo('categoría: ' + r2.error);
-await esperar(1200);
-await llamar(`/clicktexto?texto=${q(categoria)}&exacto=1`);
-await esperar(1000);
+if (process.env.CONTINUAR !== '1') {
+  await llamar(`/clicktexto?texto=${q('Show more')}&exacto=1`);
+  await esperar(1500);
+  await llamar(`/escribir?sel=${q('ytcp-uploads-dialog input[aria-label=Tags]')}&texto=`);
+  await llamar(`/tipear?t=${q(etiquetas)}`);
+  await esperar(800);
+  const r1 = await llamar(`/click?sel=${q('ytcp-uploads-dialog ytcp-dropdown-trigger:has-text("Video language")')}`);
+  if (r1.error) fallo('idioma: ' + r1.error);
+  await esperar(1200);
+  await llamar(`/clicktexto?texto=${q('Spanish (Latin America)')}&exacto=1`);
+  await esperar(1000);
+}
+// Studio recuerda la última categoría usada, así que el desplegable no siempre dice "People & Blogs":
+// se localiza por su contenedor (#category) y solo se abre si no está ya en la categoría pedida.
+const catActual = String(await evalJs(`(document.querySelector('ytcp-uploads-dialog ytcp-form-select#category ytcp-dropdown-trigger')?.innerText||'').trim()`));
+if (catActual !== categoria) {
+  const r2 = await llamar(`/click?sel=${q('ytcp-uploads-dialog ytcp-form-select#category ytcp-dropdown-trigger')}`);
+  if (r2.error) fallo('categoría: ' + r2.error);
+  await esperar(1200);
+  await llamar(`/clicktexto?texto=${q(categoria)}&exacto=1`);
+  await esperar(1000);
+}
 const resumen = await evalJs(`Array.from(document.querySelectorAll('ytcp-uploads-dialog ytcp-dropdown-trigger')).map(i=>i.innerText.trim().replace(/\\n/g,'=')).filter(t=>/language|Entertain|Science|People/.test(t)).join(' ; ')`);
 if (!/Spanish \(Latin America\)/.test(resumen) || !resumen.includes(categoria)) fallo('idioma/categoría: ' + resumen);
 const chips = await evalJs(`Array.from(document.querySelectorAll('ytcp-uploads-dialog ytcp-chip')).map(c=>c.innerText.trim())`);
@@ -118,7 +129,23 @@ if (!vis.includes(fechaStudio) || !vis.includes(horaStudio) || !vis.includes('GM
 await hasta(async () => /Checks complete|Upload complete|Processing/.test(await textoDialogo()), 120000, 2000, 'subida completa');
 await hasta(() => evalJs(`(()=>{const b=document.querySelector('ytcp-uploads-dialog #done-button');return !!b && !b.hasAttribute('disabled')})()`), 60000, 1000, 'botón Schedule');
 await llamar(`/click?sel=${q('ytcp-uploads-dialog #done-button')}`);
-const conf = await hasta(() => evalJs(`(()=>{const d=document.querySelector('ytcp-video-share-dialog, ytcp-uploads-still-processing-dialog');const t=d?d.innerText:'';return /Video scheduled|will be set to public/.test(t)?t.replace(/\\n+/g,' | '):''})()`), 60000, 1000, 'confirmación');
+const leerConfirmacion = () => evalJs(`(()=>{const d=document.querySelector('ytcp-video-share-dialog, ytcp-uploads-still-processing-dialog');const t=d?d.innerText:'';return /Video scheduled|will be set to public/.test(t)?t.replace(/\\n+/g,' | '):''})()`);
+// Si los chequeos de copyright aún corren ("Checking 27% …"), Studio abre "We're still checking your content"
+// con un botón "Got it" en vez de programar. Se cierra, se espera a "Checks complete" y se vuelve a pulsar Schedule.
+const aunChequeando = () => evalJs(`/still checking your content/.test(document.body.innerText)`);
+let conf = '';
+for (let intento = 0; intento < 3 && !conf; intento++) {
+  conf = await hasta(async () => (await leerConfirmacion()) || ((await aunChequeando()) ? 'CHEQUEANDO' : ''), 60000, 1000, 'confirmación');
+  if (conf === 'CHEQUEANDO') {
+    conf = '';
+    console.log('  · chequeos en curso: espero a "Checks complete"');
+    await llamar(`/clicktexto?texto=${q('Got it')}&exacto=1`);
+    await hasta(async () => /Checks complete/.test(await textoDialogo()), 8 * 60000, 5000, 'Checks complete');
+    await esperar(1500);
+    await llamar(`/click?sel=${q('ytcp-uploads-dialog #done-button')}`);
+  }
+}
+if (!conf) fallo('sin confirmación tras los chequeos');
 const link = (conf.match(/https:\/\/youtube\.com\/shorts\/[\w-]+/) || [])[0];
 if (!link) fallo('sin link en confirmación: ' + conf.slice(0, 300));
 await llamar(`/clicktexto?texto=Close&exacto=1`);
