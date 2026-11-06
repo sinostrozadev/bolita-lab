@@ -1,7 +1,8 @@
 /**
  * Resumen del estado de la fábrica: backlog por plantilla, bandeja por estado (con huérfanos),
  * próximas ranuras (con qué video iría en cada una), compilaciones, últimos errores y credenciales.
- *   npx tsx scripts/estado.mts [--sin-marcar]
+ *   npx tsx scripts/estado.mts [--sin-marcar] [--sin-metricas]
+ * Al final cuelga la captura diaria de métricas (scripts/metricas.mts); --sin-metricas la omite.
  * Por defecto marca como 'error' los json 'listo' sin mp4 (huérfanos), igual que el diario.
  */
 import fs from 'node:fs';
@@ -68,3 +69,11 @@ if (fs.existsSync(lock)) console.log(`\n⚠ ${rel(lock)} presente (pid ${fs.read
 const errores = ultimosErrores(8);
 console.log(`\nÚltimos errores en logs: ${errores.length ? '' : 'ninguno'}`);
 for (const l of errores) console.log(`  ${l.slice(0, 170)}`);
+
+// Métricas diarias (skill metricas-diarias): capturas de Studio + salida/metricas/AAAA-MM-DD/metricas.json.
+if (!process.argv.includes('--sin-metricas')) {
+  const { spawnSync } = await import('node:child_process');
+  console.log('\nMétricas diarias:');
+  const r = spawnSync(process.execPath, [path.join(RAIZ, 'node_modules', 'tsx', 'dist', 'cli.mjs'), path.join(RAIZ, 'scripts', 'metricas.mts')], { encoding: 'utf8', timeout: 12 * 60_000 });
+  console.log(`  ${((r.stdout || '') + (r.stderr || '') || `sin salida (código ${r.status})`).trim().split('\n').join('\n  ')}`);
+}

@@ -24,3 +24,7 @@ salida/revisiones/*
 !salida/revisiones/hojas/
 salida/revisiones/hojas/*
 !salida/revisiones/hojas/*.jpg
+
+# Métricas diarias (scripts/metricas.mts): se versionan las capturas y el JSON, no la evidencia de fallos.
+!salida/metricas/
+salida/metricas/*/fallo-*.png

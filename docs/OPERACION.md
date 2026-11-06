@@ -243,3 +243,14 @@ instalación, voz + sonido 4 s, render 4 min 33 s con concurrency 2, hojas/artif
 3. En `scripts/lib/operacion.mts`: añadir `'serie'` a `PLANTILLAS` (y a `rotacion` del calendario); ajustar
    `categoriaDe` si no es 24.
 4. `generar-guiones --plantilla serie` usa `src/plantillas/serie/guion.ts` como texto y como validador real.
+
+## Métricas diarias (`scripts/metricas.mts`)
+Skill global `metricas-diarias`. Guarda en `salida/metricas/AAAA-MM-DD/` cuatro capturas PNG de YouTube Studio
+(overview, monetización, alcance, contenido) + su `.txt` + `metricas.json` (subs, vistas totales, vistas 28 d y 48 h,
+horas, progreso YPP, por video). Se versiona todo salvo `fallo-*.png`.
+- **Cuándo:** cuelga del final de `scripts/estado.mts` (cron 08:00, sin línea nueva). `estado.mts --sin-metricas` la omite.
+- **Manual:** `npx tsx scripts/metricas.mts [--sin-capturas] [--fecha AAAA-MM-DD]`. Idempotente (una captura fallida no pisa una buena).
+- **Números:** API de YouTube con `secrets/youtube-token.json` (Data: subs [redondeados a 3 cifras], vistas, videos; Analytics:
+  vistas 28 d/48 h y horas, que tardan ~48 h en reflejarse); si falla, cae a curl público. `fuentes` del JSON dice cuál se usó.
+- **Capturas:** pestaña propia del piloto (:8777), cambia al canal Bolita Lab (`BOLITA_CANAL_ID`, `BOLITA_CANAL_NOMBRE`) si Studio
+  pide elegirlo, y restaura la pestaña anterior. Si el piloto está caído, solo queda el JSON.
