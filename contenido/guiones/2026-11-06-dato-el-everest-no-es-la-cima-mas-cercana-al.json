@@ -1,6 +1,6 @@
 {
   "plantilla": "dato",
-  "id": "pendiente-dato-el-everest-no-es-la-cima-mas-cercana-al",
+  "id": "2026-11-06-dato-el-everest-no-es-la-cima-mas-cercana-al",
   "titulo": "El Everest no es la cima más cercana al espacio: es el Chimborazo",
   "descripcion": "El Everest es la montaña más alta sobre el nivel del mar, pero la Tierra está achatada: en el ecuador el radio mide unos 21 km más que en los polos. Por eso la cima del volcán Chimborazo, en Ecuador, queda unos 2 km más lejos del centro de la Tierra que la del Everest, aunque mide 2.500 m menos.\n\nFuentes:\n- NOAA National Ocean Service, What is the highest point on Earth as measured from Earth's center?: https://oceanservice.noaa.gov/facts/highestpoint.html\n- NASA Earth Fact Sheet (radio ecuatorial 6.378 km, polar 6.357 km): https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html\n- Altura oficial del Everest 8.848,86 m (medición conjunta Nepal–China, 2020); Chimborazo 6.263 m",
   "hashtags": [
@@ -13,7 +13,7 @@
     "#bolitalab"
   ],
   "props": {
-    "id": "pendiente-dato-el-everest-no-es-la-cima-mas-cercana-al",
+    "id": "2026-11-06-dato-el-everest-no-es-la-cima-mas-cercana-al",
     "color": "cian",
     "gancho": "Mira el Everest: no es el punto más alejado del centro de la Tierra. ¿Cómo?",
     "imagenGancho": {

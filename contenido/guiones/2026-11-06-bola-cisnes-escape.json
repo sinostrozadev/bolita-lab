@@ -1,6 +1,6 @@
 {
   "plantilla": "bola",
-  "id": "pendiente-bola-cisnes-escape",
+  "id": "2026-11-06-bola-cisnes-escape",
   "titulo": "¿En qué rebote escapa la bolita? El lago de los cisnes en neón",
   "descripcion": "Una bolita de neón rebota dentro de un anillo con un hueco que gira. Cada rebote toca la siguiente nota de El lago de los cisnes de Chaikovski. ¿En qué rebote encuentra la salida?\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #chaikovski #lagodeloscisnes",
   "hashtags": [
@@ -13,7 +13,7 @@
     "#lagodeloscisnes"
   ],
   "props": {
-    "id": "pendiente-bola-cisnes-escape",
+    "id": "2026-11-06-bola-cisnes-escape",
     "gancho": "¿En qué rebote se escapa?",
     "melodia": "cisnes",
     "modo": "escape",
