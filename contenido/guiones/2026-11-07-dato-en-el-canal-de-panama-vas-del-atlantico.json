@@ -1,6 +1,6 @@
 {
   "plantilla": "dato",
-  "id": "pendiente-dato-en-el-canal-de-panama-vas-del-atlantico",
+  "id": "2026-11-07-dato-en-el-canal-de-panama-vas-del-atlantico",
   "titulo": "En el Canal de Panamá vas del Atlántico al Pacífico hacia el este",
   "descripcion": "El istmo de Panamá corre de oeste a este y se tuerce como una S, así que el canal lo cruza de noroeste a sureste: la salida al Pacífico (Balboa) queda unos 35 km más al este que la entrada del Atlántico (Colón). Y el canal no está al nivel del mar: los barcos suben 26 m por esclusas hasta el lago Gatún y vuelven a bajar.\n\nFuentes:\n- Britannica, Panama Canal (recorrido de noroeste a sureste, unos 80 km): https://www.britannica.com/topic/Panama-Canal\n- Autoridad del Canal de Panamá, lago Gatún a 26 m (85 pies) sobre el nivel del mar: https://pancanal.com\n- Cálculo con coordenadas: Colón ≈ 9,36 N 79,90 O; Balboa ≈ 8,95 N 79,57 O → 0,33° de longitud ≈ 36 km hacia el este",
   "hashtags": [
@@ -13,7 +13,7 @@
     "#bolitalab"
   ],
   "props": {
-    "id": "pendiente-dato-en-el-canal-de-panama-vas-del-atlantico",
+    "id": "2026-11-07-dato-en-el-canal-de-panama-vas-del-atlantico",
     "color": "naranja",
     "gancho": "Mira el Canal de Panamá: del Atlántico al Pacífico se navega hacia el este. ¿Por qué?",
     "imagenGancho": {

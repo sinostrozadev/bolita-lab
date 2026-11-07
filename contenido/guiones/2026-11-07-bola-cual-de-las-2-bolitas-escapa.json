@@ -1,0 +1,24 @@
+{
+  "plantilla": "bola",
+  "id": "2026-11-07-bola-cual-de-las-2-bolitas-escapa",
+  "titulo": "¿Cuál de las 2 bolitas escapa por el hueco estrecho? Oda a la Alegría",
+  "descripcion": "Dos bolitas de neón rebotan y chocan dentro de un anillo con un hueco muy estrecho que gira. Cada rebote toca una nota de la Oda a la Alegría de Beethoven.\nSolo una logra salir. Apuesta en los comentarios antes de ver el final.\nSimulación física determinista hecha en Bolita Lab.",
+  "hashtags": [
+    "#shorts",
+    "#satisfying",
+    "#fisica",
+    "#bolita",
+    "#neon",
+    "#beethoven",
+    "#odaalaalegria"
+  ],
+  "props": {
+    "id": "2026-11-07-bola-cual-de-las-2-bolitas-escapa",
+    "gancho": "2 bolitas, 1 hueco estrecho. Apuesta: ¿cuál sale primero?",
+    "melodia": "odaalegria",
+    "modo": "escape",
+    "bolas": 2,
+    "velocidadHueco": 45,
+    "anchoHueco": 24
+  }
+}

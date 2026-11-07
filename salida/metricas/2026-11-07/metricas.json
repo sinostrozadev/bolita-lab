@@ -1,7 +1,7 @@
 {
   "fecha": "2026-11-07",
   "canalId": "UCi1_1_ItZCLY4axLshZcuZQ",
-  "generadoEn": "2026-11-07T05:39:33.536Z",
+  "generadoEn": "2026-11-07T06:08:25.182Z",
   "zona": "America/Santiago",
   "subs": 9,
   "videosPublicados": 6,
@@ -265,7 +265,43 @@
       "plantilla": "dato",
       "tipo": "short",
       "publicarEn": "2026-11-11T12:00:00-03:00"
+    },
+    {
+      "vistas": 0,
+      "titulo": "¿En qué rebote escapa la bolita? El lago de los cisnes en neón",
+      "publicadoEn": null,
+      "segundos": null,
+      "privado": false,
+      "id": "aqlybcvEYz0",
+      "bandeja": "2026-11-06-bola-cisnes-escape",
+      "plantilla": "bola",
+      "tipo": "short",
+      "publicarEn": "2026-11-14T18:00:00-03:00"
+    },
+    {
+      "vistas": 0,
+      "titulo": "¿Pizza, hamburguesa, sushi o tacos? 🍕 ¿Qué comida gana?",
+      "publicadoEn": null,
+      "segundos": null,
+      "privado": false,
+      "id": "JKfuFS0b99U",
+      "bandeja": "2026-11-06-carrera-pizza-vs-hamburguesa",
+      "plantilla": "carrera",
+      "tipo": "short",
+      "publicarEn": "2026-11-14T12:00:00-03:00"
+    },
+    {
+      "vistas": 0,
+      "titulo": "El Everest no es la cima más cercana al espacio: es el Chimborazo",
+      "publicadoEn": null,
+      "segundos": null,
+      "privado": false,
+      "id": "rKeo3b33kJM",
+      "bandeja": "2026-11-06-dato-el-everest-no-es-la-cima-mas-cercana-al",
+      "plantilla": "dato",
+      "tipo": "short",
+      "publicarEn": "2026-11-15T12:00:00-03:00"
     }
   ],
-  "actualizaciones": 1
+  "actualizaciones": 2
 }

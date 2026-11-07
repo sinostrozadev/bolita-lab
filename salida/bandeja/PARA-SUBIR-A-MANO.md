@@ -1,6 +1,6 @@
 # Videos listos para subir a mano (YouTube Studio)
 
-Generado: 2026-11-06 03:40 (America/Santiago) · 3 Short(s) + 1 video(s) largo(s), en orden de calendario.
+Generado: 2026-11-07 04:01 (America/Santiago) · 3 Short(s) + 1 video(s) largo(s), en orden de calendario.
 
 Cómo: YouTube Studio → **Crear → Subir videos** → elige el archivo indicado. Copia el título y la
 descripción **tal cual** (la descripción ya trae los hashtags al final). En "Público": **No, no es
@@ -11,101 +11,104 @@ Al terminar, marca cada video como subido para que no vuelva a aparecer: en `sal
 cambia `"estado": "listo"` por `"estado": "subido"` y agrega `"publicarEn": "<fecha ISO>"`
 (así el calendario sabe que esa ranura ya está ocupada). Si no lo haces, solo se volverá a listar.
 
-## 1. ¿Pizza, hamburguesa, sushi o tacos? 🍕 ¿Qué comida gana?
+## 1. ¿Qué color gana la carrera? 🎨 El tuyo, ¿llega primero?
 
-- **Archivo:** `/home/santiago/projects/yt/bolita-lab/salida/bandeja/2026-11-06-carrera-pizza-vs-hamburguesa.mp4`
-- **Programar para:** 2026-11-14 12:00 (America/Santiago)
-- **Id:** `2026-11-06-carrera-pizza-vs-hamburguesa` · **Plantilla:** carrera · **Duración:** 00:40 · **Categoría:** Entretenimiento
+- **Archivo:** `/home/santiago/projects/yt/bolita-lab/salida/bandeja/2026-11-07-carrera-que-color-favorito.mp4`
+- **Programar para:** 2026-11-15 18:00 (America/Santiago)
+- **Id:** `2026-11-07-carrera-que-color-favorito` · **Plantilla:** carrera · **Duración:** 00:32 · **Categoría:** Entretenimiento
 
 **Título:**
 ```
-¿Pizza, hamburguesa, sushi o tacos? 🍕 ¿Qué comida gana?
+¿Qué color gana la carrera? 🎨 El tuyo, ¿llega primero?
 ```
 
 **Descripción:**
 ```
-Seis comidas, seis bolitas de neón y una sola ganadora. ¿Tu comida favorita llega primero? Física real y sonido en cada rebote. Defiéndela en los comentarios.
+Seis colores, seis bolitas de neón y un tablero lleno de clavijas. ¿Tu color favorito llega primero? Física real y sonido en cada rebote. Dinos en los comentarios cuál apoyabas.
 
-#shorts #carrera #satisfying #bolitas #fisica #comida #pizza
+#shorts #carrera #satisfying #bolitas #fisica #colores #favorito
 ```
 
 **Hashtags:**
 ```
-#shorts #carrera #satisfying #bolitas #fisica #comida #pizza
+#shorts #carrera #satisfying #bolitas #fisica #colores #favorito
 ```
 
 **Etiquetas** (campo "Etiquetas" de Studio):
 ```
-shorts, carrera, satisfying, bolitas, fisica, comida, pizza
+shorts, carrera, satisfying, bolitas, fisica, colores, favorito
 ```
 
-## 2. ¿En qué rebote escapa la bolita? El lago de los cisnes en neón
+## 2. ¿Cuál de las 2 bolitas escapa por el hueco estrecho? Oda a la Alegría
 
-- **Archivo:** `/home/santiago/projects/yt/bolita-lab/salida/bandeja/2026-11-06-bola-cisnes-escape.mp4`
-- **Programar para:** 2026-11-14 18:00 (America/Santiago)
-- **Id:** `2026-11-06-bola-cisnes-escape` · **Plantilla:** bola · **Duración:** 00:32 · **Categoría:** Entretenimiento
+- **Archivo:** `/home/santiago/projects/yt/bolita-lab/salida/bandeja/2026-11-07-bola-cual-de-las-2-bolitas-escapa.mp4`
+- **Programar para:** 2026-11-16 12:00 (America/Santiago)
+- **Id:** `2026-11-07-bola-cual-de-las-2-bolitas-escapa` · **Plantilla:** bola · **Duración:** 00:29 · **Categoría:** Entretenimiento
 
 **Título:**
 ```
-¿En qué rebote escapa la bolita? El lago de los cisnes en neón
+¿Cuál de las 2 bolitas escapa por el hueco estrecho? Oda a la Alegría
 ```
 
 **Descripción:**
 ```
-Una bolita de neón rebota dentro de un anillo con un hueco que gira. Cada rebote toca la siguiente nota de El lago de los cisnes de Chaikovski. ¿En qué rebote encuentra la salida?
+Dos bolitas de neón rebotan y chocan dentro de un anillo con un hueco muy estrecho que gira. Cada rebote toca una nota de la Oda a la Alegría de Beethoven.
+Solo una logra salir. Apuesta en los comentarios antes de ver el final.
 Simulación física determinista hecha en Bolita Lab.
 
-#shorts #satisfying #fisica #bolita #neon #chaikovski #lagodeloscisnes
+#shorts #satisfying #fisica #bolita #neon #beethoven #odaalaalegria
 ```
 
 **Hashtags:**
 ```
-#shorts #satisfying #fisica #bolita #neon #chaikovski #lagodeloscisnes
+#shorts #satisfying #fisica #bolita #neon #beethoven #odaalaalegria
 ```
 
 **Etiquetas** (campo "Etiquetas" de Studio):
 ```
-shorts, satisfying, fisica, bolita, neon, chaikovski, lagodeloscisnes
+shorts, satisfying, fisica, bolita, neon, beethoven, odaalaalegria
 ```
 
-## 3. El Everest no es la cima más cercana al espacio: es el Chimborazo
+## 3. En el Canal de Panamá vas del Atlántico al Pacífico hacia el este
 
-- **Archivo:** `/home/santiago/projects/yt/bolita-lab/salida/bandeja/2026-11-06-dato-el-everest-no-es-la-cima-mas-cercana-al.mp4`
-- **Programar para:** 2026-11-15 12:00 (America/Santiago)
-- **Id:** `2026-11-06-dato-el-everest-no-es-la-cima-mas-cercana-al` · **Plantilla:** dato · **Duración:** 00:48 · **Categoría:** Ciencia y tecnología
+- **Archivo:** `/home/santiago/projects/yt/bolita-lab/salida/bandeja/2026-11-07-dato-en-el-canal-de-panama-vas-del-atlantico.mp4`
+- **Programar para:** 2026-11-16 18:00 (America/Santiago)
+- **Id:** `2026-11-07-dato-en-el-canal-de-panama-vas-del-atlantico` · **Plantilla:** dato · **Duración:** 00:50 · **Categoría:** Ciencia y tecnología
 
 **Título:**
 ```
-El Everest no es la cima más cercana al espacio: es el Chimborazo
+En el Canal de Panamá vas del Atlántico al Pacífico hacia el este
 ```
 
 **Descripción:**
 ```
-El Everest es la montaña más alta sobre el nivel del mar, pero la Tierra está achatada: en el ecuador el radio mide unos 21 km más que en los polos. Por eso la cima del volcán Chimborazo, en Ecuador, queda unos 2 km más lejos del centro de la Tierra que la del Everest, aunque mide 2.500 m menos.
+El istmo de Panamá corre de oeste a este y se tuerce como una S, así que el canal lo cruza de noroeste a sureste: la salida al Pacífico (Balboa) queda unos 35 km más al este que la entrada del Atlántico (Colón). Y el canal no está al nivel del mar: los barcos suben 26 m por esclusas hasta el lago Gatún y vuelven a bajar.
 
 Fuentes:
-- NOAA National Ocean Service, What is the highest point on Earth as measured from Earth's center?: https://oceanservice.noaa.gov/facts/highestpoint.html
-- NASA Earth Fact Sheet (radio ecuatorial 6.378 km, polar 6.357 km): https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html
-- Altura oficial del Everest 8.848,86 m (medición conjunta Nepal–China, 2020); Chimborazo 6.263 m
+- Britannica, Panama Canal (recorrido de noroeste a sureste, unos 80 km): https://www.britannica.com/topic/Panama-Canal
+- Autoridad del Canal de Panamá, lago Gatún a 26 m (85 pies) sobre el nivel del mar: https://pancanal.com
+- Cálculo con coordenadas: Colón ≈ 9,36 N 79,90 O; Balboa ≈ 8,95 N 79,57 O → 0,33° de longitud ≈ 36 km hacia el este
 
 Imágenes: Wikimedia Commons
-- Everest North Face toward Base Camp Tibet Luca Galuzzi 2006 · Luca Galuzzi ( Lucag ) · CC BY-SA 2.5 (https://creativecommons.org/licenses/by-sa/2.5) · https://commons.wikimedia.org/wiki/File:Everest_North_Face_toward_Base_Camp_Tibet_Luca_Galuzzi_2006.jpg
-- Everest, Himalayas · Vyacheslav Argenberg · CC BY 4.0 (https://creativecommons.org/licenses/by/4.0) · https://commons.wikimedia.org/wiki/File:Everest,_Himalayas.jpg
-- North America from low orbiting satellite Suomi NPP · NASA/NOAA/GSFC/Suomi NPP/VIIRS/Norman Kuring · Public domain · https://commons.wikimedia.org/wiki/File:North_America_from_low_orbiting_satellite_Suomi_NPP.jpg
-- Vicuña - Chimborazo, Ecuador · Dabit100 / David Torres Costales Riobamba · CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0) · https://commons.wikimedia.org/wiki/File:Vicu%C3%B1a_-_Chimborazo,_Ecuador.jpg
-- Life and nature under the tropics- or, Sketches of travels among the Andes, and on the Orinoco, Rio Negro, and Amazons (1871) (14775537844) · Internet Archive Book Images · No restrictions · https://commons.wikimedia.org/wiki/File:Life_and_nature_under_the_tropics-_or,_Sketches_of_travels_among_the_Andes,_and_on_the_Orinoco,_Rio_Negro,_and_Amazons_(1871)_(14775537844).jpg
+- 1914 Panama Canal and Canal Zone map · Syndicate Publishing Company · Public domain · https://commons.wikimedia.org/wiki/File:1914_Panama_Canal_and_Canal_Zone_map.jpg
+- Miraflores Locks Panama 1914 · Gordon Panoramic Photo Co. · Public domain · https://commons.wikimedia.org/wiki/File:Miraflores_Locks_Panama_1914.JPG
+- Satellite image of Panama in March 2003 · Jeff Schmaltz, MODIS Rapid Response Team, NASA/GSFC · Public domain · https://commons.wikimedia.org/wiki/File:Satellite_image_of_Panama_in_March_2003.jpg
+- Panama Provincial Flag Map · TresForBe · CC BY-SA 4.0 (https://creativecommons.org/licenses/by-sa/4.0) · https://commons.wikimedia.org/wiki/File:Panama_Provincial_Flag_Map.png
+- Bradypus · Stefan Laube ( Tauchgurke ) · Public domain · https://commons.wikimedia.org/wiki/File:Bradypus.jpg
+- Panama Canal Gatun Locks opening · User:Stan Shebs · CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0) · https://commons.wikimedia.org/wiki/File:Panama_Canal_Gatun_Locks_opening.jpg
+- Graduandos Panameños · Youngiovani · CC BY-SA 3.0 (https://creativecommons.org/licenses/by-sa/3.0) · https://commons.wikimedia.org/wiki/File:Graduandos_Paname%C3%B1os.jpg
 
-#shorts #datos #curiosidades #geografia #everest #ecuador #bolitalab
+#shorts #datos #curiosidades #geografia #panama #mapas #bolitalab
 ```
 
 **Hashtags:**
 ```
-#shorts #datos #curiosidades #geografia #everest #ecuador #bolitalab
+#shorts #datos #curiosidades #geografia #panama #mapas #bolitalab
 ```
 
 **Etiquetas** (campo "Etiquetas" de Studio):
 ```
-shorts, datos, curiosidades, geografia, everest, ecuador, bolitalab
+shorts, datos, curiosidades, geografia, panama, mapas, bolitalab
 ```
 
 ---
