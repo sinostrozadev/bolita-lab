@@ -27,7 +27,7 @@ Métricas al 2026-11-07 02:37: 9 subs · 4.823 vistas · 6 Shorts públicos (669
 - `herramientas/navegador/lote-2026-11-07.sh`; estado compartido `~/.claude/canales/estado/bolita-lab.json`; línea en `docs/DECISIONES.md`.
 
 ## Pendiente
-- Santiago: reautorizar el token antes del **2026-11-11 22:27** (`npx tsx scripts/subir.mts autorizar`, 3 clics; ahora pide también el permiso de comentarios); ver la compilación del domingo 11-08 antes de subirla; `gh secret set YOUTUBE_TOKEN_JSON` cuando se apruebe la auditoría.
+- Santiago: token reautorizado el 11-07 03:07 (ya con permiso de comentarios; caduca el 11-14 03:07, próxima renovación ≈ 11-13); ver la compilación del domingo 11-08 antes de subirla; `gh secret set YOUTUBE_TOKEN_JSON` cuando se apruebe la auditoría.
 - Reemplazar el video-meta de `bola` (outlier de 2023) por un Short reciente de satisfying.ba11s con el piloto libre (META-REFERENTE brecha #5).
 - Retención por video en `metricas.mts` (`averageViewPercentage`, brecha #4). Serie con eliminación en `carrera` (brecha #2). Guion `dato` de las Leónidas para el 11-17 18:00.
 - Posible borrador duplicado de "pizza" en Studio por el intento fallido (revisar Content → Draft).
