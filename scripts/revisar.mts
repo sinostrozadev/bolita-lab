@@ -248,7 +248,7 @@ Implementa las mejoras marcadas "se aplica ya" que sean de plantilla (src/planti
 HERRAMIENTAS NUEVAS: si una mejora que aplicas necesita un paquete npm, agrégalo a "dependencies" de package.json y declara la instalación en un bloque de código con lenguaje \`instalar\` (una línea por paquete, \`npm <paquete>@<versión>\`). NO corras npm tú: el script lo instala antes de verificar. Solo paquetes gratuitos y con licencia compatible (MIT/Apache/BSD/CC0…). Lo que cueste dinero o exija una cuenta de Santiago, NO lo adoptes: déjalo como propuesta marcada **requiere a Santiago**. Modelos locales o binarios fuera de npm: propuesta para una sesión interactiva (anota pasos exactos).
 ESTRATEGIA: si las métricas (≥ 2–3 semanas de datos) justifican un cambio de cadencia, horarios o mezcla de plantillas, aplícalo en contenido/calendario.json y docs/ESTRATEGIA.md y anótalo en docs/DECISIONES.md. Sin datos suficientes, solo propón. Corre \`npx tsc --noEmit\` al terminar y deja el árbol compilando. No hagas commit, ni push, ni cambies de rama: el script verifica (tsc + render de prueba) y commitea solo si todo queda verde.${excluir.length ? `\nNO toques estas rutas en esta corrida (otra sesión las está editando): ${excluir.join(', ')}.` : ''}
 No toques scripts/subir.mts, scripts/revisar.mts, secrets/ ni docs/MEJORA-CONTINUA.md.`
-    : 'MODO SOLO INFORME (--sin-aplicar): no edites ningún archivo ni instales nada. En "Cambios aplicados" escribe "Ninguno (modo solo informe)" y, para cada mejora "se aplica ya", indica los archivos que habría que tocar (y los paquetes a instalar, si hacen falta).';
+    : 'MODO SOLO INFORME (--sin-aplicar): no edites ningún archivo ni instales nada. En "Cambios aplicados" escribe "Ninguno (modo solo informe)" y, para cada mejora "se aplica ya", indica los archivos que habría que tocar (y los paquetes a instalar, si hacen falta). En el bloque \`secciones\` deja "mejorado" vacío y pon esas propuestas en "pendiente".';
 
   return `Eres el revisor de calidad semanal del canal de YouTube Shorts "Bolita Lab" (repo ${RAIZ}). Hoy es ${FECHA}.
 Tu contrato es docs/MEJORA-CONTINUA.md (va completo abajo). Cumple su §1 (MIRA LOS VIDEOS, no solo el código) y su §2b (referentes virales, herramientas, estrategia).
@@ -292,6 +292,15 @@ ${modo}
 (ids ya renderizados y aún no publicados con un defecto visible; "ninguno" si no hay)
 ## Cambios aplicados
 (lista de archivos tocados con una línea de qué cambió cada uno, o "Ninguno")
+
+Al FINAL, después de "Cambios aplicados", un bloque de código con lenguaje \`secciones\` que contenga SOLO un objeto JSON con las viñetas del panel de Santiago (formato fijo de skill mejora-continua-canal §7; cada viñeta = un string de una línea, concreto: video, fotograma, cifra o archivo):
+\`\`\`secciones
+{"detectado": ["qué se vio mal o qué métrica falla, en qué video y cómo se midió"],
+ "mejorado": ["qué cambiaste de verdad en esta corrida, dónde y para qué (vacío si no cambiaste nada)"],
+ "herramientas": ["herramienta propuesta/probada/adoptada/descartada, licencia/costo y por qué"],
+ "agregado": ["archivos, reglas o docs nuevos que dejaste (vacío si ninguno)"],
+ "pendiente": ["lo que queda para después o falló; lo que requiere a Santiago empieza con 'Santiago: '"]}
+\`\`\`
 
 Responde SOLO con ese Markdown, sin preámbulo.`;
 };
@@ -534,6 +543,126 @@ const cerrarArbol = async (arbol: string, rama: string, conCommit: boolean) => {
   if (!conCommit) await git(['branch', '-D', rama]); // rama vacía: no dejar basura
 };
 
+// ---------------------------------------------------------------- 5a. secciones fijas del panel
+// Orden de Santiago (2026-11-06, skill mejora-continua-canal §7): toda revisión empieza con estos cinco H2, en este
+// orden y con viñetas; el panel (panel/scripts/agregar.mjs parsearRevision) solo muestra ese formato.
+const SECCIONES = [
+  ['detectado', 'Detectado'], ['mejorado', 'Mejorado'], ['herramientas', 'Herramientas exploradas'],
+  ['agregado', 'Agregado'], ['pendiente', 'Pendiente'],
+] as const;
+type ClaveSeccion = typeof SECCIONES[number][0];
+type Secciones = Record<ClaveSeccion, string[]>;
+const seccionesVacias = (): Secciones => ({ detectado: [], mejorado: [], herramientas: [], agregado: [], pendiente: [] });
+const unaLinea = (s: string) => s.replace(/\s+/g, ' ').trim();
+
+/** Saca el bloque ```secciones {json}``` de la respuesta de Claude (y lo quita del texto). Nunca lanza. */
+const extraerSecciones = (texto: string): { secciones: Secciones | null; resto: string } => {
+  const re = /```(?:json[ \t]+)?secciones[ \t]*\n([\s\S]*?)```/;
+  const m = re.exec(texto);
+  if (!m) return { secciones: null, resto: texto };
+  const resto = texto.replace(re, '').trim();
+  try {
+    const j = JSON.parse(m[1]) as Record<string, unknown>;
+    const s = seccionesVacias();
+    const alias: Record<string, ClaveSeccion> = { 'herramientas exploradas': 'herramientas', herramientas_exploradas: 'herramientas' };
+    for (const [k, v] of Object.entries(j)) {
+      const clave = (alias[k.toLowerCase()] ?? k.toLowerCase()) as ClaveSeccion;
+      if (!(clave in s) || !Array.isArray(v)) continue;
+      s[clave] = v.filter((x): x is string => typeof x === 'string').map(unaLinea).filter(Boolean);
+    }
+    return { secciones: s, resto };
+  } catch { return { secciones: null, resto }; }
+};
+
+/** Casillas sin marcar de docs/SANTIAGO.md (`## N. [ ] …`): lo que solo Santiago puede hacer. */
+const pendientesDeSantiago = (): string[] => {
+  try {
+    const t = fs.readFileSync(path.join(RAIZ, 'docs', 'SANTIAGO.md'), 'utf8');
+    return [...t.matchAll(/^##\s+\d+\.\s+\[ \]\s*(.+)$/gm)].map((m) => `Santiago: ${unaLinea(m[1])} (docs/SANTIAGO.md)`);
+  } catch { return []; }
+};
+
+/** Umbral de retención media de docs/ESTRATEGIA.md §5: > 65 % en datos, > 80 % en simulaciones. */
+const umbralRetencion = (p: string) => (p === 'dato' ? 65 : 80);
+
+interface ContextoSecciones {
+  videos: Video[]; metricas: Metricas | null; claude: ResultadoClaude | null; resultado: ResultadoAplicar | null;
+  deClaude: Secciones | null; dryRun?: boolean;
+}
+
+/** Las cinco secciones: lo que devolvió Claude (si vino) + lo que el script sabe mecánicamente. */
+const armarSecciones = (c: ContextoSecciones): Secciones => {
+  const s = seccionesVacias();
+  const dc = c.deClaude ?? seccionesVacias();
+  const commit = c.resultado?.commit;
+
+  // Detectado: lo que vio Claude + fotogramas que fallaron, duraciones fuera de rango y métricas bajo umbral.
+  s.detectado.push(...dc.detectado);
+  for (const v of c.videos) {
+    const id = v.entrada.id;
+    if (v.errorFotos) s.detectado.push(`${id}: no se pudieron extraer los fotogramas (${unaLinea(v.errorFotos)}).`);
+    if (v.duracion && (v.duracion < 25 || v.duracion > 58.5)) s.detectado.push(`${id}: dura ${v.duracion.toFixed(1)} s, fuera de 25–58 s.`);
+    const x = c.metricas?.videos[id];
+    const a = x?.analytics;
+    if (a && a.views > 0) {
+      const u = umbralRetencion(v.entrada.plantilla);
+      if (a.averageViewPercentage < u) s.detectado.push(`${id} (${v.entrada.plantilla}): retención media ${a.averageViewPercentage.toFixed(0)} % con ${a.views} vistas, bajo el umbral de ${u} % (docs/ESTRATEGIA.md §5).`);
+      const porMil = (a.subscribersGained * 1000) / a.views;
+      if (a.views >= 1000 && porMil < 1) s.detectado.push(`${id}: ${porMil.toFixed(1)} subs por 1.000 vistas (+${a.subscribersGained} con ${a.views}); el cierre no convierte (meta > 3).`);
+    }
+  }
+  if (c.metricas && !c.metricas.analytics.ok) s.detectado.push(`Sin retención por video: Analytics API no disponible (${unaLinea(c.metricas.analytics.error ?? '?').slice(0, 160)}).`);
+  if (c.claude && !c.claude.ok) s.detectado.push(`La revisión visual de Claude falló (${unaLinea(c.claude.error ?? '?').slice(0, 160)}): solo hay chequeos mecánicos.`);
+  if (!s.detectado.length) s.detectado.push(`Sin problemas detectados mecánicamente en ${c.videos.length} video(s) (fotogramas, duración y retención dentro de lo esperado o sin datos aún).`);
+
+  // Mejorado: solo cuenta lo que quedó commiteado; lo revertido o propuesto pasa a Pendiente.
+  if (commit) {
+    s.mejorado.push(...dc.mejorado);
+    s.mejorado.push(`Commit \`${commit}\` en \`${c.resultado?.rama}\` (tsc + render de prueba en verde): ${c.resultado?.archivos.map((f) => `\`${f}\``).join(', ')}.`);
+  } else if (dc.mejorado.length) {
+    const motivo = !aplicar ? 'propuesta sin aplicar (modo solo informe)' : 'no aplicado (cambios revertidos, ver Verificaciones del script)';
+    s.pendiente.push(...dc.mejorado.map((m) => `${m} — ${motivo}.`));
+  }
+
+  // Herramientas exploradas.
+  s.herramientas.push(...dc.herramientas);
+  for (const p of c.resultado?.pasos ?? []) if (/^✓ npm install /.test(p)) s.herramientas.push(`Adoptada e instalada: ${p.replace(/^✓ npm install /, '')} (npm, --no-save; registrada en package.json).`);
+  if (!s.herramientas.length) s.herramientas.push('Esta corrida automática no exploró herramientas nuevas; la exploración se hace en la mejora continua (docs/MEJORA-CONTINUA.md §2b) y en el inventario de la skill herramientas-disponibles.');
+
+  // Agregado: lo que dejó esta corrida en disco y en git.
+  if (commit) s.agregado.push(...dc.agregado);
+  else if (dc.agregado.length) s.pendiente.push(...dc.agregado.map((m) => `${m} — no quedó en git.`));
+  if (c.dryRun) {
+    s.agregado.push(`(dry-run: no se escribe nada) Se generarían: \`${rel(ARCHIVO_INFORME)}\`, \`salida/revisiones/ULTIMA.md\`, ${c.videos.length} hoja(s) de contacto en \`${rel(DIR_FOTOS)}\` y \`${rel(DIR_REV)}/metricas.json\`.`);
+  } else {
+    s.agregado.push(`Informe \`${rel(ARCHIVO_INFORME)}\` y su copia \`salida/revisiones/ULTIMA.md\`.`);
+    const hojas = c.videos.filter((v) => v.hoja).length;
+    if (hojas) s.agregado.push(`${hojas} hoja(s) de contacto y ${hojas * 6} fotogramas en \`${rel(DIR_FOTOS)}\`.`);
+    if (c.metricas) s.agregado.push(`Métricas de la tanda en \`${rel(DIR_REV)}/metricas.json\`${c.metricas.dataApi.ok ? '' : ' (sin Data API)'}.`);
+    for (const p of c.resultado?.pasos ?? []) {
+      const r = /^✓ render de prueba (\S+): .*?→ `([^`]+)`/.exec(p);
+      if (r) s.agregado.push(`Render de prueba de ${r[1]}: \`${r[2]}\`.`);
+    }
+    if (commit) s.agregado.push(`Commit \`${commit}\` "revisión semanal ${FECHA}" en la rama principal (sin push).`);
+  }
+
+  // Pendiente: lo de Claude, lo que falló o se revirtió, permisos denegados y lo que solo puede hacer Santiago.
+  s.pendiente.push(...dc.pendiente);
+  for (const p of c.resultado?.pasos ?? []) if (/^[✗⚠↩]/.test(p)) s.pendiente.push(unaLinea(p.replace(/```[\s\S]*?```/g, '(ver Verificaciones del script)')).slice(0, 300));
+  if (c.claude && !c.claude.ok) s.pendiente.push(`Repetir la revisión visual: \`npx tsx scripts/revisar.mts --sin-aplicar\` (claude falló: ${unaLinea(c.claude.error ?? '?').slice(0, 120)}).`);
+  if (c.claude?.denegados.length) s.pendiente.push(`Revisar permisos denegados a Claude: ${c.claude.denegados.slice(0, 5).map((d) => `\`${d}\``).join(', ')}.`);
+  if (c.metricas && !c.metricas.dataApi.ok) s.pendiente.push(`Data API sin datos: ${unaLinea(c.metricas.dataApi.error ?? '?').slice(0, 160)}.`);
+  if (c.metricas?.analytics.instruccion) s.pendiente.push(`Santiago: ${c.metricas.analytics.instruccion}`);
+  s.pendiente.push(...pendientesDeSantiago());
+  if (!s.pendiente.length) s.pendiente.push('Nada pendiente de esta corrida.');
+
+  for (const k of Object.keys(s) as ClaveSeccion[]) s[k] = [...new Set(s[k].map(unaLinea).filter(Boolean))];
+  return s;
+};
+
+const textoSecciones = (s: Secciones): string =>
+  SECCIONES.map(([k, t]) => `## ${t}\n\n${s[k].length ? s[k].map((v) => `- ${v}`).join('\n') : '_Nada esta semana._'}`).join('\n\n');
+
 // ---------------------------------------------------------------- 5. informe
 const tablaVideos = (videos: Video[], m: Metricas) => {
   const filas = videos.map((v) => {
@@ -583,6 +712,10 @@ const main = async () => {
       if (excluir.length) log(`[dry-run] rutas excluidas para Claude: ${excluir.join(', ')}`);
     }
     log(`[dry-run] informe → ${rel(ARCHIVO_INFORME)}`);
+    const vistaPrevia: Video[] = entradas.map((e) => ({ entrada: e, duracion: e.duracionSeg, guion: null, fotogramas: [], hoja: null }));
+    const secc = armarSecciones({ videos: vistaPrevia, metricas: null, claude: null, resultado: null, deClaude: null, dryRun: true });
+    log('[dry-run] el informe empezaría con estas secciones (vista previa mecánica, sin Claude ni fotogramas):');
+    console.log(`\n${textoSecciones(secc)}\n`);
     return;
   }
 
@@ -636,9 +769,15 @@ const main = async () => {
   }
 
   const a = metricas.analytics;
+  const { secciones: deClaude, resto } = claude.ok ? extraerSecciones(claude.texto) : { secciones: null, resto: '' };
+  const secciones = armarSecciones({ videos, metricas, claude, resultado, deClaude });
+  // El detalle de Claude baja un nivel (## → ###): un "## Herramientas" suyo se leería en el panel como sección fija.
+  const detalleClaude = resto.trim().replace(/^## /gm, '### ');
   const informe = `# Revisión semanal ${FECHA}
 
-Generada por \`scripts/revisar.mts\` (docs/MEJORA-CONTINUA.md §5) · rango desde ${formatoLocal(desde, zona)} · modo ${aplicar ? 'aplicar' : 'solo informe'} · modelo \`${opc.modelo}\`.
+Generada por \`scripts/revisar.mts\` (docs/MEJORA-CONTINUA.md §5) · rango desde ${formatoLocal(desde, zona)} · modo ${aplicar ? 'aplicar' : 'solo informe'} · modelo \`${opc.modelo}\`. Formato fijo (lo lee el panel): Detectado · Mejorado · Herramientas exploradas · Agregado · Pendiente.${claude.ok && !deClaude ? ' (Claude no devolvió el bloque `secciones`: viñetas armadas por el script.)' : ''}
+
+${textoSecciones(secciones)}
 
 ## Videos revisados (${videos.length})
 
@@ -654,7 +793,7 @@ ${a.instruccion ? `- **Para habilitarla:** ${a.instruccion}\n` : ''}- "Visto vs 
 
 ## Revisión de Claude
 
-${claude.ok ? claude.texto.trim() : `✗ La revisión no se pudo generar: ${claude.error}`}
+${claude.ok ? detalleClaude : `✗ La revisión no se pudo generar: ${claude.error}`}
 
 ## Verificaciones del script
 

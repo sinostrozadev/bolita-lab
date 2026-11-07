@@ -212,7 +212,9 @@ const main = async () => {
   for (const e of subidos) {
     const v = await videoPublico(e.videoId!);
     if (api?.vistasVideo[e.videoId!] != null) v.vistas = api.vistasVideo[e.videoId!];
-    videos.push({ id: e.videoId, bandeja: e.id, titulo: v.titulo || e.titulo, plantilla: e.plantilla, tipo: e.tipo, publicarEn: e.publicarEn ?? null, ...v });
+    // `...v` va primero: si fuera al final, su `titulo` (vacío o null mientras el video está programado y la página
+    // pública no lo muestra) pisaría el fallback al título de la bandeja.
+    videos.push({ ...v, id: e.videoId, bandeja: e.id, titulo: ('titulo' in v && v.titulo) || e.titulo, plantilla: e.plantilla, tipo: e.tipo, publicarEn: e.publicarEn ?? null });
   }
   const previo = path.join(dir, 'metricas.json');
   const anterior = fs.existsSync(previo) ? JSON.parse(fs.readFileSync(previo, 'utf8')) : null;
