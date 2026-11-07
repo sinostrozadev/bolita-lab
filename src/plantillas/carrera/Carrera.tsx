@@ -4,6 +4,7 @@ import { FORMATO, NEONES, PALETA, TIPO } from '../../marca/tokens';
 import { cargarFuentes } from '../../marca/fuentes';
 import { MarcaDeAgua } from '../../marca/MarcaDeAgua';
 import { Cierre } from '../../marca/Cierre';
+import { Llamado, textoLlamado } from '../../marca/Llamado';
 import { crearAzar } from '../../lib/azar';
 import type { GuionCarrera, IconoCompetidor } from './guion';
 import { Icono, iconoAportaJuntoAlNombre } from './Icono';
@@ -40,6 +41,10 @@ const ETIQ_SEPARACION = [1.6, 1.9];
 const ICONO_EN_BOLA = 0.55;
 /** Icono dentro de la etiqueta (px). */
 const ETIQ_ICONO = 30;
+/** Llamado a suscribirse: entra cuando la líder entra en la recta final o 6 s antes de la meta (lo que pase antes). */
+const LLAMADO_ANTES = 6 * 60;
+/** Bajo el marcador (termina en ≈ 426) y sobre la zona donde corre la líder (56 % de la pantalla). */
+const LLAMADO_CENTRO_Y = 476;
 
 /** Hook: carga la simulación precalculada con delayRender. */
 const useSimulacion = (id: string) => {
@@ -482,6 +487,12 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
       {frame < GANCHO_FRAMES && <Gancho texto={props.gancho} />}
 
       {celebrando && <Celebracion sim={sim} color={colores[ganadora]} etiqueta={etiquetas[ganadora]} icono={iconos[ganadora]} colores={colores} iconos={iconos} origen={origen} />}
+
+      {/* Llamado a suscribirse en la recta final (se queda durante la celebración). Color de marca: el de
+          la líder o la ganadora delataría el resultado antes de la meta. */}
+      <Llamado texto={textoLlamado('carrera', props.id, props.llamado)}
+        desde={Math.max(GANCHO_FRAMES + 60, Math.min(sim.frameRiser >= 0 ? sim.frameRiser : Infinity, sim.frameGanadora - LLAMADO_ANTES))}
+        hasta={sim.duracionFrames} centroY={LLAMADO_CENTRO_Y} color={PALETA.neon.lima} />
 
       <Sequence from={sim.duracionFrames} durationInFrames={CIERRE_FRAMES} layout="none">
         <Cierre color={colores[ganadora]} />

@@ -5,6 +5,7 @@ import { PALETA } from '../../marca/tokens';
 import { cargarFuentes } from '../../marca/fuentes';
 import { MarcaDeAgua } from '../../marca/MarcaDeAgua';
 import { Cierre } from '../../marca/Cierre';
+import { Llamado, textoLlamado } from '../../marca/Llamado';
 import { semillaDesde } from '../../lib/azar';
 import { GuionDato, ImagenesDato, type ImagenResuelta } from './guion';
 import { FRAMES_CIERRE, estimarTiempos, planificar, type Tiempos } from './plan';
@@ -27,6 +28,10 @@ export const PropsDato = GuionDato.extend({
 export type PropsDato = z.infer<typeof PropsDato>;
 
 const FPS = 60;
+/** Llamado a suscribirse: entra 0,5 s después del golpe del remate (o a un cuarto de él si es corto). */
+const LLAMADO_RETARDO = 30;
+/** Bajo el texto gigante del remate y su línea neón (≈ 1330 con foto en tarjeta), sobre la UI de YouTube. */
+const LLAMADO_CENTRO_Y = 1440;
 
 /** Lee tiempos.json de la voz (fetch) y fija la duración = voz + pausas + cierre. Sin voz generada usa tiempos estimados (Studio). */
 export const calcularMetadataDato: CalculateMetadataFunction<PropsDato> = async ({ props }) => {
@@ -70,6 +75,9 @@ export const Dato: React.FC<PropsDato> = (props) => {
       <Sequence from={plan.remate.desde} durationInFrames={plan.remate.frames}>
         <GanchoRemate linea={plan.remate.linea} frames={plan.remate.frames} color={color} modo="remate" imagen={imagenes[String(n + 1)]} />
       </Sequence>
+      <Llamado texto={textoLlamado('dato', props.id, props.llamado)}
+        desde={plan.remate.desde + Math.min(LLAMADO_RETARDO, Math.floor(plan.remate.frames / 4))}
+        hasta={plan.cierreDesde} centroY={LLAMADO_CENTRO_Y} color={color} />
       <MarcaDeAgua />
       <Sequence from={plan.cierreDesde} durationInFrames={FRAMES_CIERRE}>
         <Cierre color={color} />

@@ -5,6 +5,7 @@
  * Sin React ni Node aquí: solo tipos y zod.
  */
 import { z } from 'zod';
+import { CampoLlamado } from '../../marca/llamado-texto';
 
 /** Melodías disponibles (deben existir en `MELODIAS` de scripts/lib/wav.mts). */
 export const MELODIAS_BOLA = ['furelise', 'marchaturca', 'odaalegria', 'canon', 'cisnes'] as const;
@@ -26,6 +27,8 @@ export const GuionBola = z.object({
   anchoHueco: z.number().min(10).max(120).optional(),
   /** Lo fija `preparar-bola` desde el sim; evita leer el JSON para calcular la duración. */
   duracionFrames: z.number().int().positive().optional(),
+  /** Llamado a suscribirse en el clímax (opcional; ausente = activado con variante por id; false = apagado; texto = ese texto). */
+  llamado: CampoLlamado,
 });
 export type GuionBola = z.infer<typeof GuionBola>;
 

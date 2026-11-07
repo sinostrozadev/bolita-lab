@@ -12,6 +12,7 @@ import { FORMATO, NEONES, PALETA, TIPO } from '../../marca/tokens';
 import { cargarFuentes } from '../../marca/fuentes';
 import { MarcaDeAgua } from '../../marca/MarcaDeAgua';
 import { Cierre } from '../../marca/Cierre';
+import { Llamado, textoLlamado } from '../../marca/Llamado';
 import { CAMPOS_POR_BOLA, type EventoSim, type GuionBola, type SimBola } from './guion';
 
 const FRAMES_CIERRE = 72;
@@ -25,6 +26,10 @@ const FRAMES_PARTICULA = 18;
 /** Debe coincidir con FRAMES_CAMARA_LENTA de scripts/simular-bola.mts. */
 const FRAMES_CAMARA_LENTA = 30;
 const NOMBRES_NEON = Object.keys(PALETA.neon);
+/** Llamado a suscribirse: entra 6 s antes del escape/llenado, entre el contador (≈ 395) y el anillo
+ * (borde ≈ 555; con el zoom del escape sube a ≈ 510). */
+const LLAMADO_ANTES = 6 * 60;
+const LLAMADO_CENTRO_Y = 452;
 
 const rutaSim = (id: string) => staticFile(`sim/${id}.json`);
 const rutaAudio = (id: string) => staticFile(`audio/generado/${id}.wav`);
@@ -346,6 +351,12 @@ export const Bola: React.FC<GuionBola> = (props) => {
           </Texto>
         </>
       )}
+
+      {/* Llamado a suscribirse en el clímax (fuera del zoom: no se mueve con la cámara). Color de marca:
+          el de la bola ganadora delataría cuál escapa. */}
+      <Llamado texto={textoLlamado('bola', props.id, props.llamado)}
+        desde={Math.max(FRAMES_GANCHO + 60, (climax ? climax.frame : durationInFrames - FRAMES_CIERRE) - LLAMADO_ANTES)}
+        hasta={durationInFrames - FRAMES_CIERRE} centroY={LLAMADO_CENTRO_Y} color={PALETA.neon.lima} />
 
       <MarcaDeAgua />
       <Sequence from={durationInFrames - FRAMES_CIERRE} durationInFrames={FRAMES_CIERRE} name="Cierre">

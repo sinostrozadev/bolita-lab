@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CampoLlamado } from '../../marca/llamado-texto';
 
 /** Voces de msedge-tts permitidas. La elegida por defecto se documenta en README.md. */
 export const VOCES = ['es-MX-JorgeNeural', 'es-CL-LorenzoNeural', 'es-ES-AlvaroNeural', 'es-MX-DaliaNeural'] as const;
@@ -71,6 +72,8 @@ export const GuionDato = z.object({
   remate: z.string().min(1),
   imagenRemate: ImagenEscena.optional(),
   fuentes: z.array(z.string()),
+  /** Llamado a suscribirse en el clímax (opcional; ausente = activado con variante por id; false = apagado; texto = ese texto). */
+  llamado: CampoLlamado,
 });
 export type GuionDato = z.infer<typeof GuionDato>;
 

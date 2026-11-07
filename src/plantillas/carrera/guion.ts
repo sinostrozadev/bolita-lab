@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { CampoLlamado } from '../../marca/llamado-texto';
 
 /** Colores de neón permitidos para cada participante (claves de PALETA.neon). */
 export const ColorNeon = z.enum(['lima', 'cian', 'magenta', 'naranja', 'violeta', 'amarillo']);
@@ -53,5 +54,7 @@ export const GuionCarrera = z.object({
   semilla: z.number().int().optional(),
   /** Tema libre, solo informativo (p. ej. "meses", "mascotas"). */
   tema: z.string().optional(),
+  /** Llamado a suscribirse en el clímax (opcional; ausente = activado con variante por id; false = apagado; texto = ese texto). */
+  llamado: CampoLlamado,
 });
 export type GuionCarrera = z.infer<typeof GuionCarrera>;
