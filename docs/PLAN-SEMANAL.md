@@ -46,11 +46,10 @@ ver "Contingencias revisadas"); el nicho es atemporal, así que 0 % no es falla 
 | sáb 11-14 | 18:00 | bola | ¿En qué rebote escapa la bolita? El lago de los cisnes en neón | evergreen | — | programado ([aqlybcvEYz0](https://youtube.com/shorts/aqlybcvEYz0)) | satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K) | bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación |
 | dom 11-15 | 10:00 | **largo** 16:9 | Compilación semanal 2: carreras, rebotes y datos de la semana | evergreen · _Compilación del domingo_ | — | idea · ⚠ cron dom 04:30; OK de Santiago antes de subir; si la del 11-08 no se aprobó, se revisa el formato antes de producir esta | mikan2d (largos 8–9 min de carreras) | segunda compilación; mide si el largo suma horas o solo canibaliza |
 | dom 11-15 | 12:00 | dato | El Everest no es la cima más cercana al espacio: es el Chimborazo | evergreen | — | programado ([rKeo3b33kJM](https://youtube.com/shorts/rKeo3b33kJM)) | Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español) | dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) |
-| dom 11-15 | 18:00 | carrera | ¿Café, té, mate, cola o jugo? ☕ ¿Qué bebida gana la carrera? | evergreen | — | guion · ⚠ falta render (diario 03:30 del 11-08 o siguiente) y subida | mikan2d (biN5wJVlEzA "Digging Race", 5,7 M) | rotación (toca carrera tras el dato de las 12:00); bebida con mate = gancho latino y comentarios "¿cuál tomas tú?" |
+| dom 11-15 | 18:00 | carrera | ¿Qué color gana la carrera? 🎨 El tuyo, ¿llega primero? | evergreen | — | programado ([TlEUxPDJQMY](https://youtube.com/shorts/TlEUxPDJQMY)) | mikan2d (biN5wJVlEzA "Digging Race", 5,7 M) | rotación (toca carrera tras el dato de las 12:00); render del 11-07 con el CTA; café/té/mate pasa a la cola |
 
-Colchón: de las 14 ranuras de Short de la semana siguiente, 13 están `programado` y 1 en `guion` (café/té/mate) → ≥ 50 %
-con guion cumplido con holgura. Los 3 programados de hoy (11-14 12:00, 11-14 18:00, 11-15 12:00) ya tienen videoId
-hasta que termine la subida por Studio: **al terminar, copiar el id de `salida/bandeja/<id>.json` a este JSON**.
+Colchón: las 14 ranuras de Short de la semana siguiente están `programado` (la última, color favorito, subida el 11-07 por la mañana) → ≥ 50 %
+con guion cumplido con holgura. Los 6 subidos el 11-07 (madrugada y mañana) ya tienen videoId anotado.
 
 ## Ritual de cierre — lectura de la semana 1 (métricas al 2026-11-07 02:37, `salida/metricas/2026-11-07/metricas.json`)
 
@@ -81,13 +80,16 @@ Para la semana 11-09 → 11-15 **no hay contingencia sólida** que desplace algo
 
 ## Cola para la semana del 2026-11-16 (desde el 11-17 baja a 1 Short/día a las 18:00 + 12:00 sáb/dom)
 
-Del backlog (`contenido/backlog/`, 22 guiones), en orden de rotación tras el café/té/mate (carrera):
-1. lun 11-16 12:00 `bola` · ¿En qué rebote se escapa? La Oda a la Alegría en neón (`bola-oda-escape.json`)
-2. lun 11-16 18:00 `dato` · La miel no caduca: la de hace 3.000 años aún se podía comer (`dato-miel-nunca-se-echa-a-perder.json`)
-3. mar 11-17 18:00 `dato` · **Leónidas** (contingente, guion por escribir) — si no llega a tiempo, `carrera` · ¿Qué país de Latinoamérica llega primero? (`carrera-que-pais-gana.json`; países latinos como equipos, REFERENTES §"Qué adoptar" 5)
-4. mié 11-18 18:00 `carrera` · ¿Qué país de Latinoamérica llega primero? (o el siguiente carrera si se usó arriba)
-5. jue 11-19 18:00 `bola` · 3 bolitas y la Marcha Turca: ¿cuál encuentra la salida? (`bola-marcha-escape-3.json`)
-6. vie 11-20 18:00 `dato` · Un rayo es 5 veces más caliente que la superficie del Sol (`dato-rayo-mas-caliente-que-el-sol.json`)
+Ya renderizados el 11-07 (diario 03:30, con el CTA) y subidos el 11-07 por la mañana:
+1. lun 11-16 12:00 `bola` · ¿Cuál de las 2 bolitas escapa? (`2026-11-07-bola-cual-de-las-2-bolitas-escapa`) — [YG-h9ndmaBc](https://youtube.com/shorts/YG-h9ndmaBc)
+2. lun 11-16 18:00 `dato` · En el Canal de Panamá vas del Atlántico al Pacífico hacia el… (`2026-11-07-dato-en-el-canal-de-panama-vas-del-atlantico`) — [9s_YaNsKVEo](https://youtube.com/shorts/9s_YaNsKVEo)
+
+Siguen, en orden de rotación (guiones listos, sin render):
+3. mar 11-17 18:00 `dato` · **Leónidas** (contingente, guion por escribir) — si no llega a tiempo, `carrera` · ¿Café, té, mate, cola o jugo? (`contenido/guiones/2026-11-06-carrera-cafe-te-mate.json`, ya promovido)
+4. mié 11-18 18:00 `carrera` · café/té/mate (o ¿Qué país de Latinoamérica llega primero? `carrera-que-pais-gana.json` si el anterior se usó arriba)
+5. jue 11-19 18:00 `bola` · ¿En qué rebote se escapa? La Oda a la Alegría en neón (`bola-oda-escape.json`)
+6. vie 11-20 18:00 `dato` · La miel no caduca: la de hace 3.000 años aún se podía comer (`dato-miel-nunca-se-echa-a-perder.json`)
+7. sáb 11-21 12:00 `bola` · 3 bolitas y la Marcha Turca: ¿cuál encuentra la salida? (`bola-marcha-escape-3.json`) · 18:00 `dato` · Un rayo es 5 veces más caliente que la superficie del Sol (`dato-rayo-mas-caliente-que-el-sol.json`)
 
 Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-poder` · `bola-furelise-crecer`.
 
@@ -514,16 +516,15 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "hora": "18:00",
       "formato": "short",
       "plantilla": "carrera",
-      "tema": "¿Café, té, mate, cola o jugo? ☕ ¿Qué bebida gana la carrera?",
+      "tema": "¿Qué color gana la carrera? 🎨 El tuyo, ¿llega primero?",
       "tipo": "evergreen",
       "serie": null,
       "contingencia": null,
-      "estado": "guion",
-      "guion": "contenido/guiones/2026-11-06-carrera-cafe-te-mate.json",
-      "videoId": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-07-carrera-que-color-favorito.json",
+      "videoId": "TlEUxPDJQMY",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
-      "porQue": "rotación (toca carrera tras el dato de las 12:00); bebida con mate = gancho latino y comentarios \"¿cuál tomas tú?\"",
-      "bloqueo": "falta render (diario 03:30 del 11-08 o siguiente) y subida"
+      "porQue": "rotación (toca carrera tras el dato de las 12:00); ya renderizado el 11-07 con el CTA; el de café/té/mate pasa a la cola"
     }
   ]
 }

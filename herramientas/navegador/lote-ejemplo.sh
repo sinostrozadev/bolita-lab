@@ -4,6 +4,10 @@ cd "$(dirname "$0")"
 B=http://127.0.0.1:8777
 esperar_ram() { while [ "$(free -m | awk '/^Mem/{print $7}')" -lt 1400 ]; do sleep 20; done; }
 leer_filas() { curl -s --max-time 30 "$B/eval?js=Array.from(document.querySelectorAll('ytcp-video-row')).map(r%3D%3Er.innerText.replace(%2F%5Cn%2B%2Fg%2C'%20%7C%20').slice(0%2C70))"; }
+modo_reintento() {  # si el diálogo sigue abierto, NO relanzar una subida nueva (crea un duplicado): retomar
+  T=$(curl -s --max-time 20 "$B/eval?js=(()%3D%3E%7Bconst%20t%3Ddocument.querySelector('%23title-textarea%20%23textbox')%3Breturn%20t%3F(t.innerText.trim()%7C%7C'VACIO')%3A'SIN_DIALOGO'%7D)()")
+  case "$T" in *SIN_DIALOGO*) echo "";; *VACIO*|*"$1"*) echo "RETOMAR=1";; *) echo "CONTINUAR=1";; esac
+}
 esperar_ram
 curl -s --max-time 90 "$B/ir?url=https%3A%2F%2Fstudio.youtube.com%2Fchannel%2FUCi1_1_ItZCLY4axLshZcuZQ%2Fvideos%2Fshort" >/dev/null
 for i in $(seq 1 12); do sleep 8; F=$(leer_filas); case "$F" in "[]"|*error*) ;; *) break;; esac; done
@@ -18,7 +22,7 @@ while read -r id fecha hora; do
   for intento in 1 2; do
     env $modo node subir-studio.mjs "$id" "$fecha" "$hora" && break
     echo "reintento $intento para $id"; sleep 10; esperar_ram
-    [ $intento = 2 ] && { echo "ABORTADO en $id"; exit 1; }
+    [ $intento = 3 ] && { echo "ABORTADO en $id"; exit 1; }
   done
   sleep 3
 done <<'LISTA'

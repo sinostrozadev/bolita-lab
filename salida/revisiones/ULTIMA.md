@@ -10,6 +10,7 @@ Métricas al 2026-11-07 02:37: 9 subs · 4.823 vistas · 6 Shorts públicos (669
 - `subir-studio.mjs` falló 2 veces con el primer Short de hoy (timeout en "Visibility" y luego en "Video language"): la subida del archivo iba lenta tras el reinicio (12 GB de RAM recién aplicados) y el desplegable de categoría quedó abierto tapando el diálogo. Se remató a mano desde el paso Details con `CONTINUAR=1`.
 - El canal no tenía `docs/PLAN-SEMANAL.md` ni `docs/META-REFERENTE.md` (órdenes permanentes del 11-05).
 - La revisión semanal (`revisar.mts`) escribía el informe sin los 5 encabezados que exige el panel de Santiago.
+- 09:00: `subir-studio.mjs` agotó los 120 s de espera de la subida (lenta tras el reinicio) y el lote relanzó una subida nueva → borrador duplicado de la bola (5iRAGYJaBXE, borrado por la API). También: Studio en "Oops" tras usar el piloto otro canal de marca (ya documentado; se cura con la raíz de Studio).
 
 ## Mejorado
 - Token: `emitido_en` restaurado en `secrets/youtube-token.json` (emisión real 11-04 22:28) → `estado.mts` vuelve a avisar la fecha correcta.
@@ -17,6 +18,7 @@ Métricas al 2026-11-07 02:37: 9 subs · 4.823 vistas · 6 Shorts públicos (669
 - 3 Shorts del diario del 11-06 revisados por hoja de contacto (gancho en el frame 0, emojis en la carrera, fotos en el dato) y programados: pizza 11-14 12:00 (JKfuFS0b99U), cisnes 11-14 18:00 (aqlybcvEYz0), Everest 11-15 12:00 (rKeo3b33kJM).
 - `scripts/revisar.mts`: informe con las 5 secciones fijas (Detectado · Mejorado · Herramientas exploradas · Agregado · Pendiente) al principio, manteniendo el detalle. Verificado: tsc ok, dry-run con 23 videos y los 5 H2 en orden.
 - CTA de suscripción dentro del video (clímax) en las 3 plantillas, en worktree con render de prueba. Hecho y mezclado a master (commit 7b999dd): `src/marca/Llamado.tsx`, prop opcional `llamado`; 4 renders de prueba a escala 0,5 revisados (hojas en `salida/pruebas/cta/`). Aparece 6 s antes del escape/meta y en el remate del dato. Desde el diario del 11-07 todos los renders lo llevan; verificación: subs por 1.000 vistas ≥ 2 en 7 días (hoy 0,19).
+- Tope de espera de subida 120 → 300 s; modo `RETOMAR=1` en `subir-studio.mjs`; los lotes (`lote-ejemplo.sh`) deciden solos cómo reintentar (`modo_reintento`) sin abrir subidas nuevas.
 
 ## Herramientas exploradas
 - Ninguna nueva esta sesión; se usó el inventario (`herramientas-disponibles`): piloto 8777, helpers de fotogramas sobre el ffmpeg mínimo de Remotion, Data API para métricas. Búsqueda web para referentes (satisfying.ba11s, mikan2d) y contingencias (Leónidas 17–18 nov).
@@ -25,6 +27,7 @@ Métricas al 2026-11-07 02:37: 9 subs · 4.823 vistas · 6 Shorts públicos (669
 - `docs/PLAN-SEMANAL.md` (semanas 11-02→08 y 11-09→15, 26 ranuras, JSON v1; cola desde el 11-16).
 - `docs/META-REFERENTE.md` (meta: satisfying.ba11s para `bola`/canal, mikan2d para `carrera`, Ñerd para `dato`; 8 brechas con dueño y verificación).
 - `herramientas/navegador/lote-2026-11-07.sh`; estado compartido `~/.claude/canales/estado/bolita-lab.json`; línea en `docs/DECISIONES.md`.
+- 09:07: 3 Shorts del diario subidos en el turno del piloto (08:55–09:09): color favorito `TlEUxPDJQMY` 11-15 18:00 · 2 bolitas escapa `YG-h9ndmaBc` 11-16 12:00 · Canal de Panamá `9s_YaNsKVEo` 11-16 18:00 → 26 programados hasta el 11-16 18:00. Plan semanal con los ids; café/té/mate pasa a la cola.
 
 ## Pendiente
 - Santiago: token reautorizado el 11-07 03:07 (ya con permiso de comentarios; caduca el 11-14 03:07, próxima renovación ≈ 11-13); ver la compilación del domingo 11-08 antes de subirla; `gh secret set YOUTUBE_TOKEN_JSON` cuando se apruebe la auditoría.

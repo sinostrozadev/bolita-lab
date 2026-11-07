@@ -35,8 +35,8 @@ const horaStudio = `${((hh + 11) % 12) + 1}:${String(mm).padStart(2, '0')} ${hh 
 
 console.log(`→ ${id} · ${fechaStudio} ${horaStudio} · ${categoria}`);
 
-// 1. Abrir diálogo de subida y cargar el archivo (o retomar un borrador ya subido con BORRADOR=1)
-if (process.env.CONTINUAR === '1') {
+// 1. Abrir diálogo de subida y cargar el archivo (o retomar un borrador ya subido con BORRADOR=1; RETOMAR=1 = diálogo abierto con el archivo cargado y nada relleno; CONTINUAR=1 = título y detalles ya escritos)
+if (process.env.CONTINUAR === '1' || process.env.RETOMAR === '1') {
   // El diálogo ya está abierto con el archivo cargado (p. ej. tras un fallo a mitad): se retoma desde el título.
 } else if (process.env.BORRADOR === '1') {
   await llamar(`/ir?url=${q('https://studio.youtube.com/channel/UCi1_1_ItZCLY4axLshZcuZQ/videos/short')}`);
@@ -126,7 +126,7 @@ const vis = String(await evalJs(`Array.from(document.querySelectorAll('ytcp-uplo
 if (!vis.includes(fechaStudio) || !vis.includes(horaStudio) || !vis.includes('GMT-0300')) fallo('fecha/hora/zona: ' + vis);
 
 // 7. Esperar a que termine la subida y programar
-await hasta(async () => /Checks complete|Upload complete|Processing/.test(await textoDialogo()), 120000, 2000, 'subida completa');
+await hasta(async () => /Checks complete|Upload complete|Processing/.test(await textoDialogo()), 300000, 3000, 'subida completa');
 await hasta(() => evalJs(`(()=>{const b=document.querySelector('ytcp-uploads-dialog #done-button');return !!b && !b.hasAttribute('disabled')})()`), 60000, 1000, 'botón Schedule');
 await llamar(`/click?sel=${q('ytcp-uploads-dialog #done-button')}`);
 const leerConfirmacion = () => evalJs(`(()=>{const d=document.querySelector('ytcp-video-share-dialog, ytcp-uploads-still-processing-dialog');const t=d?d.innerText:'';return /Video scheduled|will be set to public/.test(t)?t.replace(/\\n+/g,' | '):''})()`);
