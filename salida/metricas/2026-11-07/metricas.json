@@ -1,7 +1,7 @@
 {
   "fecha": "2026-11-07",
   "canalId": "UCi1_1_ItZCLY4axLshZcuZQ",
-  "generadoEn": "2026-11-07T06:08:25.182Z",
+  "generadoEn": "2026-11-07T11:01:25.861Z",
   "zona": "America/Santiago",
   "subs": 9,
   "videosPublicados": 6,
@@ -27,7 +27,7 @@
   },
   "videos": [
     {
-      "vistas": 1282,
+      "vistas": 1283,
       "titulo": "¿Cuántos rebotes necesita para llenar el círculo? Canon de Pachelbel",
       "publicadoEn": "2026-11-04T07:00:12-08:00",
       "segundos": 44,
@@ -39,7 +39,7 @@
       "publicarEn": "2026-11-04T12:00:00-03:00"
     },
     {
-      "vistas": 1171,
+      "vistas": 1172,
       "titulo": "2 bolitas, 1 hueco que gira: ¿cuál escapa primero? (Canon)",
       "publicadoEn": "2026-11-05T13:00:09-08:00",
       "segundos": 30,
@@ -51,7 +51,7 @@
       "publicarEn": "2026-11-05T18:00:00-03:00"
     },
     {
-      "vistas": 2,
+      "vistas": 3,
       "titulo": "3 bolitas crecen en cada rebote: ¿cuánto tardan en llenar el círculo?",
       "publicadoEn": null,
       "segundos": null,
@@ -75,7 +75,7 @@
       "publicarEn": "2026-11-08T18:00:00-03:00"
     },
     {
-      "vistas": 1149,
+      "vistas": 1151,
       "titulo": "¿PlayStation, Xbox, Nintendo o PC? 🎮 ¿Cuál gana?",
       "publicadoEn": "2026-11-05T07:00:04-08:00",
       "segundos": 33,
@@ -87,7 +87,7 @@
       "publicarEn": "2026-11-05T12:00:00-03:00"
     },
     {
-      "vistas": 676,
+      "vistas": 713,
       "titulo": "¿Chocolate, vainilla, fresa, menta o limón? ¿Qué helado gana? 🍦",
       "publicadoEn": "2026-11-06T13:00:13-08:00",
       "segundos": 34,
@@ -147,7 +147,7 @@
       "publicarEn": "2026-11-04T18:00:00-03:00"
     },
     {
-      "vistas": 1129,
+      "vistas": 1140,
       "titulo": "El camarón mantis tiene 12 receptores de color; tú, solo 3",
       "publicadoEn": "2026-11-06T07:00:05-08:00",
       "segundos": 36,
@@ -291,7 +291,7 @@
       "publicarEn": "2026-11-14T12:00:00-03:00"
     },
     {
-      "vistas": 0,
+      "vistas": 1,
       "titulo": "El Everest no es la cima más cercana al espacio: es el Chimborazo",
       "publicadoEn": null,
       "segundos": null,
@@ -303,5 +303,5 @@
       "publicarEn": "2026-11-15T12:00:00-03:00"
     }
   ],
-  "actualizaciones": 2
+  "actualizaciones": 3
 }

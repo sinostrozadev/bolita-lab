@@ -24,28 +24,28 @@ Overview
 Content
 Audience
 Trends
-Oct 9 – Nov 5, 2026
+Oct 10 – Nov 6, 2026
 Last 28 days
 Views
 Views
-4.8K
+6.7K
 Total views for the selected date range, region and other filters.
 Engaged views
-2.4K
+3.2K
 How many times viewers stay to watch past the initial seconds.
 Likes
-73
+120
 The change in total likes found by subtracting "likes removed" from "likes added" for the selected date range, region and other filters. Prior to September 1, 2012, "likes removed" were not subtracted.
 Subscribers
 +9
 The change in total subscribers found by subtracting subscribers lost from subscribers gained for the selected date range and region.
-Oct 9, 2026
-Oct 14, 2026
-Oct 18, 2026
-Oct 23, 2026
-Oct 27, 2026
-Nov 1, 2026
-Nov 5, 20...
+Oct 10, 2026
+Oct 15, 2026
+Oct 19, 2026
+Oct 24, 2026
+Oct 28, 2026
+Nov 2, 2026
+Nov 6, 2...
 2,400
 1,600
 800
@@ -66,21 +66,21 @@ Playlists
 Shorts feed
 	
 	
-95.2%
+95.4%
 
 
 	
 YouTube search
 	
 	
-2.7%
+2.9%
 
 
 	
 Channel pages
 	
 	
-1.6%
+1.2%
 
 
 	
@@ -94,19 +94,12 @@ Other YouTube features
 Direct or unknown
 	
 	
-0.2%
-
-
-	
-Others
-	
-	
 0.1%
 See more
 How viewers engaged
 Last 28 days
-49.5%
-50.5%
+46.4%
+53.6%
 Stayed to watch
 Swiped away
 See more
@@ -137,14 +130,14 @@ Un billón de segundos son más de 31.000 años
 ¿PlayStation, Xbox, Nintendo o PC? 🎮 ¿Cuál gana?
 	
 	
+1.2K
+
+
+	
+El camarón mantis tiene 12 receptores de color; tú, solo 3
+	
+	
 1.1K
-
-
-	
-¿Cuántos rebotes aguanta antes de escapar? Para Elisa en neón
-	
-	
-8
 See more
 Top Remixed
 Your content used to create Shorts · Last 28 days
