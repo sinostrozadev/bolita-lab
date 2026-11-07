@@ -19,9 +19,9 @@ while read -r id fecha hora; do
   [ -z "$id" ] && continue
   esperar_ram
   modo=""; [ "$id" = "2026-11-03-dato-tierra-luna" ] && [ "$B1" = 1 ] && modo="BORRADOR=1"
-  for intento in 1 2; do
+  for intento in 1 2 3; do
     env $modo node subir-studio.mjs "$id" "$fecha" "$hora" && break
-    echo "reintento $intento para $id"; sleep 10; esperar_ram
+    sleep 10; esperar_ram; modo=$(modo_reintento "$id"); echo "reintento $intento para $id (modo: ${modo:-subida nueva})"
     [ $intento = 3 ] && { echo "ABORTADO en $id"; exit 1; }
   done
   sleep 3
