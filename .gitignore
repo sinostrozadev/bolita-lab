@@ -28,3 +28,6 @@ salida/revisiones/hojas/*
 # Métricas diarias (scripts/metricas.mts): se versionan las capturas y el JSON, no la evidencia de fallos.
 !salida/metricas/
 salida/metricas/*/fallo-*.png
+
+# Worktrees de agentes (Claude Code los crea en .claude/worktrees y los limpia solo)
+.claude/worktrees/
