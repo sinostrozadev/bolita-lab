@@ -45,7 +45,7 @@ ver "Contingencias revisadas"); el nicho es atemporal, así que 0 % no es falla 
 | sáb 11-14 | 12:00 | carrera | ¿Pizza, hamburguesa, sushi o tacos? 🍕 ¿Qué comida gana? | evergreen | — | programado ([JKfuFS0b99U](https://youtube.com/shorts/JKfuFS0b99U)) | mikan2d (biN5wJVlEzA "Digging Race", 5,7 M) | rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) |
 | sáb 11-14 | 18:00 | bola | ¿En qué rebote escapa la bolita? El lago de los cisnes en neón | evergreen | — | programado ([aqlybcvEYz0](https://youtube.com/shorts/aqlybcvEYz0)) | satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K) | bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación |
 | dom 11-15 | 10:00 | **largo** 16:9 | Compilación semanal 2: carreras, rebotes y datos de la semana | evergreen · _Compilación del domingo_ | — | idea · ⚠ cron dom 04:30; OK de Santiago antes de subir; si la del 11-08 no se aprobó, se revisa el formato antes de producir esta | mikan2d (largos 8–9 min de carreras) | segunda compilación; mide si el largo suma horas o solo canibaliza |
-| dom 11-15 | 12:00 | dato | El Everest no es la cima más cercana al espacio: es el Chimborazo | evergreen | — | programado · ⚠ subida por Studio en curso (2026-11-07 madrugada): falta anotar el videoId | Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español) | dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) |
+| dom 11-15 | 12:00 | dato | El Everest no es la cima más cercana al espacio: es el Chimborazo | evergreen | — | programado ([rKeo3b33kJM](https://youtube.com/shorts/rKeo3b33kJM)) | Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español) | dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) |
 | dom 11-15 | 18:00 | carrera | ¿Café, té, mate, cola o jugo? ☕ ¿Qué bebida gana la carrera? | evergreen | — | guion · ⚠ falta render (diario 03:30 del 11-08 o siguiente) y subida | mikan2d (biN5wJVlEzA "Digging Race", 5,7 M) | rotación (toca carrera tras el dato de las 12:00); bebida con mate = gancho latino y comentarios "¿cuál tomas tú?" |
 
 Colchón: de las 14 ranuras de Short de la semana siguiente, 13 están `programado` y 1 en `guion` (café/té/mate) → ≥ 50 %
@@ -505,10 +505,9 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "contingencia": null,
       "estado": "programado",
       "guion": "contenido/guiones/2026-11-06-dato-el-everest-no-es-la-cima-mas-cercana-al.json",
-      "videoId": null,
+      "videoId": "rKeo3b33kJM",
       "referente": "Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español)",
-      "porQue": "dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP)",
-      "bloqueo": "subida por Studio en curso (2026-11-07 madrugada): falta anotar el videoId"
+      "porQue": "dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP)"
     },
     {
       "fecha": "2026-11-15",
