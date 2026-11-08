@@ -66,6 +66,13 @@ Variables: `BOLITA_MEMORIA_MIN_MB` (por defecto 1200), `BOLITA_CONCURRENCIA` (po
   y exige `margenMinutos` (20) desde ahora. Usa la zona horaria real (horario de verano incluido).
 - `minimoBandeja: 3` (videos 'listo' que el diario mantiene), `minimoBacklog: 6`.
 
+## Hito del miércoles: semana asegurada (orden de Santiago, 2026-11-08)
+El cupo semanal del Max se renueva los **miércoles**. Cada miércoles en la noche quedan escritos, verificados y dirigidos los guiones de
+TODAS las ranuras **jueves → miércoles siguiente**, arrancan los renders (local en serie con el lock; nube donde exista) y el **jueves**
+todo está `programado` en Studio con su fecha (tope jue 23:59; resto el viernes con ≥ 72 h de colchón). Solo después el cupo sobrante va a
+mejoras o canales nuevos. El bloque "Hito del mié AAAA-MM-DD" arriba de `docs/PLAN-SEMANAL.md` lleva la cuenta; `estado.mts` avisa
+"⚠ hito del miércoles" si quedan ranuras sin programar antes del próximo miércoles. Regla: skill `plan-semanal` §5b y `operacion-diaria` §0.
+
 ## Qué hace `diario.mts`
 1. Lock atómico `salida/diario.lock` con pid (uno huérfano se reemplaza). Nunca hay 2 diarios a la vez.
 2. Marca huérfanos (json 'listo' sin mp4) como 'error'.

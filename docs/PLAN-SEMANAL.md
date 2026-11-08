@@ -6,6 +6,20 @@
 > **Manda el bloque JSON del final** (lo leen `estado.mts` y el panel de Santiago); la tabla es su vista legible.
 > Meta de calidad contra la que se mide cada ranura: `docs/META-REFERENTE.md`.
 
+## 🔒 Hito del mié 2026-11-11 → semana asegurada 2026-11-12 (jue) → 2026-11-18 (mié)
+
+> Orden de Santiago (2026-11-08): el cupo del Max se renueva los **miércoles**. El miércoles en la noche quedan todos los guiones de
+> la semana jue → mié escritos y dirigidos, arrancan los renders y el **jueves** todo está `programado` en Studio. Recién entonces el
+> cupo sobrante va a mejoras. Regla completa: skill `plan-semanal` §5b · `operacion-diaria` §0 · `~/.claude/canales/calendario.json`.
+
+| Ranuras jue 11-12 → mié 11-18 | Ya `programado` | Falta | Orden de producción el mié 11-11 |
+|---|---|---|---|
+| 12 Shorts (2/día hasta el 11-16; 18:00 el 11-17 y 11-18) | 10 (11-12 → 11-16, ids en la tabla y en Studio) | **2 Shorts**: 11-17 18:00 (`dato` Leónidas, contingente de la cola) y 11-18 18:00 (`bola`/`carrera` según rotación) | 1.º guiones (2, Opus) → render (~20 min c/u) → Studio |
+| 1 largo (compilación dom 11-15 10:00) | 0 | la compilación del cron 04:30 del 11-08 (espera OK de Santiago) | solo con su OK |
+
+Al cumplirse: anotar aquí "✅ asegurada hasta el mié 11-18 (fecha/hora)" y en `salida/revisiones/<fecha>.md`. El plan debe extenderse
+hasta el 11-18 (hoy termina el 11-15): agregar las ranuras 11-16 → 11-18 en el ritual del miércoles.
+
 Calendario (`contenido/calendario.json`): 2 Shorts/día (12:00 y 18:00) hasta el 2026-11-16 (`dobleHasta`); desde el
 2026-11-17, 1 Short diario a las 18:00 + 12:00 sáb/dom. Largo (compilación) el domingo 10:00. Rotación cíclica
 `bola → dato → carrera` (en la práctica de la bandeja: carrera → bola → dato). Canal lanzado el 2026-11-04: la semana en
