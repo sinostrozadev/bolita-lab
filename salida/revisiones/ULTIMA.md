@@ -1,36 +1,30 @@
-# Mejoras · Bolita Lab · 2026-11-07 (sesión de madrugada, Fable + 3 agentes Opus)
+# Mejoras · Bolita Lab · 2026-11-08 (sesión multicanal, Fable + 2 agentes Opus; Santiago: "toma tú Bolita Lab")
 
-Métricas al 2026-11-07 02:37: 9 subs · 4.823 vistas · 6 Shorts públicos (669–1.282 vistas c/u, mediana ≈ 1.160) · 23 programados hasta el 11-15 12:00.
+Métricas al 2026-11-08 08:00: 11 subs · 6.871 vistas totales · 8 Shorts públicos; 28 d en Studio: 7,7 K vistas, 21,4 h, +9 subs, 99,9 % espectadores nuevos.
 
 ## Detectado
-- Subs estancados en 9 con 4,8 K vistas (0,19 %, 1,5 subs por video): el único llamado a suscribirse es el cartel de cierre de 1,2 s (`src/marca/Cierre.tsx`), invisible en un Short en bucle. Medido en `salida/metricas/2026-11-07/metricas.json`.
-- `carrera` es la plantilla más floja (1.149 y 676 vistas) frente a `bola`/`dato` (1.130–1.280). n=2, se sigue midiendo antes de tocar la rotación.
-- `estado.mts` mostraba una caducidad del token falsa (11-13 08:01): el archivo del token se reescribe en cada refresco y perdió `emitido_en`, así que la cuenta corría desde la fecha del archivo. Caducidad real: **2026-11-11 22:27**.
-- `metricas.json` dejaba el título vacío en los videos programados (`...v` al final del objeto pisaba el fallback de la bandeja).
-- `subir-studio.mjs` falló 2 veces con el primer Short de hoy (timeout en "Visibility" y luego en "Video language"): la subida del archivo iba lenta tras el reinicio (12 GB de RAM recién aplicados) y el desplegable de categoría quedó abierto tapando el diálogo. Se remató a mano desde el paso Details con `CONTINUAR=1`.
-- El canal no tenía `docs/PLAN-SEMANAL.md` ni `docs/META-REFERENTE.md` (órdenes permanentes del 11-05).
-- La revisión semanal (`revisar.mts`) escribía el informe sin los 5 encabezados que exige el panel de Santiago.
-- 09:00: `subir-studio.mjs` agotó los 120 s de espera de la subida (lenta tras el reinicio) y el lote relanzó una subida nueva → borrador duplicado de la bola (5iRAGYJaBXE, borrado por la API). También: Studio en "Oops" tras usar el piloto otro canal de marca (ya documentado; se cura con la raíz de Studio).
+- **El canal no pega porque el primer segundo no retiene.** Studio (28 d): **44,4 % se queda a ver, 55,6 % desliza**. Por Short (herramienta nueva `retencion-studio.mjs`):
+  bola Pachelbel 58,7 % · dato billón 56,3 % · dato mantis 45,7 % · bola escape 44,4 % · carrera consolas 40,0 % · dato Cleopatra 35,2 % · carrera helados 28,3 % · bola cisnes 26,0 %.
+  Meta de un Short que crece: ≥ 55 % (satisfying.ba11s ≈ 70 %+). Solo 2 de 8 llegan.
+- Todos los Shorts con ≥ 3 días se frenan en **1.147–1.288 vistas** (audiencia de prueba) sin importar la plantilla; los más nuevos retienen peor (26–35 %) y reciben menos empuje (688, 792, 66 vistas).
+- **Los 8 publicados (y los 2 de hoy) son renders del 11-03, anteriores al gancho en frame 0 del 11-04.** Lo programado desde `iBORkBbkd8c` (11-09 12:00) ya lleva gancho → comparación natural viejo vs nuevo desde el 11-09.
+- Lo que la plantilla actual NO arregla frente a satisfying.ba11s (51 miniaturas de 7 referentes medidas): bolita de 2,6–3,6 % del alto (ellos 7–16 %), anillo al 80 % del ancho (ellos ~95 %), **~90 % de pantalla negra** (ellos círculo 100 % lleno de trazas de color), promesa invisible (preguntamos "¿cuántos hasta llenarlo?" con el círculo vacío; ellos muestran el estado final + "The end is insane 💀"), 0,5 s de bolita quieta y silencio (primera nota a ~0,55 s), un solo bloque de texto (ellos mecánica arriba + intriga abajo, fijos todo el video), iconos de carrera ilegibles en móvil.
+- `carrera` es la plantilla más floja también en retención (40 % y 28 %).
+- El token de YouTube de Bolita no tiene el permiso `yt-analytics.readonly` (LP sí): `metricas.mts` no puede leer retención por API.
 
 ## Mejorado
-- Token: `emitido_en` restaurado en `secrets/youtube-token.json` (emisión real 11-04 22:28) → `estado.mts` vuelve a avisar la fecha correcta.
-- `scripts/metricas.mts`: título de la bandeja como fallback para los programados.
-- 3 Shorts del diario del 11-06 revisados por hoja de contacto (gancho en el frame 0, emojis en la carrera, fotos en el dato) y programados: pizza 11-14 12:00 (JKfuFS0b99U), cisnes 11-14 18:00 (aqlybcvEYz0), Everest 11-15 12:00 (rKeo3b33kJM).
-- `scripts/revisar.mts`: informe con las 5 secciones fijas (Detectado · Mejorado · Herramientas exploradas · Agregado · Pendiente) al principio, manteniendo el detalle. Verificado: tsc ok, dry-run con 23 videos y los 5 H2 en orden.
-- CTA de suscripción dentro del video (clímax) en las 3 plantillas, en worktree con render de prueba. Hecho y mezclado a master (commit 7b999dd): `src/marca/Llamado.tsx`, prop opcional `llamado`; 4 renders de prueba a escala 0,5 revisados (hojas en `salida/pruebas/cta/`). Aparece 6 s antes del escape/meta y en el remate del dato. Desde el diario del 11-07 todos los renders lo llevan; verificación: subs por 1.000 vistas ≥ 2 en 7 días (hoy 0,19).
-- Tope de espera de subida 120 → 300 s; modo `RETOMAR=1` en `subir-studio.mjs`; los lotes (`lote-ejemplo.sh`) deciden solos cómo reintentar (`modo_reintento`) sin abrir subidas nuevas.
+- Rediseño del primer segundo en curso (agente Opus, rama `primer-segundo`, worktree): trazas persistentes que llenan el círculo de color, bola ≥ 8 % del alto y anillo al 92 %, cold open de 0,4 s con el estado final ("así termina ↓"), movimiento + primera nota en ≤ 0,2 s, dos bloques de texto fijos (mecánica arriba, intriga abajo). Primero `bola`, luego `carrera`. Se mezcla solo si pasa tsc + render de prueba + fotogramas medidos.
+- Herramienta `herramientas/navegador/retencion-studio.mjs`: lee "se quedó a ver" por Short desde Studio con el piloto (lo que la API no da).
 
 ## Herramientas exploradas
-- Ninguna nueva esta sesión; se usó el inventario (`herramientas-disponibles`): piloto 8777, helpers de fotogramas sobre el ffmpeg mínimo de Remotion, Data API para métricas. Búsqueda web para referentes (satisfying.ba11s, mikan2d) y contingencias (Leónidas 17–18 nov).
+- Lectura de `ytInitialData` + chip "Populares" de YouTube sin piloto para bajar las portadas más vistas de un canal (scripts en la skill `caratulas-con-gpt/referencias/`).
+- El ffmpeg de Remotion solo trae `scale`: sirve para fotogramas, no para hojas de contacto.
 
 ## Agregado
-- `docs/PLAN-SEMANAL.md` (semanas 11-02→08 y 11-09→15, 26 ranuras, JSON v1; cola desde el 11-16).
-- `docs/META-REFERENTE.md` (meta: satisfying.ba11s para `bola`/canal, mikan2d para `carrera`, Ñerd para `dato`; 8 brechas con dueño y verificación).
-- `herramientas/navegador/lote-2026-11-07.sh`; estado compartido `~/.claude/canales/estado/bolita-lab.json`; línea en `docs/DECISIONES.md`.
-- 09:07: 3 Shorts del diario subidos en el turno del piloto (08:55–09:09): color favorito `TlEUxPDJQMY` 11-15 18:00 · 2 bolitas escapa `YG-h9ndmaBc` 11-16 12:00 · Canal de Panamá `9s_YaNsKVEo` 11-16 18:00 → 26 programados hasta el 11-16 18:00. Plan semanal con los ids; café/té/mate pasa a la cola.
+- Evidencia: 40 fotogramas (0/0,5/1/2/3 s) de los 8 Shorts + 51 portadas de referentes con manifiesto (scratchpad de la sesión; resumen aquí y en META-REFERENTE).
+- META-REFERENTE: fila "Retención" ya con datos (antes "sin datos").
 
 ## Pendiente
-- Santiago: token reautorizado el 11-07 03:07 (ya con permiso de comentarios; caduca el 11-14 03:07, próxima renovación ≈ 11-13); ver la compilación del domingo 11-08 antes de subirla; `gh secret set YOUTUBE_TOKEN_JSON` cuando se apruebe la auditoría.
-- Reemplazar el video-meta de `bola` (outlier de 2023) por un Short reciente de satisfying.ba11s con el piloto libre (META-REFERENTE brecha #5).
-- Retención por video en `metricas.mts` (`averageViewPercentage`, brecha #4). Serie con eliminación en `carrera` (brecha #2). Guion `dato` de las Leónidas para el 11-17 18:00.
-- Posible borrador duplicado de "pizza" en Studio por el intento fallido (revisar Content → Draft).
+- Mezclar `primer-segundo` tras revisar los fotogramas; re-renderizar desde el 11-17 con la plantilla nueva y evaluar reemplazar los programados 11-12 → 11-16 si el tope diario de subidas lo permite (son 10).
+- Medir: "se quedó a ver" ≥ 55 % en los 6 primeros Shorts nuevos y ≥ 3 de 6 sobre 2.000 vistas a 7 días (hoy 0/8).
+- Santiago: reautorizar el token con Analytics (`subir.mts autorizar` ya pide el scope en LP; copiar la lista a Bolita) para que `metricas.mts` guarde retención sola.

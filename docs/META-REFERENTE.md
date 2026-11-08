@@ -39,7 +39,7 @@
 | Voz / texto | sin voz; texto fijo en inglés con emoji | sin voz; texto en español (gancho + contador + cartel) | empate (idioma es ventaja nuestra en LatAm) | — |
 | Música | canciones conocidas **con derechos** (p. ej. "Kerosene") → Content ID | **dominio público** sintetizado en Node | **nosotros** (riesgo de monetización ≈ 0) | DECISIONES / REFERENTES |
 | Duración | 36–56 s | bola 30–44 s (1.282 vistas con 44 s; 1.171 con 30 s) | por medir (¿más largo = más vistas? n=2) | metricas 2026-11-07 |
-| Retención | no pública (formato famoso por retener hasta el final) | **sin datos** (Analytics no guarda `averageViewPercentage` en metricas.json) | sin datos | — |
+| Retención | no pública (formato famoso por retener hasta el final); un Short que crece: ≥ 55–70 % "se queda a ver" | **44,4 % se queda a ver / 55,6 % desliza** (28 d); por Short 26–59 % (bola Pachelbel 58,7, bola cisnes 26,0); duración media 15–23 s | **referente — brecha #0 (el primer segundo)** | Studio 2026-11-08, `herramientas/navegador/retencion-studio.mjs` |
 | Título / miniatura | promesa en 1.ª persona + emoji ("until my pc crashes 😳"), sin pregunta | pregunta-apuesta ("¿Cuántos rebotes…?", "¿cuál escapa primero?") + nombre de la pieza | por medir (CTR no medido) | — |
 | Cadencia | ~12/mes | 2/día (hasta 11-16), luego 1/día + 2 sáb/dom (~38/mes) | nosotros en volumen; **riesgo "repetitivo" YPP** si las variantes se parecen | calendario.json |
 | Vistas por Short | mediana reciente **60–160 K** (outlier 78 M) | **≈ 1.160** de mediana (bola 1.282 · 1.171) en 1–3 días | referente (×50–140) | metricas 2026-11-07 |
