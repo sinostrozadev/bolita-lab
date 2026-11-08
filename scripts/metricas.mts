@@ -36,7 +36,9 @@ const piloto = async (ruta: string, params: Record<string, string> = {}, bin = f
 const PANTALLAS = [
   { nombre: '1-overview', ruta: 'analytics/tab-overview/period-default', espera: /Views|Visualizaciones|Watch time|Tiempo de reproducci/i },
   { nombre: '2-monetizacion', ruta: 'monetization', espera: /Partner Program|Programa de Partners|subscribers|suscriptores/i },
-  { nombre: '3-alcance', ruta: 'analytics/tab-reach_viewers/period-default', espera: /Impressions|Impresiones/i },
+  // 2026-11-08: Studio quitó la pestaña "Reach" (tab-reach_viewers quedaba en blanco: 3 días de fallo en los 3 canales).
+  // Pestañas vigentes: Overview · Content · Audience · Trends. Las impresiones/CTR viven ahora dentro de Content.
+  { nombre: '3-audiencia', ruta: 'analytics/tab-build_audience/period-default', espera: /Returning viewers|Espectadores recurrentes|Unique viewers|Espectadores únicos|Subscribers|Suscriptores/i },
   { nombre: '4-contenido', ruta: 'analytics/tab-content/period-default', espera: /Content|Contenido|Views|Visualizaciones/i },
 ];
 
