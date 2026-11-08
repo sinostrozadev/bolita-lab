@@ -44,16 +44,30 @@ interior; flash de 100 ms del color de la bola; bola con degradado radial (brill
 y triple glow; estela de 4 copias; 6–10 partículas por rebote que se apagan en 0,3 s; contador
 "REBOTES: n" con pop de escala; `<MarcaDeAgua/>` y `<Cierre/>` en los últimos 72 frames.
 
-## Gancho (frame 0)
-`props.gancho` se ve **completo desde el frame 0**: texto gigante (Bricolage 800, 104/92/76/64 px
-según largo ≤ 22/32/46/más) sobre una placa oscura, arriba en la zona segura (top 280, bajo la marca
-de agua y sobre el anillo), con glow del color inicial de la bola. Las palabras parten al 88 % de
-su tamaño y solo brincan un poco (nunca opacidad 0). Dura 108 frames (1,8 s) y se va con **corte
-limpio**; recién ahí entra el contador "REBOTES" con pop. Ganchos cortos (≤ 46 caracteres) se ven
-en 2–3 líneas sin tapar el anillo; más largos se achican.
+## El primer segundo (2026-11-08, rama `primer-segundo`)
+Diagnóstico: 55,6 % deslizaba en el 1.er segundo; nuestro frame 0 era ~90 % negro con una bolita del 3 % del alto.
+Referente: satisfying.ba11s (círculo al 95 % del ancho saturado de trazas, bola 7–16 % del alto, 2 textos fijos).
+- **Tamaño**: anillo R 490 (borde exterior 992 px = 92 % del ancho, centro y 958); bola inicial radio 78
+  (8,1 % del alto); en `crecer` termina en el 86 % del radio; en `escape` crece hasta radio 100 y el hueco
+  tiene ≥ 30° para que quepa.
+- **Trazas** (`trazas`, por defecto sí): cada posición de cada bola queda dibujada como disco de su tamaño
+  (relleno hsl 56 % + contorno oscuro de 3 px = "tubos" estriados), tono que deriva 0,35°/frame y salta 31°
+  por rebote. Un solo `<canvas>` recortado al anillo, dibujado en `useLayoutEffect`: incremental si el frame
+  avanza, desde cero si retrocede. En escape dejan de dibujarse en la salida y un velo oscura el interior
+  para que el cartel se lea. La bola viva lleva borde blanco para distinguirse de sus trazas.
+- **Cold open** (`coldOpenFrames` = 24 = 0,4 s, `coldOpenDesde` en el sim): el video arranca mostrando el final
+  (escape: los 0,4 s antes de salir; crecer: cuando la bola llega a 2/3 del radio, con las trazas ya saturadas)
+  con el rótulo "así termina ↓", y corta en seco al inicio. El sim NO incluye esos frames (cuadros/eventos son
+  tiempo de simulación); el wav sí (todo corrido 0,4 s) y `duracionFrames` de las props también.
+- **Arranque**: la bola parte cerca del fondo cayendo a 1.900–2.200 px/s → 1.er rebote + nota ≈ 100 ms tras el
+  corte. El cold open suena desde la muestra 0 (acorde corto del clímax + barrido de "rebobinar" + golpe en el corte).
+- **Texto en dos bloques fijos** (frame 0 → cierre, `src/marca/BloqueTexto.tsx`): arriba `ganchoArriba`
+  (≤ 9 palabras; si falta, `gancho`), abajo `ganchoAbajo` (≤ 5 palabras; si falta, variante por modo elegida por
+  id: `VARIANTES_GANCHO_ABAJO`). Placa oscura semitransparente. El contador "REBOTES n" pasó al centro del anillo.
+- Costo medido: render a escala 0,25 de un Short de 38 s = ~2 min (antes ~1,5 min); RAM sin cambios visibles.
 
 ## Uso
-Props: `id`, `gancho` (≤ 90; ideal ≤ 46 para que se lea gigante en el frame 0), `melodia` (furelise,
+Props: `id`, `gancho` (≤ 90), opcionales `ganchoArriba` (≤ 9 palabras), `ganchoAbajo` (≤ 5 palabras), `trazas`, `melodia` (furelise,
 marchaturca, odaalegria, canon, cisnes), `modo`, `bolas` (1–3), opcionales `semilla`,
 `velocidadHueco`, `anchoHueco`.
 

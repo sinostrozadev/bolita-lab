@@ -6,6 +6,10 @@
  */
 import { z } from 'zod';
 import { CampoLlamado } from '../../marca/llamado-texto';
+import { semillaDesde } from '../../lib/azar';
+
+/** Palabras "de verdad" (con letras o cifras): los emoji no cuentan. */
+const palabras = (t: string) => t.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
 
 /** Melodías disponibles (deben existir en `MELODIAS` de scripts/lib/wav.mts). */
 export const MELODIAS_BOLA = ['furelise', 'marchaturca', 'odaalegria', 'canon', 'cisnes'] as const;
@@ -13,8 +17,21 @@ export const MELODIAS_BOLA = ['furelise', 'marchaturca', 'odaalegria', 'canon', 
 export const GuionBola = z.object({
   /** Id del guion: nombra el sim, el wav y el mp4. */
   id: z.string().min(1),
-  /** Gancho textual de los primeros 1,5 s. */
+  /** Gancho textual. Guiones viejos: si no hay `ganchoArriba`, este texto va en el bloque de arriba (fijo todo el video). */
   gancho: z.string().min(1).max(90),
+  /**
+   * Bloque de ARRIBA, fijo desde el frame 0 hasta el cierre: describe la MECÁNICA en ≤ 9 palabras
+   * (ej. "Crece con cada rebote hasta llenar el círculo", "Cada rebote gira el hueco: ¿cuándo escapa?").
+   * Si falta, se usa `gancho`.
+   */
+  ganchoArriba: z.string().min(1).max(64).refine((t) => palabras(t) <= 9, 'ganchoArriba: máximo 9 palabras').optional(),
+  /**
+   * Bloque de ABAJO, fijo desde el frame 0 hasta el cierre: la INTRIGA en ≤ 5 palabras (+ emoji opcional)
+   * (ej. "El final no lo esperas 💀", "¿Llega a llenarlo?"). Si falta, una variante por modo elegida por id.
+   */
+  ganchoAbajo: z.string().min(1).max(32).refine((t) => palabras(t) <= 5, 'ganchoAbajo: máximo 5 palabras').optional(),
+  /** Trazas persistentes: cada posición pasada de la bola queda dibujada y el círculo se llena de color. Por defecto sí. */
+  trazas: z.boolean().optional(),
   melodia: z.enum(MELODIAS_BOLA),
   /** escape: el hueco gira y la bola termina escapando. crecer: sin hueco, la bola llena el anillo. */
   modo: z.enum(['escape', 'crecer']),
@@ -31,6 +48,18 @@ export const GuionBola = z.object({
   llamado: CampoLlamado,
 });
 export type GuionBola = z.infer<typeof GuionBola>;
+
+/** Intriga por defecto del bloque de abajo (determinista por id) para guiones que no traen `ganchoAbajo`. */
+export const VARIANTES_GANCHO_ABAJO: Record<GuionBola['modo'], readonly string[]> = {
+  crecer: ['¿Llega a llenarlo? 💀', 'El final no lo esperas 💀', 'Mira cómo termina 😳'],
+  escape: ['¿En qué rebote escapa? 💀', 'El final no lo esperas 💀', 'Espera el final 😳'],
+};
+export const ganchoAbajoDe = (g: Pick<GuionBola, 'id' | 'modo' | 'ganchoAbajo'>): string => {
+  if (g.ganchoAbajo) return g.ganchoAbajo;
+  const v = VARIANTES_GANCHO_ABAJO[g.modo];
+  return v[semillaDesde(`abajo:${g.id}`) % v.length];
+};
+export const ganchoArribaDe = (g: Pick<GuionBola, 'gancho' | 'ganchoArriba'>): string => g.ganchoArriba ?? g.gancho;
 
 export type TipoEvento = 'rebote' | 'choque' | 'escape' | 'lleno';
 
@@ -77,4 +106,12 @@ export type SimBola = {
   eventos: EventoSim[];
   semillaUsada: number;
   velocidadHuecoUsada: number;
+  /**
+   * Frames de cold open que el video antepone a la simulación (0,4 s mostrando el final ya saturado).
+   * `cuadros`, `eventos` y `duracionFrames` NO los incluyen (son tiempo de simulación); el wav sí
+   * (todo corrido). Sims viejos: ausente = 0. Duración del video = duracionFrames + coldOpenFrames.
+   */
+  coldOpenFrames?: number;
+  /** Frame de la simulación con que arranca el cold open (ausente = climaxFrame − coldOpenFrames). */
+  coldOpenDesde?: number;
 };
