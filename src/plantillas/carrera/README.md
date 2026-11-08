@@ -64,7 +64,7 @@ y grande en el final, donde "salta" con `spring` al llegar la ganadora al centro
   del video**, así el audio cae exacto (la fanfarria suena en el frame en que el centro de la
   ganadora pasa la línea; el instante de cruce se calcula con precisión de subpaso).
 - **Cámara:** sigue a la líder con suavizado (0,07/frame) y luego se acota a una banda: la
-  líder siempre queda entre y=520 y y=1500 de pantalla (zona segura). Al fondo, la meta
+  líder siempre queda entre y=720 y y=1290 de pantalla (bajo pregunta + marcador, sobre podio + intriga). Al fondo, la meta
   queda a y≈1180 (no bajo la UI de YouTube).
 - **Ranking por frame** con histéresis de 24 px: el marcador no parpadea en empates.
 
@@ -97,6 +97,19 @@ acorde) en el cruce. Normalizado a −1 dBFS con limitador suave.
   través de ellos.
 - **Resultado:** bajo "GANA" aparece la fila con el resto (2.º, 3.º…) con su icono: orden real de
   llegada y, las que no cruzaron cuando terminó el video, por posición en pista. Sin "(no llega)".
+
+## El primer segundo (2026-11-08, rama `primer-segundo`)
+- **Bolas de 116 px** (radio 58, 6 % del alto; antes 64 px) con el icono a 0,78 del diámetro (≈ 90 px).
+  Tablero abierto en proporción: clavijas cada 200 × 165 px (huecos ≥ 167 px), columnas a ≥ 127 px de las
+  paredes (sin bolsillos), bocas de embudo de 250 px, márgenes de rampas/embudos mayores.
+- **Salida en movimiento**: bolas a y 640–680 cayendo a 420–500 px/s y 1.ª fila de clavijas en y 840 →
+  1.er choque con clavija a 167–283 ms (medido en los 5 guiones del backlog). "¡Ya!" sintetizado en el frame 0.
+- **Dos bloques fijos** (frame 0 → cierre, `src/marca/BloqueTexto.tsx`): arriba `ganchoArriba` (si falta,
+  `gancho`), abajo `ganchoAbajo` (si falta, variante por id: `VARIANTES_GANCHO_ABAJO_CARRERA`). El gancho
+  gigante de 1,8 s desapareció; el marcador top 3 queda fijo bajo la pregunta (y 430) desde el frame 0 y las
+  etiquetas entran a 1 s.
+- **Podio vacío** (2.º · 1.º · 3.º con "?") sobre el bloque de abajo desde el frame 0: cada puesto se llena con
+  la bola (color + icono, con pop) en el frame en que cruza la meta; se apaga cuando entra la fila del resultado.
 
 ## Duración del video
 `frames hasta el cruce (incluye cámara lenta) + 2,5 s de celebración + 1,2 s de cierre` ≈ 30–50 s.

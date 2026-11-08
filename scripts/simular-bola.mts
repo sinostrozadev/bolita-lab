@@ -21,8 +21,10 @@ const FPS = FORMATO.fps;
 const SUBPASOS = 10;
 const DT = 1 / (FPS * SUBPASOS);
 const CX = FORMATO.ancho / 2;
-const CY = 985; // un poco bajo el centro para dejar aire al contador y al gancho
-const R = 430;
+/** Anillo al ~92 % del ancho (borde exterior 2·(R+GROSOR/2) ≈ 992 px), centrado entre el bloque de texto
+ * de arriba (≈ 280–440) y el de abajo (≈ 1470–1570). Antes: R 430 (80 % del ancho), CY 985. */
+const CY = 958;
+const R = 490;
 const GROSOR = 12;
 const GRAVEDAD = 5000; // px/s²
 const RESTITUCION = 1.01;
@@ -45,6 +47,16 @@ const CLIMAX_MIN = 25;
 const CLIMAX_MAX = 46;
 /** Si no escapa a los 55 s, el hueco se empieza a abrir. */
 const ABRIR_HUECO_DESDE = 52;
+/** Bola inicial: ≥ 8 % del alto del video (diámetro ≈ 156 px). Antes 32–34 px de radio (3 %). */
+const RADIO_INICIAL = 78;
+/** Escape: radio máximo y ancho mínimo del hueco para que la bola grande quepa (cuerda ≥ 1,15 × diámetro). */
+const RADIO_MAX_ESCAPE = 100;
+const ANCHO_HUECO_MIN = 30;
+/** Arranque: la bola parte ya cayendo rápido, a esta distancia de la pared de abajo → 1.er rebote ≈ 0,12 s. */
+const ARRANQUE_DIST = 250;
+const ARRANQUE_VY = 1900;
+/** Cold open: 0,4 s del final (ya saturado de trazas) antes del corte seco al inicio. */
+export const COLD_OPEN_FRAMES = Math.round(0.4 * FPS);
 
 type Bola = {
   x: number; y: number; vx: number; vy: number; r: number; color: number; dentro: boolean;
@@ -85,12 +97,14 @@ const simular = (p: Parametros) => {
     ? (b) => VMAX_CRECER_MIN + (VMAX - VMAX_CRECER_MIN) * Math.max(0, Math.min(1, (R - b.r) / (R - p.radioInicial)))
     : () => VMAX;
   const bolas: Bola[] = [];
+  // Arranque en caída rápida (nada de bola quieta): cerca del fondo y bajando a ~1.900–2.200 px/s,
+  // así el 1.er rebote y la 1.ª nota llegan en ≤ 0,2 s tras el cold open. Separadas > 2 radios.
   for (let i = 0; i < p.bolas; i++) {
     bolas.push({
-      x: CX + (i - (p.bolas - 1) / 2) * 150 + (azar() - 0.5) * 60,
-      y: CY - R + p.radioInicial + 60 + i * 70,
-      vx: (azar() - 0.5) * 700,
-      vy: azar() * 120,
+      x: CX + (i - (p.bolas - 1) / 2) * (2 * p.radioInicial + 40) + (azar() - 0.5) * 30,
+      y: CY + (R - p.radioInicial) - ARRANQUE_DIST - i * 40,
+      vx: (azar() - 0.5) * 500,
+      vy: ARRANQUE_VY + azar() * 300,
       r: p.radioInicial,
       color: (i * 2 + Math.floor(azar() * NEONES.length)) % NEONES.length,
       dentro: true,
@@ -256,6 +270,22 @@ const simular = (p: Parametros) => {
 
 type Resultado = ReturnType<typeof simular>;
 
+/**
+ * Desde qué frame de la simulación se toma el cold open. Escape: los últimos 0,4 s antes de salir.
+ * Crecer: cuando la bola mayor llega a ~2/3 del radio; más tarde la bola tapa sus propias trazas y el
+ * "círculo lleno de color" no se ve (medido en el render de prueba del 2026-11-08).
+ */
+const desdeColdOpen = (res: Resultado, modo: 'escape' | 'crecer') => {
+  const tope = Math.max(0, res.climaxFrame - COLD_OPEN_FRAMES);
+  if (modo === 'escape') return tope;
+  const umbral = R * 0.66;
+  for (let k = 0; k < tope; k++) {
+    const fila = res.cuadros[k];
+    for (let i = 2; i < fila.length; i += 4) if (fila[i] >= umbral) return k;
+  }
+  return tope;
+};
+
 /** Busca parámetros (semilla derivada, giro del hueco, crecimiento) para que el clímax caiga en la ventana. */
 export const buscarSimulacion = (props: GuionBola): { res: Resultado; p: Parametros } => {
   const base = props.semilla ?? semillaDesde(props.id);
@@ -270,18 +300,18 @@ export const buscarSimulacion = (props: GuionBola): { res: Resultado; p: Paramet
   };
   if (props.modo === 'escape') {
     let factorV = 1;
-    let ancho = props.anchoHueco ?? 40;
+    let ancho = Math.max(ANCHO_HUECO_MIN, props.anchoHueco ?? 40);
     const velocidadBase = props.velocidadHueco ?? 7;
     for (let intento = 0; intento < 60; intento++) {
       const p: Parametros = {
         semilla: (base + intento * 7919) >>> 0, modo: 'escape', bolas: props.bolas,
         velocidadHueco: velocidadBase * factorV, anchoHueco: ancho,
-        crecimiento: 0.5, radioInicial: 32, radioMax: 66,
+        crecimiento: 0.5, radioInicial: RADIO_INICIAL, radioMax: RADIO_MAX_ESCAPE,
       };
       const { res, seg, dist } = evaluar(p);
       if (dist === 0) return { res, p };
       if (res.climaxFrame < 0 || seg > CLIMAX_MAX) factorV *= 1.18;
-      else if (seg < CLIMAX_MIN) { factorV *= 0.86; if (intento % 3 === 2) ancho = Math.max(22, ancho - 3); }
+      else if (seg < CLIMAX_MIN) { factorV *= 0.86; if (intento % 3 === 2) ancho = Math.max(ANCHO_HUECO_MIN, ancho - 3); }
     }
   } else {
     // Bisección sobre el crecimiento por rebote; si el caos lo vuelve no monótono, probamos otras semillas.
@@ -293,7 +323,7 @@ export const buscarSimulacion = (props: GuionBola): { res: Resultado; p: Paramet
         const g = Math.sqrt(lo * hi);
         const p: Parametros = {
           semilla: (base + semillaIdx * 104729) >>> 0, modo: 'crecer', bolas: props.bolas,
-          velocidadHueco: 0, anchoHueco: 0, crecimiento: g, radioInicial: 34, radioMax: R,
+          velocidadHueco: 0, anchoHueco: 0, crecimiento: g, radioInicial: RADIO_INICIAL, radioMax: R,
         };
         const { res, seg, dist } = evaluar(p);
         if (dist === 0) return { res, p };
@@ -314,9 +344,24 @@ export const sintetizar = (sim: SimBola, melodiaId: string, ruta: string) => {
   if (!melodia) throw new Error(`melodía desconocida: ${melodiaId}`);
   const notas = melodia.notas.filter(([m]) => m > 0);
   const pulso = 60 / melodia.bpm;
-  const total = sim.duracionFrames / sim.fps;
+  // Todo el audio de la simulación va corrido por el cold open (el video lo antepone).
+  const co = sim.coldOpenFrames ?? 0;
+  const t0 = co / sim.fps;
+  const total = (sim.duracionFrames + co) / sim.fps;
   const pista = crearPista(total + 0.5);
-  const tClimax = sim.climaxFrame / sim.fps;
+  const tClimax = t0 + sim.climaxFrame / sim.fps;
+  const raiz = notas[0][0] - 12;
+
+  // Cold open (0–0,4 s): sonido desde el frame 0. Acorde corto del clímax (adelanto de "así termina"),
+  // barrido descendente de "rebobinar" y un golpe seco en el corte al inicio.
+  if (co > 0) {
+    for (const [semi, vol] of [[12, 0.32], [19, 0.24], [24, 0.2]] as const) {
+      nota(pista, { inicio: 0, hz: midiAHz(raiz + semi), duracion: t0, volumen: vol, timbre: 'pluck', liberacion: 0.08 });
+    }
+    golpe(pista, 0, { duracion: 0.06, volumen: 0.3, tono: 0.3, semilla: 5 });
+    barrido(pista, 0.04, 1800, 260, t0 - 0.04, 0.16, 'triangulo');
+    golpe(pista, t0, { duracion: 0.05, volumen: 0.28, tono: 0.2, semilla: 11 });
+  }
 
   // Cama: sub grave con batido lento, muy discreto.
   nota(pista, { inicio: 0, hz: 55, duracion: total, volumen: 0.05, timbre: 'seno', ataque: 1.5, caida: 0.1, sostenido: 1, liberacion: 1.5 });
@@ -335,37 +380,37 @@ export const sintetizar = (sim: SimBola, melodiaId: string, ruta: string) => {
       if (e.frame > sim.climaxFrame && sim.climaxFrame >= 0) continue; // tras el clímax, solo el final
       if (soloUna && e.bola !== 0) {
         semillaGolpe = (semillaGolpe * 31 + 7) >>> 0;
-        golpe(pista, e.t, { duracion: 0.045, volumen: 0.07 + 0.06 * e.fuerza, tono: 0.35, semilla: semillaGolpe });
+        golpe(pista, t0 + e.t, { duracion: 0.045, volumen: 0.07 + 0.06 * e.fuerza, tono: 0.35, semilla: semillaGolpe });
         continue;
       }
       if (e.t - ultimaNota < 0.07) continue; // anti-ametralladora: nunca dos notas a menos de 70 ms
       ultimaNota = e.t;
+      const te = t0 + e.t;
       const [midi, pulsos] = notas[i % notas.length];
       i++;
       e.nota = midi;
       const dur = Math.min(0.6, Math.max(0.18, pulsos * pulso * 0.8));
-      nota(pista, { inicio: e.t, hz: midiAHz(midi), duracion: dur, volumen: 0.45 * (0.8 + 0.2 * e.fuerza), timbre: 'pluck', liberacion: 0.15 });
+      nota(pista, { inicio: te, hz: midiAHz(midi), duracion: dur, volumen: 0.45 * (0.8 + 0.2 * e.fuerza), timbre: 'pluck', liberacion: 0.15 });
     } else if (e.tipo === 'choque') {
       semillaGolpe = (semillaGolpe * 31 + 7) >>> 0;
-      golpe(pista, e.t, { duracion: 0.07, volumen: 0.16 + 0.14 * e.fuerza, tono: 0.22, semilla: semillaGolpe });
+      golpe(pista, t0 + e.t, { duracion: 0.07, volumen: 0.16 + 0.14 * e.fuerza, tono: 0.22, semilla: semillaGolpe });
     }
   }
   // Riser de 2 s que remata en el clímax.
   barrido(pista, Math.max(0, tClimax - 2), 110, 1400, 2, 0.16, 'triangulo');
   barrido(pista, Math.max(0, tClimax - 2), 55, 700, 2, 0.12, 'seno');
   // Clímax: acorde sobre la primera nota de la melodía + golpe.
-  const raiz = notas[0][0] - 12;
   const climax = sim.eventos.find((e) => e.tipo === 'escape' || e.tipo === 'lleno');
   if (climax) {
     for (const [semi, vol] of [[0, 0.3], [7, 0.22], [12, 0.26], [19, 0.14]] as const) {
-      nota(pista, { inicio: climax.t, hz: midiAHz(raiz + semi), duracion: 1.4, volumen: vol, timbre: 'triangulo', ataque: 0.01, caida: 0.3, sostenido: 0.5, liberacion: 0.9 });
+      nota(pista, { inicio: t0 + climax.t, hz: midiAHz(raiz + semi), duracion: 1.4, volumen: vol, timbre: 'triangulo', ataque: 0.01, caida: 0.3, sostenido: 0.5, liberacion: 0.9 });
     }
-    golpe(pista, climax.t, { duracion: 0.25, volumen: 0.5, tono: 0.12, semilla: 99 });
-    if (climax.tipo === 'lleno') nota(pista, { inicio: climax.t, hz: 45, duracion: 1.2, volumen: 0.35, timbre: 'seno', ataque: 0.02, caida: 0.2, sostenido: 0.8, liberacion: 0.8 });
-    else barrido(pista, climax.t, 1600, 200, 0.6, 0.18, 'seno');
+    golpe(pista, t0 + climax.t, { duracion: 0.25, volumen: 0.5, tono: 0.12, semilla: 99 });
+    if (climax.tipo === 'lleno') nota(pista, { inicio: t0 + climax.t, hz: 45, duracion: 1.2, volumen: 0.35, timbre: 'seno', ataque: 0.02, caida: 0.2, sostenido: 0.8, liberacion: 0.8 });
+    else barrido(pista, t0 + climax.t, 1600, 200, 0.6, 0.18, 'seno');
   }
   // Cierre: un "pling" suave cuando entra el cartel.
-  const tCierre = (sim.duracionFrames - FRAMES_CIERRE) / sim.fps;
+  const tCierre = t0 + (sim.duracionFrames - FRAMES_CIERRE) / sim.fps;
   nota(pista, { inicio: tCierre, hz: midiAHz(raiz + 24), duracion: 0.5, volumen: 0.22, timbre: 'pluck' });
   nota(pista, { inicio: tCierre + 0.08, hz: midiAHz(raiz + 31), duracion: 0.5, volumen: 0.18, timbre: 'pluck' });
 
@@ -398,14 +443,17 @@ export const simularYSintetizar = (props: GuionBola, raiz = process.cwd()): SimB
     anillo: { cx: CX, cy: CY, r: R, anchoHueco: p.anchoHueco, grosor: GROSOR },
     hueco: res.hueco, huecoSemi: res.huecoSemi, cuadros: res.cuadros, eventos: res.eventos,
     semillaUsada: p.semilla, velocidadHuecoUsada: p.velocidadHueco,
+    coldOpenFrames: COLD_OPEN_FRAMES,
+    coldOpenDesde: desdeColdOpen(res, props.modo),
   };
   const rutaWav = path.join(raiz, 'public/audio/generado', `${props.id}.wav`);
   sintetizar(sim, props.melodia, rutaWav); // también anota `nota` en los eventos
   const rutaSim = path.join(raiz, 'public/sim', `${props.id}.json`);
   fs.mkdirSync(path.dirname(rutaSim), { recursive: true });
   fs.writeFileSync(rutaSim, JSON.stringify(sim));
-  const seg = (sim.duracionFrames / FPS).toFixed(1);
-  console.log(`sim ${props.id}: clímax a ${(sim.climaxFrame / FPS).toFixed(1)} s, ${sim.rebotesTotales} rebotes, ${sim.eventos.filter((e) => e.tipo === 'choque').length} choques, total ${seg} s · semilla ${p.semilla} · hueco ${p.velocidadHueco.toFixed(2)}°/s × ${p.anchoHueco}° · crecimiento ${p.crecimiento.toFixed(2)} px`);
+  const seg = ((sim.duracionFrames + COLD_OPEN_FRAMES) / FPS).toFixed(1);
+  const primer = sim.eventos.find((e) => e.tipo === 'rebote');
+  console.log(`sim ${props.id}: clímax a ${(sim.climaxFrame / FPS).toFixed(1)} s, ${sim.rebotesTotales} rebotes, ${sim.eventos.filter((e) => e.tipo === 'choque').length} choques, total ${seg} s · semilla ${p.semilla} · hueco ${p.velocidadHueco.toFixed(2)}°/s × ${p.anchoHueco}° · crecimiento ${p.crecimiento.toFixed(2)} px · 1.er rebote ${primer ? (primer.t * 1000).toFixed(0) : '—'} ms tras el cold open`);
   console.log(`  → ${path.relative(raiz, rutaSim)} (${(fs.statSync(rutaSim).size / 1024).toFixed(0)} KB), ${path.relative(raiz, rutaWav)}`);
   return sim;
 };

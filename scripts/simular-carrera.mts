@@ -42,7 +42,9 @@ const META_Y = PANTALLA * PANTALLAS - 300;
 /** Bajo la meta queda espacio: así la cámara puede dejar la meta en el centro de la pantalla. */
 const ALTO = META_Y + 700;
 /** Zona segura (ver tokens): la líder siempre queda entre estas dos alturas de pantalla. */
-const BANDA_LIDER = { arriba: 220 + 300, abajo: PANTALLA - 340 - 80 };
+/** Arriba: bajo el gancho fijo (≈ 270–400) y el marcador (≈ 420–600). Abajo: sobre el podio (≈ 1340) y el
+ * bloque de intriga (≈ 1470–1570), que quedan fijos todo el video. */
+const BANDA_LIDER = { arriba: 720, abajo: 1290 };
 /** La meta queda a esta altura de pantalla cuando la cámara llega al fondo. */
 const META_EN_PANTALLA = 1180;
 const CAM_MAX = META_Y - META_EN_PANTALLA;
@@ -52,8 +54,9 @@ const VENTAJA_MAX_SEG = 1.5;
 const CARRERAS_VALIDAS_MAX = 20;
 /** Histéresis del marcador: una bola adelanta a otra solo si la supera por estos píxeles. */
 const HISTERESIS_PX = 24;
-/** 32 (antes 27): el icono del competidor va dentro de la bola y a 27 px no se leía. */
-const RADIO_BOLA = 32;
+/** 58 (antes 32, y antes 27): bola ≥ 6 % del alto del video (116 px) para que el icono (≥ 90 px) se lea en
+ * el celular. El tablero se abrió en proporción (clavijas cada 200 × 165 px, bocas de embudo 250 px). */
+const RADIO_BOLA = 58;
 const RADIO_CLAVIJA = 13;
 const REST_CLAVIJA = 0.6;
 const REST_PARED = 0.55;
@@ -77,7 +80,7 @@ const construirTablero = (azar: () => number): Mundo => {
   // Embudos: paredes en V que se cierran a una boca de ~170 px, ligeramente descentrada.
   const embudos = [0.36, 0.70].map((f) => {
     const y = Math.round(META_Y * f + (azar() - 0.5) * 120);
-    const boca = 170;
+    const boca = 250;
     const centro = ANCHO / 2 + (azar() - 0.5) * 220;
     const caida = 230; // alto del embudo
     segmentos.push({ x1: 0, y1: y - caida, x2: centro - boca / 2, y2: y, grosor: 16 });
@@ -98,21 +101,23 @@ const construirTablero = (azar: () => number): Mundo => {
 
   // Zonas donde NO van clavijas (embudos y rampas, con margen).
   const prohibido = (y: number) =>
-    embudos.some((e) => y > e.y - e.caida - 90 && y < e.y + 110) ||
-    rampas.some((r) => y > r.y - 80 && y < r.y + r.caida + 80);
+    embudos.some((e) => y > e.y - e.caida - 140 && y < e.y + 160) ||
+    rampas.some((r) => y > r.y - 130 && y < r.y + r.caida + 130);
 
-  const sepX = 132;
-  const sepY = 118;
+  // Con bolas de 116 px: hueco horizontal 200 − 26 = 174 px y diagonal ≈ 193 − 26 = 167 px (> 116 holgado).
+  const sepX = 200;
+  const sepY = 165;
   let fila = 0;
-  for (let y = 900; y < META_Y - 320; y += sepY, fila++) {
+  // La 1.ª fila queda a ~130 px bajo la salida: el primer choque con una clavija llega en ≤ 0,3 s.
+  for (let y = 840; y < META_Y - 320; y += sepY, fila++) {
     if (prohibido(y)) continue;
     const desfase = fila % 2 === 0 ? sepX / 2 : 0;
-    // Columnas lejos de las paredes: así nunca se forma un bolsillo pared–clavija donde una bola quede presa.
-    for (let x = 118 + desfase; x < ANCHO - 100; x += sepX) {
-      if (azar() < 0.14) continue; // huecos para que el camino no sea uniforme
+    // Columnas simétricas y a > 1 diámetro de la pared (140 − 13 = 127 px): ninguna bola queda presa en un bolsillo pared–clavija.
+    for (let x = 140 + desfase; x <= ANCHO - 140; x += sepX) {
+      if (fila > 0 && azar() < 0.14) continue; // huecos para que el camino no sea uniforme (la 1.ª fila, completa)
       clavijas.push({
-        x: Math.round(x + (azar() - 0.5) * 22),
-        y: Math.round(y + (azar() - 0.5) * 22),
+        x: Math.round(x + (azar() - 0.5) * 12),
+        y: Math.round(y + (azar() - 0.5) * 12),
         r: RADIO_CLAVIJA,
       });
     }
@@ -145,9 +150,9 @@ const correr = (n: number, semilla: number, gravedad: number): Resultado | null 
   const paso = (ANCHO - 2 * 110) / (n - 1);
   const bolas: Bola[] = orden.map((idx, k) => ({
     x: 110 + k * paso + (azar() - 0.5) * 20,
-    y: 640 + azar() * 80, // nacen bajo el gancho (que ocupa y≈290–560 el primer 1,5 s)
+    y: 640 + azar() * 40, // nacen bajo el gancho y el marcador fijos, ya cayendo
     vx: (azar() - 0.5) * 120,
-    vy: 160 + azar() * 80,
+    vy: 420 + azar() * 80,
     llego: -1,
     quieto: 0,
   }));
@@ -434,6 +439,14 @@ const sintetizar = (sim: SimulacionCarrera, ruta: string) => {
     }
   };
 
+  // Salida (frame 0): "¡ya!" corto para que el video no arranque en silencio.
+  for (const [k, midi] of [76, 83].entries()) {
+    nota(L, { inicio: k * 0.07, hz: midiAHz(midi), duracion: 0.12, volumen: 0.32, timbre: 'triangulo', caida: 0.05, liberacion: 0.08 });
+    nota(R, { inicio: k * 0.07, hz: midiAHz(midi), duracion: 0.12, volumen: 0.32, timbre: 'triangulo', caida: 0.05, liberacion: 0.08 });
+  }
+  golpe(L, 0, { duracion: 0.05, volumen: 0.22, tono: 0.3, semilla: 3 });
+  golpe(R, 0, { duracion: 0.05, volumen: 0.22, tono: 0.3, semilla: 4 });
+
   // Golpes afinados: máx. 12 por segundo en total (ventana deslizante).
   const tiemposGolpe: number[] = [];
   for (const ev of sim.eventos) {
@@ -547,6 +560,8 @@ export const prepararSimulacion = (guion: GuionCarrera): SimulacionCarrera => {
     ` · ${intentos} intento(s), semilla ${semilla}, g=${gravedad.toFixed(0)} · ${golpes} golpes, ${choques} choques` +
     ` · video ${((sim.duracionFrames + CIERRE_FRAMES) / FPS).toFixed(1)} s`,
   );
+  const primerGolpe = sim.eventos.find((e) => e.tipo === 'clavija');
+  console.log(`[carrera] 1.er choque con clavija: ${primerGolpe ? ((primerGolpe.frame / FPS) * 1000).toFixed(0) + ' ms' : '—'}`);
   console.log(`[carrera] orden: ${orden.map((i, k) => `${k + 1}.º ${guion.participantes[i].etiqueta}${sim.llegadas[i] < 0 ? ' (por posición en pista)' : ''}`).join(' · ')}`);
   console.log(`[carrera] → ${path.relative(RAIZ, rutaSim)} · ${path.relative(RAIZ, rutaWav)}`);
   return sim;

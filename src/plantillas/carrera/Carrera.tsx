@@ -5,8 +5,9 @@ import { cargarFuentes } from '../../marca/fuentes';
 import { MarcaDeAgua } from '../../marca/MarcaDeAgua';
 import { Cierre } from '../../marca/Cierre';
 import { Llamado, textoLlamado } from '../../marca/Llamado';
+import { BloqueTexto } from '../../marca/BloqueTexto';
 import { crearAzar } from '../../lib/azar';
-import type { GuionCarrera, IconoCompetidor } from './guion';
+import { ganchoAbajoCarrera, type GuionCarrera, type IconoCompetidor } from './guion';
 import { Icono, iconoAportaJuntoAlNombre } from './Icono';
 import { CIERRE_FRAMES, type SimulacionCarrera } from './tipos';
 
@@ -27,24 +28,32 @@ const ZOOM_META = 1.38;
 /** Marcador: alto de fila y cuántas posiciones se muestran. */
 const FILA = 60;
 const PUESTOS = 3;
-const MARCADOR_TOP = seguro.arriba;
+/** Bajo el bloque fijo de arriba (la pregunta, ≈ 270–400). */
+const MARCADOR_TOP = 430;
 /** Las etiquetas viven entre el marcador y la UI inferior de YouTube. */
 const ETIQ_MIN = MARCADOR_TOP + PUESTOS * FILA + 50;
-const ETIQ_MAX = ALTO_PANTALLA - seguro.abajo - 30;
+/** Sobre el podio fijo (≈ 1300–1462) y el bloque de abajo. */
+const ETIQ_MAX = 1260;
 const ETIQ_FUENTE = 32;
 const ETIQ_ALTO = 48;
-/** El gancho (la pregunta) se ve desde el frame 0 y se va con un corte limpio a los 1,8 s. */
-const GANCHO_FRAMES = 108;
+/** Bloque fijo de arriba (la pregunta) y de abajo (la intriga): visibles desde el frame 0 hasta el cierre. */
+const ARRIBA_TOP = seguro.arriba + 50;
+const ABAJO_CENTRO_Y = 1518;
+/** Podio vacío (1.º–2.º–3.º con "?") sobre el bloque de abajo: se llena al cruzar la meta. Borde inferior. */
+const PODIO_BASE = 1462;
+/** Las etiquetas junto a las bolas entran a 1 s (al inicio las bolas van juntas). */
+const ETIQUETAS_DESDE = 60;
 /** Etiquetas: se apagan si la bola tiene otra a menos de 1,5 diámetros (si no, se montan). */
 const ETIQ_SEPARACION = [1.6, 1.9];
 /** Icono dentro de la bolita: fracción del diámetro. */
-const ICONO_EN_BOLA = 0.55;
+/** 0,78 × 116 px ≈ 90 px: el emoji/logo se lee en el celular (antes 0,55 × 64 = 35 px). */
+const ICONO_EN_BOLA = 0.78;
 /** Icono dentro de la etiqueta (px). */
 const ETIQ_ICONO = 30;
 /** Llamado a suscribirse: entra cuando la líder entra en la recta final o 6 s antes de la meta (lo que pase antes). */
 const LLAMADO_ANTES = 6 * 60;
-/** Bajo el marcador (termina en ≈ 426) y sobre la zona donde corre la líder (56 % de la pantalla). */
-const LLAMADO_CENTRO_Y = 476;
+/** Bajo el marcador (termina en ≈ 620) y sobre la banda de la líder (desde 720). */
+const LLAMADO_CENTRO_Y = 668;
 
 /** Hook: carga la simulación precalculada con delayRender. */
 const useSimulacion = (id: string) => {
@@ -66,7 +75,7 @@ const useSimulacion = (id: string) => {
 
 const ORDINAL = ['1.º', '2.º', '3.º', '4.º', '5.º', '6.º'];
 /** Fila con el resto del resultado, bajo "GANA" y sobre la UI inferior de YouTube. */
-const RESULTADO_TOP = 1330;
+const RESULTADO_TOP = 1296;
 const fr = (sim: SimulacionCarrera, frame: number) => Math.max(0, Math.min(frame, sim.duracionFrames - 1));
 
 /** Zoom de la llegada: punto fijo (en pantalla) y factor para un frame. */
@@ -304,42 +313,57 @@ const Marcador: React.FC<{ sim: SimulacionCarrera; frame: number; colores: strin
   );
 };
 
+/** Tamaño del bloque de arriba (la pregunta) según el largo. */
+const tamArriba = (t: string) => (t.length <= 22 ? 84 : t.length <= 32 ? 72 : t.length <= 46 ? 60 : 52);
+
+const PODIO = [
+  { puesto: 1, alto: 70, color: PALETA.neon.amarillo },
+  { puesto: 0, alto: 96, color: PALETA.neon.amarillo },
+  { puesto: 2, alto: 54, color: PALETA.neon.amarillo },
+] as const;
+
 /**
- * Gancho: la pregunta del guion en texto gigante, legible YA en el frame 0 (como el gancho de
- * `dato`: las palabras parten casi en su tamaño final y solo "brincan" un poco), arriba en la
- * zona segura mientras la carrera arranca debajo. Se va con un corte limpio en GANCHO_FRAMES.
+ * Podio: visible VACÍO desde el frame 0 (la promesa: "¿quién sube aquí?"); cada puesto se llena con la
+ * bola (color + icono) en el frame en que cruza la meta. Se apaga cuando entra el resultado completo.
  */
-const Gancho: React.FC<{ texto: string }> = ({ texto }) => {
-  const frame = useCurrentFrame();
+const Podio: React.FC<{ sim: SimulacionCarrera; frame: number; colores: string[]; iconos: (IconoCompetidor | undefined)[]; opacidad: number }> = ({ sim, frame, colores, iconos, opacidad }) => {
   const { fps } = useVideoConfig();
-  const palabras = texto.split(/\s+/).filter(Boolean);
-  const largo = texto.length;
-  const fontSize = largo <= 22 ? 118 : largo <= 32 ? 104 : largo <= 46 ? 90 : 78;
-  const deriva = Math.sin(frame / 40) * 4;
-  const linea = interpolate(frame, [2, 26], [0, 300], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
-  const color = PALETA.neon.cian;
+  const ANCHO_COL = 150, SLOT = 78, GAP = 18;
+  const anchoTotal = ANCHO_COL * 3 + GAP * 2;
+  if (opacidad <= 0) return null;
   return (
-    <div style={{
-      position: 'absolute', left: seguro.lados, right: seguro.lados, top: seguro.arriba + 64, display: 'flex', flexDirection: 'column', alignItems: 'center',
-      transform: `translateY(${deriva}px)`,
-    }}>
-      <div style={{
-        padding: '26px 34px 30px', borderRadius: 40, background: `${PALETA.fondo}E0`, boxShadow: `0 0 40px 18px ${PALETA.fondo}C0, 0 0 50px ${color}33`,
-        display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: `${fontSize * 0.04}px ${fontSize * 0.24}px`,
-        fontFamily: TIPO.display, fontWeight: TIPO.pesoDisplay, fontSize, lineHeight: 1.04, letterSpacing: -2, textAlign: 'center', color: PALETA.tinta,
-      }}>
-        {palabras.map((p, i) => {
-          const brinco = spring({ frame: frame - i * 3, fps, config: { damping: 12, stiffness: 240 } });
-          const entrada = 0.88 + 0.12 * brinco; // nunca parte de cero: se lee en el frame 0
-          return (
-            <span key={i} style={{
-              display: 'inline-block', transform: `translateY(${(1 - entrada) * 40}px) scale(${0.6 + 0.4 * entrada})`,
-              textShadow: `0 0 26px ${color}, 0 0 64px ${color}88, 0 4px 12px rgba(0,0,0,0.7)`,
-            }}>{p}</span>
-          );
-        })}
-      </div>
-      <div style={{ marginTop: 18, width: linea, height: 8, borderRadius: 4, background: color, boxShadow: `0 0 24px ${color}` }} />
+    <div style={{ position: 'absolute', left: (ANCHO - anchoTotal) / 2, top: PODIO_BASE - 96 - SLOT - 10, width: anchoTotal, height: 96 + SLOT + 10, opacity: opacidad }}>
+      <div style={{ position: 'absolute', left: -26, right: -26, top: -10, bottom: -6, borderRadius: 28, background: `${PALETA.fondo}C8`, boxShadow: `0 0 26px 10px ${PALETA.fondo}A0` }} />
+      {PODIO.map((p, col) => {
+        const bola = sim.orden[p.puesto];
+        const llego = bola !== undefined && sim.llegadas[bola] >= 0 && frame >= sim.llegadas[bola];
+        const pop = llego ? spring({ frame: frame - sim.llegadas[bola], fps, config: { damping: 9, stiffness: 180 } }) : 0;
+        const x = col * (ANCHO_COL + GAP);
+        const latido = llego ? 1 : 1 + 0.06 * Math.sin((frame / fps) * Math.PI * 1.4 + col);
+        return (
+          <React.Fragment key={col}>
+            {/* Puesto (escalón) */}
+            <div style={{
+              position: 'absolute', left: x, top: 96 + SLOT + 10 - p.alto, width: ANCHO_COL, height: p.alto, borderRadius: '16px 16px 6px 6px',
+              background: `linear-gradient(180deg, ${p.color}${p.puesto === 0 ? '55' : '30'}, ${PALETA.fondo2})`, border: `3px solid ${p.color}${p.puesto === 0 ? 'EE' : '88'}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontFamily: TIPO.display, fontWeight: 800, fontSize: 38, color: PALETA.tinta,
+            }}>{ORDINAL[p.puesto]}</div>
+            {/* Lugar de la bola: "?" hasta que llega */}
+            <div style={{
+              position: 'absolute', left: x + (ANCHO_COL - SLOT) / 2, top: 96 + SLOT + 10 - p.alto - SLOT - 6, width: SLOT, height: SLOT, borderRadius: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box',
+              transform: `scale(${llego ? 0.7 + 0.3 * pop : latido})`,
+              ...(llego
+                ? { background: `radial-gradient(circle at 30% 26%, #FFFFFFAA 0, ${colores[bola]} 30%)`, boxShadow: `0 0 18px ${colores[bola]}, 0 0 40px ${colores[bola]}88` }
+                : { border: `4px dashed ${PALETA.tinta}99`, background: `${PALETA.fondo}CC` }),
+              fontFamily: TIPO.display, fontWeight: 800, fontSize: 46, color: `${PALETA.tinta}CC`,
+            }}>
+              {llego ? <Icono icono={iconos[bola]} tam={SLOT * 0.62} fondo={colores[bola]} /> : '?'}
+            </div>
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 };
@@ -367,8 +391,8 @@ const Celebracion: React.FC<{ sim: SimulacionCarrera; color: string; etiqueta: s
   // La ganadora viaja desde donde cruzó hasta el centro y crece.
   const viaje = spring({ frame: k - 10, fps, config: { damping: 14, stiffness: 70 } });
   const cx = interpolate(viaje, [0, 1], [origen.x, ANCHO / 2]);
-  const cy = interpolate(viaje, [0, 1], [origen.y, 800]);
-  const tam = interpolate(viaje, [0, 1], [origen.tam, 300]);
+  const cy = interpolate(viaje, [0, 1], [origen.y, 850]); // bajo el llamado (≈ 632–704)
+  const tam = interpolate(viaje, [0, 1], [origen.tam, 260]);
   const textoIn = spring({ frame: k - 26, fps, config: { damping: 12, stiffness: 120 } });
   // El logo de la ganadora "salta" dentro de la bola grande cuando llega al centro.
   const iconoIn = spring({ frame: k - 18, fps, config: { damping: 9, stiffness: 140 } });
@@ -406,7 +430,7 @@ const Celebracion: React.FC<{ sim: SimulacionCarrera; color: string; etiqueta: s
           transform: `rotate(${p.giro * t}deg) scaleY(${Math.cos(t * 0.25 + p.fase)})`, boxShadow: `0 0 10px ${p.color}`,
         }} />;
       })}
-      <div style={{ position: 'absolute', left: seguro.lados, right: seguro.lados, top: 1010, textAlign: 'center', transform: `scale(${textoIn})`, opacity: Math.min(1, textoIn) }}>
+      <div style={{ position: 'absolute', left: seguro.lados, right: seguro.lados, top: 1000, textAlign: 'center', transform: `scale(${textoIn})`, opacity: Math.min(1, textoIn) }}>
         <div style={{ fontFamily: TIPO.texto, fontWeight: 700, fontSize: 50, letterSpacing: 12, color: PALETA.tinta, opacity: 0.85 }}>GANA:</div>
         <div style={{ fontFamily: TIPO.display, fontWeight: 800, fontSize: fuente, lineHeight: 1.05, color, whiteSpace: 'nowrap', textShadow: `0 0 30px ${color}, 0 0 80px ${color}99` }}>{etiqueta}</div>
         {ventaja && <div style={{ marginTop: 18, fontFamily: TIPO.texto, fontWeight: 700, fontSize: 44, color: PALETA.tintaSuave }}>{ventaja}</div>}
@@ -452,10 +476,13 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
   const { z, ax, ay } = zoomEn(sim, frame);
   // Etiquetas y marcador se apagan durante la cámara lenta: el foco es la meta.
   const hud = interpolate(frame, [sim.camaraLenta.desde, sim.frameGanadora], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
-  // El marcador entra cuando se va el gancho (mientras, el gancho ocupa ese espacio).
-  const marcadorIn = interpolate(frame, [GANCHO_FRAMES, GANCHO_FRAMES + 16], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
-  // Las etiquetas entran cuando se va el gancho (al inicio las bolas están juntas).
-  const etiquetasIn = interpolate(frame, [GANCHO_FRAMES, GANCHO_FRAMES + 14], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  // El marcador está desde el frame 0 (bajo la pregunta fija); las etiquetas entran a 1 s.
+  const marcadorIn = 1;
+  const etiquetasIn = interpolate(frame, [ETIQUETAS_DESDE, ETIQUETAS_DESDE + 14], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  // El podio se apaga cuando entra la fila del resultado completo (k ≈ 44 tras la meta).
+  const podioOp = interpolate(frame, [sim.frameGanadora + 34, sim.frameGanadora + 44], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  const fadeCierre = interpolate(frame, [sim.duracionFrames, sim.duracionFrames + 10], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  const textoArriba = props.ganchoArriba ?? props.gancho;
   // Dónde está la ganadora en pantalla al cruzar (con zoom): de ahí parte hacia el centro.
   const zg = zoomEn(sim, sim.frameGanadora);
   const pg = sim.posiciones[ganadora][fr(sim, sim.frameGanadora)];
@@ -484,14 +511,18 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
       {lenta && <AbsoluteFill style={{ boxShadow: `inset 0 0 240px ${colores[ganadora]}30` }} />}
 
       {!celebrando && <Marcador sim={sim} frame={frame} colores={colores} etiquetas={etiquetas} iconos={iconos} opacidad={hud * marcadorIn} />}
-      {frame < GANCHO_FRAMES && <Gancho texto={props.gancho} />}
+      <Podio sim={sim} frame={frame} colores={colores} iconos={iconos} opacidad={podioOp} />
 
       {celebrando && <Celebracion sim={sim} color={colores[ganadora]} etiqueta={etiquetas[ganadora]} icono={iconos[ganadora]} colores={colores} iconos={iconos} origen={origen} />}
+
+      {/* Dos bloques fijos (frame 0 → cierre): la pregunta arriba, la intriga abajo. */}
+      <BloqueTexto texto={textoArriba} color={PALETA.neon.cian} top={ARRIBA_TOP} tam={tamArriba(textoArriba)} opacidad={fadeCierre} />
+      <BloqueTexto texto={ganchoAbajoCarrera(props)} color={PALETA.neon.magenta} centroY={ABAJO_CENTRO_Y} tam={58} opacidad={fadeCierre} />
 
       {/* Llamado a suscribirse en la recta final (se queda durante la celebración). Color de marca: el de
           la líder o la ganadora delataría el resultado antes de la meta. */}
       <Llamado texto={textoLlamado('carrera', props.id, props.llamado)}
-        desde={Math.max(GANCHO_FRAMES + 60, Math.min(sim.frameRiser >= 0 ? sim.frameRiser : Infinity, sim.frameGanadora - LLAMADO_ANTES))}
+        desde={Math.max(180, Math.min(sim.frameRiser >= 0 ? sim.frameRiser : Infinity, sim.frameGanadora - LLAMADO_ANTES))}
         hasta={sim.duracionFrames} centroY={LLAMADO_CENTRO_Y} color={PALETA.neon.lima} />
 
       <Sequence from={sim.duracionFrames} durationInFrames={CIERRE_FRAMES} layout="none">

@@ -1,5 +1,9 @@
 import { z } from 'zod';
 import { CampoLlamado } from '../../marca/llamado-texto';
+import { semillaDesde } from '../../lib/azar';
+
+/** Palabras "de verdad" (con letras o cifras): los emoji no cuentan. */
+const palabras = (t: string) => t.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
 
 /** Colores de neón permitidos para cada participante (claves de PALETA.neon). */
 export const ColorNeon = z.enum(['lima', 'cian', 'magenta', 'naranja', 'violeta', 'amarillo']);
@@ -44,8 +48,12 @@ export type IconoCompetidor = z.infer<typeof IconoCompetidor>;
 export const GuionCarrera = z.object({
   /** Identificador del video: nombra `public/sim/<id>.json` y `public/audio/generado/<id>.wav`. */
   id: z.string().min(1),
-  /** Gancho textual de los primeros 1,5 s. Ej.: "¿Qué mes gana la carrera?" */
+  /** La pregunta. Ej.: "¿Qué mes gana la carrera?". Si no hay `ganchoArriba`, va en el bloque de arriba (fijo todo el video). */
   gancho: z.string().min(1).max(60),
+  /** Bloque de ARRIBA, fijo desde el frame 0 hasta el cierre (≤ 9 palabras). Ej.: "¿Qué estación gana?". Si falta, se usa `gancho`. */
+  ganchoArriba: z.string().min(1).max(50).refine((t) => palabras(t) <= 9, 'ganchoArriba: máximo 9 palabras').optional(),
+  /** Bloque de ABAJO, fijo desde el frame 0 hasta el cierre: intriga en ≤ 5 palabras (+ emoji). Ej.: "El último te sorprende 💀". Si falta, variante por id. */
+  ganchoAbajo: z.string().min(1).max(32).refine((t) => palabras(t) <= 5, 'ganchoAbajo: máximo 5 palabras').optional(),
   participantes: z
     .array(z.object({ etiqueta: z.string().min(1).max(18), color: ColorNeon, icono: IconoCompetidor.optional() }))
     .min(4)
@@ -58,3 +66,8 @@ export const GuionCarrera = z.object({
   llamado: CampoLlamado,
 });
 export type GuionCarrera = z.infer<typeof GuionCarrera>;
+
+/** Intriga por defecto del bloque de abajo (determinista por id) para guiones sin `ganchoAbajo`. */
+export const VARIANTES_GANCHO_ABAJO_CARRERA = ['El último te sorprende 💀', '¿Cuál es el tuyo? 👇', 'El final es de infarto 💀'] as const;
+export const ganchoAbajoCarrera = (g: Pick<GuionCarrera, 'id' | 'ganchoAbajo'>): string =>
+  g.ganchoAbajo ?? VARIANTES_GANCHO_ABAJO_CARRERA[semillaDesde(`abajo:${g.id}`) % VARIANTES_GANCHO_ABAJO_CARRERA.length];
