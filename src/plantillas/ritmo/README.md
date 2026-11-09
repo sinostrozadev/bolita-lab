@@ -21,7 +21,7 @@ por CPU) renderiza estable y rápido para esta escena.
 ## Piezas
 
 - `contenido/partituras/<nombre>.json`: `bpm`, `compas`, `pistas.melodia|bajo` = `[midi, pulsoInicio, duración]`,
-  `pistas.ritmo` = `{ tipo: kick|snare|hat, pulso, abierto? }`. Cada pista es monofónica. Elegir el bpm para que
+  `pistas.ritmo` = `{ tipo: kick|snare|hat, pulso, abierto?, acento? }`. Cada pista es monofónica. Elegir el bpm para que
   la subdivisión más corta caiga en frames enteros a 60 fps (75 bpm → corchea = 24 cuadros; también 90, 100, 120,
   150 → 20, 18, 15, 12). Solo dominio público u obra propia.
 - `src/plantillas/ritmo/guion.ts`: schema `GuionRitmo` (props), `EnvoltorioRitmo` (backlog), `PartituraRitmo`, tipos del sim.
@@ -34,6 +34,17 @@ por CPU) renderiza estable y rápido para esta escena.
   derivado de la semilla). Las clavijas **se disuelven 0,3 s después de sonar** (dejan una huella tenue): así las
   notas largas pueden lanzar alto sin chocar con clavijas viejas. Tras el golpe final, cámara lenta (×0,35) y se
   revela qué toca cada bolita.
+- `scripts/lib/figuras-ritmo.mts`: **catálogo de figuras** entre golpe y golpe (v2, 2026-11-09, tras el veredicto "todo es
+  tan lineal"). Cada figura dura exactamente Δt, expone posición(s) continua con velocidad que empata en las uniones
+  (curvas de Hermite) y trae su objeto: `parabola` (la de v1), `riel` (curva suave que termina en la clavija), `loop`
+  (rizo completo con rapidez física), `zigzag` (rebota entre dos paredes cortas, sin sonido), `pendulo` (una copa
+  que viene oscilando la recoge con su misma velocidad y la estrella contra la clavija siguiente), `espiral` (hélice 3D:
+  pasa por delante y por detrás), `trampolin` (la clavija de salida es un trampolín: sube ≥ 260 u), `portal` (entra
+  por un óvalo y sale por otro) y `cruce` (riel que se desvía por el carril de una vecina y vuelve, a ≥ 0,15 s de
+  ella). Δt mínimo por figura en `DT_MIN`. Reglas: nunca la misma figura dos veces seguidas en una bolita, ≥ 4 figuras
+  distintas por bolita (las menos usadas se prueban primero). Si un golpe no encuentra camino limpio, el generador
+  deshace el golpe anterior y lo rehace (retroceso acotado). Los rieles se dibujan 0,9 s antes de que entre la bolita y
+  se disuelven detrás de ella; las paredes del zigzag son sólidas (se verifican contra todas las bolitas).
 - `scripts/preparar-ritmo.mts`: síntesis en Node: melodía con `tocar` (piano por defecto), bajo redondo (seno + 2.º
   armónico, ataque 18 ms), bombo (barrido 150→50 Hz), caja (ruido en banda + 180 Hz), platillo (ruido doble paso
   alto; abierto en el golpe final). Paneo por carril y limitador común a los dos canales. Pico −1 dBFS; RMS ≈ −15 dB.

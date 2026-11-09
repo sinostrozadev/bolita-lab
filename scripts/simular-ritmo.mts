@@ -51,10 +51,10 @@ const CONFIG: Config[] = [
   // Orden de generación = orden de prioridad (la melodía elige primero su camino). Bolitas grandes (diámetro ≥ 7 % del
   // alto del cuadro) y escalonadas en altura (desfase) para que las figuras tengan lugar sin chocar con la vecina.
   { pista: 'melodia', carril: 0, r: 78, color: PALETA.neon.amarillo, brillo: 1.0, largo: 56, radio: 15, desfase: 0 },
-  { pista: 'bajo', carril: -200, r: 76, color: PALETA.neon.violeta, brillo: 0.55, largo: 60, radio: 16, desfase: -210 },
-  { pista: 'kick', carril: -400, r: 72, color: PALETA.neon.naranja, brillo: 0.85, largo: 0, radio: 22, desfase: 190 },
-  { pista: 'snare', carril: 200, r: 71, color: PALETA.verde, brillo: 0.85, largo: 0, radio: 19, desfase: 210 },
-  { pista: 'hat', carril: 400, r: 70, color: PALETA.neon.cian, brillo: 0.85, largo: 0, radio: 16, desfase: -190 },
+  { pista: 'bajo', carril: -200, r: 76, color: PALETA.neon.violeta, brillo: 0.55, largo: 60, radio: 16, desfase: -170 },
+  { pista: 'kick', carril: -400, r: 72, color: PALETA.neon.naranja, brillo: 0.85, largo: 0, radio: 22, desfase: 160 },
+  { pista: 'snare', carril: 200, r: 71, color: PALETA.verde, brillo: 0.85, largo: 0, radio: 19, desfase: 170 },
+  { pista: 'hat', carril: 400, r: 70, color: PALETA.neon.cian, brillo: 0.85, largo: 0, radio: 16, desfase: -150 },
 ];
 
 type V = { x: number; y: number };
@@ -190,7 +190,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
   let avisos = 0;
   const resumen: string[] = [];
 
-  CONFIG.forEach((cfg, b) => {
+  CONFIG.slice(0, Number(process.env.RITMO_BOLITAS ?? CONFIG.length)).forEach((cfg, b) => {
     const lista = ev[cfg.pista];
     const vecinos = CONFIG.slice(0, b).map((c) => c.carril);
     const xMax = BORDE - cfg.r;
@@ -257,7 +257,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
         else {
           orden = FIGURAS_RITMO.filter((f) => f !== anterior && dt >= DT_MIN[f] && (f !== 'cruce' || vecinos.length > 0))
             .map((f) => ({ f, p: (PESO[f] / (1 + 1.4 * (usos.get(f) ?? 0))) * (0.4 + azar()) }))
-            .sort((a, z) => z.p - a.p).map((o) => o.f).slice(0, 4);
+            .sort((a, z) => z.p - a.p).map((o) => o.f).slice(0, 3);
           if (!orden.includes('parabola') && anterior !== 'parabola') orden.push('parabola');
         }
         type Mejor = { costo: number; viol: number; cand: Candidato; n: V; e: number; peg: ClavijaSim; muestras: Muestra[]; motivos: string[] };
@@ -266,7 +266,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
         const vigentesMuros = [murosGlobal, misMuros];
         for (const figura of orden) {
           let mejorFig: Mejor | null = null;
-          const intentos = ultimo ? 40 : figura === 'parabola' ? 120 : 70;
+          const intentos = ultimo ? 40 : figura === 'parabola' ? 90 : 45;
           for (let k = 0; k < intentos; k++) {
             let cand: Candidato | null;
             if (ultimo) {
@@ -275,11 +275,11 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
               cand = { figura: 'parabola', vOut: v, tramos: [{ t0: 0, dur: dt, pos: (s) => [P.x + v.x * s, P.y + v.y * s + 0.5 * G * s * s, 0] }], Pj, vFin: { x: v.x, y: v.y + G * dt }, objetos: [], paredes: [], costo: 0, motivos: [] };
             } else cand = CONSTRUCTORES[figura](ctx);
             if (!cand) continue;
-            const cota = Math.min(mejorFig?.viol ?? 99, mejor?.viol ?? 99);
+            const cota = DIAG ? 99 : Math.min(mejorFig?.viol ?? 99, mejor?.viol ?? 99);
             const r = evaluar(cand, ctx, ultimo, i === 0, vigentesPegs, vigentesMuros, otras, propiasIdx, linea, xMax, cfg, cota);
             if (!r) continue;
             if (!mejorFig || r.viol < mejorFig.viol || (r.viol === mejorFig.viol && r.costo < mejorFig.costo)) mejorFig = { ...r, cand };
-            if (mejorFig.viol === 0 && k > 8) break;
+            if (mejorFig.viol === 0 && k > 5) break;
           }
           if (mejorFig && (!mejor || mejorFig.viol < mejor.viol)) mejor = mejorFig;
           if (mejor && mejor.viol === 0) break;
@@ -356,7 +356,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
     };
     // Varios intentos con azar distinto (determinista): se queda el primero sin reparos o el que tenga menos.
     let elegido: ReturnType<typeof intentarBolita> | null = null;
-    for (let intento = 0; intento < 4; intento++) {
+    for (let intento = 0; intento < 2; intento++) {
       const r = intentarBolita(crearAzar((semilla ^ Math.imul(b + 1, 0x9e3779b1) ^ Math.imul(intento + 1, 0x85ebca6b)) >>> 0));
       if (!elegido || r.reparos.length < elegido.reparos.length) elegido = r;
       if (r.reparos.length === 0) break;
@@ -422,7 +422,7 @@ const evaluar = (
   const rasanteOut = vout_n / Math.max(1e-6, len(vOut));
   if (rasanteIn < 0.25) malo('rasante-in');
   if (rasanteOut < 0.2) malo('rasante-out');
-  const [eMin, eMax] = cand.eRango ?? [0.3, 1.7];
+  const [eMin, eMax] = cand.eRango ?? [0.25, 1.9];
   if (!ultimo && !(e > eMin && e < eMax)) malo(`e=${e.toFixed(2)}`);
   if (len(vOut) > 3000) malo('veloz');
   const subida = vOut.y < 0 ? (vOut.y * vOut.y) / (2 * G) : 0;
@@ -462,7 +462,7 @@ const evaluar = (
     muestras.push(m);
     if (viol > cota) return null;
     if (m.oculto) continue;
-    if (!fuera && !ultimo && (Math.abs(m.x) > xMax + 4 || m.y - linea(m.t) < -580 || m.y - linea(m.t) > 540)) { fuera = true; malo('fuera-de-cuadro'); }
+    if (!fuera && !ultimo && (Math.abs(m.x) > xMax + 4 || m.y - linea(m.t) < -700 || m.y - linea(m.t) > 640)) { fuera = true; malo('fuera-de-cuadro'); if (DIAG && Math.random() < 0.001) console.log('FUERA', cand.figura, cfg.pista, m.x.toFixed(0), (m.y - linea(m.t)).toFixed(0), xMax, (m.t - ti).toFixed(2), dt.toFixed(2)); }
     if (!choca && tt >= 0.03) {
       for (const ix of pegs) { for (const c of ix.cerca(m.y, 200)) if (m.t < finVida(c) && distClavija(m, c) < cfg.r + 3) { choca = true; break; } if (choca) break; }
       if (!choca) for (const ix of muros) { for (const w of ix.cerca(m.y, 200)) if (m.t >= w.desde && m.t <= w.hasta && distClavija(m, w) < cfg.r + 3) { choca = true; break; } if (choca) break; }
@@ -479,8 +479,12 @@ const evaluar = (
   // (4) paredes nuevas contra las otras bolitas, la propia anterior y las clavijas vivas
   for (const w of cand.paredes) {
     for (const m of otras.cerca(w.y, 260 + w.largo)) if (!m.oculto && m.t >= w.desde && m.t <= w.hasta && distClavija(m, w) < m.r + 4) { malo('pared-en-otra'); break; }
-    for (const m of propiasIdx.cerca(w.y, 260 + w.largo)) if (m.t >= w.desde && m.t < ti && distClavija(m, w) < m.r + 4) { malo('pared-en-propia'); break; }
+    for (const m of propiasIdx.cerca(w.y, 260 + w.largo)) if (m.t >= w.desde && m.t < ti - 0.02 && distClavija(m, w) < m.r + 4) { malo('pared-en-propia'); break; }
     for (const ix of pegs) for (const c of ix.cerca(w.y, 300 + w.largo)) if (w.desde < finVida(c) && distClavijas(w, c) < 8) { malo('pared-clavija'); break; }
   }
+  if (DIAG) { const k = cand.figura; const d = DIAG.get(k) ?? new Map<string, number>(); DIAG.set(k, d); d.set('_n', (d.get('_n') ?? 0) + 1); if (!viol) d.set('_ok', (d.get('_ok') ?? 0) + 1); for (const m of new Set(motivos.map((x) => x.replace(/=.*/, '')))) d.set(m, (d.get(m) ?? 0) + 1); }
   return { viol, motivos, costo, n, e, peg, muestras };
 };
+/** RITMO_DIAG=1: cuenta por figura los motivos de rechazo (para afinar el catálogo). */
+const DIAG = process.env.RITMO_DIAG ? new Map<string, Map<string, number>>() : null;
+export const diagnostico = () => DIAG && [...DIAG.entries()].map(([f, d]) => `${f}: ${[...d.entries()].sort((a, z) => z[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(', ')}`).join('\n');

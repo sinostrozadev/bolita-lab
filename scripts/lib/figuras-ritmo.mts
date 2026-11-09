@@ -69,7 +69,15 @@ export const hermite = (A: V, vA: V, B: V, vB: V, T: number, zA = 0, zB = 0) => 
 };
 
 /** Revisa que un tramo de riel sea "andable": sin frenazos, sin velocidades absurdas y sin codos más cerrados que la bolita. */
+/** Conteo de rechazos internos (diagnóstico). */
+export const RECHAZOS = new Map<string, number>();
+const no = (m: string) => { RECHAZOS.set(m, (RECHAZOS.get(m) ?? 0) + 1); return null; };
 export const calidadCurva = (pos: (s: number) => V3, T: number, r: number): string | null => {
+  const m = calidadCurva_(pos, T, r);
+  if (m) no(m);
+  return m;
+};
+const calidadCurva_ = (pos: (s: number) => V3, T: number, r: number): string | null => {
   const N = Math.max(12, Math.ceil(T * 120));
   const h = T / N;
   let vmin = Infinity, vmax = 0, suma = 0;
@@ -82,7 +90,8 @@ export const calidadCurva = (pos: (s: number) => V3, T: number, r: number): stri
     if (prev && sp > 1 && len(prev) > 1) {
       const cos = (prev.x * v.x + prev.y * v.y) / (len(prev) * sp);
       const ang = Math.acos(Math.max(-1, Math.min(1, cos)));
-      if (ang > 1e-4 && (sp * h) / ang < 0.75 * r) return 'curva-cerrada';
+      // giro máximo por cuadro de 1/120 s (≈ 48 rad/s): curvas cerradas solo si va lenta, nunca un codo
+      if (ang > 0.4 * (h * 120)) return 'curva-cerrada';
     }
     prev = v;
   }
@@ -185,7 +194,7 @@ export const zigzag = (c: Contexto): Candidato | null => {
     if (!mios.length) continue;
     const y0 = Math.min(...mios.map((t) => t.y)) - (r + 28), y1 = Math.max(...mios.map((t) => t.y)) + (r + 28);
     const x = lado < 0 ? a - r - 8 : b + r + 8;
-    const desde = c.ti - 0.7, hasta = c.tj + 0.3;
+    const desde = c.ti - 0.25, hasta = c.tj + 0.3;
     cand.objetos.push({ tipo: 'pared', bolita: c.bolita, x, y0, y1, lado, desde, hasta, toques: mios.map((t) => c.ti + t.s) });
     cand.paredes.push({ x, y: (y0 + y1) / 2, nx: -lado, ny: 0, largo: (y1 - y0) / 2, radio: 8, desde, hasta, bolita: c.bolita });
   }
@@ -193,22 +202,84 @@ export const zigzag = (c: Contexto): Candidato | null => {
   return cand;
 };
 
+// ---------------------------------------------------------------- conector de riel (serpentina)
+
+/**
+ * Riel de A (vA) a B (vB) en exactamente T segundos. Si T sobra para la distancia (Δt largos), el riel serpentea por
+ * puntos de paso alternados a los lados del carril (o por los `paso` que se le den) para que la bolita vaya a una
+ * rapidez creíble (≈ 700–1500 u/s) en vez de arrastrarse. Tangentes interiores Catmull-Rom; cada pieza es Hermite.
+ */
+export const conector = (
+  c: Contexto, A: V, vA: V, B: V, vB: V, T: number, t0: number, zA = 0, zB = 0, paso: V[] = [],
+): Tramo[] | null => {
+  const { azar, r, carril } = c;
+  const pts: V[] = [A];
+  if (paso.length) pts.push(...paso);
+  else {
+    const cuerda = Math.hypot(B.x - A.x, B.y - A.y);
+    const vObj = Math.max(600, Math.min(1400, (len(vA) + len(vB)) / 2));
+    const n = cuerda > 0.75 * vObj * T ? 0 : Math.min(4, Math.max(1, Math.round((vObj * T - cuerda) / 380)));
+    // Puntos de paso en una caja alrededor del carril (el riel puede bajar de más y volver a subir a la clavija).
+    const yLo = Math.min(A.y, B.y) - 120, yHi = Math.max(A.y, B.y) + 240;
+    let lado = azar() < 0.5 ? -1 : 1;
+    for (let k = 1; k <= n; k++) {
+      pts.push({ x: Math.max(carril - 170, Math.min(carril + 170, carril + lado * (40 + azar() * 130))), y: yLo + azar() * (yHi - yLo) });
+      lado = -lado;
+    }
+  }
+  pts.push(B);
+  const largos = pts.slice(1).map((p, k) => Math.hypot(p.x - pts[k].x, p.y - pts[k].y) + 1);
+  const total = largos.reduce((a, b) => a + b, 0);
+  const ts = [0];
+  for (const l of largos) ts.push(ts[ts.length - 1] + (T * l) / total);
+  const vs: V[] = pts.map((p, k) => {
+    if (k === 0) return vA;
+    if (k === pts.length - 1) return vB;
+    // tangente con la dirección de Catmull-Rom y la rapidez media del riel (curvas redondas, sin frenazos)
+    const d = { x: pts[k + 1].x - pts[k - 1].x, y: pts[k + 1].y - pts[k - 1].y }, l = len(d) || 1;
+    return { x: (d.x / l) * (total / T), y: (d.y / l) * (total / T) };
+  });
+  const zEn = (k: number) => zA + (zB - zA) * suave(ts[k] / T);
+  const tramos: Tramo[] = [];
+  for (let k = 0; k < pts.length - 1; k++) {
+    const dur = ts[k + 1] - ts[k];
+    const pos = hermite(pts[k], vs[k], pts[k + 1], vs[k + 1], dur, zEn(k), zEn(k + 1));
+    if (calidadCurva(pos, dur, r)) return null;
+    tramos.push({ t0: t0 + ts[k], dur, pos });
+  }
+  return tramos;
+};
+
+/** Velocidad de llegada a una clavija para un riel de duración T: hacia abajo y hacia donde viaja. */
+const vLlegadaRiel = (azar: () => number, dirX: number) => {
+  const ang = dirX * (0.15 + azar() * 0.85), sp = 750 + azar() * 650;
+  return { x: Math.sin(ang) * sp, y: Math.cos(ang) * sp };
+};
+
+/** Salida de un golpe hacia un riel: rebota hacia arriba y al costado (choque creíble) y el riel la recoge pasado el
+ * ápice, ya bajando, para que no tenga que dar una vuelta en U. Devuelve vOut, el vuelo ta y el punto/velocidad de entrada. */
+const salidaRiel = (c: Contexto, dirX: number, maxFrac = 0.45, vyMax = 900) => {
+  const { P, azar, G, dt } = c;
+  const vy = -(100 + azar() * Math.min(vyMax, 2400 * dt));
+  const vx = dirX * (150 + azar() * 550);
+  const vOut = { x: vx, y: vy };
+  const ta = Math.max(0.04, Math.min(maxFrac * dt, -vy / G + 0.02 + azar() * 0.08));
+  const E = parab(P, vOut, ta, G), vE = { x: vOut.x, y: vOut.y + G * ta };
+  return { vOut, ta, E, vE };
+};
+
 // ---------------------------------------------------------------- (a) riel curvo
 
 export const riel = (c: Contexto): Candidato | null => {
-  const { P, azar, dt, G, ti, r } = c;
-  const ta = 0.04 + azar() * Math.min(0.2, 0.3 * dt);
-  const vOut = vAzar(azar, 1.9, 420, 1400);
-  const E = parab(P, vOut, ta, G), vE = { x: vOut.x, y: vOut.y + G * ta };
+  const { P, azar, dt, G, ti } = c;
   const Pj = c.objetivo();
-  const vA = vLlegada(azar, Math.sign(Pj.x - E.x) || 1);
-  const Th = dt - ta;
-  const curva = hermite(E, vE, Pj, vA, Th);
-  const mal = calidadCurva(curva, Th, r);
-  if (mal) return null;
-  const tramos: Tramo[] = [tParab(0, ta, P, vOut, G), { t0: ta, dur: Th, pos: curva }];
+  const { vOut, ta, E, vE } = salidaRiel(c, Math.sign(Pj.x - P.x) || 1);
+  const vA = vLlegadaRiel(azar, Math.sign(Pj.x - E.x) || 1);
+  const resto = conector(c, E, vE, Pj, vA, dt - ta, ta);
+  if (!resto) return null;
+  const tramos: Tramo[] = [tParab(0, ta, P, vOut, G), ...resto];
   const cand = base(c, 'riel', vOut, tramos, Pj, vA);
-  cand.objetos.push({ tipo: 'riel', bolita: c.bolita, figura: 'riel', ...puntosRiel([{ ...tramos[1], t0: ta }], ti) });
+  cand.objetos.push({ tipo: 'riel', bolita: c.bolita, figura: 'riel', ...puntosRiel(resto, ti) });
   return cand;
 };
 
@@ -216,25 +287,19 @@ export const riel = (c: Contexto): Candidato | null => {
 
 /** Riel que se desvía por el carril de una vecina ya generada y vuelve: los caminos se cruzan sin chocar. */
 export const cruce = (c: Contexto): Candidato | null => {
-  const { P, azar, dt, G, ti, r } = c;
+  const { P, azar, dt, G, ti } = c;
   const vecinos = c.vecinos.filter((x) => Math.abs(x - c.carril) < 260 && x !== c.carril);
   if (!vecinos.length) return null;
   const vx = vecinos[Math.floor(azar() * vecinos.length)];
-  const ta = 0.04 + azar() * 0.12;
-  const vOut = vAzar(azar, 1.6, 420, 1300);
-  const E = parab(P, vOut, ta, G), vE = { x: vOut.x, y: vOut.y + G * ta };
+  const { vOut, ta, E, vE } = salidaRiel(c, Math.sign(vx - c.carril), 0.35);
   const Pj = c.objetivo(Math.sign(c.carril - vx));
-  const Th = dt - ta;
-  const T1 = Th * (0.4 + azar() * 0.2), T2 = Th - T1;
   const W = { x: vx + (azar() * 2 - 1) * 60, y: E.y + (Pj.y - E.y) * (0.3 + azar() * 0.4) + (azar() * 2 - 1) * 90 };
-  const cuerda = { x: (Pj.x - E.x) / Th, y: (Pj.y - E.y) / Th };
-  const vW = { x: cuerda.x * 0.5 + Math.sign(c.carril - vx) * (300 + azar() * 500), y: cuerda.y * (0.8 + azar() * 0.6) + 200 };
-  const vA = vLlegada(azar, Math.sign(c.carril - vx));
-  const c1 = hermite(E, vE, W, vW, T1), c2 = hermite(W, vW, Pj, vA, T2);
-  if (calidadCurva(c1, T1, r) || calidadCurva(c2, T2, r)) return null;
-  const tramos: Tramo[] = [tParab(0, ta, P, vOut, G), { t0: ta, dur: T1, pos: c1 }, { t0: ta + T1, dur: T2, pos: c2 }];
+  const vA = vLlegadaRiel(azar, Math.sign(c.carril - vx));
+  const resto = conector(c, E, vE, Pj, vA, dt - ta, ta, 0, 0, [W]);
+  if (!resto) return null;
+  const tramos: Tramo[] = [tParab(0, ta, P, vOut, G), ...resto];
   const cand = base(c, 'cruce', vOut, tramos, Pj, vA);
-  cand.objetos.push({ tipo: 'riel', bolita: c.bolita, figura: 'cruce', ...puntosRiel(tramos.slice(1), ti) });
+  cand.objetos.push({ tipo: 'riel', bolita: c.bolita, figura: 'cruce', ...puntosRiel(resto, ti) });
   return cand;
 };
 
@@ -261,34 +326,39 @@ const tablaRizo = (R: number, vL: number, G: number) => {
 
 export const loop = (c: Contexto): Candidato | null => {
   const { P, azar, dt, G, ti, r } = c;
-  const ta = 0.04 + azar() * 0.1;
-  const vOut = vAzar(azar, 1.3, 300, 1000);
-  const E = parab(P, vOut, ta, G), vE = { x: vOut.x, y: vOut.y + G * ta };
-  const R = r + 55 + azar() * 60;
-  const dir = azar() < 0.5 ? -1 : 1;
-  const vL = Math.max(Math.sqrt(4.4 * G * R), 1150) * (1 + azar() * 0.12);
+  const dir = c.P.x > c.carril ? -1 : 1; // el rizo avanza hacia el centro del carril
+  const R = r + 32 + azar() * 30;
+  const vL = Math.sqrt((5.5 + azar() * 1.5) * G * R); // arriba va a √((1,5..3)·g·R): pasa el rizo con soltura
   const tabla = tablaRizo(R, vL, G);
   if (!tabla) return null;
-  const B = { x: E.x + dir * (20 + azar() * 110), y: E.y + 90 + azar() * 150 };
+  // Geometría desde la llegada: clavija Pj, delante la salida del rizo B2, el rizo en B y la rampa de entrada E→B.
+  const o = c.objetivo(dir);
   const corrimiento = dir * r * 1.1; // la salida queda al lado de la entrada (como un rizo real visto de frente)
+  const B = { x: P.x + dir * (20 + azar() * 60), y: o.y - 60 - azar() * 80 };
+  const B2 = { x: B.x + corrimiento, y: B.y };
+  const Pj = { x: B2.x + dir * (110 + azar() * 110), y: B2.y + 60 + azar() * 70 };
+  const E = { x: B.x - dir * (90 + azar() * 80), y: B.y - 150 - azar() * 90 };
+  const T1 = 0.26 + azar() * 0.12;
+  const T3 = Math.hypot(Pj.x - B2.x, Pj.y - B2.y) / (0.85 * vL);
+  const ta = dt - T1 - tabla.T - T3;
+  if (ta < 0.06) return no('loop-sin-tiempo');
+  // el rebote la lanza para que caiga en la rampa: el vuelo absorbe el tiempo que sobra
+  const vOut = vParab(P, E, ta, G);
+  const vE = { x: vOut.x, y: vOut.y + G * ta };
   const posRizo = (s: number): V3 => {
     const phi = tabla.phiDe(s);
     return [B.x + dir * R * Math.sin(phi) + corrimiento * (phi / (2 * Math.PI)), B.y - R * (1 - Math.cos(phi)), 0];
   };
-  const extra = corrimiento * (vL / R) / (2 * Math.PI);
-  const vB = { x: dir * vL + extra, y: 0 };
-  const B2 = { x: B.x + corrimiento, y: B.y };
-  const T1 = 0.12 + azar() * 0.2;
-  const T3 = dt - ta - T1 - tabla.T;
-  if (T3 < 0.12) return null;
-  const Pj = c.objetivo();
-  const vA = vLlegada(azar, Math.sign(Pj.x - B2.x) || dir);
-  const c1 = hermite(E, vE, B, vB, T1), c3 = hermite(B2, vB, Pj, vA, T3);
-  if (calidadCurva(c1, T1, r) || calidadCurva(c3, T3, r)) return null;
-  const tramos: Tramo[] = [
-    tParab(0, ta, P, vOut, G), { t0: ta, dur: T1, pos: c1 }, { t0: ta + T1, dur: tabla.T, pos: posRizo }, { t0: ta + T1 + tabla.T, dur: T3, pos: c3 },
-  ];
+  const vB = { x: dir * vL + corrimiento * (vL / R) / (2 * Math.PI), y: 0 };
+  const aA = dir * (0.8 + azar() * 0.5), sA = 0.85 * vL;
+  const vA = { x: Math.sin(aA) * sA, y: Math.cos(aA) * sA };
+  const c1 = hermite(E, vE, B, vB, T1);
+  if (calidadCurva(c1, T1, r)) return no('loop-entrada');
+  const c3 = hermite(B2, vB, Pj, vA, T3);
+  if (calidadCurva(c3, T3, r)) return no('loop-salida');
+  const tramos: Tramo[] = [tParab(0, ta, P, vOut, G), { t0: ta, dur: T1, pos: c1 }, { t0: ta + T1, dur: tabla.T, pos: posRizo }, { t0: ta + T1 + tabla.T, dur: T3, pos: c3 }];
   const cand = base(c, 'loop', vOut, tramos, Pj, vA);
+  if (Math.abs(Pj.x - c.carril) > c.semiCarril * 1.9) cand.motivos.push('loop-fuera-carril');
   cand.objetos.push({ tipo: 'riel', bolita: c.bolita, figura: 'loop', ...puntosRiel(tramos.slice(1), ti) });
   cand.costo = -0.4;
   return cand;
@@ -298,28 +368,38 @@ export const loop = (c: Contexto): Candidato | null => {
 
 export const espiral = (c: Contexto): Candidato | null => {
   const { P, azar, dt, G, ti, r } = c;
-  const ta = 0.04 + azar() * 0.1;
-  const vOut = vAzar(azar, 1.3, 300, 1000);
-  const E = parab(P, vOut, ta, G), vE = { x: vOut.x, y: vOut.y + G * ta };
-  const ax = 70 + azar() * 50, az = 200 + azar() * 120, w = 7 + azar() * 4, dir = azar() < 0.5 ? -1 : 1;
-  const vy = 240 + azar() * 260;
-  const T1 = 0.12 + azar() * 0.15;
-  const vueltas = [1, 1.5, 2].filter((n) => (2 * Math.PI * n) / w <= dt - ta - T1 - 0.15);
-  if (!vueltas.length) return null;
+  const dir = azar() < 0.5 ? -1 : 1;
+  const ax = 60 + azar() * 45, az = 200 + azar() * 120, w = 9 + azar() * 4;
+  const vy = 260 + azar() * 240;
+  const vueltas = [1, 1.5, 2].filter((n) => (2 * Math.PI * n) / w <= dt - 0.45);
+  if (!vueltas.length) return no('espiral-sin-tiempo');
   const n = vueltas[Math.floor(azar() * vueltas.length)];
   const Th = (2 * Math.PI * n) / w;
-  const T3 = dt - ta - T1 - Th;
-  const H0 = { x: E.x + (azar() * 2 - 1) * 70, y: E.y + 60 + azar() * 100 };
+  const o = c.objetivo();
+  const H0 = { x: Math.max(c.carril - 60, Math.min(c.carril + 60, P.x + dir * (10 + azar() * 50))), y: o.y - 110 - vy * Th - azar() * 60 };
   const posH = (s: number): V3 => [H0.x + dir * ax * Math.sin(w * s), H0.y + vy * s, az * Math.cos(w * s)];
   const fin = posH(Th);
   const H1 = { x: fin[0], y: fin[1] };
   const v0 = { x: dir * ax * w, y: vy }, v1 = { x: dir * ax * w * Math.cos(w * Th), y: vy };
-  const Pj = c.objetivo();
-  const vA = vLlegada(azar, Math.sign(Pj.x - H1.x) || 1);
-  const c1 = hermite(E, vE, H0, v0, T1, 0, az), c3 = hermite(H1, v1, Pj, vA, T3, fin[2], 0);
-  if (calidadCurva(c1, T1, r) || calidadCurva(c3, T3, r)) return null;
+  const sx = Math.sign(v1.x) || 1;
+  const Pj = { x: H1.x + sx * (70 + azar() * 90), y: H1.y + 70 + azar() * 70 };
+  const E = { x: H0.x - dir * (80 + azar() * 70), y: H0.y - 110 - azar() * 70 };
+  const T1 = 0.18 + azar() * 0.1;
+  const sp1 = len(v1);
+  const T3 = Math.hypot(Pj.x - H1.x, Pj.y - H1.y) / (0.95 * sp1);
+  const ta = dt - T1 - Th - T3;
+  if (ta < 0.06) return no('espiral-sin-tiempo');
+  const vOut = vParab(P, E, ta, G);
+  const vE = { x: vOut.x, y: vOut.y + G * ta };
+  const aA = sx * (0.5 + azar() * 0.5);
+  const vA = { x: Math.sin(aA) * sp1 * 1.05, y: Math.cos(aA) * sp1 * 1.05 };
+  const c1 = hermite(E, vE, H0, v0, T1, 0, az);
+  if (calidadCurva(c1, T1, r)) return no('espiral-entrada');
+  const c3 = hermite(H1, v1, Pj, vA, T3, fin[2], 0);
+  if (calidadCurva(c3, T3, r)) return no('espiral-salida');
   const tramos: Tramo[] = [tParab(0, ta, P, vOut, G), { t0: ta, dur: T1, pos: c1 }, { t0: ta + T1, dur: Th, pos: posH }, { t0: ta + T1 + Th, dur: T3, pos: c3 }];
   const cand = base(c, 'espiral', vOut, tramos, Pj, vA);
+  if (Math.abs(Pj.x - c.carril) > c.semiCarril * 1.9) cand.motivos.push('espiral-fuera-carril');
   cand.objetos.push({ tipo: 'riel', bolita: c.bolita, figura: 'espiral', ...puntosRiel(tramos.slice(1), ti) });
   cand.costo = -0.4;
   return cand;
@@ -350,28 +430,28 @@ const integrarPendulo = (th: number, om: number, L: number, G: number, T: number
  * estrella contra la clavija del golpe siguiente (ahí la suelta y rebota hacia atrás). */
 export const pendulo = (c: Contexto): Candidato | null => {
   const { P, azar, dt, G, ti, tj } = c;
-  const ta = 0.15 + azar() * Math.min(0.25, dt - 0.45);
-  if (dt - ta < 0.4) return null;
-  const C = { x: P.x + (azar() * 2 - 1) * 130, y: P.y + 40 + azar() * 180 };
-  const vOut = vParab(P, C, ta, G);
-  const vE = { x: vOut.x, y: vOut.y + G * ta };
-  const sp = len(vE);
-  if (sp < 300) return null;
-  const L = 170 + azar() * 150;
-  let u = { x: -vE.y / sp, y: vE.x / sp };
-  if (u.y < 0 || (Math.abs(u.y) < 0.15 && azar() < 0.5)) u = { x: -u.x, y: -u.y };
-  if (u.y < -0.2) return null;
-  const Q = { x: C.x - L * u.x, y: C.y - L * u.y };
-  const thC = Math.atan2(u.x, u.y);
-  const omC = (vE.x * Math.cos(thC) - vE.y * Math.sin(thC)) / L;
+  const ta = 0.12 + azar() * Math.min(0.2, dt - 0.45);
   const Ts = dt - ta;
+  if (Ts < 0.4) return null;
+  // Se elige el columpio para que en Ts recorra ~60–85 % de media oscilación (llega al otro lado con rapidez):
+  // media oscilación ≈ π·√(L/g) → L ≈ g·(Ts / (k·π))².
+  const k = 0.6 + azar() * 0.25;
+  const L = Math.max(140, Math.min(420, G * (Ts / (k * Math.PI)) ** 2));
+  const lado = c.P.x > c.carril ? 1 : -1; // empieza del lado donde está y cruza hacia el otro
+  const thC = lado * (0.45 + azar() * 0.6);
+  const omC = -lado * azar() * 0.5 * Math.sqrt(G / L);
+  const vE = { x: L * omC * Math.cos(thC), y: -L * omC * Math.sin(thC) };
+  const vOut = { x: vE.x, y: vE.y - G * ta };
+  const C = parab(P, vOut, ta, G);
+  const Q = { x: C.x - L * Math.sin(thC), y: C.y - L * Math.cos(thC) };
   const ida = integrarPendulo(thC, omC, L, G, Ts, 1 / 960);
   let thMax = 0;
   for (const t of ida.th_) thMax = Math.max(thMax, Math.abs(t));
-  if (thMax > 2.4) return null;
-  if (Math.abs(ida.th - thC) < 0.6) return null;
+  if (thMax > 2.2) return null;
+  if (Math.abs(ida.th - thC) < 0.5) return null;
   const Pj = { x: Q.x + L * Math.sin(ida.th), y: Q.y + L * Math.cos(ida.th) };
   const vFin = { x: L * ida.om * Math.cos(ida.th), y: -L * ida.om * Math.sin(ida.th) };
+  if (len(vFin) < 450) return null;
   const posArco = (s: number): V3 => { const t = ida.en(s); return [Q.x + L * Math.sin(t), Q.y + L * Math.cos(t), 0]; };
   const tramos: Tramo[] = [tParab(0, ta, P, vOut, G), { t0: ta, dur: Ts, pos: posArco }];
   const cand = base(c, 'pendulo', vOut, tramos, Pj, vFin);
