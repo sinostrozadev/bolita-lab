@@ -14,6 +14,69 @@ const palabras = (t: string) => t.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.tes
 /** Melodías disponibles (deben existir en `MELODIAS` de scripts/lib/wav.mts). */
 export const MELODIAS_BOLA = ['furelise', 'marchaturca', 'odaalegria', 'canon', 'cisnes'] as const;
 
+/** Timbres de la melodía (deben existir en `Instrumento` de scripts/lib/wav.mts). */
+export const TIMBRES_BOLA = ['pluck', 'piano', 'campana'] as const;
+
+/**
+ * Melodía propia del guion: misma forma que `MELODIAS` de wav.mts. Pulso = negra; midi 0 = silencio
+ * (no gasta rebote). `compas`/`anacrusa`/`tonica`/`menor` solo afinan el acompañamiento.
+ */
+export const MelodiaNotas = z.object({
+  bpm: z.number().min(40).max(240),
+  notas: z.array(z.tuple([z.number().int().min(0).max(127), z.number().positive().max(16)])).min(4)
+    .refine((n) => n.filter(([m]) => m > 0).length >= 4, 'melodiaNotas: al menos 4 notas sonoras'),
+  /** Pulsos por compás (por defecto 4). */
+  compas: z.number().positive().max(12).optional(),
+  /** Pulsos de levare antes del primer compás (por defecto 0). */
+  anacrusa: z.number().min(0).max(12).optional(),
+  /** Tónica como clase de altura (Do = 0 … Si = 11); si falta, la última nota sonora. */
+  tonica: z.number().int().min(0).max(11).optional(),
+  menor: z.boolean().optional(),
+  /** Acordes del acompañamiento escritos a mano, uno por compás (en bucle): [raíz 0–11, menor]. Si faltan, se deducen. */
+  acordes: z.array(z.tuple([z.number().int().min(0).max(11), z.boolean()])).min(1).optional(),
+});
+export type MelodiaNotas = z.infer<typeof MelodiaNotas>;
+
+/** Texto corto de juego: ≤ `max` palabras de verdad (los emoji no cuentan). */
+const textoCorto = (chars: number, max: number, campo: string) =>
+  z.string().min(1).max(chars).refine((t) => palabras(t) <= max, `${campo}: máximo ${max} palabras`);
+
+/**
+ * Juego "adivina la canción": arriba "¿Qué canción es? 🎵" (o `ganchoArriba`), abajo el CTA (o `cta`); las pistas
+ * entran en el segundo `t` del VIDEO (cold open incluido) en una tarjeta bajo el bloque de arriba y SE ACUMULAN
+ * (la nueva grande y brillante, las anteriores más chicas): quien llega tarde las ve todas. El texto de cada pista
+ * va SIN el prefijo "Pista n:" (lo pone la tarjeta). El clímax NO nombra la canción: muestra `cierre`.
+ * Ojo: el título, la descripción y los hashtags del guion tampoco deben nombrarla.
+ */
+export const JuegoAdivina = z.object({
+  tipo: z.literal('adivina'),
+  pistas: z.array(z.object({ t: z.number().min(0).max(58), texto: textoCorto(40, 6, 'pista') })).min(1).max(3),
+  cta: textoCorto(40, 7, 'cta').optional(),
+  cierre: textoCorto(48, 7, 'cierre').optional(),
+});
+/**
+ * Juego "apuesta": arriba la `pregunta`, abajo el CTA; a los 3 s un rótulo "⏳ apuesta ya" durante 1,5 s; el clímax
+ * muestra el resultado real (escape: rebote; crecer: rebotes hasta llenar) y debajo `acierto`.
+ */
+export const JuegoApuesta = z.object({
+  tipo: z.literal('apuesta'),
+  pregunta: textoCorto(64, 9, 'pregunta'),
+  cta: textoCorto(48, 7, 'cta').optional(),
+  acierto: textoCorto(32, 4, 'acierto').optional(),
+});
+export const JuegoBola = z.discriminatedUnion('tipo', [JuegoAdivina, JuegoApuesta]);
+export type JuegoBola = z.infer<typeof JuegoBola>;
+
+/** Textos por defecto de los juegos. */
+export const TEXTOS_JUEGO = {
+  adivinaArriba: '¿Qué canción es? 🎵',
+  adivinaCta: 'Escríbela en los comentarios 👇',
+  adivinaCierre: '¿La reconociste? Escríbela abajo 👇',
+  apuestaCta: 'Comenta tu número antes del final 👇',
+  apuestaYa: '⏳ apuesta ya',
+  acierto: '¿Acertaste? 👇',
+} as const;
+
 export const GuionBola = z.object({
   /** Id del guion: nombra el sim, el wav y el mp4. */
   id: z.string().min(1),
@@ -32,7 +95,22 @@ export const GuionBola = z.object({
   ganchoAbajo: z.string().min(1).max(32).refine((t) => palabras(t) <= 5, 'ganchoAbajo: máximo 5 palabras').optional(),
   /** Trazas persistentes: cada posición pasada de la bola queda dibujada y el círculo se llena de color. Por defecto sí. */
   trazas: z.boolean().optional(),
-  melodia: z.enum(MELODIAS_BOLA),
+  /** Melodía del catálogo. Obligatoria salvo que venga `melodiaNotas` (si vienen ambas, manda `melodiaNotas`). */
+  melodia: z.enum(MELODIAS_BOLA).optional(),
+  /**
+   * Melodía escrita en el propio guion (alternativa a `melodia`): una nota por rebote, en orden y en bucle.
+   * Solo dominio público u obra propia (la música con derechos no se publica sin decisión de Santiago).
+   */
+  melodiaNotas: MelodiaNotas.optional(),
+  /** Instrumento de la melodía: pluck (marimba, por defecto), piano o campana (tubular). */
+  timbre: z.enum(TIMBRES_BOLA).optional(),
+  /**
+   * Segundo instrumento: en cada compás de la partitura suena la raíz ('bajo') o la tríada ('acorde') del grado
+   * que mejor armoniza las notas de ese compás, una octava bajo la melodía, con timbre suave. Ausente/null = sin.
+   */
+  acompanamiento: z.enum(['bajo', 'acorde']).nullable().optional(),
+  /** Juego con el público (comentarios): `adivina` la canción o `apuesta` el número de rebotes. */
+  juego: JuegoBola.optional(),
   /** escape: el hueco gira y la bola termina escapando. crecer: sin hueco, la bola llena el anillo. */
   modo: z.enum(['escape', 'crecer']),
   bolas: z.union([z.literal(1), z.literal(2), z.literal(3)]).default(1),
@@ -49,17 +127,35 @@ export const GuionBola = z.object({
 });
 export type GuionBola = z.infer<typeof GuionBola>;
 
+/**
+ * Validación completa (la usan preparar/simular): el objeto de arriba es el schema de la composición de Remotion
+ * (que exige un z.object), y las reglas entre campos van aquí.
+ */
+export const GuionBolaValidado = GuionBola.superRefine((g, ctx) => {
+  if (!g.melodia && !g.melodiaNotas) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'falta la melodía: pon `melodia` (catálogo) o `melodiaNotas`', path: ['melodia'] });
+  if (g.juego?.tipo === 'adivina') {
+    const ts = g.juego.pistas.map((p) => p.t);
+    if (ts.some((t, i) => i > 0 && t <= ts[i - 1])) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'pistas: los tiempos deben ir en orden creciente', path: ['juego', 'pistas'] });
+  }
+});
+
 /** Intriga por defecto del bloque de abajo (determinista por id) para guiones que no traen `ganchoAbajo`. */
 export const VARIANTES_GANCHO_ABAJO: Record<GuionBola['modo'], readonly string[]> = {
   crecer: ['¿Llega a llenarlo? 💀', 'El final no lo esperas 💀', 'Mira cómo termina 😳'],
   escape: ['¿En qué rebote escapa? 💀', 'El final no lo esperas 💀', 'Espera el final 😳'],
 };
-export const ganchoAbajoDe = (g: Pick<GuionBola, 'id' | 'modo' | 'ganchoAbajo'>): string => {
+export const ganchoAbajoDe = (g: Pick<GuionBola, 'id' | 'modo' | 'ganchoAbajo' | 'juego'>): string => {
+  if (g.juego?.tipo === 'adivina') return g.juego.cta ?? TEXTOS_JUEGO.adivinaCta;
+  if (g.juego?.tipo === 'apuesta') return g.juego.cta ?? TEXTOS_JUEGO.apuestaCta;
   if (g.ganchoAbajo) return g.ganchoAbajo;
   const v = VARIANTES_GANCHO_ABAJO[g.modo];
   return v[semillaDesde(`abajo:${g.id}`) % v.length];
 };
-export const ganchoArribaDe = (g: Pick<GuionBola, 'gancho' | 'ganchoArriba'>): string => g.ganchoArriba ?? g.gancho;
+export const ganchoArribaDe = (g: Pick<GuionBola, 'gancho' | 'ganchoArriba' | 'juego'>): string => {
+  if (g.juego?.tipo === 'apuesta') return g.juego.pregunta;
+  if (g.juego?.tipo === 'adivina') return g.ganchoArriba ?? TEXTOS_JUEGO.adivinaArriba;
+  return g.ganchoArriba ?? g.gancho;
+};
 
 export type TipoEvento = 'rebote' | 'choque' | 'escape' | 'lleno';
 

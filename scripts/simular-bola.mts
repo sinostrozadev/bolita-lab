@@ -13,8 +13,11 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { crearAzar, semillaDesde } from '../src/lib/azar';
 import { NEONES, FORMATO } from '../src/marca/tokens';
-import { GuionBola, type SimBola, type EventoSim } from '../src/plantillas/bola/guion';
-import { crearPista, escribirWav, golpe, barrido, midiAHz, nota, normalizar, MELODIAS, SR } from './lib/wav.mjs';
+import { GuionBola, GuionBolaValidado, type SimBola, type EventoSim } from '../src/plantillas/bola/guion';
+import {
+  crearPista, escribirWav, golpe, barrido, midiAHz, nota, normalizar, MELODIAS, SR,
+  armonizar, tonalidadDe, raizBajo, tocar, tocarAcompanamiento, type Melodia, type Acorde, type Instrumento, type Acompanamiento,
+} from './lib/wav.mjs';
 
 // ---------- Constantes de la escena ----------
 const FPS = FORMATO.fps;
@@ -339,18 +342,30 @@ export const buscarSimulacion = (props: GuionBola): { res: Resultado; p: Paramet
 };
 
 // ---------- Audio ----------
-export const sintetizar = (sim: SimBola, melodiaId: string, ruta: string) => {
-  const melodia = MELODIAS[melodiaId];
-  if (!melodia) throw new Error(`melodía desconocida: ${melodiaId}`);
-  const notas = melodia.notas.filter(([m]) => m > 0);
+/** Lo que el audio necesita del guion: la melodía (catálogo o propia), su instrumento y el acompañamiento. */
+export type OpcionesAudio = { melodia: Melodia; propia: boolean; timbre: Instrumento; acompanamiento: Acompanamiento | null };
+
+export const opcionesAudio = (props: GuionBola): OpcionesAudio => {
+  const melodia = props.melodiaNotas ?? (props.melodia ? MELODIAS[props.melodia] : undefined);
+  if (!melodia) throw new Error(`melodía desconocida: ${props.melodia ?? '(ninguna)'}`);
+  return { melodia, propia: !!props.melodiaNotas, timbre: props.timbre ?? 'pluck', acompanamiento: props.acompanamiento ?? null };
+};
+
+export const sintetizar = (sim: SimBola, audio: OpcionesAudio, ruta: string) => {
+  const { melodia, timbre, acompanamiento } = audio;
+  const { notas, acordes } = armonizar(melodia);
   const pulso = 60 / melodia.bpm;
+  const compasSeg = (melodia.compas ?? 4) * pulso;
+  const grave = Math.min(...notas.map((n) => n.midi));
   // Todo el audio de la simulación va corrido por el cold open (el video lo antepone).
   const co = sim.coldOpenFrames ?? 0;
   const t0 = co / sim.fps;
   const total = (sim.duracionFrames + co) / sim.fps;
   const pista = crearPista(total + 0.5);
   const tClimax = t0 + sim.climaxFrame / sim.fps;
-  const raiz = notas[0][0] - 12;
+  // Raíz de los acordes del cold open, el clímax y el cierre: catálogo = 1.ª nota −12 (como siempre, para no
+  // cambiar videos ya hechos); melodía propia = la tónica una octava bajo la melodía (cierra "en casa").
+  const raiz = audio.propia ? raizBajo(tonalidadDe(melodia).tonica, grave) : notas[0].midi - 12;
 
   // Cold open (0–0,4 s): sonido desde el frame 0. Acorde corto del clímax (adelanto de "así termina"),
   // barrido descendente de "rebobinar" y un golpe seco en el corte al inicio.
@@ -374,6 +389,8 @@ export const sintetizar = (sim: SimBola, melodiaId: string, ruta: string) => {
   const soloUna = sim.bolas > 1 && tasa > 6;
   let i = 0;
   let ultimaNota = -1;
+  let compasPrevio = Number.NaN;
+  const entradas: { t: number; acorde: Acorde }[] = [];
   let semillaGolpe = 7;
   for (const e of sim.eventos) {
     if (e.tipo === 'rebote') {
@@ -386,16 +403,25 @@ export const sintetizar = (sim: SimBola, melodiaId: string, ruta: string) => {
       if (e.t - ultimaNota < 0.07) continue; // anti-ametralladora: nunca dos notas a menos de 70 ms
       ultimaNota = e.t;
       const te = t0 + e.t;
-      const [midi, pulsos] = notas[i % notas.length];
+      const nc = notas[i % notas.length];
       i++;
-      e.nota = midi;
-      const dur = Math.min(0.6, Math.max(0.18, pulsos * pulso * 0.8));
-      nota(pista, { inicio: te, hz: midiAHz(midi), duracion: dur, volumen: 0.45 * (0.8 + 0.2 * e.fuerza), timbre: 'pluck', liberacion: 0.15 });
+      e.nota = nc.midi;
+      const dur = Math.min(0.6, Math.max(0.18, nc.pulsos * pulso * 0.8));
+      tocar(pista, timbre, { inicio: te, hz: midiAHz(nc.midi), duracion: dur, volumen: 0.45 * (0.8 + 0.2 * e.fuerza), semilla: i });
+      // Acompañamiento: entra en la nota que abre un compás nuevo de la partitura (el ritmo lo ponen los rebotes).
+      if (acompanamiento && nc.compas !== compasPrevio && acordes.has(nc.compas)) entradas.push({ t: te, acorde: acordes.get(nc.compas)! });
+      compasPrevio = nc.compas;
     } else if (e.tipo === 'choque') {
       semillaGolpe = (semillaGolpe * 31 + 7) >>> 0;
       golpe(pista, t0 + e.t, { duracion: 0.07, volumen: 0.16 + 0.14 * e.fuerza, tono: 0.22, semilla: semillaGolpe });
     }
   }
+  // Cada acorde dura hasta que entra el siguiente (máx. 1,25 compás a tempo) y nunca pasa del clímax.
+  entradas.forEach((en, k) => {
+    const siguiente = entradas[k + 1]?.t ?? tClimax;
+    const duracion = Math.max(0.12, Math.min(siguiente - en.t, compasSeg * 1.25, tClimax - en.t));
+    tocarAcompanamiento(pista, acompanamiento!, { inicio: en.t, duracion, acorde: en.acorde, notaMasGrave: grave });
+  });
   // Riser de 2 s que remata en el clímax.
   barrido(pista, Math.max(0, tClimax - 2), 110, 1400, 2, 0.16, 'triangulo');
   barrido(pista, Math.max(0, tClimax - 2), 55, 700, 2, 0.12, 'seno');
@@ -431,7 +457,7 @@ export const leerProps = (rutaGuion: string): GuionBola => {
   const props = crudo.props ?? crudo;
   if (crudo.plantilla && crudo.plantilla !== 'bola') throw new Error(`el guion es de la plantilla "${crudo.plantilla}", no "bola"`);
   if (crudo.id && !props.id) props.id = crudo.id;
-  return GuionBola.parse(props);
+  return GuionBolaValidado.parse(props);
 };
 
 /** Simula y sintetiza; devuelve el sim escrito. */
@@ -447,7 +473,7 @@ export const simularYSintetizar = (props: GuionBola, raiz = process.cwd()): SimB
     coldOpenDesde: desdeColdOpen(res, props.modo),
   };
   const rutaWav = path.join(raiz, 'public/audio/generado', `${props.id}.wav`);
-  sintetizar(sim, props.melodia, rutaWav); // también anota `nota` en los eventos
+  sintetizar(sim, opcionesAudio(props), rutaWav); // también anota `nota` en los eventos
   const rutaSim = path.join(raiz, 'public/sim', `${props.id}.json`);
   fs.mkdirSync(path.dirname(rutaSim), { recursive: true });
   fs.writeFileSync(rutaSim, JSON.stringify(sim));

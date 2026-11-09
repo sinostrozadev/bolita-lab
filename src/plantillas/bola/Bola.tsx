@@ -14,7 +14,7 @@ import { MarcaDeAgua } from '../../marca/MarcaDeAgua';
 import { Cierre } from '../../marca/Cierre';
 import { Llamado, textoLlamado } from '../../marca/Llamado';
 import { BloqueTexto } from '../../marca/BloqueTexto';
-import { CAMPOS_POR_BOLA, ganchoAbajoDe, ganchoArribaDe, type EventoSim, type GuionBola, type SimBola } from './guion';
+import { CAMPOS_POR_BOLA, TEXTOS_JUEGO, ganchoAbajoDe, ganchoArribaDe, type EventoSim, type GuionBola, type JuegoBola, type SimBola } from './guion';
 
 const FRAMES_CIERRE = 72;
 /** Bloque de arriba (mecánica): bajo la marca de agua y sobre el anillo (borde exterior en y ≈ 462). */
@@ -246,6 +246,61 @@ const Texto: React.FC<{ children: React.ReactNode; top: number; tam: number; col
   </div>
 );
 
+/** Rótulo-píldora pequeño centrado (cold open "así termina ↓", "⏳ apuesta ya"). */
+const Pildora: React.FC<{ texto: string; centroY: number; escala?: number; opacidad?: number; borde?: string }> = ({ texto, centroY, escala = 1, opacidad = 1, borde = PALETA.tinta }) => (
+  <div style={{ position: 'absolute', left: 0, right: 0, top: centroY - 36, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}>
+    <div style={{
+      height: 72, padding: '0 30px', borderRadius: 999, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap',
+      background: hexA(PALETA.fondo, 0.85), border: `3px solid ${hexA(borde, 0.8)}`, boxShadow: `0 0 18px ${hexA(borde, 0.35)}`,
+      fontFamily: TIPO.texto, fontWeight: 800, fontSize: 40, color: PALETA.tinta, letterSpacing: 1,
+      transform: `scale(${escala})`, opacity: opacidad,
+    }}>{texto}</div>
+  </div>
+);
+
+/**
+ * Tarjeta de pistas del juego "adivina": bajo el bloque de arriba. Las pistas SE ACUMULAN (decisión 2026-11-09:
+ * quien entra tarde al bucle ve todas; reemplazarlas obligaría a ver el video entero para juntarlas): la más
+ * nueva entra con pop, grande y con borde de color; las anteriores bajan a texto chico atenuado. Se apaga en el
+ * clímax (ahí manda la tarjeta final). `F` = frame del VIDEO (los `t` de las pistas son segundos de video).
+ */
+const Pistas: React.FC<{ pistas: { t: number; texto: string }[]; F: number; fps: number; top: number; color: string; opacidad: number }> = ({ pistas, F, fps, top, color, opacidad }) => {
+  const visibles = pistas.map((p, i) => ({ ...p, n: i + 1, desde: Math.round(p.t * fps) })).filter((p) => F >= p.desde);
+  if (!visibles.length || opacidad <= 0) return null;
+  const total = pistas.length;
+  return (
+    <div style={{ position: 'absolute', top, left: 0, right: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, opacity: opacidad, pointerEvents: 'none' }}>
+      {visibles.map((p, k) => {
+        const nueva = k === visibles.length - 1;
+        const e = spring({ frame: F - p.desde, fps, config: { damping: 12, stiffness: 190 } });
+        const tam = nueva ? 40 : 30;
+        return (
+          <div key={p.n} style={{
+            maxWidth: 900, padding: nueva ? '10px 26px 12px 14px' : '6px 20px 8px 12px', borderRadius: 999,
+            display: 'flex', alignItems: 'center', gap: 14, whiteSpace: 'nowrap',
+            background: hexA(PALETA.fondo, nueva ? 0.9 : 0.78), border: `3px solid ${hexA(nueva ? color : PALETA.tintaSuave, nueva ? 0.95 : 0.45)}`,
+            boxShadow: nueva ? `0 0 22px ${hexA(color, 0.45)}, 0 6px 20px rgba(0,0,0,0.55)` : '0 4px 14px rgba(0,0,0,0.5)',
+            transform: `scale(${nueva ? 0.7 + 0.3 * e : 1})`, opacity: nueva ? Math.min(1, e * 1.4) : 0.85,
+            fontFamily: TIPO.texto, fontWeight: nueva ? 800 : 700, fontSize: tam, color: nueva ? PALETA.tinta : PALETA.tintaSuave,
+          }}>
+            <span style={{
+              // Las pistas viejas: insignia en contorno (relleno claro + texto oscuro no se leía al atenuarse).
+              flex: 'none', padding: '2px 12px', borderRadius: 999, background: nueva ? color : 'transparent',
+              border: nueva ? 'none' : `2px solid ${hexA(PALETA.tintaSuave, 0.7)}`,
+              color: nueva ? PALETA.fondo : PALETA.tintaSuave, fontSize: tam * 0.62, fontWeight: 900, letterSpacing: 1.5,
+            }}>PISTA {p.n}/{total}</span>
+            {p.texto}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+/** Centro vertical del rótulo "⏳ apuesta ya": entra a los 3 s y dura 1,5 s (frames de VIDEO). */
+const APUESTA_DESDE = 3 * 60;
+const APUESTA_FRAMES = 90;
+
 export const Bola: React.FC<GuionBola> = (props) => {
   cargarFuentes();
   const F = useCurrentFrame();
@@ -328,6 +383,13 @@ export const Bola: React.FC<GuionBola> = (props) => {
   const subFinal = sim.modo === 'crecer'
     ? `tras ${sim.rebotesTotales} rebotes`
     : sim.bolas > 1 ? `escapó la ${nombreGanadora} · ¿acertaste?` : '¿acertaste?';
+  // Juegos: "adivina" NUNCA nombra la canción (tarjeta `cierre` + resultado chico); "apuesta" agrega `acierto`.
+  const juego: JuegoBola | undefined = props.juego;
+  const resultadoChico = sim.modo === 'escape' ? `escapó en el rebote ${sim.rebotesTotales}` : `llenó el círculo tras ${sim.rebotesTotales} rebotes`;
+  const textoFinalJuego = juego?.tipo === 'adivina' ? (juego.cierre ?? TEXTOS_JUEGO.adivinaCierre) : textoFinal;
+  const subFinalJuego = juego?.tipo === 'adivina' ? resultadoChico
+    : juego?.tipo === 'apuesta' && sim.modo === 'escape' && sim.bolas === 1 ? (juego.acierto ?? TEXTOS_JUEGO.acierto) : subFinal;
+  const lineaAcierto = juego?.tipo === 'apuesta' && !(sim.modo === 'escape' && sim.bolas === 1) ? (juego.acierto ?? TEXTOS_JUEGO.acierto) : null;
   const apagadoAnillo = sim.modo === 'crecer' ? expansion : 0;
   /** En crecer, cuando el color ya tapó la pantalla los textos pasan a tinta oscura. */
   const sobreLleno = sim.modo === 'crecer' && expansion > 0.3;
@@ -388,40 +450,55 @@ export const Bola: React.FC<GuionBola> = (props) => {
         </div>
       )}
       {/* Cold open: rótulo pequeño "así termina ↓" sobre el estado final */}
-      {enColdOpen && (
-        <div style={{ position: 'absolute', left: 0, right: 0, top: LLAMADO_CENTRO_Y - 36, display: 'flex', justifyContent: 'center' }}>
-          <div style={{
-            height: 72, padding: '0 30px', borderRadius: 999, display: 'flex', alignItems: 'center',
-            background: hexA(PALETA.fondo, 0.85), border: `3px solid ${hexA(PALETA.tinta, 0.8)}`,
-            fontFamily: TIPO.texto, fontWeight: 800, fontSize: 40, color: PALETA.tinta, letterSpacing: 1,
-          }}>así termina ↓</div>
-        </div>
-      )}
+      {enColdOpen && <Pildora texto="así termina ↓" centroY={LLAMADO_CENTRO_Y} />}
 
       {/* Cartel del clímax */}
       {enFinal && (
         <>
-          <Texto top={sim.modo === 'crecer' ? 760 : 700} tam={textoFinal.length > 16 && sim.modo === 'crecer' ? 84 : 100} escala={0.6 + 0.4 * entradaCartel} opacidad={entradaCartel * fadeCierre}
+          <Texto top={(sim.modo === 'crecer' ? 760 : 700) - (juego?.tipo === 'adivina' ? 60 : 0)}
+            tam={juego?.tipo === 'adivina' ? 88 : textoFinal.length > 16 && sim.modo === 'crecer' ? 84 : 100} escala={0.6 + 0.4 * entradaCartel} opacidad={entradaCartel * fadeCierre}
             color={sim.modo === 'crecer' ? PALETA.fondo : colorClimax}
             sombra={sim.modo === 'crecer' ? 'none' : `0 0 40px ${hexA(colorClimax, 0.9)}, 0 0 90px ${hexA(colorClimax, 0.5)}, 0 6px 24px rgba(0,0,0,0.7)`}>
-            {textoFinal}
+            {textoFinalJuego}
           </Texto>
-          <Texto top={sim.modo === 'crecer' ? 930 : 960} tam={56} familia={TIPO.texto} peso={700} escala={1} opacidad={interpolate(trasClimax, [16, 30], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) * fadeCierre}
+          <Texto top={(sim.modo === 'crecer' ? 930 : 960) + (juego?.tipo === 'adivina' ? 70 : 0)} tam={juego?.tipo === 'adivina' ? 44 : 56} familia={TIPO.texto} peso={700} escala={1} opacidad={interpolate(trasClimax, [16, 30], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) * fadeCierre}
             color={sim.modo === 'crecer' ? PALETA.fondo : PALETA.tinta} sombra={sim.modo === 'crecer' ? 'none' : undefined}>
-            {subFinal}
+            {subFinalJuego}
           </Texto>
+          {lineaAcierto && (
+            <Texto top={(sim.modo === 'crecer' ? 930 : 960) + 100} tam={64} escala={0.7 + 0.3 * spring({ frame: trasClimax - 34, fps, config: { damping: 11, stiffness: 160 } })}
+              opacidad={interpolate(trasClimax, [34, 44], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) * fadeCierre}
+              color={sim.modo === 'crecer' ? PALETA.fondo : PALETA.neon.lima} sombra={sim.modo === 'crecer' ? 'none' : undefined}>
+              {lineaAcierto}
+            </Texto>
+          )}
         </>
+      )}
+
+      {/* Juego "adivina": pistas acumuladas bajo el bloque de arriba (se van en el clímax). */}
+      {juego?.tipo === 'adivina' && !enColdOpen && (
+        <Pistas pistas={juego.pistas} F={F} fps={fps} top={ganchoArribaDe(props).length <= 30 ? 410 : 480} color={PALETA.neon.amarillo}
+          opacidad={fadeCierre * interpolate(frame, [climaxFrame, climaxFrame + 10], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })} />
+      )}
+      {/* Juego "apuesta": "⏳ apuesta ya" a los 3 s durante 1,5 s. */}
+      {juego?.tipo === 'apuesta' && F >= APUESTA_DESDE && F < APUESTA_DESDE + APUESTA_FRAMES && (
+        <Pildora texto={TEXTOS_JUEGO.apuestaYa} centroY={LLAMADO_CENTRO_Y} borde={PALETA.neon.amarillo}
+          escala={0.75 + 0.25 * spring({ frame: F - APUESTA_DESDE, fps, config: { damping: 10, stiffness: 220 } })}
+          opacidad={interpolate(F - APUESTA_DESDE, [0, 6, APUESTA_FRAMES - 10, APUESTA_FRAMES], [0, 1, 1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })} />
       )}
 
       {/* Llamado a suscribirse en el clímax (fuera del zoom: no se mueve con la cámara). Color de marca:
           el de la bola ganadora delataría cuál escapa. */}
       <Llamado texto={textoLlamado('bola', props.id, props.llamado)}
-        desde={Math.max(co + 120, climax ? co + climax.frame - LLAMADO_ANTES : durationInFrames - FRAMES_CIERRE - LLAMADO_ANTES)}
+        desde={juego?.tipo === 'adivina' && climax
+          // En "adivina" la zona alta la ocupan las pistas hasta el clímax: el llamado entra recién ahí.
+          ? co + climax.frame + 20
+          : Math.max(co + 120, climax ? co + climax.frame - LLAMADO_ANTES : durationInFrames - FRAMES_CIERRE - LLAMADO_ANTES)}
         hasta={durationInFrames - FRAMES_CIERRE} centroY={LLAMADO_CENTRO_Y} color={PALETA.neon.lima} />
 
       {/* Dos bloques fijos (frame 0 → cierre): mecánica arriba, intriga abajo. */}
       <BloqueTexto texto={ganchoArribaDe(props)} color={colorGancho} top={ARRIBA_TOP} tam={tamArriba(ganchoArribaDe(props))} opacidad={fadeCierre} />
-      <BloqueTexto texto={ganchoAbajoDe(props)} color={PALETA.neon.magenta} centroY={ABAJO_CENTRO_Y} tam={60} opacidad={fadeCierre} />
+      <BloqueTexto texto={ganchoAbajoDe(props)} color={PALETA.neon.magenta} centroY={ABAJO_CENTRO_Y} tam={ganchoAbajoDe(props).length > 26 ? 50 : 60} opacidad={fadeCierre} />
 
       <MarcaDeAgua />
       <Sequence from={durationInFrames - FRAMES_CIERRE} durationInFrames={FRAMES_CIERRE} name="Cierre">

@@ -66,6 +66,23 @@ Referente: satisfying.ba11s (círculo al 95 % del ancho saturado de trazas, bola
   id: `VARIANTES_GANCHO_ABAJO`). Placa oscura semitransparente. El contador "REBOTES n" pasó al centro del anillo.
 - Costo medido: render a escala 0,25 de un Short de 38 s = ~2 min (antes ~1,5 min); RAM sin cambios visibles.
 
+## Melodía propia, timbres y juegos (2026-11-09, rama `adivina-la-cancion`)
+- **`melodiaNotas`** `{ bpm, notas: [[midi, pulsos], …], compas?, anacrusa?, tonica?, menor?, acordes? }`: alternativa a
+  `melodia` (hace falta una de las dos; si vienen ambas manda `melodiaNotas`). Solo **dominio público** u obra propia.
+  `acordes` = un acorde por compás `[raíz 0–11, menor]` (en bucle); si falta, `armonizar` elige el grado que mejor cubre el compás.
+- **`timbre`**: `pluck` (por defecto, idéntico a antes), `piano` (parciales estirados, golpe + resonancia, batido, martillo)
+  o `campana` (tubular, parciales inarmónicos, decaimiento ~2,6 s).
+- **`acompanamiento`**: `bajo` (raíz + octava grave) o `acorde` (tríada cerrada) una octava bajo la melodía, timbre suave;
+  entra con la nota que abre cada compás y dura hasta el siguiente (nunca pasa del clímax).
+- **`juego.tipo = 'adivina'`** `{ pistas: [{ t, texto }] (1–3, ≤ 6 palabras, t = segundo del VIDEO, sin "Pista n:"), cta?, cierre? }`:
+  arriba "¿Qué canción es? 🎵" (o `ganchoArriba`), abajo "Escríbela en los comentarios 👇"; las pistas se acumulan bajo el
+  bloque de arriba (la nueva resaltada). El clímax NUNCA nombra la canción ("¿La reconociste? Escríbela abajo 👇" + resultado
+  chico); título, descripción y hashtags tampoco deben nombrarla. El llamado a suscribirse entra recién en el clímax.
+- **`juego.tipo = 'apuesta'`** `{ pregunta, cta?, acierto? }`: arriba la pregunta, abajo "Comenta tu número antes del final 👇",
+  a los 3 s "⏳ apuesta ya" 1,5 s; en el clímax el resultado real + "¿Acertaste? 👇".
+- Revisar la melodía antes de simular: `npx tsx scripts/escuchar-melodia.mts <guion.json> [--segundos 12] [--salida x.wav]`.
+- Comentario fijable del juego: `npx tsx scripts/comentar.mts <videoId> "<texto>" [--dry-run]` (50 unidades; fijarlo, en Studio).
+
 ## Uso
 Props: `id`, `gancho` (≤ 90), opcionales `ganchoArriba` (≤ 9 palabras), `ganchoAbajo` (≤ 5 palabras), `trazas`, `melodia` (furelise,
 marchaturca, odaalegria, canon, cisnes), `modo`, `bolas` (1–3), opcionales `semilla`,
