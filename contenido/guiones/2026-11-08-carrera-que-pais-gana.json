@@ -1,6 +1,6 @@
 {
   "plantilla": "carrera",
-  "id": "carrera-que-pais-gana",
+  "id": "2026-11-08-carrera-que-pais-gana",
   "titulo": "¿Qué país de Latinoamérica llega primero? 🏁 Carrera de bolitas",
   "descripcion": "Chile, Argentina, México, Colombia, Perú y Brasil bajan como bolitas de neón por un tablero de clavijas. ¿Gana tu país? Física real, sonido en cada rebote. Comenta desde dónde lo ves.",
   "hashtags": [
@@ -13,7 +13,7 @@
     "#paises"
   ],
   "props": {
-    "id": "carrera-que-pais-gana",
+    "id": "2026-11-08-carrera-que-pais-gana",
     "gancho": "¿Qué país gana?",
     "tema": "países",
     "participantes": [

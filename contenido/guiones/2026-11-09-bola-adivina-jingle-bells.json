@@ -1,8 +1,8 @@
 {
   "plantilla": "bola",
-  "id": "pendiente-bola-adivina-bella-ciao",
-  "titulo": "¿Qué canción toca esta bolita? 🎵 Escríbela antes del final",
-  "descripcion": "Cada rebote de la bolita de neón toca la siguiente nota de una canción muy famosa (melodía tradicional, de dominio público). Tres pistas y una sola oportunidad: ¿la reconoces? Escríbela en los comentarios, sin mirar las respuestas.\nSimulación física determinista hecha en Bolita Lab.",
+  "id": "2026-11-09-bola-adivina-jingle-bells",
+  "titulo": "¿Qué canción toca esta bolita? 🔔 Adivínala antes del final",
+  "descripcion": "Cada rebote de la bolita de neón toca la siguiente nota de una canción que todos conocen (melodía de 1857, de dominio público). Tres pistas: ¿la reconoces? Escríbela en los comentarios.\nSimulación física determinista hecha en Bolita Lab.",
   "hashtags": [
     "#shorts",
     "#adivinalacancion",
@@ -10,178 +10,27 @@
     "#fisica",
     "#bolita",
     "#neon",
-    "#piano"
+    "#campanas"
   ],
   "props": {
-    "id": "pendiente-bola-adivina-bella-ciao",
+    "id": "2026-11-09-bola-adivina-jingle-bells",
     "gancho": "¿Qué canción es? 🎵",
-    "modo": "escape",
+    "modo": "crecer",
     "bolas": 1,
-    "timbre": "piano",
-    "acompanamiento": "bajo",
+    "timbre": "campana",
+    "acompanamiento": "acorde",
     "melodiaNotas": {
       "bpm": 120,
       "compas": 4,
-      "anacrusa": 1.5,
-      "tonica": 9,
-      "menor": true,
-      "acordes": [
-        [
-          9,
-          true
-        ],
-        [
-          9,
-          true
-        ],
-        [
-          9,
-          true
-        ],
-        [
-          4,
-          false
-        ],
-        [
-          2,
-          true
-        ],
-        [
-          9,
-          true
-        ],
-        [
-          4,
-          false
-        ],
-        [
-          9,
-          true
-        ]
-      ],
+      "tonica": 0,
+      "menor": false,
       "notas": [
         [
-          64,
-          0.5
-        ],
-        [
-          69,
-          0.5
-        ],
-        [
-          71,
-          0.5
-        ],
-        [
-          72,
-          1
-        ],
-        [
-          69,
-          1.5
-        ],
-        [
-          64,
-          0.5
-        ],
-        [
-          69,
-          0.5
-        ],
-        [
-          71,
-          0.5
-        ],
-        [
-          72,
-          1
-        ],
-        [
-          69,
-          1.5
-        ],
-        [
-          64,
-          0.5
-        ],
-        [
-          69,
-          0.5
-        ],
-        [
-          71,
-          0.5
-        ],
-        [
-          72,
-          1
-        ],
-        [
-          71,
-          0.5
-        ],
-        [
-          69,
-          0.5
-        ],
-        [
-          72,
-          1
-        ],
-        [
-          71,
-          0.5
-        ],
-        [
-          69,
-          0.5
-        ],
-        [
           76,
           1
         ],
         [
           76,
-          1
-        ],
-        [
-          76,
-          1
-        ],
-        [
-          0,
-          0.5
-        ],
-        [
-          74,
-          0.5
-        ],
-        [
-          76,
-          0.5
-        ],
-        [
-          77,
-          0.5
-        ],
-        [
-          77,
-          2.5
-        ],
-        [
-          77,
-          0.5
-        ],
-        [
-          76,
-          0.5
-        ],
-        [
-          74,
-          0.5
-        ],
-        [
-          77,
           1
         ],
         [
@@ -190,18 +39,6 @@
         ],
         [
           76,
-          0.5
-        ],
-        [
-          74,
-          0.5
-        ],
-        [
-          72,
-          1
-        ],
-        [
-          71,
           1
         ],
         [
@@ -209,16 +46,188 @@
           1
         ],
         [
-          72,
-          1
-        ],
-        [
-          71,
-          1
-        ],
-        [
-          69,
+          76,
           2
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          79,
+          1
+        ],
+        [
+          72,
+          1.5
+        ],
+        [
+          74,
+          0.5
+        ],
+        [
+          76,
+          4
+        ],
+        [
+          77,
+          1
+        ],
+        [
+          77,
+          1
+        ],
+        [
+          77,
+          1.5
+        ],
+        [
+          77,
+          0.5
+        ],
+        [
+          77,
+          1
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          74,
+          1
+        ],
+        [
+          74,
+          1
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          74,
+          2
+        ],
+        [
+          79,
+          2
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          76,
+          2
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          76,
+          2
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          79,
+          1
+        ],
+        [
+          72,
+          1.5
+        ],
+        [
+          74,
+          0.5
+        ],
+        [
+          76,
+          4
+        ],
+        [
+          77,
+          1
+        ],
+        [
+          77,
+          1
+        ],
+        [
+          77,
+          1.5
+        ],
+        [
+          77,
+          0.5
+        ],
+        [
+          77,
+          1
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          79,
+          1
+        ],
+        [
+          79,
+          1
+        ],
+        [
+          77,
+          1
+        ],
+        [
+          74,
+          1
+        ],
+        [
+          72,
+          4
         ]
       ]
     },
@@ -227,15 +236,15 @@
       "pistas": [
         {
           "t": 6,
-          "texto": "la cantan en los estadios ⚽"
+          "texto": "suena en diciembre 🎄"
         },
         {
           "t": 14,
-          "texto": "una serie de ladrones 🎭"
+          "texto": "un trineo 🛷"
         },
         {
           "t": 22,
-          "texto": "es italiana 🇮🇹"
+          "texto": "cascabeles 🔔"
         }
       ]
     }

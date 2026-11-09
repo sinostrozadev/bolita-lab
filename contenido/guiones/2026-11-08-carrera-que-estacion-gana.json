@@ -1,6 +1,6 @@
 {
   "plantilla": "carrera",
-  "id": "carrera-que-estacion-gana",
+  "id": "2026-11-08-carrera-que-estacion-gana",
   "titulo": "¿Verano, otoño, invierno o primavera? ¿Qué estación gana?",
   "descripcion": "Las cuatro estaciones del año en una carrera de bolitas de neón con física real. ¿La tuya llega primero? Sonido en cada rebote. Cuéntanos cuál es tu estación favorita.",
   "hashtags": [
@@ -13,7 +13,7 @@
     "#verano"
   ],
   "props": {
-    "id": "carrera-que-estacion-gana",
+    "id": "2026-11-08-carrera-que-estacion-gana",
     "gancho": "¿Qué estación gana?",
     "tema": "estaciones",
     "participantes": [

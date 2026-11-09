@@ -20,6 +20,8 @@ Métricas al 2026-11-08 08:00: 11 subs · 6.871 vistas totales · 8 Shorts públ
 - Herramienta `scripts/reprogramar.mts <videoId> <ISO>`: cambia publishAt de un video programado y su `publicarEn` en la bandeja.
 - Antes/después para Santiago: https://claude.ai/artifact/SmDXY7Hr2Bd8ojUiWzyW8y
 
+- **Experimentos de interacción (orden de Santiago, noche del 11-08) construidos, renderizados y programados** (plantilla `bola`: `melodiaNotas`, timbres `piano`/`campana`, `acompanamiento` bajo/acorde, juegos `adivina` con pistas y `apuesta`): mar 11-10 12:00 Bella Ciao `6u43w_oAtTE` · mié 11-11 12:00 apuesta `pi_-etXwymI` · jue 11-12 12:00 Jingle Bells `yO7rByQZW2k`. Cuatro viejos corridos al 20/21/22; 11-13 12:00 reservada para la canción con derechos que elija Santiago (la melodía la aporta él: el filtro de contenido cortó al agente que intentó transcribir Still D.R.E./Creep). Previews de audio en el Escritorio de Windows (`bolita-canciones-preview`). Herramientas: `scripts/escuchar-melodia.mts` (preview wav de un guion), `scripts/comentar.mts` (comentario por API; para dejar la pregunta y la respuesta al día siguiente).
+
 ## Herramientas exploradas
 - Lectura de `ytInitialData` + chip "Populares" de YouTube sin piloto para bajar las portadas más vistas de un canal (scripts en la skill `caratulas-con-gpt/referencias/`).
 - El ffmpeg de Remotion solo trae `scale`: sirve para fotogramas, no para hojas de contacto.
@@ -29,6 +31,8 @@ Métricas al 2026-11-08 08:00: 11 subs · 6.871 vistas totales · 8 Shorts públ
 - META-REFERENTE: fila "Retención" ya con datos (antes "sin datos").
 
 ## Pendiente
+- Medir los 3 experimentos (comentarios por video, "se queda a ver", subs) el 11-11 y el 11-13; dejar el primer comentario con `comentar.mts` el día de publicación y la respuesta al siguiente.
+- Largo del dom 11-15: quiz "¿Cuántas adivinas? 10 canciones en bolitas" (aprobado por Santiago); necesita plantilla 16:9 o compilación de 10 `adivina` con tarjetas de respuesta.
 - Evaluar reemplazar los programados 11-12 → 11-16 (10, plantilla vieja) si los 3 nuevos retienen ≥ 55 % el 11-10/11-12; el cron ya produce con la plantilla nueva desde el 11-17.
 - Medir: "se quedó a ver" ≥ 55 % en los 6 primeros Shorts nuevos y ≥ 3 de 6 sobre 2.000 vistas a 7 días (hoy 0/8).
 - Santiago: reautorizar el token con Analytics (`subir.mts autorizar` ya pide el scope en LP; copiar la lista a Bolita) para que `metricas.mts` guarde retención sola.

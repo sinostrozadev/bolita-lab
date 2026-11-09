@@ -1,6 +1,6 @@
 {
   "plantilla": "dato",
-  "id": "pendiente-dato-la-torre-eiffel-mide-15-cm-mas-en-verano",
+  "id": "2026-11-08-dato-la-torre-eiffel-mide-15-cm-mas-en-verano",
   "titulo": "La Torre Eiffel mide 15 cm más en verano que en invierno",
   "descripcion": "Las 7.300 toneladas de hierro de la Torre Eiffel se dilatan con el calor: en verano la torre crece hasta 15 cm, y el sol, al calentar solo una cara, inclina la punta hasta 18 cm. Además, iba a demolerse a los 20 años: la salvó servir de antena de radio.\n\nFuentes:\n- Sitio oficial de la Torre Eiffel, La Tour Eiffel et la science / FAQ (dilatación hasta 15 cm, inclinación hasta 18 cm por el sol, 7.300 t de hierro): https://www.toureiffel.paris\n- Sitio oficial, Histoire: concesión de 20 años desde 1889, salvada por los experimentos de radiotelegrafía: https://www.toureiffel.paris/fr/le-monument/histoire",
   "hashtags": [
@@ -13,7 +13,7 @@
     "#bolitalab"
   ],
   "props": {
-    "id": "pendiente-dato-la-torre-eiffel-mide-15-cm-mas-en-verano",
+    "id": "2026-11-08-dato-la-torre-eiffel-mide-15-cm-mas-en-verano",
     "color": "amarillo",
     "gancho": "Mira la Torre Eiffel: en verano mide hasta 15 centímetros más. ¿Por qué?",
     "imagenGancho": {

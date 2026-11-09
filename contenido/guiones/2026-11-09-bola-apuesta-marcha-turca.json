@@ -1,16 +1,27 @@
 {
   "plantilla": "bola",
-  "id": "pendiente-bola-apuesta-marcha-turca",
+  "id": "2026-11-09-bola-apuesta-marcha-turca",
   "titulo": "¿En qué rebote llena el círculo? Apuesta antes del final 🎯",
   "descripcion": "La bolita de neón crece en cada rebote al ritmo de la Marcha Turca de Mozart. Comenta tu número antes de que termine y mira si acertaste.\nSimulación física determinista hecha en Bolita Lab.",
-  "hashtags": ["#shorts", "#satisfying", "#fisica", "#bolita", "#neon", "#mozart", "#marchaturca"],
+  "hashtags": [
+    "#shorts",
+    "#satisfying",
+    "#fisica",
+    "#bolita",
+    "#neon",
+    "#mozart",
+    "#marchaturca"
+  ],
   "props": {
-    "id": "pendiente-bola-apuesta-marcha-turca",
+    "id": "2026-11-09-bola-apuesta-marcha-turca",
     "gancho": "¿En qué rebote llena el círculo?",
     "melodia": "marchaturca",
     "timbre": "pluck",
     "modo": "crecer",
     "bolas": 1,
-    "juego": { "tipo": "apuesta", "pregunta": "¿En qué rebote llena el círculo?" }
+    "juego": {
+      "tipo": "apuesta",
+      "pregunta": "¿En qué rebote llena el círculo?"
+    }
   }
 }
