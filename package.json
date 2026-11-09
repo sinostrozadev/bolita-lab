@@ -12,11 +12,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@react-three/fiber": "9.8.2",
     "@remotion/cli": "4.0.540",
     "@remotion/fonts": "4.0.540",
     "@remotion/google-fonts": "4.0.540",
     "@remotion/media-utils": "4.0.540",
     "@remotion/renderer": "4.0.540",
+    "@remotion/three": "4.0.540",
     "googleapis": "^189.0.0",
     "msedge-tts": "^2.1.1",
     "music-metadata": "^11.15.0",
@@ -24,11 +26,13 @@
     "react-dom": "^19.2.0",
     "remotion": "4.0.540",
     "simple-icons": "^16.36.0",
+    "three": "0.170.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "@types/three": "^0.170.0",
     "tsx": "^4.23.0",
     "typescript": "^5.8.0"
   }
