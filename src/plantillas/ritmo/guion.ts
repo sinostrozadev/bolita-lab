@@ -25,7 +25,11 @@ export const PartituraRitmo = z.object({
   pistas: z.object({
     melodia: z.array(NotaPartitura).min(8),
     bajo: z.array(NotaPartitura).min(4),
-    ritmo: z.array(z.object({ tipo: z.enum(TIPOS_PERCUSION), pulso: z.number().min(0), abierto: z.boolean().optional() })).min(4),
+    ritmo: z.array(z.object({
+      tipo: z.enum(TIPOS_PERCUSION), pulso: z.number().min(0), abierto: z.boolean().optional(),
+      /** Golpe fuerte (más volumen y destello mayor): remates y redobles. */
+      acento: z.boolean().optional(),
+    })).min(4),
   }),
 });
 export type PartituraRitmo = z.infer<typeof PartituraRitmo>;
@@ -66,6 +70,9 @@ export const EnvoltorioRitmo = z.object({
   descripcion: z.string().min(20).max(4000),
   hashtags: z.array(z.string().regex(/^#\S+$/)).min(1).max(15),
   props: GuionRitmo,
+  /** Música con derechos (Content ID): solo se publica con el sí de Santiago. */
+  derechos: z.boolean().optional(),
+  nota: z.string().optional(),
 });
 
 // ---------- Simulación (public/sim/<id>.json) ----------
@@ -92,10 +99,35 @@ export type BolitaSim = {
   repisa: { x: number; y: number; abre: number };
   /** Por frame: x, y (centro), aplanado. */
   cuadros: number[];
+  /** Por frame: profundidad z (la hélice pasa por delante y por detrás). Falta = 0. */
+  z?: number[];
+  /** Rangos de frames [desde, hasta] (inclusive) en que la bolita va oculta (dentro de un portal). */
+  ocultos?: [number, number][];
 };
 
+/**
+ * Figuras de movimiento entre dos golpes. Cada una dura exactamente Δt y la justifica un objeto visible
+ * (riel, rizo, paredes, columpio, hélice, trampolín, portales). "cruce": el camino atraviesa el de otra bolita.
+ */
+export const FIGURAS_RITMO = ['parabola', 'riel', 'loop', 'zigzag', 'pendulo', 'espiral', 'trampolin', 'portal', 'cruce'] as const;
+export type FiguraRitmo = (typeof FIGURAS_RITMO)[number];
+
+/** Qué figura hizo cada bolita entre el golpe `desde` y el siguiente (`hasta`), en frames. */
+export type TramoSim = { bolita: number; figura: FiguraRitmo; desde: number; hasta: number };
+
+/** Objetos que justifican las figuras. Tiempos en SEGUNDOS de simulación salvo que diga frame. */
+export type ObjetoSim =
+  /** Riel (tubo de vidrio con dos rieles de neón): puntos x,y,z aplanados del centro de la bolita y su instante. */
+  | { tipo: 'riel'; bolita: number; figura: FiguraRitmo; puntos: number[]; tiempos: number[] }
+  /** Pared corta del zigzag: segmento vertical en x, de y0 a y1; toques = instantes de rebote. */
+  | { tipo: 'pared'; bolita: number; x: number; y0: number; y1: number; lado: -1 | 1; desde: number; hasta: number; toques: number[] }
+  /** Columpio: pivote, largo y ángulo (desde la vertical, hacia abajo) por frame a partir de `desdeFrame`. */
+  | { tipo: 'pendulo'; bolita: number; px: number; py: number; largo: number; desdeFrame: number; angulos: number[]; agarra: number; suelta: number }
+  /** Par de portales: entra por A (dirección aAng) y sale por B (bAng). */
+  | { tipo: 'portal'; bolita: number; ax: number; ay: number; aAng: number; bx: number; by: number; bAng: number; entra: number; sale: number };
+
 /** Clavija o pad. Cápsula: eje perpendicular a la normal, de semilargo `largo` (0 = clavija redonda) y radio `radio`. */
-export type ClavijaSim = { bolita: number; x: number; y: number; nx: number; ny: number; largo: number; radio: number; golpe: number };
+export type ClavijaSim = { bolita: number; x: number; y: number; nx: number; ny: number; largo: number; radio: number; golpe: number; estilo?: 'trampolin' };
 
 export type GolpeSim = {
   frame: number;
@@ -112,10 +144,12 @@ export type GolpeSim = {
   nota?: number;
   /** 0..1 para tamaño del destello. */
   fuerza: number;
+  /** Golpe fuerte de la partitura (remate). */
+  acento?: boolean;
 };
 
 export type SimRitmo = {
-  version: 1;
+  version: 2;
   id: string;
   fps: number;
   duracionFrames: number;
@@ -129,5 +163,7 @@ export type SimRitmo = {
   bolitas: BolitaSim[];
   clavijas: ClavijaSim[];
   golpes: GolpeSim[];
+  tramos: TramoSim[];
+  objetos: ObjetoSim[];
   semillaUsada: number;
 };
