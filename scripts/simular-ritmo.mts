@@ -26,8 +26,10 @@ export const FPS = 60;
 export const FRAMES_ENTRADA = 48;
 /** Caída libre desde la repisa hasta el primer golpe (0,5 s). */
 const FRAMES_CAIDA = 30;
-/** Tras el golpe final: 0,9 s de clímax + 1,2 s de cierre de marca. */
-export const FRAMES_CLIMAX = 54;
+/** Tras el golpe final: 1,6 s de clímax en cámara lenta (revela qué toca cada una) + 1,2 s de cierre de marca. */
+export const FRAMES_CLIMAX = 96;
+/** Tras el golpe final el tiempo de la simulación corre a este ritmo (cámara lenta del clímax). */
+export const LENTO_CLIMAX = 0.35;
 export const FRAMES_CIERRE = 72;
 
 const G = 2800; // unidades/s² (la vista mide 1500 unidades de ancho)
@@ -40,10 +42,10 @@ const SUB = 4;
 type Config = { pista: PistaRitmo; carril: number; r: number; color: string; brillo: number; largo: number; radio: number; desfase: number };
 const CONFIG: Config[] = [
   // Orden de generación = orden de prioridad (la melodía elige primero su camino).
-  { pista: 'melodia', carril: 0, r: 52, color: PALETA.neon.amarillo, brillo: 1.0, largo: 48, radio: 11, desfase: 0 },
-  { pista: 'bajo', carril: -300, r: 58, color: PALETA.neon.violeta, brillo: 0.35, largo: 54, radio: 12, desfase: -110 },
+  { pista: 'melodia', carril: 0, r: 52, color: PALETA.neon.amarillo, brillo: 1.0, largo: 48, radio: 13, desfase: 0 },
+  { pista: 'bajo', carril: -300, r: 58, color: PALETA.neon.violeta, brillo: 0.35, largo: 54, radio: 14, desfase: -110 },
   { pista: 'kick', carril: -600, r: 34, color: PALETA.neon.naranja, brillo: 0.8, largo: 0, radio: 19, desfase: 140 },
-  { pista: 'snare', carril: 300, r: 31, color: PALETA.neon.magenta, brillo: 0.8, largo: 0, radio: 16, desfase: -60 },
+  { pista: 'snare', carril: 300, r: 31, color: PALETA.verde, brillo: 0.8, largo: 0, radio: 16, desfase: -60 },
   { pista: 'hat', carril: 600, r: 27, color: PALETA.neon.cian, brillo: 0.8, largo: 0, radio: 13, desfase: 80 },
 ];
 
@@ -267,7 +269,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
     // Muestreo por frame: repisa → caída → parábolas exactas entre golpes.
     const cuadros: number[] = [];
     for (let f = 0; f < duracionFrames; f++) {
-      const t = f / FPS;
+      const t = f <= finalFrame ? f / FPS : (finalFrame + (f - finalFrame) * LENTO_CLIMAX) / FPS;
       let x: number, y: number;
       if (f <= repisa.abre) { x = repisa.x; y = repisa.y; }
       else if (f < lista[0].frame) { const s = t - repisa.abre / FPS; x = repisa.x; y = repisa.y + 0.5 * G * s * s; }
@@ -319,7 +321,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
   golpes.sort((a, b) => a.frame - b.frame || a.bolita - b.bolita);
   console.log(`nivel: ${golpes.length} golpes, ${clavijas.length} clavijas, ${avisos} con reparos, semilla ${semilla}`);
   return {
-    version: 1, id: props.id, fps: FPS, duracionFrames, finalFrame, mundo: { ancho: ANCHO_MUNDO, gravedad: G },
+    version: 1, id: props.id, fps: FPS, duracionFrames, finalFrame, lentoClimax: LENTO_CLIMAX, mundo: { ancho: ANCHO_MUNDO, gravedad: G },
     camara, bolitas, clavijas, golpes, semillaUsada: semilla,
   };
 };

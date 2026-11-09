@@ -121,6 +121,8 @@ export type SimRitmo = {
   duracionFrames: number;
   /** Frame del golpe final de todas (clímax). */
   finalFrame: number;
+  /** Tras finalFrame el tiempo de la simulación corre a este factor (cámara lenta del clímax). */
+  lentoClimax: number;
   mundo: { ancho: number; gravedad: number };
   /** Cámara por frame: x, y (centro de la vista en el mundo), aplanado. */
   camara: number[];
