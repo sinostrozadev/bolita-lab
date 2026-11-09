@@ -178,18 +178,33 @@ const colocarEtiquetas = (sim: SimulacionCarrera, f: number, cam: number, etique
     const w = etiquetas[i].length * ETIQ_FUENTE * 0.72 + 34 + (conIcono[i] ? ETIQ_ICONO + 8 : 0);
     const derecha = x + r + 14;
     const izquierda = x - r - 14 - w;
-    let lx: number;
-    if (derecha + w <= ANCHO - seguro.lados) lx = derecha;
-    else if (izquierda >= seguro.lados) lx = izquierda;
-    else lx = Math.max(seguro.lados, Math.min(ANCHO - seguro.lados - w, x - w / 2));
     // Bolas rezagadas (bajo el marcador o fuera de cuadro): sin etiqueta; el marcador ya las nombra.
     if (sy < ETIQ_MIN - 2 * r || sy > ALTO_PANTALLA) return;
+    const ly = Math.max(ETIQ_MIN, Math.min(ETIQ_MAX, sy));
+    // ¿La etiqueta en lx taparía a OTRA bola? (2026-11-09: en "¿Qué país gana?" al 75 % la etiqueta
+    // COLOMBIA quedaba encima de la bola de Perú porque a la derecha no cabía.)
+    const tapaOtra = (lx: number) => sim.posiciones.some((otra, j) => {
+      if (j === i) return false;
+      const ox = otra[f][0], oy = otra[f][1] - cam;
+      const cx = Math.max(lx, Math.min(lx + w, ox));
+      const cy = Math.max(ly - ETIQ_ALTO / 2, Math.min(ly + ETIQ_ALTO / 2, oy));
+      return Math.hypot(ox - cx, oy - cy) < r * 1.05;
+    });
+    const candidatos = [
+      derecha + w <= ANCHO - seguro.lados ? derecha : null,
+      izquierda >= seguro.lados ? izquierda : null,
+    ].filter((c): c is number => c !== null);
+    const libre = candidatos.find((c) => !tapaOtra(c));
+    let lx: number;
+    if (libre !== undefined) lx = libre;
+    else if (candidatos.length) return; // a ambos lados hay otra bola: la etiqueta sobra (el icono ya la nombra)
+    else lx = Math.max(seguro.lados, Math.min(ANCHO - seguro.lados - w, x - w / 2));
     // Bolas apiñadas (p. ej. la salida): sin etiqueta; el icono dentro de la bola ya las identifica.
     let cerca = Infinity;
     sim.posiciones.forEach((otra, j) => { if (j !== i) cerca = Math.min(cerca, Math.hypot(otra[f][0] - x, otra[f][1] - y)); });
     const op = interpolate(cerca / (2 * r), ETIQ_SEPARACION, [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
     if (op <= 0) return;
-    cajas.push({ i, x: lx, y: Math.max(ETIQ_MIN, Math.min(ETIQ_MAX, sy)), w, op });
+    cajas.push({ i, x: lx, y: ly, w, op });
   });
   // Separación vertical de las que se solapan en horizontal.
   const orden = [...cajas].sort((a, b) => a.y - b.y || a.i - b.i);

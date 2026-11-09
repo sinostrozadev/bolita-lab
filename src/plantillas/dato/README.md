@@ -43,12 +43,13 @@ Cada idea con un sujeto concreto (persona, lugar, objeto, animal, astro) lleva u
 ## Guion: fórmula narrativa (desde 2026-11-05)
 Sacada del referente **Ñerd** (Shorts de mapas/historia, 16 M de vistas en 2 semanas; su más visto, 4,1 M, es "¿Por qué Arizona se quedó a 60 km del mar sin tocarlo?"). `scripts/generar-guiones.mts` la exige en el prompt (`FORMULA_DATO`, solo para `dato`). Misma estructura de props y misma duración (25–58 s):
 1. **Gancho** (`gancho`, gigante en el frame 0): imperativo visual ("Mira…", "Fíjate en…") + el dato en ≤ 2 frases + "¿Por qué?". ~90 caracteres máx.; `imagenGancho` muestra lo que se manda a mirar.
-2. **Mito** (escena 1): lo que la gente cree → "La verdad es más rara / simple / peor."
-3. **Mapa de ruta** (escena 2, si hay 2–3 causas): "Todo se explica con dos cosas: X e Y." y luego "Primero, X." / "Segundo, Y.", una escena por causa.
+2. **Mito** (escena 1, opcional): lo que la gente cree, desmentido con palabras propias de ese guion.
+3. **Causas** (si hay 2–3): una escena por causa, con conectores naturales que cambian de guion a guion. Sin escena-anuncio ("Todo se explica con dos cosas…"): no tiene nada que mostrar y deja un hueco en pantalla.
 4. **Fuente nombrada en la voz** ("según la NASA", "según un estudio de la Universidad de X de 2019"), además de `fuentes` y la descripción: da valor educativo propio y protege la monetización.
-5. **Giro** (penúltima/última escena): "Y aquí está el giro:" + consecuencia inesperada o inversión.
+5. **Giro** (penúltima/última escena): consecuencia inesperada o inversión, contada directo.
 6. **Remate** (`remate`): una frase simétrica, dos mitades espejo ("X compró el camino del tren. Y se quedó con el camino al mar."). Sin llamados a suscribirse.
-7. **Estilo**: concreto, cifras redondeadas en la voz (la exacta puede ir en el visual), sin relleno; una idea = una escena = una imagen. ~90–110 palabras habladas.
+7. **Estilo**: concreto, cifras redondeadas en la voz (la exacta puede ir en el visual), sin relleno; una idea = una escena = una imagen. **75–100 palabras habladas, 4–6 escenas (≈ 28–36 s)**.
+8. **Frases prohibidas (2026-11-09)**: "La verdad es más rara/simple/peor", "Todo se explica con dos cosas", abrir escenas con "Primero, …"/"Segundo, …", "Y aquí está el giro". Everest, Panamá y Torre Eiffel salieron con ese andamiaje palabra por palabra (44–50 s cada uno): para el espectador es un molde y para la política del YPP es contenido "repetitivo". La estructura se queda; las palabras no se repiten.
 
 ## Cómo está armado
 - `plan.ts` (puro) calcula la línea de tiempo, las palabras enfatizadas de cada escena y los eventos de sonido; lo usan la composición y el script de audio, por eso quedan sincronizados: la palabra enfatizada suena con un tick/pop y hace un pop de escala en el subtítulo (y queda encendida en neón).

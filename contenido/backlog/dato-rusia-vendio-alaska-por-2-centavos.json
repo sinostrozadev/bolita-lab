@@ -22,7 +22,7 @@
     },
     "escenas": [
       {
-        "texto": "Dicen que el zar la regaló porque era puro hielo. La verdad es más simple.",
+        "texto": "Dicen que el zar la regaló porque era puro hielo. No fue por eso.",
         "visual": {
           "tipo": "frase",
           "texto": "¿Puro hielo?",
@@ -32,16 +32,6 @@
         },
         "imagen": {
           "buscar": "Alaska glacier"
-        }
-      },
-      {
-        "texto": "Todo se explica con dos cosas: una guerra y una distancia. Primero, la guerra.",
-        "visual": {
-          "tipo": "lista",
-          "items": [
-            "Una guerra",
-            "Una distancia"
-          ]
         }
       },
       {
@@ -57,7 +47,7 @@
         }
       },
       {
-        "texto": "Segundo, la distancia. Según la Oficina del Historiador del Departamento de Estado, Alaska costaba más defenderla de lo que daba en pieles.",
+        "texto": "Y quedaba lejísimos: según la Oficina del Historiador de Estados Unidos, defender Alaska costaba más de lo que daba en pieles.",
         "visual": {
           "tipo": "cifra",
           "valor": 1867,
@@ -84,7 +74,7 @@
         }
       },
       {
-        "texto": "Y aquí está el giro: treinta años después apareció el oro, y en 1968, el mayor yacimiento de petróleo de Norteamérica.",
+        "texto": "Treinta años después apareció el oro, y en 1968, el mayor yacimiento de petróleo de Norteamérica.",
         "visual": {
           "tipo": "lista",
           "items": [

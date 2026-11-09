@@ -98,19 +98,19 @@ const EDITORIAL = `REGLAS EDITORIALES (obligatorias):
  */
 const FORMULA_DATO = `FÓRMULA NARRATIVA DE "dato" (obligatoria; la locución es gancho → escenas[].texto → remate, en ese orden):
 1. GANCHO (props.gancho, se ve gigante en el frame 0): empieza con un imperativo visual ("Mira…", "Fíjate en…", "Mira este mapa…") + el dato sorprendente + "¿Por qué?" (o "¿Cómo?"). Máximo 2 frases cortas y ~90 caracteres en total. imagenGancho muestra exactamente lo que se dice que mires.
-2. MITO (escena 1): la explicación obvia o la leyenda que la gente cree, y enseguida "La verdad es más rara." / "más simple." / "peor." (elige la que corresponda).
-3. MAPA DE RUTA (inicio de escena 2, solo si el dato tiene 2–3 causas): "Todo se explica con dos cosas: X e Y." Luego una escena por causa, abriendo con "Primero, X." / "Segundo, Y."
+2. MITO (escena 1, opcional): la explicación obvia o la leyenda que la gente cree, y enseguida la desmientes con palabras PROPIAS de este guion (no con una muletilla fija).
+3. CAUSAS: si el dato tiene 2–3 causas, una escena por causa, encadenadas con conectores naturales y distintos en cada guion. NO dediques una escena entera a anunciar las causas ("Todo se explica con dos cosas…"): esa escena no tiene nada que mostrar y deja la pantalla vacía.
 4. FUENTE NOMBRADA EN LA VOZ: al menos una escena dice la fuente en voz alta, con institución y, si se puede, año ("según la NASA", "según un estudio de la Universidad de Oxford de 2019"). No basta con ponerla en la descripción o en props.fuentes (que siguen siendo obligatorias). Es lo que da valor educativo propio y protege la monetización.
-5. GIRO (penúltima o última escena): empieza con "Y aquí está el giro:" y da una consecuencia inesperada o una inversión del dato.
+5. GIRO (penúltima o última escena): una consecuencia inesperada o una inversión del dato, contada directo (sin anunciarla).
+FRASES PROHIBIDAS (desde 2026-11-09; tres Shorts seguidos —Everest, Panamá, Torre Eiffel— salieron con el mismo andamiaje palabra por palabra, y YouTube desmonetiza lo "repetitivo/hecho en serie"): "La verdad es más rara/simple/peor", "Todo se explica con dos cosas", "Primero, …" / "Segundo, …" como apertura de escena, "Y aquí está el giro". La estructura se mantiene; las palabras cambian en cada guion.
 6. REMATE (props.remate, se ve gigante): UNA frase de cierre SIMÉTRICA, dos mitades espejo que reutilizan la misma estructura ("Estados Unidos compró el camino del tren. México se quedó con el camino al mar."). Máximo ~100 caracteres. Nada de "¡Suscríbete!" ni preguntas al público.
-7. ESTILO: lenguaje concreto, cifras redondeadas en la voz ("unos 60 km", "casi 32 años"; el visual puede llevar la cifra exacta), cero relleno ("¿sabías que…?", "increíble", "curiosamente"). Cada escena = UNA idea = UNA imagen concreta en "imagen" (si la idea tiene sujeto visible). Total ~90–110 palabras habladas (≈ 30–38 s).
-EJEMPLO CORTO (solo la locución; no lo copies):
+7. ESTILO: lenguaje concreto, cifras redondeadas en la voz ("unos 60 km", "casi 32 años"; el visual puede llevar la cifra exacta), cero relleno ("¿sabías que…?", "increíble", "curiosamente"). Cada escena = UNA idea = UNA imagen concreta en "imagen" (si la idea tiene sujeto visible). TOPE DURO: 75–100 palabras habladas en total (gancho + escenas + remate ≈ 28–36 s) y 4–6 escenas. El dato con mejor retención del canal (billón de segundos, 76 % visto) dura 30 s; los de 44–50 s alargan sin sumar retención.
+EJEMPLO CORTO (solo la locución; no lo copies, ni sus conectores):
   gancho: "Mira la frontera de Arizona: se queda a 60 km del mar sin tocarlo. ¿Por qué?"
-  escena 1: "Dicen que los topógrafos la trazaron borrachos. La verdad es más rara."
-  escena 2: "Todo se explica con dos cosas: un tren y una península. Primero, el tren."
-  escena 3: "Según la Oficina del Historiador del Departamento de Estado, Washington quería una ruta al Pacífico por el sur."
-  escena 4: "Segundo, la península. México se negó a vender Baja California y su salida al golfo."
-  escena 5: "Y aquí está el giro: Estados Unidos vino por medio norte de México y se fue con un desierto."
+  escena 1: "Dicen que los topógrafos la trazaron borrachos. Nada que ver."
+  escena 2: "Según la Oficina del Historiador del Departamento de Estado, Washington quería una ruta de tren al Pacífico por el sur."
+  escena 3: "Y México se negó a vender Baja California y su salida al golfo."
+  escena 4: "Estados Unidos vino por medio norte de México y se fue con un desierto."
   remate: "Estados Unidos compró el camino del tren. México se quedó con el camino al mar."`;
 
 
