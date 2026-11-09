@@ -111,8 +111,8 @@ export const sintetizar = (sim: SimRitmo, partitura: PartituraRitmo, timbre: Ins
   const ev = eventosDe(partitura);
   ev.melodia.forEach((e, k) => tocar(pistas.melodia, timbre, { inicio: e.frame / FPS, hz: midiAHz(e.nota!), duracion: Math.max(0.18, e.dur! * 0.95), volumen: 0.5, semilla: k + 1 }));
   ev.bajo.forEach((e) => bajo(pistas.bajo, e.frame / FPS, midiAHz(e.nota!), e.dur!, 0.42));
-  ev.kick.forEach((e, k) => bombo(pistas.kick, e.frame / FPS, 0.8, 11 + k));
-  ev.snare.forEach((e, k) => caja(pistas.snare, e.frame / FPS, 0.42, 101 + k));
+  ev.kick.forEach((e, k) => bombo(pistas.kick, e.frame / FPS, e.acento ? 0.95 : 0.8, 11 + k));
+  ev.snare.forEach((e, k) => caja(pistas.snare, e.frame / FPS, e.acento ? 0.66 : 0.42, 101 + k));
   ev.hat.forEach((e, k) => platillo(pistas.hat, e.frame / FPS, e.abierto ? 0.3 : 0.2, 1001 + k, e.abierto));
   const L = crearPista(seg), R = crearPista(seg);
   for (const [nombre, p] of Object.entries(pistas)) {
