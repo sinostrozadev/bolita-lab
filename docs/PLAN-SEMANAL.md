@@ -1,6 +1,6 @@
 # Bolita Lab — Plan semanal (rodante)
 
-> Actualizado **2026-11-08 23:45** (plantilla nueva del primer segundo en 11-09/10/11 18:00; 3 carreras viejas corridas al 11-17/18/19). Antes: **2026-11-07 02:45** (America/Santiago) por Claude (subagente, sesión de madrugada). Método: skill global `plan-semanal`.
+> Actualizado **2026-11-09 00:45** (experimentos de interacción al mediodía del 10/11/12; 11-13 12:00 reservada; 4 viejos corridos al 20/21/22). Antes: **2026-11-08 23:45** (plantilla nueva del primer segundo en 11-09/10/11 18:00; 3 carreras viejas corridas al 11-17/18/19). Antes: **2026-11-07 02:45** (America/Santiago) por Claude (subagente, sesión de madrugada). Método: skill global `plan-semanal`.
 > Regla: siempre hay plan de la semana en curso **y** de la siguiente. Cuando a la semana en curso le quedan < 3 ranuras
 > futuras con guion, o termina, se hace el ritual de cierre (skill §5) y se arma la que viene.
 > **Manda el bloque JSON del final** (lo leen `estado.mts` y el panel de Santiago); la tabla es su vista legible.
@@ -48,13 +48,13 @@ ver "Contingencias revisadas"); el nicho es atemporal, así que 0 % no es falla 
 |---|---|---|---|---|---|---|---|---|
 | lun 11-09 | 12:00 | dato | Si la Tierra fuera una pelota de básquet, ¿dónde estaría la Luna? | evergreen | — | programado ([iBORkBbkd8c](https://youtube.com/shorts/iBORkBbkd8c)) | Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español) | dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) |
 | lun 11-09 | 18:00 | carrera | ¿Qué estación gana? (PLANTILLA NUEVA, primer segundo) | evergreen | — | programado ([mBG93NTd51c](https://youtube.com/shorts/mBG93NTd51c)) | mikan2d | H0 primer segundo; la carrera de meses (z9c6DgDFKAA) pasó al 11-17 18:00 |
-| mar 11-10 | 12:00 | dato | Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso | evergreen | — | programado ([ddtrrj2MF3M](https://youtube.com/shorts/ddtrrj2MF3M)) | Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español) | dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) |
+| mar 11-10 | 12:00 | bola | **ADIVINA LA CANCIÓN: Bella Ciao** (piano + bajo, 3 pistas, sin revelar) | evergreen | — | programado ([6u43w_oAtTE](https://youtube.com/shorts/6u43w_oAtTE)) | — | interacción: comentarios; el dato de la luz (ddtrrj2MF3M) pasó al 11-20 18:00 |
 | mar 11-10 | 18:00 | bola | 2 bolitas, 1 salida: Para Elisa (PLANTILLA NUEVA) | evergreen | — | programado ([vCBxbjwusnc](https://youtube.com/shorts/vCBxbjwusnc)) | satisfying.ba11s | H0 primer segundo; Messi/CR7 (dy2omu9k2go) pasó al 11-18 18:00 |
-| mié 11-11 | 12:00 | dato | Tu corazón late casi 3.000 millones de veces en tu vida | evergreen | — | programado ([vb23i8EbyFI](https://youtube.com/shorts/vb23i8EbyFI)) | Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español) | dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) |
+| mié 11-11 | 12:00 | bola | **APUESTA: ¿en qué rebote llena el círculo?** (Marcha turca) | evergreen | — | programado ([pi_-etXwymI](https://youtube.com/shorts/pi_-etXwymI)) | — | interacción: comentar el número; el dato del corazón (vb23i8EbyFI) pasó al 11-21 12:00 |
 | mié 11-11 | 18:00 | carrera | ¿Qué país gana? (PLANTILLA NUEVA) | evergreen | — | programado ([CvgoCXRxVCQ](https://youtube.com/shorts/CvgoCXRxVCQ)) | mikan2d | H0 primer segundo; mascotas (fnnlwWYxIMo) pasó al 11-19 18:00 |
-| jue 11-12 | 12:00 | carrera | ¿Qué día de la semana gana? 📅 Carrera de bolitas | evergreen | — | programado ([b3v9Q6ymd3A](https://youtube.com/shorts/b3v9Q6ymd3A)) | mikan2d (biN5wJVlEzA "Digging Race", 5,7 M) | rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) |
+| jue 11-12 | 12:00 | bola | **ADIVINA LA CANCIÓN: Jingle Bells** (campana + acordes) | evergreen | — | programado ([yO7rByQZW2k](https://youtube.com/shorts/yO7rByQZW2k)) | — | interacción + timbre; la carrera de días (b3v9Q6ymd3A) pasó al 11-21 18:00 |
 | jue 11-12 | 18:00 | bola | La bolita crece con cada rebote hasta llenar el círculo (Marcha Turca) | evergreen | — | programado ([6T5zmMoG93A](https://youtube.com/shorts/6T5zmMoG93A)) | satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K) | bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación |
-| vie 11-13 | 12:00 | bola | 3 bolitas, un hueco: ¿cuál escapa primero? Canon de Pachelbel | evergreen | — | programado ([zeb04rqSoHk](https://youtube.com/shorts/zeb04rqSoHk)) | satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K) | bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación |
+| vie 11-13 | 12:00 | bola | ADIVINA LA CANCIÓN: la "buena" con derechos (Still D.R.E. o Creep) | evergreen | — | idea · **bloqueo: melodía de Santiago** | — | prueba única con música con derechos; el Canon de 3 bolitas (zeb04rqSoHk) pasó al 11-22 12:00 |
 | vie 11-13 | 18:00 | dato | Naces con unos 300 huesos y de adulto tienes 206 | evergreen | — | programado ([O2YLb4xlTNk](https://youtube.com/shorts/O2YLb4xlTNk)) | Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español) | dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) |
 | sáb 11-14 | 12:00 | carrera | ¿Pizza, hamburguesa, sushi o tacos? 🍕 ¿Qué comida gana? | evergreen | — | programado ([JKfuFS0b99U](https://youtube.com/shorts/JKfuFS0b99U)) | mikan2d (biN5wJVlEzA "Digging Race", 5,7 M) | rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) |
 | sáb 11-14 | 18:00 | bola | ¿En qué rebote escapa la bolita? El lago de los cisnes en neón | evergreen | — | programado ([aqlybcvEYz0](https://youtube.com/shorts/aqlybcvEYz0)) | satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K) | bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación |
@@ -114,7 +114,7 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
   "version": 1,
   "canal": "bolita-lab",
   "zona": "America/Santiago",
-  "actualizado": "2026-11-08T23:45:00-03:00",
+  "actualizado": "2026-11-09T00:45:00-03:00",
   "semanas": [
     {
       "inicio": "2026-11-02",
@@ -340,16 +340,16 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "fecha": "2026-11-10",
       "hora": "12:00",
       "formato": "short",
-      "plantilla": "dato",
-      "tema": "Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso",
+      "plantilla": "bola",
+      "tema": "ADIVINA LA CANCIÓN: Bella Ciao (piano + bajo, pistas, sin revelar; comentarios)",
       "tipo": "evergreen",
       "serie": null,
       "contingencia": null,
       "estado": "programado",
-      "guion": "contenido/guiones/2026-11-04-dato-luz-pasado.json",
-      "videoId": "ddtrrj2MF3M",
+      "guion": "contenido/guiones/2026-11-09-bola-adivina-bella-ciao.json",
+      "videoId": "6u43w_oAtTE",
       "referente": "Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español)",
-      "porQue": "dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP)",
+      "porQue": "H-interacción (Santiago 11-08): juego de reconocer + CTA a comentarios; dominio público",
       "bloqueo": null
     },
     {
@@ -372,16 +372,16 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "fecha": "2026-11-11",
       "hora": "12:00",
       "formato": "short",
-      "plantilla": "dato",
-      "tema": "Tu corazón late casi 3.000 millones de veces en tu vida",
+      "plantilla": "bola",
+      "tema": "APUESTA: ¿en qué rebote llena el círculo? (comenta tu número) · Marcha turca",
       "tipo": "evergreen",
       "serie": null,
       "contingencia": null,
       "estado": "programado",
-      "guion": "contenido/guiones/2026-11-05-dato-corazon-latidos.json",
-      "videoId": "vb23i8EbyFI",
+      "guion": "contenido/guiones/2026-11-09-bola-apuesta-marcha-turca.json",
+      "videoId": "pi_-etXwymI",
       "referente": "Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español)",
-      "porQue": "dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP)",
+      "porQue": "H-interacción: pregunta obvia para comentar antes del final",
       "bloqueo": null
     },
     {
@@ -404,16 +404,16 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "fecha": "2026-11-12",
       "hora": "12:00",
       "formato": "short",
-      "plantilla": "carrera",
-      "tema": "¿Qué día de la semana gana? 📅 Carrera de bolitas",
+      "plantilla": "bola",
+      "tema": "ADIVINA LA CANCIÓN: Jingle Bells (campana + acordes, pistas navideñas)",
       "tipo": "evergreen",
       "serie": null,
       "contingencia": null,
       "estado": "programado",
-      "guion": "contenido/guiones/2026-11-05-carrera-dias-semana.json",
-      "videoId": "b3v9Q6ymd3A",
+      "guion": "contenido/guiones/2026-11-09-bola-adivina-jingle-bells.json",
+      "videoId": "yO7rByQZW2k",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
-      "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2)",
+      "porQue": "H-interacción + timbre nuevo; estacional (diciembre)",
       "bloqueo": null
     },
     {
@@ -437,16 +437,16 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "hora": "12:00",
       "formato": "short",
       "plantilla": "bola",
-      "tema": "3 bolitas, un hueco: ¿cuál escapa primero? Canon de Pachelbel",
+      "tema": "ADIVINA LA CANCIÓN: la \"buena\" con derechos (Still D.R.E. o Creep) — melodía la aporta Santiago",
       "tipo": "evergreen",
       "serie": null,
       "contingencia": null,
-      "estado": "programado",
-      "guion": "contenido/guiones/2026-11-05-bola-3bolas-canon.json",
-      "videoId": "zeb04rqSoHk",
+      "estado": "idea",
+      "guion": null,
+      "videoId": null,
       "referente": "satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K)",
-      "porQue": "bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación",
-      "bloqueo": null
+      "porQue": "H-interacción: 1 prueba con música con derechos (Content ID aceptado pre-YPP)",
+      "bloqueo": "falta la melodía (notas/MIDI) de Santiago"
     },
     {
       "fecha": "2026-11-13",
@@ -586,6 +586,70 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "videoId": "fnnlwWYxIMo",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
       "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) · movido el 11-08 para dar paso a la plantilla nueva (reprogramar.mts)",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-20",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "dato",
+      "tema": "Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-04-dato-luz-pasado.json",
+      "videoId": "ddtrrj2MF3M",
+      "referente": "Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español)",
+      "porQue": "dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) · movido el 11-09 para los experimentos de interacción",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-21",
+      "hora": "12:00",
+      "formato": "short",
+      "plantilla": "dato",
+      "tema": "Tu corazón late casi 3.000 millones de veces en tu vida",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-05-dato-corazon-latidos.json",
+      "videoId": "vb23i8EbyFI",
+      "referente": "Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español)",
+      "porQue": "dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) · movido el 11-09 para los experimentos de interacción",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-21",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "carrera",
+      "tema": "¿Qué día de la semana gana? 📅 Carrera de bolitas",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-05-carrera-dias-semana.json",
+      "videoId": "b3v9Q6ymd3A",
+      "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
+      "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) · movido el 11-09 para los experimentos de interacción",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-22",
+      "hora": "12:00",
+      "formato": "short",
+      "plantilla": "bola",
+      "tema": "3 bolitas, un hueco: ¿cuál escapa primero? Canon de Pachelbel",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-05-bola-3bolas-canon.json",
+      "videoId": "zeb04rqSoHk",
+      "referente": "satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K)",
+      "porQue": "bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación · movido el 11-09",
       "bloqueo": null
     }
   ]
