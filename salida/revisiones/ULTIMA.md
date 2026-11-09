@@ -16,6 +16,10 @@ Métricas al 2026-11-08 08:00: 11 subs · 6.871 vistas totales · 8 Shorts públ
 - Rediseño del primer segundo en curso (agente Opus, rama `primer-segundo`, worktree): trazas persistentes que llenan el círculo de color, bola ≥ 8 % del alto y anillo al 92 %, cold open de 0,4 s con el estado final ("así termina ↓"), movimiento + primera nota en ≤ 0,2 s, dos bloques de texto fijos (mecánica arriba, intriga abajo). Primero `bola`, luego `carrera`. Se mezcla solo si pasa tsc + render de prueba + fotogramas medidos.
 - Herramienta `herramientas/navegador/retencion-studio.mjs`: lee "se quedó a ver" por Short desde Studio con el piloto (lo que la API no da).
 
+- **Rediseño MEZCLADO a master (8cd01ec) y en el aire:** 3 Shorts con la plantilla nueva renderizados (carrera estación, bola Para Elisa escape, carrera país; 3–6 min c/u a resolución completa) y programados por Studio en las ranuras más próximas: lun 11-09 18:00 `mBG93NTd51c`, mar 11-10 18:00 `vCBxbjwusnc`, mié 11-11 18:00 `CvgoCXRxVCQ`. Las 3 carreras viejas que ocupaban esas ranuras se corrieron al 11-17/18/19 18:00 con `scripts/reprogramar.mts` (API videos.update, sin borrar nada). Santiago autorizó ("dale, súbelo").
+- Herramienta `scripts/reprogramar.mts <videoId> <ISO>`: cambia publishAt de un video programado y su `publicarEn` en la bandeja.
+- Antes/después para Santiago: https://claude.ai/artifact/SmDXY7Hr2Bd8ojUiWzyW8y
+
 ## Herramientas exploradas
 - Lectura de `ytInitialData` + chip "Populares" de YouTube sin piloto para bajar las portadas más vistas de un canal (scripts en la skill `caratulas-con-gpt/referencias/`).
 - El ffmpeg de Remotion solo trae `scale`: sirve para fotogramas, no para hojas de contacto.
@@ -25,6 +29,6 @@ Métricas al 2026-11-08 08:00: 11 subs · 6.871 vistas totales · 8 Shorts públ
 - META-REFERENTE: fila "Retención" ya con datos (antes "sin datos").
 
 ## Pendiente
-- Mezclar `primer-segundo` tras revisar los fotogramas; re-renderizar desde el 11-17 con la plantilla nueva y evaluar reemplazar los programados 11-12 → 11-16 si el tope diario de subidas lo permite (son 10).
+- Evaluar reemplazar los programados 11-12 → 11-16 (10, plantilla vieja) si los 3 nuevos retienen ≥ 55 % el 11-10/11-12; el cron ya produce con la plantilla nueva desde el 11-17.
 - Medir: "se quedó a ver" ≥ 55 % en los 6 primeros Shorts nuevos y ≥ 3 de 6 sobre 2.000 vistas a 7 días (hoy 0/8).
 - Santiago: reautorizar el token con Analytics (`subir.mts autorizar` ya pide el scope en LP; copiar la lista a Bolita) para que `metricas.mts` guarde retención sola.

@@ -1,6 +1,6 @@
 # Bolita Lab — Plan semanal (rodante)
 
-> Actualizado **2026-11-07 02:45** (America/Santiago) por Claude (subagente, sesión de madrugada). Método: skill global `plan-semanal`.
+> Actualizado **2026-11-08 23:45** (plantilla nueva del primer segundo en 11-09/10/11 18:00; 3 carreras viejas corridas al 11-17/18/19). Antes: **2026-11-07 02:45** (America/Santiago) por Claude (subagente, sesión de madrugada). Método: skill global `plan-semanal`.
 > Regla: siempre hay plan de la semana en curso **y** de la siguiente. Cuando a la semana en curso le quedan < 3 ranuras
 > futuras con guion, o termina, se hace el ritual de cierre (skill §5) y se arma la que viene.
 > **Manda el bloque JSON del final** (lo leen `estado.mts` y el panel de Santiago); la tabla es su vista legible.
@@ -47,11 +47,11 @@ ver "Contingencias revisadas"); el nicho es atemporal, así que 0 % no es falla 
 | Día | Hora | Plantilla | Tema | Tipo | Contingencia (fuente) | Estado | Referente | Por qué entra |
 |---|---|---|---|---|---|---|---|---|
 | lun 11-09 | 12:00 | dato | Si la Tierra fuera una pelota de básquet, ¿dónde estaría la Luna? | evergreen | — | programado ([iBORkBbkd8c](https://youtube.com/shorts/iBORkBbkd8c)) | Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español) | dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) |
-| lun 11-09 | 18:00 | carrera | ¿Qué mes del año gana la carrera? 🏁 Carrera de bolitas | evergreen | — | programado ([z9c6DgDFKAA](https://youtube.com/shorts/z9c6DgDFKAA)) | mikan2d (biN5wJVlEzA "Digging Race", 5,7 M) | rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) |
+| lun 11-09 | 18:00 | carrera | ¿Qué estación gana? (PLANTILLA NUEVA, primer segundo) | evergreen | — | programado ([mBG93NTd51c](https://youtube.com/shorts/mBG93NTd51c)) | mikan2d | H0 primer segundo; la carrera de meses (z9c6DgDFKAA) pasó al 11-17 18:00 |
 | mar 11-10 | 12:00 | dato | Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso | evergreen | — | programado ([ddtrrj2MF3M](https://youtube.com/shorts/ddtrrj2MF3M)) | Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español) | dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) |
-| mar 11-10 | 18:00 | carrera | ¿Messi, CR7, Neymar o Mbappé? ⚽ ¿Quién gana la carrera? | evergreen | — | programado ([dy2omu9k2go](https://youtube.com/shorts/dy2omu9k2go)) | mikan2d (biN5wJVlEzA "Digging Race", 5,7 M) | rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) |
+| mar 11-10 | 18:00 | bola | 2 bolitas, 1 salida: Para Elisa (PLANTILLA NUEVA) | evergreen | — | programado ([vCBxbjwusnc](https://youtube.com/shorts/vCBxbjwusnc)) | satisfying.ba11s | H0 primer segundo; Messi/CR7 (dy2omu9k2go) pasó al 11-18 18:00 |
 | mié 11-11 | 12:00 | dato | Tu corazón late casi 3.000 millones de veces en tu vida | evergreen | — | programado ([vb23i8EbyFI](https://youtube.com/shorts/vb23i8EbyFI)) | Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español) | dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) |
-| mié 11-11 | 18:00 | carrera | ¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas | evergreen | — | programado ([fnnlwWYxIMo](https://youtube.com/shorts/fnnlwWYxIMo)) | mikan2d (biN5wJVlEzA "Digging Race", 5,7 M) | rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) |
+| mié 11-11 | 18:00 | carrera | ¿Qué país gana? (PLANTILLA NUEVA) | evergreen | — | programado ([CvgoCXRxVCQ](https://youtube.com/shorts/CvgoCXRxVCQ)) | mikan2d | H0 primer segundo; mascotas (fnnlwWYxIMo) pasó al 11-19 18:00 |
 | jue 11-12 | 12:00 | carrera | ¿Qué día de la semana gana? 📅 Carrera de bolitas | evergreen | — | programado ([b3v9Q6ymd3A](https://youtube.com/shorts/b3v9Q6ymd3A)) | mikan2d (biN5wJVlEzA "Digging Race", 5,7 M) | rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) |
 | jue 11-12 | 18:00 | bola | La bolita crece con cada rebote hasta llenar el círculo (Marcha Turca) | evergreen | — | programado ([6T5zmMoG93A](https://youtube.com/shorts/6T5zmMoG93A)) | satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K) | bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación |
 | vie 11-13 | 12:00 | bola | 3 bolitas, un hueco: ¿cuál escapa primero? Canon de Pachelbel | evergreen | — | programado ([zeb04rqSoHk](https://youtube.com/shorts/zeb04rqSoHk)) | satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K) | bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación |
@@ -114,7 +114,7 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
   "version": 1,
   "canal": "bolita-lab",
   "zona": "America/Santiago",
-  "actualizado": "2026-11-07T02:45:00-03:00",
+  "actualizado": "2026-11-08T23:45:00-03:00",
   "semanas": [
     {
       "inicio": "2026-11-02",
@@ -325,15 +325,15 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "hora": "18:00",
       "formato": "short",
       "plantilla": "carrera",
-      "tema": "¿Qué mes del año gana la carrera? 🏁 Carrera de bolitas",
+      "tema": "¿Qué estación gana? ❄️🌸☀️🍂 Carrera de bolitas (plantilla nueva: primer segundo)",
       "tipo": "evergreen",
       "serie": null,
       "contingencia": null,
       "estado": "programado",
-      "guion": "contenido/guiones/2026-11-03-carrera-meses.json",
-      "videoId": "z9c6DgDFKAA",
+      "guion": "contenido/guiones/2026-11-08-carrera-que-estacion-gana.json",
+      "videoId": "mBG93NTd51c",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
-      "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2)",
+      "porQue": "H0 primer segundo: plantilla nueva (trazas, bola grande, cold open) en la primera ranura posible; se compara \"se queda a ver\" con los viejos",
       "bloqueo": null
     },
     {
@@ -356,16 +356,16 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "fecha": "2026-11-10",
       "hora": "18:00",
       "formato": "short",
-      "plantilla": "carrera",
-      "tema": "¿Messi, CR7, Neymar o Mbappé? ⚽ ¿Quién gana la carrera?",
+      "plantilla": "bola",
+      "tema": "2 bolitas, 1 salida: ¿cuál gana? Para Elisa (plantilla nueva: primer segundo)",
       "tipo": "evergreen",
       "serie": null,
       "contingencia": null,
       "estado": "programado",
-      "guion": "contenido/guiones/2026-11-03-carrera-messi-cr7-neymar.json",
-      "videoId": "dy2omu9k2go",
+      "guion": "contenido/guiones/2026-11-08-bola-furelise-2.json",
+      "videoId": "vCBxbjwusnc",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
-      "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2)",
+      "porQue": "H0 primer segundo: plantilla nueva (trazas, bola grande, cold open) en la primera ranura posible; se compara \"se queda a ver\" con los viejos",
       "bloqueo": null
     },
     {
@@ -389,15 +389,15 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "hora": "18:00",
       "formato": "short",
       "plantilla": "carrera",
-      "tema": "¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas",
+      "tema": "¿Qué país gana? 🇨🇱🇦🇷🇧🇷🇲🇽 Carrera de bolitas (plantilla nueva: primer segundo)",
       "tipo": "evergreen",
       "serie": null,
       "contingencia": null,
       "estado": "programado",
-      "guion": "contenido/guiones/2026-11-04-carrera-mascotas.json",
-      "videoId": "fnnlwWYxIMo",
+      "guion": "contenido/guiones/2026-11-08-carrera-que-pais-gana.json",
+      "videoId": "CvgoCXRxVCQ",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
-      "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2)",
+      "porQue": "H0 primer segundo: plantilla nueva (trazas, bola grande, cold open) en la primera ranura posible; se compara \"se queda a ver\" con los viejos",
       "bloqueo": null
     },
     {
@@ -539,6 +539,54 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "videoId": "TlEUxPDJQMY",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
       "porQue": "rotación (toca carrera tras el dato de las 12:00); ya renderizado el 11-07 con el CTA; el de café/té/mate pasa a la cola"
+    },
+    {
+      "fecha": "2026-11-17",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "carrera",
+      "tema": "¿Qué mes del año gana la carrera? 🏁 Carrera de bolitas",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-03-carrera-meses.json",
+      "videoId": "z9c6DgDFKAA",
+      "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
+      "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) · movido el 11-08 para dar paso a la plantilla nueva (reprogramar.mts)",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-18",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "carrera",
+      "tema": "¿Messi, CR7, Neymar o Mbappé? ⚽ ¿Quién gana la carrera?",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-03-carrera-messi-cr7-neymar.json",
+      "videoId": "dy2omu9k2go",
+      "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
+      "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) · movido el 11-08 para dar paso a la plantilla nueva (reprogramar.mts)",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-19",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "carrera",
+      "tema": "¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-04-carrera-mascotas.json",
+      "videoId": "fnnlwWYxIMo",
+      "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
+      "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) · movido el 11-08 para dar paso a la plantilla nueva (reprogramar.mts)",
+      "bloqueo": null
     }
   ]
 }
