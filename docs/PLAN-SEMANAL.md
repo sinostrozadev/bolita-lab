@@ -54,7 +54,7 @@ ver "Contingencias revisadas"); el nicho es atemporal, así que 0 % no es falla 
 | mié 11-11 | 18:00 | carrera | ¿Qué país gana? (PLANTILLA NUEVA) | evergreen | — | programado ([CvgoCXRxVCQ](https://youtube.com/shorts/CvgoCXRxVCQ)) | mikan2d | H0 primer segundo; mascotas (fnnlwWYxIMo) pasó al 11-19 18:00 |
 | jue 11-12 | 12:00 | bola | **ADIVINA LA CANCIÓN: Jingle Bells** (campana + acordes) | evergreen | — | programado ([yO7rByQZW2k](https://youtube.com/shorts/yO7rByQZW2k)) | — | interacción + timbre; la carrera de días (b3v9Q6ymd3A) pasó al 11-21 18:00 |
 | jue 11-12 | 18:00 | bola | La bolita crece con cada rebote hasta llenar el círculo (Marcha Turca) | evergreen | — | programado ([6T5zmMoG93A](https://youtube.com/shorts/6T5zmMoG93A)) | satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K) | bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación |
-| vie 11-13 | 12:00 | bola | ADIVINA LA CANCIÓN: la "buena" con derechos (Still D.R.E. o Creep) | evergreen | — | idea · **bloqueo: melodía de Santiago** | — | prueba única con música con derechos; el Canon de 3 bolitas (zeb04rqSoHk) pasó al 11-22 12:00 |
+| vie 11-13 | 12:00 | bola | **ADIVINA LA CANCIÓN: Still D.R.E.** (riff de piano, notas de Santiago; con derechos) | evergreen | — | programado ([bpZcIdShLpg](https://youtube.com/shorts/bpZcIdShLpg)) | — | única prueba con música con derechos (Content ID aceptado pre-YPP); el Canon de 3 bolitas (zeb04rqSoHk) pasó al 11-22 12:00 |
 | vie 11-13 | 18:00 | dato | Naces con unos 300 huesos y de adulto tienes 206 | evergreen | — | programado ([O2YLb4xlTNk](https://youtube.com/shorts/O2YLb4xlTNk)) | Ñerd (fórmula Arizona, 4,1 M) · El Calacas (formato 60 s en español) | dato ≈ 1.130–1.250 vistas; valor educativo propio (YPP) |
 | sáb 11-14 | 12:00 | carrera | ¿Pizza, hamburguesa, sushi o tacos? 🍕 ¿Qué comida gana? | evergreen | — | programado ([JKfuFS0b99U](https://youtube.com/shorts/JKfuFS0b99U)) | mikan2d (biN5wJVlEzA "Digging Race", 5,7 M) | rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) |
 | sáb 11-14 | 18:00 | bola | ¿En qué rebote escapa la bolita? El lago de los cisnes en neón | evergreen | — | programado ([aqlybcvEYz0](https://youtube.com/shorts/aqlybcvEYz0)) | satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K) | bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación |
@@ -114,7 +114,7 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
   "version": 1,
   "canal": "bolita-lab",
   "zona": "America/Santiago",
-  "actualizado": "2026-11-09T00:45:00-03:00",
+  "actualizado": "2026-11-09T07:40:00-03:00",
   "semanas": [
     {
       "inicio": "2026-11-02",
@@ -437,16 +437,16 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "hora": "12:00",
       "formato": "short",
       "plantilla": "bola",
-      "tema": "ADIVINA LA CANCIÓN: la \"buena\" con derechos (Still D.R.E. o Creep) — melodía la aporta Santiago",
+      "tema": "ADIVINA LA CANCIÓN: Still D.R.E. (riff de piano; notas aportadas por Santiago; música con derechos, Content ID aceptado)",
       "tipo": "evergreen",
       "serie": null,
       "contingencia": null,
-      "estado": "idea",
-      "guion": null,
-      "videoId": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-09-bola-adivina-still-dre.json",
+      "videoId": "bpZcIdShLpg",
       "referente": "satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K)",
       "porQue": "H-interacción: 1 prueba con música con derechos (Content ID aceptado pre-YPP)",
-      "bloqueo": "falta la melodía (notas/MIDI) de Santiago"
+      "bloqueo": null
     },
     {
       "fecha": "2026-11-13",
