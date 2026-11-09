@@ -1,0 +1,42 @@
+{
+  "plantilla": "bola",
+  "id": "pendiente-bola-adivina-bella-ciao",
+  "titulo": "¿Qué canción toca esta bolita? 🎵 Solo el 10 % la adivina",
+  "descripcion": "Cada rebote de la bolita de neón toca la siguiente nota de una canción muy famosa (melodía tradicional, de dominio público). Tres pistas y una sola oportunidad: ¿la reconoces? Escríbela en los comentarios, sin mirar las respuestas.\nSimulación física determinista hecha en Bolita Lab.",
+  "hashtags": ["#shorts", "#adivinalacancion", "#satisfying", "#fisica", "#bolita", "#neon", "#piano"],
+  "props": {
+    "id": "pendiente-bola-adivina-bella-ciao",
+    "gancho": "¿Qué canción es? 🎵",
+    "modo": "escape",
+    "bolas": 1,
+    "timbre": "piano",
+    "acompanamiento": "bajo",
+    "melodiaNotas": {
+      "bpm": 120,
+      "compas": 4,
+      "anacrusa": 1.5,
+      "tonica": 9,
+      "menor": true,
+      "acordes": [[9, true], [9, true], [9, true], [4, false], [2, true], [9, true], [4, false], [9, true]],
+      "notas": [
+        [64, 0.5], [69, 0.5], [71, 0.5],
+        [72, 1], [69, 1.5], [64, 0.5], [69, 0.5], [71, 0.5],
+        [72, 1], [69, 1.5], [64, 0.5], [69, 0.5], [71, 0.5],
+        [72, 1], [71, 0.5], [69, 0.5], [72, 1], [71, 0.5], [69, 0.5],
+        [76, 1], [76, 1], [76, 1], [0, 0.5], [74, 0.5],
+        [76, 0.5], [77, 0.5], [77, 2.5], [77, 0.5],
+        [76, 0.5], [74, 0.5], [77, 1], [76, 2],
+        [76, 0.5], [74, 0.5], [72, 1], [71, 1], [76, 1],
+        [72, 1], [71, 1], [69, 2]
+      ]
+    },
+    "juego": {
+      "tipo": "adivina",
+      "pistas": [
+        { "t": 6, "texto": "la cantan en los estadios ⚽" },
+        { "t": 14, "texto": "una serie de ladrones 🎭" },
+        { "t": 22, "texto": "es italiana 🇮🇹" }
+      ]
+    }
+  }
+}

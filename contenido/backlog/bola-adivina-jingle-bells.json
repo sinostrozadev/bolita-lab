@@ -1,0 +1,47 @@
+{
+  "plantilla": "bola",
+  "id": "pendiente-bola-adivina-jingle-bells",
+  "titulo": "¿Qué canción toca esta bolita? 🔔 Adivínala antes del final",
+  "descripcion": "Cada rebote de la bolita de neón toca la siguiente nota de una canción que todos conocen (melodía de 1857, de dominio público). Tres pistas: ¿la reconoces? Escríbela en los comentarios.\nSimulación física determinista hecha en Bolita Lab.",
+  "hashtags": ["#shorts", "#adivinalacancion", "#satisfying", "#fisica", "#bolita", "#neon", "#campanas"],
+  "props": {
+    "id": "pendiente-bola-adivina-jingle-bells",
+    "gancho": "¿Qué canción es? 🎵",
+    "modo": "crecer",
+    "bolas": 1,
+    "timbre": "campana",
+    "acompanamiento": "acorde",
+    "melodiaNotas": {
+      "bpm": 120,
+      "compas": 4,
+      "tonica": 0,
+      "menor": false,
+      "notas": [
+        [76, 1], [76, 1], [76, 2],
+        [76, 1], [76, 1], [76, 2],
+        [76, 1], [79, 1], [72, 1.5], [74, 0.5],
+        [76, 4],
+        [77, 1], [77, 1], [77, 1.5], [77, 0.5],
+        [77, 1], [76, 1], [76, 1], [76, 0.5], [76, 0.5],
+        [76, 1], [74, 1], [74, 1], [76, 1],
+        [74, 2], [79, 2],
+        [76, 1], [76, 1], [76, 2],
+        [76, 1], [76, 1], [76, 2],
+        [76, 1], [79, 1], [72, 1.5], [74, 0.5],
+        [76, 4],
+        [77, 1], [77, 1], [77, 1.5], [77, 0.5],
+        [77, 1], [76, 1], [76, 1], [76, 0.5], [76, 0.5],
+        [79, 1], [79, 1], [77, 1], [74, 1],
+        [72, 4]
+      ]
+    },
+    "juego": {
+      "tipo": "adivina",
+      "pistas": [
+        { "t": 6, "texto": "suena en diciembre 🎄" },
+        { "t": 14, "texto": "un trineo 🛷" },
+        { "t": 22, "texto": "cascabeles 🔔" }
+      ]
+    }
+  }
+}
