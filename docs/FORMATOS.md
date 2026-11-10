@@ -21,7 +21,7 @@
 | 2 | **Bola "primer segundo"** | `bola` (8cd01ec) | trazas que llenan el círculo, bola grande, cold open "así termina ↓", 2 textos fijos | 11-10 | en prueba |
 | 3 | **Carrera clásica (vieja)** | `carrera` antes del 11-08 | Plinko con etiquetas chicas | 11-05 | referencia |
 | 4 | **Carrera "primer segundo"** | `carrera` (8cd01ec) | banderas/iconos legibles, podio vacío desde el inicio | 11-09 | en prueba |
-| 5 | **Carrera v2** | `carrera` rama `carrera-v2` | bloques con números que se rompen, tubos con vueltas, sonido nuevo, votación | 11-10 | prototipo privado `Hw8RS-K-KRM` (espera veredicto) |
+| 5 | **Carrera v2** | `carrera` rama `carrera-v2` | bloques con números que se rompen, tubos con vueltas, sonido nuevo, votación | 11-10 | en prueba: `Hw8RS-K-KRM` vie 11-13 07:00 (aprobado); votación rediseñándose (4 competidores, filas grandes) |
 | 6 | **Dato** | `dato` | dato curioso narrado, ~35 s | 11-04 | en prueba |
 | 7 | **Adivina la canción (dominio público)** | `bola` + `juego: adivina` | la bolita toca una melodía conocida, 3 pistas, "escríbela en los comentarios" | 11-10 | en prueba |
 | 8 | **Adivina la canción (con derechos)** | `bola` + `juego: adivina` | igual, con un hit (notas aportadas por Santiago); Content ID probable | 11-13 | en prueba (1 video) |
@@ -61,6 +61,7 @@
     { "formato": 4, "id": "5QFQ3xWI71c", "fecha": "2026-11-10", "nota": "carrera zodiaco, 07:00" },
     { "formato": 6, "id": "SKwduvciVTk", "fecha": "2026-11-11", "nota": "dato miel, 07:00" },
     { "formato": 6, "id": "E4wtIUfjZbE", "fecha": "2026-11-12", "nota": "dato Torre Eiffel, 07:00" },
+    { "formato": 5, "id": "Hw8RS-K-KRM", "fecha": "2026-11-13", "nota": "carrera v2 superpoderes, 5 competidores, votación v1, 07:00" },
     { "formato": 11, "id": "V-geJGHFy48", "fecha": "2026-11-15", "nota": "Creep (notas de tutorial), 15:00" }
   ]
 }

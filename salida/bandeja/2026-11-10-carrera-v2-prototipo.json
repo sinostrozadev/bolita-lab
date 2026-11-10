@@ -2,7 +2,7 @@
   "id": "2026-11-10-carrera-v2-prototipo",
   "plantilla": "carrera",
   "tipo": "short",
-  "estado": "privado",
+  "estado": "subido",
   "titulo": "PROTOTIPO carrera v2 · ¿Qué superpoder gana? · privado",
   "descripcion": "Prototipo carrera v2: bloques con números que se rompen, tubos con vueltas, votación por acciones, sonido nuevo. [PRIVADO 2026-11-10]",
   "hashtags": [
@@ -13,5 +13,6 @@
   "creado": "2026-11-10T02:33:50.087Z",
   "videoId": "Hw8RS-K-KRM",
   "url": "https://youtube.com/shorts/Hw8RS-K-KRM",
-  "subidoEn": "2026-11-10T02:36:24.475Z"
+  "subidoEn": "2026-11-10T02:36:24.475Z",
+  "publicarEn": "2026-11-13T10:00:00.000Z"
 }
