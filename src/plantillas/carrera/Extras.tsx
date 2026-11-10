@@ -225,59 +225,106 @@ export const Aviso: React.FC<{ sim: SimulacionCarrera; colores: string[]; etique
   );
 };
 
+/** Grande ↔ compacta del panel de votación: 1 = grande. Grande los primeros 4 s y en los 3 s antes de la meta. */
+export const tamVotacion = (sim: SimulacionCarrera, frame: number) => {
+  const t = 18;
+  const inicio = interpolate(frame, [240, 240 + t], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  const final = interpolate(frame, [sim.frameGanadora - 180, sim.frameGanadora - 180 + t], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  const apaga = interpolate(frame, [sim.frameGanadora + 10, sim.frameGanadora + 22], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  return Math.max(inicio, final) * apaga;
+};
+
+/** Votación: zona inferior segura, sin pisar la columna de botones de YouTube (derecha). */
+const VOTO = { izq: 56, der: 940, fondo: 1580 };
+const BOLA_VOTO = 64;
+
+const BolaVoto: React.FC<{ color: string; icono: React.ReactNode; tam: number }> = ({ color, icono, tam }) => (
+  <span style={{
+    width: tam, height: tam, flex: 'none', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+    background: `radial-gradient(circle at 30% 26%, #FFFFFFAA 0, ${color} 34%)`, boxShadow: `0 0 12px ${color}, 0 0 26px ${color}66`,
+  }}>{icono}</span>
+);
+
 /**
- * Votación con acciones del público: grilla fija (2 filas; 2 columnas con 4 participantes, 3 con 5–6) en la zona
- * inferior segura desde el frame 0, en lugar de `ganchoAbajo`. Tras la meta se apaga y entra
- * "¿Acertaste? Si votaste con <acción de la ganadora>, ¡ganaste! 🎉".
+ * Votación con acciones del público (4 competidores). GRANDE: placa con "VOTA POR TU FAVORITO 👇" y 4 filas
+ * "● NOMBRE → ❤️ ME GUSTA" (texto ≥ 40 px). COMPACTA (entre los 4 s y los 3 s antes de la meta): franja 2×2
+ * "● NOMBRE → ❤️" en el lugar del viejo `ganchoAbajo`, con el podio encima. En el final: "GANÓ X → si le diste
+ * <acción>, ¡acertaste! 🎉".
  */
 export const Votacion: React.FC<{
-  sim: SimulacionCarrera; colores: string[]; iconos: React.ReactNode[]; acciones: { emoji: string; texto: string; corto: string }[]; opacidad: number;
-}> = ({ sim, colores, iconos, acciones, opacidad }) => {
+  sim: SimulacionCarrera; colores: string[]; etiquetas: string[]; iconos: (tam: number) => React.ReactNode[];
+  acciones: { emoji: string; texto: string }[]; opacidad: number;
+}> = ({ sim, colores, etiquetas, iconos, acciones, opacidad }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const n = acciones.length;
-  const cols = n <= 4 ? 2 : 3;
-  const TOP = 1464, FILA_V = 54, GAP = 6;
-  const ancho = ANCHO - 2 * FORMATO.seguro.lados + 20;
-  const celda = (ancho - GAP * (cols - 1)) / cols;
+  const b = tamVotacion(sim, frame);
   const k = frame - sim.frameGanadora;
-  const grilla = interpolate(k, [30, 40], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
-  const final = spring({ frame: k - 40, fps, config: { damping: 12, stiffness: 150 } });
-  const g = sim.ganadora;
-  const tamTexto = cols === 2 ? 34 : 29;
-  return (
-    <div style={{ position: 'absolute', left: (ANCHO - ancho) / 2, top: TOP, width: ancho, height: FILA_V * 2 + GAP, opacity: opacidad, pointerEvents: 'none' }}>
-      {grilla > 0 && acciones.map((a, i) => {
-        const col = i % cols, fila = Math.floor(i / cols);
-        const latido = 1 + 0.04 * Math.max(0, Math.sin(frame * 0.12 - i * 0.9));
-        return (
-          <div key={i} style={{
-            position: 'absolute', left: col * (celda + GAP), top: fila * (FILA_V + GAP), width: celda, height: FILA_V, boxSizing: 'border-box',
-            display: 'flex', alignItems: 'center', gap: 8, padding: '0 12px 0 6px', borderRadius: 999, whiteSpace: 'nowrap', overflow: 'hidden',
-            background: `linear-gradient(90deg, ${colores[i]}38, ${PALETA.fondo}F0 60%)`, border: `3px solid ${colores[i]}`,
-            boxShadow: `0 0 14px ${colores[i]}66`, opacity: grilla, transform: `scale(${latido})`,
-            fontFamily: TIPO.display, fontWeight: 800, fontSize: tamTexto, color: PALETA.tinta,
-          }}>
-            <span style={{
-              width: 44, height: 44, flex: 'none', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-              background: `radial-gradient(circle at 34% 30%, #FFFFFFAA 0, ${colores[i]} 40%)`, boxShadow: `0 0 10px ${colores[i]}`,
-            }}>{iconos[i]}</span>
-            <span>{a.emoji} {cols === 2 ? a.texto : a.corto}</span>
-          </div>
-        );
-      })}
-      {k >= 40 && (
-        <div style={{
-          position: 'absolute', left: 0, right: 0, top: -4, height: FILA_V * 2 + GAP + 8, borderRadius: 30, boxSizing: 'border-box',
-          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
-          background: `${PALETA.fondo}F0`, border: `3px solid ${colores[g]}`, boxShadow: `0 0 24px ${colores[g]}88`,
-          opacity: Math.min(1, final), transform: `scale(${0.8 + 0.2 * final})`,
-          fontFamily: TIPO.display, fontWeight: 800, color: PALETA.tinta, whiteSpace: 'nowrap',
-        }}>
-          <span style={{ fontSize: 34 }}>¿Acertaste? Si votaste con</span>
-          <span style={{ fontSize: acciones[g].texto.length > 12 ? 34 : 40 }}><span style={{ color: colores[g], textShadow: `0 0 14px ${colores[g]}AA` }}>{acciones[g].emoji} {acciones[g].texto}</span>, ¡ganaste! 🎉</span>
+  const ancho = VOTO.der - VOTO.izq;
+  const placa = { background: `${PALETA.fondo}E8`, borderRadius: 28, boxShadow: `0 0 30px 10px ${PALETA.fondo}B0` } as const;
+  const sombra = '0 2px 0 #000, 0 0 10px #000';
+  const fuenteNombre = (t: string, max: number, px: number) => Math.min(px, max / (t.length * 0.6));
+  const icGrande = iconos(42), icChico = iconos(30);
+
+  // --- Grande ---
+  const FILA = 70, GAP = 6, CAB = 60, PAD = 12;
+  const altoGrande = PAD + CAB + 4 * FILA + 3 * GAP + PAD;
+  const grande = b > 0.01 && k < 22 && (
+    <div style={{
+      position: 'absolute', left: VOTO.izq, top: VOTO.fondo - altoGrande, width: ancho, height: altoGrande, ...placa,
+      border: `3px solid ${PALETA.neon.amarillo}AA`, opacity: b, transform: `scale(${0.92 + 0.08 * b})`, transformOrigin: '50% 100%',
+      fontFamily: TIPO.display, fontWeight: 800, color: PALETA.tinta, boxSizing: 'border-box', padding: `${PAD}px 22px`,
+    }}>
+      <div style={{ height: CAB, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 48, letterSpacing: 1, color: PALETA.neon.amarillo, textShadow: `0 0 16px ${PALETA.neon.amarillo}88` }}>
+        VOTA POR TU FAVORITO 👇
+      </div>
+      {acciones.map((a, i) => (
+        <div key={i} style={{ height: FILA, marginTop: i ? GAP : 0, display: 'flex', alignItems: 'center', gap: 14, whiteSpace: 'nowrap' }}>
+          <BolaVoto color={colores[i]} icono={icGrande[i]} tam={BOLA_VOTO} />
+          <span style={{ width: 360, flex: 'none', overflow: 'hidden', fontSize: fuenteNombre(etiquetas[i], 360, 46), color: colores[i], textShadow: sombra }}>{etiquetas[i]}</span>
+          <span style={{ fontSize: 44, color: PALETA.tinta }}>→</span>
+          <span style={{ fontSize: 46 }}>{a.emoji}</span>
+          <span style={{ fontSize: 42, color: PALETA.tinta, textShadow: sombra }}>{a.texto}</span>
         </div>
-      )}
+      ))}
     </div>
   );
+
+  // --- Compacta (2×2) ---
+  const FC = 52, GC = 6, altoC = 2 * FC + GC;
+  const celda = (ancho - GC) / 2;
+  const compacta = b < 0.99 && k < 22 && (
+    <div style={{ position: 'absolute', left: VOTO.izq, top: VOTO.fondo - altoC, width: ancho, height: altoC, opacity: (1 - b) * interpolate(k, [10, 22], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) }}>
+      {acciones.map((a, i) => (
+        <div key={i} style={{
+          position: 'absolute', left: (i % 2) * (celda + GC), top: Math.floor(i / 2) * (FC + GC), width: celda, height: FC, boxSizing: 'border-box',
+          display: 'flex', alignItems: 'center', gap: 10, padding: '0 14px 0 4px', borderRadius: 999, whiteSpace: 'nowrap', overflow: 'hidden',
+          background: `${PALETA.fondo}E8`, border: `3px solid ${colores[i]}`, boxShadow: `0 0 12px ${colores[i]}55`,
+          fontFamily: TIPO.display, fontWeight: 800,
+        }}>
+          <BolaVoto color={colores[i]} icono={icChico[i]} tam={44} />
+          <span style={{ flex: 1, overflow: 'hidden', fontSize: fuenteNombre(etiquetas[i], 250, 36), color: colores[i], textShadow: sombra }}>{etiquetas[i]}</span>
+          <span style={{ fontSize: 32, color: PALETA.tinta }}>→</span>
+          <span style={{ fontSize: 38 }}>{a.emoji}</span>
+        </div>
+      ))}
+    </div>
+  );
+
+  // --- Final ---
+  const g = sim.ganadora;
+  const f = spring({ frame: k - 40, fps, config: { damping: 12, stiffness: 150 } });
+  const linea2 = `si le diste ${acciones[g].emoji} ${acciones[g].texto}, ¡acertaste! 🎉`;
+  const final = k >= 40 && (
+    <div style={{
+      position: 'absolute', left: VOTO.izq, top: VOTO.fondo - 124, width: ancho, height: 124, ...placa, boxSizing: 'border-box',
+      border: `3px solid ${colores[g]}`, boxShadow: `0 0 26px ${colores[g]}88`, opacity: Math.min(1, f), transform: `scale(${0.8 + 0.2 * f})`,
+      display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
+      fontFamily: TIPO.display, fontWeight: 800, color: PALETA.tinta, whiteSpace: 'nowrap',
+    }}>
+      <span style={{ fontSize: 44 }}>GANÓ <span style={{ color: colores[g], textShadow: `0 0 14px ${colores[g]}AA` }}>{etiquetas[g]}</span> →</span>
+      <span style={{ fontSize: Math.min(42, (ancho - 40) / (linea2.length * 0.56)) }}>si le diste <span style={{ color: colores[g] }}>{acciones[g].emoji} {acciones[g].texto}</span>, ¡acertaste! 🎉</span>
+    </div>
+  );
+
+  return <div style={{ position: 'absolute', inset: 0, opacity: opacidad, pointerEvents: 'none' }}>{compacta}{grande}{final}</div>;
 };

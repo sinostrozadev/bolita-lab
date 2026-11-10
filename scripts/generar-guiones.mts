@@ -91,7 +91,7 @@ const EDITORIAL = `REGLAS EDITORIALES (obligatorias):
   · Si no es marca (meses, días, sabores, comidas, mascotas, países, estaciones, signos) → {"tipo":"emoji","valor":"🍫"}: UN emoji que se reconozca al instante (países: su bandera 🇨🇱).
   · Personas reales (futbolistas, artistas): NUNCA su cara; usa la bandera de su país o {"tipo":"texto","valor":"CR7"} (1–3 caracteres).
   · No repitas el mismo emoji dentro de una carrera; el icono y el color deben "contar" lo mismo que la etiqueta.
-- Plantilla "carrera": pon SIEMPRE props.votacion = true (votación con acciones del público: a cada participante le toca "❤️ Me gusta", "💬 Comenta", "🔁 Comparte" o "🔔 Suscríbete" según su orden; la grilla reemplaza a ganchoAbajo, que puedes omitir). Con 4 participantes la votación queda perfecta; con 5–6 los extra votan comentando su nombre.`;
+- Plantilla "carrera": EXACTAMENTE 4 participantes y SIEMPRE props.votacion = true (votación con acciones del público: al 1.º le toca "❤️ ME GUSTA", al 2.º "💬 COMENTA", al 3.º "🔁 COMPARTE" y al 4.º "🔔 SUSCRÍBETE"; el panel de votación reemplaza a ganchoAbajo, que puedes omitir). El validador rechaza una carrera con votación que no tenga 4 participantes.`;
 
 /**
  * Fórmula narrativa de "dato" (desde 2026-11-05), sacada del referente Ñerd (Shorts de mapas/historia,

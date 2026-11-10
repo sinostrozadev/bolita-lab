@@ -10,7 +10,7 @@ import { crearAzar } from '../../lib/azar';
 import { accionVoto, ganchoAbajoCarrera, type GuionCarrera, type IconoCompetidor } from './guion';
 import { Icono, iconoAportaJuntoAlNombre } from './Icono';
 import { CIERRE_FRAMES, type SimulacionCarrera } from './tipos';
-import { Aviso, Bloques, TubosFondo, TubosFrente, Votacion } from './Extras';
+import { Aviso, Bloques, TubosFondo, TubosFrente, Votacion, tamVotacion } from './Extras';
 
 /** Ruta pública del JSON de simulación de un guion. */
 export const rutaSim = (id: string) => staticFile(`sim/${id}.json`);
@@ -509,7 +509,10 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
   };
   const lenta = frame >= sim.camaraLenta.desde && frame <= sim.camaraLenta.hasta;
   const llamadoDesde = Math.max(180, Math.min(sim.frameRiser >= 0 ? sim.frameRiser : Infinity, sim.frameGanadora - LLAMADO_ANTES));
-  const textoDelLlamado = textoLlamado('carrera', props.id, props.llamado);
+  // Con votación el final ya dice "¡acertaste!": el llamado no repite "¿Acertaste?".
+  const llamadoBase = textoLlamado('carrera', props.id, props.llamado);
+  const textoDelLlamado = props.votacion && typeof props.llamado !== 'string' && llamadoBase?.includes('¿Acertaste?')
+    ? 'Suscríbete y elige la próxima carrera 🏁' : llamadoBase;
 
   return (
     <AbsoluteFill style={{ background: PALETA.fondo, overflow: 'hidden' }}>
@@ -537,7 +540,7 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
       {lenta && <AbsoluteFill style={{ boxShadow: `inset 0 0 240px ${colores[ganadora]}30` }} />}
 
       {!celebrando && <Marcador sim={sim} frame={frame} colores={colores} etiquetas={etiquetas} iconos={iconos} opacidad={hud * marcadorIn} />}
-      <Podio sim={sim} frame={frame} colores={colores} iconos={iconos} opacidad={podioOp} />
+      <Podio sim={sim} frame={frame} colores={colores} iconos={iconos} opacidad={podioOp * (props.votacion ? 1 - tamVotacion(sim, frame) : 1)} />
       {/* Avisos narrativos en el lugar del llamado, hasta que el llamado entra (sin llamado: hasta la cámara lenta) */}
       {!celebrando && <Aviso sim={sim} colores={colores} etiquetas={etiquetas} centroY={LLAMADO_CENTRO_Y} hasta={textoDelLlamado ? llamadoDesde : sim.camaraLenta.desde} />}
 
@@ -546,8 +549,8 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
       {/* Dos bloques fijos (frame 0 → cierre): la pregunta arriba, la intriga abajo. */}
       <BloqueTexto texto={textoArriba} color={PALETA.neon.cian} top={ARRIBA_TOP} tam={tamArriba(textoArriba)} opacidad={fadeCierre} />
       {props.votacion
-        ? <Votacion sim={sim} colores={colores} acciones={props.participantes.map((_, i) => accionVoto(i))} opacidad={fadeCierre}
-            iconos={iconos.map((ic, i) => <Icono key={i} icono={ic} tam={28} fondo={colores[i]} />)} />
+        ? <Votacion sim={sim} colores={colores} etiquetas={etiquetas} acciones={props.participantes.map((_, i) => accionVoto(i))} opacidad={fadeCierre}
+            iconos={(tam) => iconos.map((ic, i) => <Icono key={i} icono={ic} tam={tam} fondo={colores[i]} />)} />
         : <BloqueTexto texto={ganchoAbajoCarrera(props)} color={PALETA.neon.magenta} centroY={ABAJO_CENTRO_Y} tam={58} opacidad={fadeCierre} />}
 
       {/* Llamado a suscribirse en la recta final (se queda durante la celebración). Color de marca: el de

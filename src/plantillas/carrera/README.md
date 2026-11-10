@@ -142,12 +142,16 @@ Ideas de Santiago. Todo en la simulación determinista (paso fijo, semilla); el 
   platillo. Master `masterizar` (wav.mts): RMS −15 dB con compuerta + limitador con anticipación a −2,2 dBFS
   → medido −14 LUFS integrado, true peak < −0,5 dBTP.
 
-## Votación con acciones del público (2026-11-09, prop `votacion`)
-Idea de Santiago. Cada participante tiene una acción por su orden: 1.º "❤️ Me gusta", 2.º "💬 Comenta", 3.º "🔁 Comparte",
-4.º "🔔 Suscríbete"; con 5–6, los extra "💬 Comenta su nombre" (en la grilla, "💬 Su nombre"). Grilla fija de 2 filas
-(2×2 con 4; 3×2 con 5–6) en y 1464–1582 desde el frame 0, en lugar de `ganchoAbajo`; la pregunta de arriba se mantiene.
-Tras la meta (k = 30–40) la grilla se apaga y entra "¿Acertaste? Si votaste con <acción de la ganadora>, ¡ganaste! 🎉"
-con el color de la ganadora. Ausente = apagada (guiones viejos sin cambio); `generar-guiones` la pone en `true`.
+## Votación con acciones del público (prop `votacion`; rehecha el 2026-11-10 tras "no se entiende")
+- **Exactamente 4 competidores** (el schema lo exige con `votacion: true`; `generar-guiones` pide 4). Acción por orden:
+  1.º "❤️ ME GUSTA", 2.º "💬 COMENTA", 3.º "🔁 COMPARTE", 4.º "🔔 SUSCRÍBETE". Los guiones de 5–6 van sin votación.
+- **Panel grande** (frames 0–240 y los 3 s antes de la meta): placa oscura x 56–940 (deja libre la columna de botones de
+  YouTube) y y 1204–1580, con "VOTA POR TU FAVORITO 👇" (48 px, amarillo) y 4 filas "● NOMBRE → ❤️ ME GUSTA"
+  (bola de 64 px con el icono, nombre de 46 px en su color, acción de 42 px). Mientras está grande, el podio se oculta.
+- **Franja compacta** (el resto de la carrera): 2×2 "● NOMBRE → ❤️" en y 1470–1580, con el podio encima.
+- **Final** (desde k = 40 tras la meta): "GANÓ X → / si le diste <acción>, ¡acertaste! 🎉" con el color de la ganadora.
+- Con votación, el llamado nunca usa "¿Acertaste? Suscríbete" (pasa a "Suscríbete y elige la próxima carrera 🏁").
+- La búsqueda de semilla con extras pide además que el **atajo** reciba al menos una bola.
 
 ## Duración del video
 `frames hasta el cruce (incluye cámara lenta) + 2,5 s de celebración + 1,2 s de cierre` ≈ 30–50 s.

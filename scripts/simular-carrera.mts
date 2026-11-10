@@ -563,9 +563,10 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
   return null; // nadie llegó dentro del tope
 };
 
-/** ¿La carrera luce los extras? Al menos un tubo usado y un bloque roto (y, si se puede, un "le abrió el camino"). */
+/** ¿La carrera luce los extras? Algún tubo usado, el ATAJO usado (se ve la ventaja), un bloque roto y un "le abrió el camino". */
 const puntajeExtras = (r: Resultado) =>
-  (r.usos.length > 0 ? 1 : 0) + (r.eventos.some((e) => e.tipo === 'rompe') ? 1 : 0) + (r.caminos.length > 0 ? 1 : 0);
+  (r.usos.length > 0 ? 1 : 0) + (r.usos.some((u) => r.mundo.tubos[u.tubo].tipo === 'atajo') ? 1 : 0) +
+  (r.eventos.some((e) => e.tipo === 'rompe') ? 1 : 0) + (r.caminos.length > 0 ? 1 : 0);
 
 /**
  * Busca semilla/gravedad hasta que la ganadora cruce entre 25 y 45 s y la carrera sea
@@ -577,7 +578,7 @@ const simular = (guion: GuionCarrera) => {
   const n = guion.participantes.length;
   const extras = guion.extras !== false;
   const base = guion.semilla ?? semillaDesde(guion.id);
-  const meta = extras ? 3 : 0;
+  const meta = extras ? 4 : 0; // tubo usado + ATAJO usado + bloque roto + "le abrió el camino"
   const maxValidas = extras ? 60 : CARRERAS_VALIDAS_MAX;
   let gravedad = 1100;
   let semilla = base;

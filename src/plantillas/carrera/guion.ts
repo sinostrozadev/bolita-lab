@@ -69,14 +69,19 @@ export const GuionCarrera = z.object({
    */
   extras: z.boolean().optional(),
   /**
-   * Votación con acciones del público (2026-11-09): cada participante tiene una ACCIÓN ("❤️ Me gusta", "💬 Comenta",
-   * "🔁 Comparte", "🔔 Suscríbete"; con 5–6 participantes los extra van como "💬 Comenta su nombre"). Grilla fija
-   * abajo desde el frame 0 (reemplaza `ganchoAbajo`) y, en el final, "¿Acertaste? Si votaste con <acción>, ¡ganaste! 🎉".
-   * Ausente = apagada (los guiones viejos quedan igual); los guiones nuevos la llevan en `true`.
+   * Votación con acciones del público (2026-11-09; rehecha el 2026-11-10): EXIGE exactamente 4 participantes y a cada
+   * uno le toca una ACCIÓN por su orden: 1.º "❤️ ME GUSTA", 2.º "💬 COMENTA", 3.º "🔁 COMPARTE", 4.º "🔔 SUSCRÍBETE".
+   * Panel "VOTA POR TU FAVORITO 👇" abajo desde el frame 0 (reemplaza `ganchoAbajo`) y, en el final,
+   * "GANÓ X → si le diste <acción>, ¡acertaste! 🎉". Ausente = apagada (los guiones viejos y los de 5–6 quedan igual);
+   * los guiones nuevos de carrera llevan `votacion: true` y 4 participantes.
    */
   votacion: z.boolean().optional(),
   /** Llamado a suscribirse en el clímax (opcional; ausente = activado con variante por id; false = apagado; texto = ese texto). */
   llamado: CampoLlamado,
+}).superRefine((g, ctx) => {
+  if (g.votacion && g.participantes.length !== 4) {
+    ctx.addIssue({ code: 'custom', path: ['participantes'], message: 'votacion: true exige exactamente 4 participantes (una acción por competidor)' });
+  }
 });
 export type GuionCarrera = z.infer<typeof GuionCarrera>;
 
@@ -85,13 +90,11 @@ export const VARIANTES_GANCHO_ABAJO_CARRERA = ['El último te sorprende 💀', '
 export const ganchoAbajoCarrera = (g: Pick<GuionCarrera, 'id' | 'ganchoAbajo'>): string =>
   g.ganchoAbajo ?? VARIANTES_GANCHO_ABAJO_CARRERA[semillaDesde(`abajo:${g.id}`) % VARIANTES_GANCHO_ABAJO_CARRERA.length];
 
-/** Acción de voto de cada participante (por posición en `participantes`). */
+/** Acción de voto de cada participante (por posición en `participantes`; la votación exige 4). */
 export const ACCIONES_VOTO = [
-  { emoji: '❤️', texto: 'Me gusta' },
-  { emoji: '💬', texto: 'Comenta' },
-  { emoji: '🔁', texto: 'Comparte' },
-  { emoji: '🔔', texto: 'Suscríbete' },
+  { emoji: '❤️', texto: 'ME GUSTA' },
+  { emoji: '💬', texto: 'COMENTA' },
+  { emoji: '🔁', texto: 'COMPARTE' },
+  { emoji: '🔔', texto: 'SUSCRÍBETE' },
 ] as const;
-/** `corto`: rótulo de la grilla (con 5–6 participantes las celdas son angostas). */
-export const accionVoto = (i: number): { emoji: string; texto: string; corto: string } =>
-  i < ACCIONES_VOTO.length ? { ...ACCIONES_VOTO[i], corto: ACCIONES_VOTO[i].texto } : { emoji: '💬', texto: 'Comenta su nombre', corto: 'Su nombre' };
+export const accionVoto = (i: number): { emoji: string; texto: string } => ACCIONES_VOTO[i % ACCIONES_VOTO.length];
