@@ -488,7 +488,8 @@ const Escena: React.FC<{ sim: SimRitmo; f: number; camX: number; camY: number }>
         const tras = f - ultimo[i];
         const flash = tras >= 0 ? Math.exp(-tras / 6) : 0;
         const estela = [];
-        for (let k = 1; k <= 9; k++) {
+        const protagonista = b.brillo >= 0.95; // la melodía: estela larga y luz propia
+        for (let k = 1; k <= (protagonista ? 9 : 5); k++) {
           const fa = Math.max(0, f - k * 2);
           if (ocultoEntre(b, fa, f)) break;
           estela.push(<Brillo key={k} x={b.cuadros[fa * 2]} y={b.cuadros[fa * 2 + 1]} z={(b.z?.[fa] ?? 0) - 2} tam={b.r * (2.6 - 0.18 * k)} color={b.color} opacidad={0.3 * (1 - k / 10) * (0.5 + 0.5 * b.brillo)} textura={textura} />);
@@ -496,7 +497,8 @@ const Escena: React.FC<{ sim: SimRitmo; f: number; camX: number; camY: number }>
         return (
           <group key={`b-${i}`}>
             {estela}
-            <pointLight position={[x, Y(y), z + b.r * 2.2]} color={b.color} intensity={(260 + 900 * flash) * (0.5 + 0.5 * b.brillo)} distance={650} decay={1} />
+            {/* v3: solo la protagonista lleva luz puntual (cada luz encarece todos los materiales en SwiftShader) */}
+            {protagonista && <pointLight position={[x, Y(y), z + b.r * 2.2]} color={b.color} intensity={260 + 900 * flash} distance={650} decay={1} />}
             <mesh position={[x, Y(y), z]} scale={[1 + 0.12 * flash, 1 - 0.08 * flash, 1]}>
               <sphereGeometry args={b.r >= 60 ? [b.r, 40, 28] : [b.r, 24, 16]} />
               <meshPhysicalMaterial color={b.color} emissive={b.color} emissiveIntensity={0.12 + 0.38 * b.brillo + 1.3 * flash} roughness={0.18} metalness={0.05} clearcoat={1} clearcoatRoughness={0.08} />
