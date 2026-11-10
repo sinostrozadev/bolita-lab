@@ -1,0 +1,16 @@
+{
+  "plantilla": "ritmo",
+  "id": "pendiente-ritmo-creep",
+  "titulo": "¿Qué canción es? 🎸 5 bolitas, 1 himno de los 90",
+  "descripcion": "Cinco bolitas recorren un circuito de rieles, rizos, columpios, hélices y portales, y cada choque toca una nota: melodía, bajo, bombo, caja y platillo. ¿Reconoces el himno de los 90? Escríbelo en los comentarios sin mirar las respuestas.\nSimulación determinista hecha en Bolita Lab: el circuito se construyó desde la partitura. Melodía interpretada en versión instrumental sintetizada; derechos de la composición de sus autores.",
+  "hashtags": ["#shorts", "#adivinalacancion", "#satisfying", "#musica", "#bolita", "#marblerun"],
+  "derechos": true,
+  "nota": "notas aportadas por Santiago; Content ID aceptado",
+  "props": {
+    "id": "pendiente-ritmo-creep",
+    "partitura": "creep",
+    "arriba": "5 bolitas, 1 canción 🎵",
+    "abajo": "¿La reconoces? Escríbela 👇",
+    "timbre": "piano"
+  }
+}

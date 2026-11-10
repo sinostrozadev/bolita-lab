@@ -1,0 +1,13 @@
+{
+  "plantilla": "ritmo",
+  "id": "pendiente-ritmo-canon",
+  "titulo": "5 bolitas tocan el Canon de Pachelbel: ¿cuál lleva la melodía?",
+  "descripcion": "Cinco bolitas caen por un nivel lleno de clavijas y cada choque toca una nota: melodía, bajo, bombo, caja y platillo. Todo suena a tiempo con el Canon en Re de Pachelbel (dominio público). ¿Cuál lleva la melodía?\nSimulación determinista hecha en Bolita Lab: el nivel se construyó desde la partitura.\n#shorts #satisfying #musica #pachelbel #canon #bolita",
+  "hashtags": ["#shorts", "#satisfying", "#musica", "#pachelbel", "#canon", "#bolita"],
+  "props": {
+    "id": "pendiente-ritmo-canon",
+    "partitura": "canon",
+    "arriba": "5 bolitas, 1 canción 🎵",
+    "abajo": "¿Cuál lleva la melodía? 👇"
+  }
+}

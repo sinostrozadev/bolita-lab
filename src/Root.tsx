@@ -9,6 +9,7 @@ import { registrar as dato } from './plantillas/dato';
 import { registrar as carrera } from './plantillas/carrera';
 import { registrar as marca } from './plantillas/marca';
 import { registrar as colores } from './plantillas/colores';
+import { registrar as ritmo } from './plantillas/ritmo';
 
 export const Root: React.FC = () => (
   <>
@@ -16,6 +17,7 @@ export const Root: React.FC = () => (
     <Folder name="Dato">{dato()}</Folder>
     <Folder name="Carrera">{carrera()}</Folder>
     <Folder name="Colores">{colores()}</Folder>
+    <Folder name="Ritmo">{ritmo()}</Folder>
     <Folder name="Marca">{marca()}</Folder>
     <Folder name="Pruebas">
       <Composition
