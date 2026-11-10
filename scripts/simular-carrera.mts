@@ -24,8 +24,12 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { crearAzar, semillaDesde } from '../src/lib/azar';
 import { GuionCarrera } from '../src/plantillas/carrera/guion';
-import { CELEBRACION_SEG, CIERRE_FRAMES, type Clavija, type EventoCarrera, type Segmento, type SimulacionCarrera } from '../src/plantillas/carrera/tipos';
-import { SR, barrido, escribirWav, golpe, midiAHz, nota } from './lib/wav.mjs';
+import {
+  AVISO_SEPARACION, CELEBRACION_SEG, CIERRE_FRAMES,
+  type AvisoCarrera, type Bloque, type Clavija, type EventoCarrera, type Segmento, type SimulacionCarrera, type Tubo,
+} from '../src/plantillas/carrera/tipos';
+import { midiAHz } from './lib/wav.mjs';
+import { sintetizarCarrera } from './lib/sonido-carrera.mjs';
 
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -70,14 +74,91 @@ const TOPE_SEG = 70; // corte duro si nadie llega
 /** Escala pentatónica (Do mayor) para afinar el golpe de cada bola. */
 const ESCALA_MIDI = [64, 67, 69, 72, 74, 76];
 
-interface Mundo { clavijas: Clavija[]; segmentos: Segmento[] }
+// ---------- Extras v2: bloques con vida y tubos ----------
+/** Bloque: 112 × 68 px con esquinas de 14 px. Medido contra la rejilla (200 × 165, bola de 116 px): con un
+ * bloque en el lugar de una clavija quedan ≥ 125 px a las clavijas vecinas (la bola pasa). Dos bloques
+ * vecinos (en fila o en diagonal) sí cerrarían el paso: se exigen ≥ 260 px entre centros. */
+const BLOQUE = { w: 112, h: 68, esquina: 14, separacion: 260, prob: 0.62, rest: 0.5, golpeMin: 110, enfriamiento: 9 };
+/** Tubo: franja lateral de 380 px con pared; la bola (116 px) viaja dentro de un tubo de 136 px. */
+const TUBO = { franja: 380, ancho: 136, boca: 110, velAtajo: 1300, velVueltas: 480, salidaMax: 760 };
 
-/** Coloca clavijas (con jitter y huecos), 2 rampas y 2 embudos. Todo nace de la semilla. */
-const construirTablero = (azar: () => number): Mundo => {
+interface TuboDef extends Omit<Tubo, 'usos'> { cx: number; velocidad: number; paso: number; largo: number }
+interface Mundo { clavijas: Clavija[]; segmentos: Segmento[]; bloques: Bloque[]; tubos: TuboDef[] }
+
+type P = [number, number];
+
+/** Re-muestrea una polilínea a paso uniforme (arco): así la posición en el tubo sale de un índice. */
+const remuestrear = (pts: P[], paso: number): P[] => {
+  const acum = [0];
+  for (let i = 1; i < pts.length; i++) acum.push(acum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  const total = acum[acum.length - 1];
+  const out: P[] = [];
+  let j = 0;
+  for (let d = 0; d <= total; d += paso) {
+    while (j < acum.length - 2 && acum[j + 1] < d) j++;
+    const u = (d - acum[j]) / Math.max(1e-9, acum[j + 1] - acum[j]);
+    out.push([pts[j][0] + (pts[j + 1][0] - pts[j][0]) * u, pts[j][1] + (pts[j + 1][1] - pts[j][1]) * u]);
+  }
+  out.push(pts[pts.length - 1]);
+  return out.map(([x, y]) => [Math.round(x * 10) / 10, Math.round(y * 10) / 10]);
+};
+
+/**
+ * Línea central de un tubo, desde el fondo de la boca (cx, y0) hasta la salida (cx, ySalida), con
+ * tangente final hacia abajo. `vueltas`: 3–4 rizos (trocoide: la bola sube y baja en cada vuelta).
+ * `atajo`: serpentina rápida + 1 rizo. Todo cabe en cx ± 100 (la franja mide 380 y el tubo 136).
+ */
+const caminoTubo = (tipo: Tubo['tipo'], cx: number, y0: number, ySalida: number, nRizos: number): P[] => {
+  const pts: P[] = [[cx, y0]];
+  const fin = () => pts[pts.length - 1];
+  /** Rizos: x = cx + R sen θ, y = yc + bθ + R(1 − cos θ). Con R > b la curva retrocede: cada vuelta es un rizo. */
+  const rizos = (n: number, R: number, b: number) => {
+    const yc = fin()[1];
+    for (let th = 0.05; th <= 2 * Math.PI * n + 1e-9; th += 0.05) pts.push([cx + R * Math.sin(th), yc + b * th + R * (1 - Math.cos(th))]);
+  };
+  const serpentina = (H: number, A: number, k: number) => {
+    const yc = fin()[1];
+    for (let u = 0.01; u <= 1 + 1e-9; u += 0.01) pts.push([cx + A * Math.sin(2 * Math.PI * k * u), yc + H * u]);
+  };
+  /** Bézier cúbica desde el final actual (con su tangente) hasta `destino`, llegando en vertical. */
+  const bajarA = (destino: P) => {
+    const [x0, yy0] = fin();
+    const [xa, ya] = pts[pts.length - 2];
+    const tl = Math.hypot(x0 - xa, yy0 - ya) || 1;
+    const h = Math.max(40, (destino[1] - yy0) / 2.5);
+    const c1: P = [x0 + ((x0 - xa) / tl) * h, yy0 + ((yy0 - ya) / tl) * h];
+    const c2: P = [destino[0], destino[1] - h];
+    for (let t = 0.04; t <= 1 + 1e-9; t += 0.04) {
+      const a = (1 - t) ** 3, bb = 3 * (1 - t) ** 2 * t, c = 3 * (1 - t) * t * t, d = t ** 3;
+      pts.push([a * x0 + bb * c1[0] + c * c2[0] + d * destino[0], a * yy0 + bb * c1[1] + c * c2[1] + d * destino[1]]);
+    }
+  };
+  if (tipo === 'vueltas') {
+    const R = 100;
+    // El fondo del último rizo queda 2R − πb bajo su final: la salida va 40 px más abajo que ese fondo.
+    const b = (ySalida - 40 - 2 * R - y0) / (2 * Math.PI * nRizos - Math.PI);
+    rizos(nRizos, R, b);
+  } else {
+    const R = 90, b = 40;
+    const H = ySalida - y0 - (b * Math.PI + 2 * R) - 60;
+    serpentina(H, 85, 1);
+    rizos(1, R, b);
+  }
+  bajarA([cx, ySalida]);
+  return pts;
+};
+
+/**
+ * Coloca clavijas (con jitter y huecos), 3 rampas y 2 embudos. Todo nace de la semilla.
+ * Con `extras`, además 2–3 tubos en franjas laterales libres y ~25 % de las clavijas interiores pasan a
+ * ser bloques con vida. Los extras usan su PROPIO azar: con `extras: false` el tablero es idéntico al v1.
+ */
+const construirTablero = (azar: () => number, extras: boolean, semilla: number): Mundo => {
   const clavijas: Clavija[] = [];
   const segmentos: Segmento[] = [];
+  const azarX = crearAzar((semilla ^ 0x7b10c5) >>> 0);
 
-  // Embudos: paredes en V que se cierran a una boca de ~170 px, ligeramente descentrada.
+  // Embudos: paredes en V que se cierran a una boca de ~250 px, ligeramente descentrada.
   const embudos = [0.36, 0.70].map((f) => {
     const y = Math.round(META_Y * f + (azar() - 0.5) * 120);
     const boca = 250;
@@ -99,6 +180,46 @@ const construirTablero = (azar: () => number): Mundo => {
     return { y, caida };
   });
 
+  // Tubos (extras): cada uno en una franja lateral entre obstáculos de pared a pared (embudos, rampas).
+  const tubos: TuboDef[] = [];
+  if (extras) {
+    const ocupado: [number, number][] = [
+      [0, 1750] as [number, number], // la salida y la primera pantalla quedan clásicas (1.er choque ≤ 0,3 s)
+      [META_Y - 750, ALTO] as [number, number],
+      ...embudos.map((e): [number, number] => [e.y - e.caida - 60, e.y + 80]),
+      ...rampas.map((r): [number, number] => [r.y - 60, r.y + r.caida + 60]),
+    ].sort((a, b) => a[0] - b[0]);
+    // Franjas libres (con el margen que el tubo limpia arriba de la boca y bajo la salida).
+    const libres: [number, number][] = [];
+    let cursor = 0;
+    for (const [a, b] of ocupado) { if (a - cursor > 0) libres.push([cursor + 150, a - 170]); cursor = Math.max(cursor, b); }
+    const n = azarX() < 0.5 ? 3 : 2;
+    const tipos: Tubo['tipo'][] = ['atajo', 'vueltas', azarX() < 0.5 ? 'atajo' : 'vueltas'];
+    // Orden aleatorio de las franjas (determinista) y un tubo por franja.
+    const candidatas = libres.filter(([a, b]) => b - a >= 760).sort(() => azarX() - 0.5);
+    let ladoIzq = azarX() < 0.5;
+    for (const tipo of tipos.slice(0, n)) {
+      const alto = tipo === 'atajo' ? 900 + azarX() * 200 : 760 + azarX() * 140;
+      const k = candidatas.findIndex(([a, b]) => b - a >= alto);
+      if (k < 0) continue;
+      const [a, b] = candidatas.splice(k, 1)[0];
+      const yBoca = Math.round(a + azarX() * (b - a - alto));
+      const ySalida = Math.round(yBoca + alto);
+      const x0 = ladoIzq ? 0 : ANCHO - TUBO.franja, x1 = ladoIzq ? TUBO.franja : ANCHO;
+      const cx = ladoIzq ? TUBO.franja / 2 : ANCHO - TUBO.franja / 2;
+      const puntos = remuestrear(caminoTubo(tipo, cx, yBoca + TUBO.boca, ySalida, alto > 850 ? 4 : 3), 8);
+      let largo = 0;
+      for (let i = 1; i < puntos.length; i++) largo += Math.hypot(puntos[i][0] - puntos[i - 1][0], puntos[i][1] - puntos[i - 1][1]);
+      tubos.push({ tipo, x0, x1, yBoca, ySalida, puntos, ancho: TUBO.ancho, cx, velocidad: tipo === 'atajo' ? TUBO.velAtajo : TUBO.velVueltas, paso: 8, largo });
+      // Pared del lado de la cancha: las demás bolas no se cuelan al tubo por el costado.
+      const xp = ladoIzq ? TUBO.franja : ANCHO - TUBO.franja;
+      segmentos.push({ x1: xp, y1: yBoca, x2: xp, y2: ySalida - 20, grosor: 12 });
+      ladoIzq = !ladoIzq;
+    }
+    tubos.sort((p, q) => p.yBoca - q.yBoca);
+  }
+  const enTubo = (x: number, y: number) => tubos.some((t) => x > t.x0 - 70 && x < t.x1 + 70 && y > t.yBoca - 150 && y < t.ySalida + 170);
+
   // Zonas donde NO van clavijas (embudos y rampas, con margen).
   const prohibido = (y: number) =>
     embudos.some((e) => y > e.y - e.caida - 140 && y < e.y + 160) ||
@@ -115,17 +236,50 @@ const construirTablero = (azar: () => number): Mundo => {
     // Columnas simétricas y a > 1 diámetro de la pared (140 − 13 = 127 px): ninguna bola queda presa en un bolsillo pared–clavija.
     for (let x = 140 + desfase; x <= ANCHO - 140; x += sepX) {
       if (fila > 0 && azar() < 0.14) continue; // huecos para que el camino no sea uniforme (la 1.ª fila, completa)
-      clavijas.push({
-        x: Math.round(x + (azar() - 0.5) * 12),
-        y: Math.round(y + (azar() - 0.5) * 12),
-        r: RADIO_CLAVIJA,
-      });
+      const c = { x: Math.round(x + (azar() - 0.5) * 12), y: Math.round(y + (azar() - 0.5) * 12), r: RADIO_CLAVIJA };
+      if (extras && enTubo(c.x, c.y)) continue;
+      clavijas.push(c);
     }
   }
-  return { clavijas, segmentos };
+
+  // Bloques con vida (extras): clavijas interiores (lejos de las paredes: un bloque junto a la pared haría
+  // bolsillo) pasan a ser bloques, nunca vecinos entre sí.
+  const bloques: Bloque[] = [];
+  if (extras) {
+    const quedan: Clavija[] = [];
+    for (const c of clavijas) {
+      const elegible = c.x >= 230 && c.x <= ANCHO - 230 && c.y >= 1150 && c.y <= META_Y - 420 &&
+        bloques.every((b) => Math.hypot(b.x - c.x, b.y - c.y) >= BLOQUE.separacion);
+      if (elegible && azarX() < BLOQUE.prob) {
+        const u = azarX();
+        bloques.push({ x: c.x, y: c.y, w: BLOQUE.w, h: BLOQUE.h, vida: u < 0.35 ? 1 : u < 0.75 ? 2 : 3, golpes: [], roto: -1, rompio: -1 });
+      } else quedan.push(c);
+    }
+    clavijas.length = 0;
+    clavijas.push(...quedan);
+  }
+  return { clavijas, segmentos, bloques, tubos };
 };
 
-interface Bola { x: number; y: number; vx: number; vy: number; llego: number; quieto: number }
+/** Punto del rectángulo interior de un bloque (sin esquinas) más cercano a (x, y): la colisión es con un rectángulo redondeado. */
+const cercanoBloque = (b: Bloque, x: number, y: number): P => {
+  const hx = b.w / 2 - BLOQUE.esquina, hy = b.h / 2 - BLOQUE.esquina;
+  return [Math.max(b.x - hx, Math.min(b.x + hx, x)), Math.max(b.y - hy, Math.min(b.y + hy, y))];
+};
+
+/** Posición en un tubo a `s` px del fondo de la boca (interpolada sobre la línea central re-muestreada). */
+const puntoTubo = (t: TuboDef, s: number): P => {
+  const u = Math.max(0, Math.min(t.puntos.length - 1.000001, s / t.paso));
+  const i = Math.floor(u), f = u - i;
+  const a = t.puntos[i], b = t.puntos[Math.min(i + 1, t.puntos.length - 1)];
+  return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+};
+
+interface Bola {
+  x: number; y: number; vx: number; vy: number; llego: number; quieto: number;
+  /** Tubo en el que viaja (-1 = en la cancha), distancia recorrida, velocidad y punto de entrada. */
+  tubo: number; s: number; v: number; ex: number; ey: number; desde: number;
+}
 
 /** Resultado crudo de la física: todo en frames de FÍSICA (1/60 s de carrera real). */
 interface Resultado {
@@ -137,13 +291,21 @@ interface Resultado {
   tGanadora: number;
   /** Ventaja 1.º–2.º en s (Infinity si la 2.ª no llega en la ventana de celebración). */
   ventaja: number;
+  /** Usos de tubo (frames de física). */
+  usos: { tubo: number; bola: number; desde: number; hasta: number }[];
+  /** "X le abrió el camino a Y" (frames de física: cuando Y pasa por donde estaba el bloque). */
+  caminos: { frame: number; bola: number; otra: number; bloque: number }[];
 }
 
 /** Corre la carrera completa para una semilla y gravedad dadas. */
-const correr = (n: number, semilla: number, gravedad: number): Resultado | null => {
+const correr = (n: number, semilla: number, gravedad: number, extras: boolean): Resultado | null => {
   const azar = crearAzar(semilla);
-  const mundo = construirTablero(azar);
-  const { clavijas, segmentos } = mundo;
+  const mundo = construirTablero(azar, extras, semilla);
+  const { clavijas, segmentos, bloques, tubos } = mundo;
+  // Estado de los bloques en esta carrera (el mundo es nuevo en cada corrida).
+  const vida = bloques.map((b) => b.vida);
+  const rotoFisica = bloques.map(() => -1);
+  const ultimoGolpeBloque = bloques.map(() => new Array(n).fill(-999));
 
   // Orden de salida y posiciones iniciales: ya en movimiento en el frame 0.
   const orden = [...Array(n).keys()].sort(() => azar() - 0.5);
@@ -155,6 +317,7 @@ const correr = (n: number, semilla: number, gravedad: number): Resultado | null 
     vy: 420 + azar() * 80,
     llego: -1,
     quieto: 0,
+    tubo: -1, s: 0, v: 0, ex: 0, ey: 0, desde: 0,
   }));
   // `bolas[k]` corresponde al participante orden[k]; reordenamos para indexar por participante.
   const porParticipante: Bola[] = new Array(n);
@@ -174,22 +337,64 @@ const correr = (n: number, semilla: number, gravedad: number): Resultado | null 
   const posiciones: [number, number][][] = porParticipante.map(() => []);
   const eventos: EventoCarrera[] = [];
   const llegadas: number[] = new Array(n).fill(-1);
+  const usos: Resultado['usos'] = [];
   let tGanadora = -1;
   const topeFrames = TOPE_SEG * FPS;
   const ultimoGolpe = new Array(n).fill(-999); // frame del último evento por bola (anti-spam)
+  const RR_BLOQUE = RADIO_BOLA + BLOQUE.esquina;
 
   for (let frame = 0; frame < topeFrames; frame++) {
     for (let s = 0; s < SUBPASOS; s++) {
-      // Integración
+      // Integración (en la cancha) y avance por el tubo (las que van dentro)
       for (let i = 0; i < n; i++) {
         const b = porParticipante[i];
+        if (b.tubo >= 0) {
+          const t = tubos[b.tubo];
+          // La velocidad converge a la del tubo en ~0,3 s: entra con su impulso, sale con la del tubo.
+          b.v += (t.velocidad - b.v) * (DT / 0.3);
+          const embudo = Math.hypot(t.cx - b.ex, t.yBoca + TUBO.boca - b.ey);
+          // Fila india: dentro del tubo ninguna bola se acerca a menos de un diámetro (+8 px) de la de adelante.
+          let tope = Infinity;
+          for (let j = 0; j < n; j++) {
+            const o = porParticipante[j];
+            if (j === i || o.tubo !== b.tubo) continue;
+            const so = o.s - Math.hypot(t.cx - o.ex, t.yBoca + TUBO.boca - o.ey), sb = b.s - embudo;
+            if (so > sb || (so === sb && j < i)) tope = Math.min(tope, so - 2 * RADIO_BOLA - 8);
+          }
+          b.s = Math.min(b.s + b.v * DT, Math.max(b.s, tope + embudo));
+          if (b.s < embudo) {
+            const u = b.s / embudo;
+            b.x = b.ex + (t.cx - b.ex) * u; b.y = b.ey + (t.yBoca + TUBO.boca - b.ey) * u;
+          } else if (b.s - embudo < t.largo) {
+            [b.x, b.y] = puntoTubo(t, b.s - embudo);
+          } else {
+            // Sale por abajo, en vertical, con la velocidad del tubo (acotada: la física no explota).
+            const fin = t.puntos[t.puntos.length - 1];
+            b.x = fin[0]; b.y = fin[1];
+            b.vx = 0; b.vy = Math.min(TUBO.salidaMax, b.v);
+            usos.push({ tubo: b.tubo, bola: i, desde: b.desde, hasta: frame + (s + 1) / SUBPASOS });
+            eventos.push({ frame, tipo: 'tuboSale', bola: i, tubo: b.tubo });
+            b.tubo = -1; b.quieto = 0;
+          }
+          continue;
+        }
         b.vy += gravedad * DT;
         b.x += b.vx * DT;
         b.y += b.vy * DT;
+        // ¿Entró a la boca de un tubo? (franja lateral, primeros 60 px bajo la boca)
+        for (let k = 0; k < tubos.length; k++) {
+          const t = tubos[k];
+          if (b.y >= t.yBoca && b.y <= t.yBoca + 60 && b.x > t.x0 && b.x < t.x1 && b.vy > 0) {
+            b.tubo = k; b.s = 0; b.v = Math.max(250, Math.hypot(b.vx, b.vy)); b.ex = b.x; b.ey = b.y; b.desde = frame + s / SUBPASOS;
+            eventos.push({ frame, tipo: 'tubo', bola: i, tubo: k });
+            break;
+          }
+        }
       }
       // Choques
       for (let i = 0; i < n; i++) {
         const b = porParticipante[i];
+        if (b.tubo >= 0) continue;
         // Paredes
         if (b.x < RADIO_BOLA) { b.x = RADIO_BOLA; if (b.vx < 0) b.vx = -b.vx * REST_PARED; }
         if (b.x > ANCHO - RADIO_BOLA) { b.x = ANCHO - RADIO_BOLA; if (b.vx > 0) b.vx = -b.vx * REST_PARED; }
@@ -215,7 +420,37 @@ const correr = (n: number, semilla: number, gravedad: number): Resultado | null 
             }
           }
         }
-        // Segmentos (rampas, embudos)
+        // Bloques con vida (rectángulo redondeado). Uno roto ya no existe para la física.
+        for (let k = 0; k < bloques.length; k++) {
+          if (vida[k] <= 0) continue;
+          const bl = bloques[k];
+          if (Math.abs(b.y - bl.y) > bl.h / 2 + RADIO_BOLA || Math.abs(b.x - bl.x) > bl.w / 2 + RADIO_BOLA) continue;
+          const [qx, qy] = cercanoBloque(bl, b.x, b.y);
+          const dx = b.x - qx, dy = b.y - qy;
+          const d2 = dx * dx + dy * dy;
+          if (d2 >= RR_BLOQUE * RR_BLOQUE) continue;
+          let nx: number, ny: number, d: number;
+          if (d2 === 0) { nx = 0; ny = -1; d = 0; } else { d = Math.sqrt(d2); nx = dx / d; ny = dy / d; }
+          b.x = qx + nx * RR_BLOQUE; b.y = qy + ny * RR_BLOQUE;
+          const vn = b.vx * nx + b.vy * ny;
+          if (vn < 0) {
+            b.vx -= (1 + BLOQUE.rest) * vn * nx;
+            b.vy -= (1 + BLOQUE.rest) * vn * ny;
+            // Golpe sobre la cara plana: un empujoncito lateral para que no se quede posada encima.
+            if (Math.abs(ny) > 0.9) b.vx += (b.x >= bl.x ? 1 : -1) * 55;
+            if (-vn > BLOQUE.golpeMin && frame - ultimoGolpeBloque[k][i] >= BLOQUE.enfriamiento) {
+              ultimoGolpeBloque[k][i] = frame;
+              ultimoGolpe[i] = frame;
+              vida[k]--;
+              eventos.push({ frame, tipo: 'bloque', bola: i, bloque: k, vida: vida[k], fuerza: Math.min(1, -vn / 1000) });
+              if (vida[k] === 0) {
+                rotoFisica[k] = frame;
+                eventos.push({ frame, tipo: 'rompe', bola: i, bloque: k });
+              }
+            }
+          }
+        }
+        // Segmentos (rampas, embudos, paredes de tubo)
         for (const sg of segmentos) {
           const ex = sg.x2 - sg.x1, ey = sg.y2 - sg.y1;
           const l2 = ex * ex + ey * ey;
@@ -244,9 +479,10 @@ const correr = (n: number, semilla: number, gravedad: number): Resultado | null 
           }
         }
       }
-      // Bola–bola
+      // Bola–bola (las que van dentro de un tubo no chocan con nadie)
       for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
         const a = porParticipante[i], b = porParticipante[j];
+        if (a.tubo >= 0 || b.tubo >= 0) continue;
         const dx = b.x - a.x, dy = b.y - a.y;
         const d2 = dx * dx + dy * dy;
         const rr = RADIO_BOLA * 2;
@@ -268,7 +504,7 @@ const correr = (n: number, semilla: number, gravedad: number): Resultado | null 
       // Anti-atasco: una bola casi quieta durante 0,35 s recibe un empujón determinista.
       for (let i = 0; i < n; i++) {
         const b = porParticipante[i];
-        if (b.llego >= 0) continue;
+        if (b.llego >= 0 || b.tubo >= 0) continue;
         const v = Math.hypot(b.vx, b.vy);
         b.quieto = v < 25 ? b.quieto + 1 : 0;
         if (b.quieto > 0.35 / DT) {
@@ -302,42 +538,76 @@ const correr = (n: number, semilla: number, gravedad: number): Resultado | null 
     if (tGanadora >= 0 && frame >= tGanadora + CELEBRACION_SEG * FPS) {
       const tiempos = llegadas.filter((t) => t >= 0).sort((a, b) => a - b);
       const ventaja = tiempos.length >= 2 ? (tiempos[1] - tiempos[0]) / FPS : Infinity;
-      return { mundo, posiciones, eventos, llegadas, tGanadora, ventaja };
+      // Bolas que siguen dentro de un tubo al cortar: su uso termina aquí.
+      porParticipante.forEach((b, i) => { if (b.tubo >= 0) usos.push({ tubo: b.tubo, bola: i, desde: b.desde, hasta: frame }); });
+      // ¿A quién le abrió el camino cada bloque roto? A la primera OTRA bola que pase (en ≤ 8 s) por donde
+      // estaba: con el bloque ahí habría chocado.
+      const caminos: Resultado['caminos'] = [];
+      bloques.forEach((bl, k) => {
+        if (rotoFisica[k] < 0) return;
+        const quien = eventos.find((e) => e.tipo === 'rompe' && e.bloque === k)!.bola;
+        let mejor: { frame: number; otra: number } | null = null;
+        for (let j = 0; j < n; j++) {
+          if (j === quien) continue;
+          for (let f = rotoFisica[k] + 1; f < Math.min(posiciones[j].length, rotoFisica[k] + 8 * FPS); f++) {
+            const [x, y] = posiciones[j][f];
+            const [qx, qy] = cercanoBloque(bl, x, y);
+            if (Math.hypot(x - qx, y - qy) < RR_BLOQUE - 4) { if (!mejor || f < mejor.frame) mejor = { frame: f, otra: j }; break; }
+          }
+        }
+        if (mejor) caminos.push({ frame: mejor.frame, bola: quien, otra: mejor.otra, bloque: k });
+      });
+      return { mundo, posiciones, eventos, llegadas, tGanadora, ventaja, usos, caminos };
     }
   }
   return null; // nadie llegó dentro del tope
 };
 
+/** ¿La carrera luce los extras? Algún tubo usado, el ATAJO usado (se ve la ventaja), un bloque roto y un "le abrió el camino". */
+const puntajeExtras = (r: Resultado) =>
+  (r.usos.length > 0 ? 1 : 0) + (r.usos.some((u) => r.mundo.tubos[u.tubo].tipo === 'atajo') ? 1 : 0) +
+  (r.eventos.some((e) => e.tipo === 'rompe') ? 1 : 0) + (r.caminos.length > 0 ? 1 : 0);
+
 /**
  * Busca semilla/gravedad hasta que la ganadora cruce entre 25 y 45 s y la carrera sea
- * reñida (1.º–2.º < 1,5 s). Tras 20 carreras de duración válida sin cumplir, se queda
- * con la más ajustada.
+ * reñida (1.º–2.º < 1,5 s). Con extras, además: algún tubo usado, algún bloque roto y algún
+ * "le abrió el camino" (puntaje 3). Tras N carreras de duración válida sin cumplir, se queda con
+ * la mejor (más extras, luego más ajustada).
  */
 const simular = (guion: GuionCarrera) => {
   const n = guion.participantes.length;
+  const extras = guion.extras !== false;
   const base = guion.semilla ?? semillaDesde(guion.id);
+  const meta = extras ? 4 : 0; // tubo usado + ATAJO usado + bloque roto + "le abrió el camino"
+  const maxValidas = extras ? 60 : CARRERAS_VALIDAS_MAX;
   let gravedad = 1100;
   let semilla = base;
   let validas = 0;
-  let mejor: { r: Resultado; semilla: number; gravedad: number } | null = null;
-  for (let intento = 0; intento < 120; intento++) {
-    const r = correr(n, semilla, gravedad);
+  let mejor: { r: Resultado; semilla: number; gravedad: number; p: number } | null = null;
+  for (let intento = 0; intento < 240; intento++) {
+    const r = correr(n, semilla, gravedad, extras);
     const dur = r ? r.tGanadora / FPS : Infinity;
-    if (r && dur >= DURACION_MIN && dur <= DURACION_MAX) {
+    // El 1.er choque con clavija debe llegar en ≤ 0,3 s (con gravedad baja la salida se vuelve lenta).
+    const primerChoque = r?.eventos.find((e) => e.tipo === 'clavija')?.frame ?? Infinity;
+    if (r && dur >= DURACION_MIN && dur <= DURACION_MAX && (!extras || primerChoque <= 0.3 * FPS)) {
       validas++;
-      if (!mejor || r.ventaja < mejor.r.ventaja) mejor = { r, semilla, gravedad };
-      if (r.ventaja < VENTAJA_MAX_SEG || validas >= CARRERAS_VALIDAS_MAX) {
-        return { ...mejor, intentos: intento + 1 };
-      }
+      const p = extras ? puntajeExtras(r) : 0;
+      const reñida = r.ventaja < VENTAJA_MAX_SEG;
+      // Primero los extras completos y reñida; luego más extras; luego menos ventaja.
+      const clave = (x: { r: Resultado; p: number }) => (x.r.ventaja < VENTAJA_MAX_SEG ? 0 : 1) * 10 + (meta - x.p) + Math.min(0.99, x.r.ventaja / 100);
+      if (!mejor || clave({ r, p }) < clave(mejor)) mejor = { r, semilla, gravedad, p };
+      if ((reñida && p >= meta) || validas >= maxValidas) return { ...mejor, intentos: intento + 1 };
     } else {
       // Duración fuera de rango: acerca la gravedad al objetivo.
-      if (r) gravedad = Math.max(700, Math.min(2500, gravedad * Math.pow(dur / DURACION_OBJETIVO, 1.2)));
+      // Con extras la gravedad no baja de 950: más floja, la salida tarda > 0,3 s en el 1.er choque y la caída se ve
+      // "flotando" (medido 2026-11-09: g=729 → 1.er choque a 417 ms). Si la carrera sale corta, cambia la semilla.
+      if (r) gravedad = Math.max(extras ? 950 : 700, Math.min(2500, gravedad * Math.pow(dur / DURACION_OBJETIVO, 1.2)));
       else gravedad = Math.min(2500, gravedad * 1.3);
     }
     semilla = (semilla + 0x9e3779b9) >>> 0;
   }
-  if (mejor) return { ...mejor, intentos: 120 };
-  throw new Error(`carrera ${guion.id}: no se logró una duración de 25–45 s en 120 intentos`);
+  if (mejor) return { ...mejor, intentos: 240 };
+  throw new Error(`carrera ${guion.id}: no se logró una duración de 25–45 s en 240 intentos`);
 };
 
 /** Velocidad de reproducción (frames de física por frame de video) según la distancia al cruce. */
@@ -413,107 +683,33 @@ const alVideo = (r: Resultado) => {
     }
     ranking.push(actual);
   }
-  return { posiciones, eventos, llegadas, frameGanadora, camaraLenta, camara, ranking, frameRiser, duracionFrames: t.length };
-};
-
-// ---------- Audio ----------
-const sintetizar = (sim: SimulacionCarrera, ruta: string) => {
-  const segundos = (sim.duracionFrames + CIERRE_FRAMES) / sim.fps + 0.5;
-  const L = new Float32Array(Math.ceil(segundos * SR));
-  const R = new Float32Array(L.length);
-  const pan = (x: number) => {
-    const p = Math.max(0, Math.min(1, x / sim.tablero.ancho)); // 0 = izq, 1 = der
-    return { l: Math.cos(p * Math.PI / 2), r: Math.sin(p * Math.PI / 2) };
-  };
-  const tmp = new Float32Array(Math.ceil(0.6 * SR));
-  /** Renderiza un sonido corto en `tmp` y lo mezcla con paneo. */
-  const colocar = (inicio: number, x: number, dibujar: (p: Float32Array) => void) => {
-    tmp.fill(0);
-    dibujar(tmp);
-    const { l, r } = pan(x);
-    const desde = Math.floor(inicio * SR);
-    for (let i = 0; i < tmp.length; i++) {
-      const idx = desde + i;
-      if (idx < 0 || idx >= L.length) break;
-      L[idx] += tmp[i] * l; R[idx] += tmp[i] * r;
-    }
-  };
-
-  // Salida (frame 0): "¡ya!" corto para que el video no arranque en silencio.
-  for (const [k, midi] of [76, 83].entries()) {
-    nota(L, { inicio: k * 0.07, hz: midiAHz(midi), duracion: 0.12, volumen: 0.32, timbre: 'triangulo', caida: 0.05, liberacion: 0.08 });
-    nota(R, { inicio: k * 0.07, hz: midiAHz(midi), duracion: 0.12, volumen: 0.32, timbre: 'triangulo', caida: 0.05, liberacion: 0.08 });
-  }
-  golpe(L, 0, { duracion: 0.05, volumen: 0.22, tono: 0.3, semilla: 3 });
-  golpe(R, 0, { duracion: 0.05, volumen: 0.22, tono: 0.3, semilla: 4 });
-
-  // Golpes afinados: máx. 12 por segundo en total (ventana deslizante).
-  const tiemposGolpe: number[] = [];
-  for (const ev of sim.eventos) {
-    const t = ev.frame / sim.fps;
-    const x = sim.posiciones[ev.bola][Math.min(ev.frame, sim.posiciones[ev.bola].length - 1)][0];
-    if (ev.tipo === 'clavija' || ev.tipo === 'rampa') {
-      while (tiemposGolpe.length && tiemposGolpe[0] < t - 1) tiemposGolpe.shift();
-      if (tiemposGolpe.length >= 12) continue;
-      tiemposGolpe.push(t);
-      const f = ev.fuerza ?? 0.5;
-      colocar(t, x, (p) => {
-        nota(p, { inicio: 0, hz: ev.hz!, duracion: 0.04, volumen: 0.3 * (0.55 + 0.45 * f), timbre: 'pluck', caida: 0.03, liberacion: 0.09 });
-        golpe(p, 0, { duracion: 0.025, volumen: 0.1 * (0.5 + 0.5 * f), tono: 0.7, semilla: ev.frame + ev.bola });
-      });
-    } else if (ev.tipo === 'bola') {
-      const f = ev.fuerza ?? 0.5;
-      colocar(t, x, (p) => {
-        nota(p, { inicio: 0, hz: ev.hz!, duracion: 0.07, volumen: 0.26 * (0.6 + 0.4 * f), timbre: 'triangulo', caida: 0.04, liberacion: 0.1 });
-        golpe(p, 0, { duracion: 0.03, volumen: 0.12, tono: 0.35, semilla: ev.frame * 7 + ev.bola });
-      });
+  // Extras: golpes y roturas de bloques, usos de tubo y avisos, en frames de VIDEO.
+  const bloques: Bloque[] = r.mundo.bloques.map((b, k) => {
+    const golpes = eventos.filter((e) => e.tipo === 'bloque' && e.bloque === k).map((e) => e.frame);
+    const rompe = eventos.find((e) => e.tipo === 'rompe' && e.bloque === k);
+    return { x: b.x, y: b.y, w: b.w, h: b.h, vida: b.vida, golpes, roto: rompe ? rompe.frame : -1, rompio: rompe ? rompe.bola : -1 };
+  });
+  const tubos: Tubo[] = r.mundo.tubos.map((tb, k) => ({
+    tipo: tb.tipo, x0: tb.x0, x1: tb.x1, yBoca: tb.yBoca, ySalida: tb.ySalida, puntos: tb.puntos, ancho: tb.ancho,
+    usos: r.usos.filter((u) => u.tubo === k).map((u) => ({ bola: u.bola, desde: aVideo(u.desde), hasta: aVideo(u.hasta) })).sort((a, b) => a.desde - b.desde),
+  }));
+  // Avisos: "le abrió el camino" y "se metió al tubo", en orden; uno cada AVISO_SEPARACION frames como máximo
+  // y nunca desde la cámara lenta (el foco es la meta).
+  const candidatos: AvisoCarrera[] = [
+    ...r.caminos.map((c): AvisoCarrera => ({ frame: aVideo(c.frame), tipo: 'camino', bola: c.bola, otra: c.otra })),
+    ...tubos.flatMap((tb, k) => tb.usos.map((u): AvisoCarrera => ({ frame: u.desde, tipo: 'tubo', bola: u.bola, tubo: k }))),
+  ].sort((a, b) => a.frame - b.frame);
+  // Prioridad: primero cada entrada a un tubo (es lo nuevo y se ve en cámara), luego los "le abrió el camino".
+  const avisos: AvisoCarrera[] = [];
+  for (const tipo of ['tubo', 'camino'] as const) {
+    for (const a of candidatos) {
+      if (a.tipo !== tipo || a.frame >= camaraLenta.desde - 60) continue;
+      if (avisos.some((o) => Math.abs(o.frame - a.frame) < AVISO_SEPARACION)) continue;
+      avisos.push(a);
     }
   }
-
-  // Riser: cuando la líder entra al último 15 % del tablero, hasta la meta.
-  if (sim.frameRiser >= 0) {
-    const t0 = sim.frameRiser / sim.fps;
-    const dur = Math.max(0.8, Math.min(5, sim.frameGanadora / sim.fps - t0));
-    barrido(L, t0, 160, 1400, dur, 0.22, 'triangulo');
-    barrido(R, t0, 160, 1400, dur, 0.22, 'triangulo');
-    // Cola de ruido ascendente para dar tensión.
-    barrido(L, t0, 800, 3200, dur, 0.06, 'sierra');
-    barrido(R, t0 + 0.01, 800, 3200, dur, 0.06, 'sierra');
-  }
-
-  // "Golpe" grave al entrar en cámara lenta: el oído siente que el tiempo se estira.
-  const tLenta = sim.camaraLenta.desde / sim.fps;
-  barrido(L, tLenta, 320, 70, 0.55, 0.2, 'seno');
-  barrido(R, tLenta, 320, 70, 0.55, 0.2, 'seno');
-
-  // Fanfarria: acorde mayor arpegiado (Do–Mi–Sol + Do agudo) al cruzar la ganadora.
-  const tMeta = sim.frameGanadora / sim.fps;
-  const xMeta = sim.posiciones[sim.ganadora][Math.min(sim.frameGanadora, sim.posiciones[sim.ganadora].length - 1)][0];
-  const pm = pan(xMeta);
-  for (const [k, midi] of [72, 76, 79].entries()) {
-    const ti = tMeta + k * 0.11;
-    nota(L, { inicio: ti, hz: midiAHz(midi), duracion: 0.3, volumen: 0.5, timbre: 'pluck', liberacion: 0.25 });
-    nota(R, { inicio: ti, hz: midiAHz(midi), duracion: 0.3, volumen: 0.5, timbre: 'pluck', liberacion: 0.25 });
-  }
-  for (const midi of [84, 79, 76, 72]) {
-    nota(L, { inicio: tMeta + 0.36, hz: midiAHz(midi), duracion: 0.9, volumen: 0.16, timbre: 'triangulo', ataque: 0.02, liberacion: 0.6 });
-    nota(R, { inicio: tMeta + 0.36, hz: midiAHz(midi), duracion: 0.9, volumen: 0.16, timbre: 'triangulo', ataque: 0.02, liberacion: 0.6 });
-  }
-  golpe(L, tMeta, { duracion: 0.35, volumen: 0.35 * pm.l + 0.15, tono: 0.25, semilla: 99 });
-  golpe(R, tMeta, { duracion: 0.35, volumen: 0.35 * pm.r + 0.15, tono: 0.25, semilla: 77 });
-
-  // Normalización conjunta a −1 dBFS con limitador suave (misma ganancia en L y R).
-  let pico = 0;
-  for (let i = 0; i < L.length; i++) pico = Math.max(pico, Math.abs(L[i]), Math.abs(R[i]));
-  if (pico > 0) {
-    const objetivo = Math.pow(10, -1 / 20);
-    const g = objetivo / pico;
-    for (let i = 0; i < L.length; i++) {
-      L[i] = Math.tanh(L[i] * g * 1.2) / Math.tanh(1.2) * objetivo;
-      R[i] = Math.tanh(R[i] * g * 1.2) / Math.tanh(1.2) * objetivo;
-    }
-  }
-  escribirWav(ruta, [L, R]);
+  avisos.sort((a, b) => a.frame - b.frame);
+  return { posiciones, eventos, llegadas, frameGanadora, camaraLenta, camara, ranking, frameRiser, duracionFrames: t.length, bloques, tubos, avisos };
 };
 
 /** Simula, escribe `public/sim/<id>.json` y `public/audio/generado/<id>.wav`. Devuelve la simulación. */
@@ -546,12 +742,13 @@ export const prepararSimulacion = (guion: GuionCarrera): SimulacionCarrera => {
     camaraLenta: v.camaraLenta,
     duracionFrames: v.duracionFrames,
     frameRiser: v.frameRiser,
+    ...(guion.extras !== false ? { bloques: v.bloques, tubos: v.tubos, avisos: v.avisos } : {}),
   };
   const rutaSim = path.join(RAIZ, 'public/sim', `${guion.id}.json`);
   fs.mkdirSync(path.dirname(rutaSim), { recursive: true });
   fs.writeFileSync(rutaSim, JSON.stringify(sim));
   const rutaWav = path.join(RAIZ, 'public/audio/generado', `${guion.id}.wav`);
-  sintetizar(sim, rutaWav);
+  sintetizarCarrera(sim, rutaWav);
   const golpes = sim.eventos.filter((e) => e.tipo === 'clavija' || e.tipo === 'rampa').length;
   const choques = sim.eventos.filter((e) => e.tipo === 'bola').length;
   console.log(
@@ -562,6 +759,11 @@ export const prepararSimulacion = (guion: GuionCarrera): SimulacionCarrera => {
   );
   const primerGolpe = sim.eventos.find((e) => e.tipo === 'clavija');
   console.log(`[carrera] 1.er choque con clavija: ${primerGolpe ? ((primerGolpe.frame / FPS) * 1000).toFixed(0) + ' ms' : '—'}`);
+  if (sim.bloques) {
+    const rotos = sim.bloques.filter((b) => b.roto >= 0).length;
+    const usosTubo = sim.tubos!.reduce((a, t) => a + t.usos.length, 0);
+    console.log(`[carrera] extras: ${sim.bloques.length} bloques (${rotos} rotos) · ${sim.tubos!.length} tubos [${sim.tubos!.map((t) => `${t.tipo}×${t.usos.length}`).join(', ')}] → ${usosTubo} uso(s) · ${sim.avisos!.length} aviso(s): ${sim.avisos!.map((a) => `${(a.frame / FPS).toFixed(1)} s ${a.tipo === 'camino' ? `${guion.participantes[a.bola].etiqueta}→${guion.participantes[a.otra!].etiqueta}` : `${guion.participantes[a.bola].etiqueta} al tubo`}`).join(' · ')}`);
+  }
   console.log(`[carrera] orden: ${orden.map((i, k) => `${k + 1}.º ${guion.participantes[i].etiqueta}${sim.llegadas[i] < 0 ? ' (por posición en pista)' : ''}`).join(' · ')}`);
   console.log(`[carrera] → ${path.relative(RAIZ, rutaSim)} · ${path.relative(RAIZ, rutaWav)}`);
   return sim;

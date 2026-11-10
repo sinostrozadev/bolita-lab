@@ -62,8 +62,26 @@ export const GuionCarrera = z.object({
   semilla: z.number().int().optional(),
   /** Tema libre, solo informativo (p. ej. "meses", "mascotas"). */
   tema: z.string().optional(),
+  /**
+   * Extras de la carrera v2 (2026-11-09): bloques con vida (1–3 golpes, se rompen y abren camino), 2–3 tubos
+   * transparentes con rizos (atajo o trampa) y avisos narrativos ("¡X le abrió el camino a Y!"). Ausente = activados;
+   * `false` = tablero clásico (solo clavijas, rampas y embudos).
+   */
+  extras: z.boolean().optional(),
+  /**
+   * Votación con acciones del público (2026-11-09; rehecha el 2026-11-10): EXIGE exactamente 4 participantes y a cada
+   * uno le toca una ACCIÓN por su orden: 1.º "❤️ ME GUSTA", 2.º "💬 COMENTA", 3.º "🔁 COMPARTE", 4.º "🔔 SUSCRÍBETE".
+   * Panel "VOTA POR TU FAVORITO 👇" abajo desde el frame 0 (reemplaza `ganchoAbajo`) y, en el final,
+   * "GANÓ X → si le diste <acción>, ¡acertaste! 🎉". Ausente = apagada (los guiones viejos y los de 5–6 quedan igual);
+   * los guiones nuevos de carrera llevan `votacion: true` y 4 participantes.
+   */
+  votacion: z.boolean().optional(),
   /** Llamado a suscribirse en el clímax (opcional; ausente = activado con variante por id; false = apagado; texto = ese texto). */
   llamado: CampoLlamado,
+}).superRefine((g, ctx) => {
+  if (g.votacion && g.participantes.length !== 4) {
+    ctx.addIssue({ code: 'custom', path: ['participantes'], message: 'votacion: true exige exactamente 4 participantes (una acción por competidor)' });
+  }
 });
 export type GuionCarrera = z.infer<typeof GuionCarrera>;
 
@@ -71,3 +89,12 @@ export type GuionCarrera = z.infer<typeof GuionCarrera>;
 export const VARIANTES_GANCHO_ABAJO_CARRERA = ['El último te sorprende 💀', '¿Cuál es el tuyo? 👇', 'El final es de infarto 💀'] as const;
 export const ganchoAbajoCarrera = (g: Pick<GuionCarrera, 'id' | 'ganchoAbajo'>): string =>
   g.ganchoAbajo ?? VARIANTES_GANCHO_ABAJO_CARRERA[semillaDesde(`abajo:${g.id}`) % VARIANTES_GANCHO_ABAJO_CARRERA.length];
+
+/** Acción de voto de cada participante (por posición en `participantes`; la votación exige 4). */
+export const ACCIONES_VOTO = [
+  { emoji: '❤️', texto: 'ME GUSTA' },
+  { emoji: '💬', texto: 'COMENTA' },
+  { emoji: '🔁', texto: 'COMPARTE' },
+  { emoji: '🔔', texto: 'SUSCRÍBETE' },
+] as const;
+export const accionVoto = (i: number): { emoji: string; texto: string } => ACCIONES_VOTO[i % ACCIONES_VOTO.length];

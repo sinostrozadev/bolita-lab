@@ -7,9 +7,10 @@ import { Cierre } from '../../marca/Cierre';
 import { Llamado, textoLlamado } from '../../marca/Llamado';
 import { BloqueTexto } from '../../marca/BloqueTexto';
 import { crearAzar } from '../../lib/azar';
-import { ganchoAbajoCarrera, type GuionCarrera, type IconoCompetidor } from './guion';
+import { accionVoto, ganchoAbajoCarrera, type GuionCarrera, type IconoCompetidor } from './guion';
 import { Icono, iconoAportaJuntoAlNombre } from './Icono';
 import { CIERRE_FRAMES, type SimulacionCarrera } from './tipos';
+import { Aviso, Bloques, TubosFondo, TubosFrente, Votacion, tamVotacion } from './Extras';
 
 /** Ruta pública del JSON de simulación de un guion. */
 export const rutaSim = (id: string) => staticFile(`sim/${id}.json`);
@@ -507,6 +508,11 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
     tam: sim.tablero.radioBola * 2 * zg.z,
   };
   const lenta = frame >= sim.camaraLenta.desde && frame <= sim.camaraLenta.hasta;
+  const llamadoDesde = Math.max(180, Math.min(sim.frameRiser >= 0 ? sim.frameRiser : Infinity, sim.frameGanadora - LLAMADO_ANTES));
+  // Con votación el final ya dice "¡acertaste!": el llamado no repite "¿Acertaste?".
+  const llamadoBase = textoLlamado('carrera', props.id, props.llamado);
+  const textoDelLlamado = props.votacion && typeof props.llamado !== 'string' && llamadoBase?.includes('¿Acertaste?')
+    ? 'Suscríbete y elige la próxima carrera 🏁' : llamadoBase;
 
   return (
     <AbsoluteFill style={{ background: PALETA.fondo, overflow: 'hidden' }}>
@@ -520,24 +526,37 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
       {/* Mundo (tablero + bolas), con zoom hacia la meta en la cámara lenta */}
       <AbsoluteFill style={{ transformOrigin: '0 0', transform: `translate(${ax}px, ${ay}px) scale(${z}) translate(${-ax}px, ${-ay}px)` }}>
         <Tablero sim={sim} cam={cam} frame={frame} colores={colores} />
+        {/* Extras v2 (si la simulación los trae): tubos y bloques en coordenadas del tablero */}
+        <div style={{ position: 'absolute', left: 0, top: 0, width: ANCHO, transform: `translateY(${-cam}px)` }}>
+          <TubosFondo sim={sim} cam={cam} frame={frame} colores={colores} />
+          <Bloques sim={sim} cam={cam} frame={frame} colores={colores} />
+        </div>
         <Bolas sim={sim} cam={cam} frame={frame} colores={colores} etiquetas={etiquetas} iconos={iconos} mostrarEtiquetas={celebrando ? 0 : hud * etiquetasIn} />
+        <div style={{ position: 'absolute', left: 0, top: 0, width: ANCHO, transform: `translateY(${-cam}px)` }}>
+          <TubosFrente sim={sim} cam={cam} />
+        </div>
       </AbsoluteFill>
       {/* Viñeta de cámara lenta */}
       {lenta && <AbsoluteFill style={{ boxShadow: `inset 0 0 240px ${colores[ganadora]}30` }} />}
 
       {!celebrando && <Marcador sim={sim} frame={frame} colores={colores} etiquetas={etiquetas} iconos={iconos} opacidad={hud * marcadorIn} />}
-      <Podio sim={sim} frame={frame} colores={colores} iconos={iconos} opacidad={podioOp} />
+      <Podio sim={sim} frame={frame} colores={colores} iconos={iconos} opacidad={podioOp * (props.votacion ? 1 - tamVotacion(sim, frame) : 1)} />
+      {/* Avisos narrativos en el lugar del llamado, hasta que el llamado entra (sin llamado: hasta la cámara lenta) */}
+      {!celebrando && <Aviso sim={sim} colores={colores} etiquetas={etiquetas} centroY={LLAMADO_CENTRO_Y} hasta={textoDelLlamado ? llamadoDesde : sim.camaraLenta.desde} />}
 
       {celebrando && <Celebracion sim={sim} color={colores[ganadora]} etiqueta={etiquetas[ganadora]} icono={iconos[ganadora]} colores={colores} iconos={iconos} origen={origen} />}
 
       {/* Dos bloques fijos (frame 0 → cierre): la pregunta arriba, la intriga abajo. */}
       <BloqueTexto texto={textoArriba} color={PALETA.neon.cian} top={ARRIBA_TOP} tam={tamArriba(textoArriba)} opacidad={fadeCierre} />
-      <BloqueTexto texto={ganchoAbajoCarrera(props)} color={PALETA.neon.magenta} centroY={ABAJO_CENTRO_Y} tam={58} opacidad={fadeCierre} />
+      {props.votacion
+        ? <Votacion sim={sim} colores={colores} etiquetas={etiquetas} acciones={props.participantes.map((_, i) => accionVoto(i))} opacidad={fadeCierre}
+            iconos={(tam) => iconos.map((ic, i) => <Icono key={i} icono={ic} tam={tam} fondo={colores[i]} />)} />
+        : <BloqueTexto texto={ganchoAbajoCarrera(props)} color={PALETA.neon.magenta} centroY={ABAJO_CENTRO_Y} tam={58} opacidad={fadeCierre} />}
 
       {/* Llamado a suscribirse en la recta final (se queda durante la celebración). Color de marca: el de
           la líder o la ganadora delataría el resultado antes de la meta. */}
-      <Llamado texto={textoLlamado('carrera', props.id, props.llamado)}
-        desde={Math.max(180, Math.min(sim.frameRiser >= 0 ? sim.frameRiser : Infinity, sim.frameGanadora - LLAMADO_ANTES))}
+      <Llamado texto={textoDelLlamado}
+        desde={llamadoDesde}
         hasta={sim.duracionFrames} centroY={LLAMADO_CENTRO_Y} color={PALETA.neon.lima} />
 
       <Sequence from={sim.duracionFrames} durationInFrames={CIERRE_FRAMES} layout="none">

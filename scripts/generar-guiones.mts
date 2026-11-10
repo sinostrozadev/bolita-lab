@@ -90,7 +90,8 @@ const EDITORIAL = `REGLAS EDITORIALES (obligatorias):
   · Si el competidor ES una marca → {"tipo":"marca","slug":"<slug de simple-icons>"}: el slug es el nombre del archivo en simpleicons.org en minúsculas y sin espacios (apple, samsung, xiaomi, google para Pixel, motorola, huawei, playstation, steam, tiktok, instagram, youtube, x, facebook, snapchat, netflix, spotify, mcdonalds, cocacola, starbucks...). simple-icons NO tiene xbox, nintendo, microsoft ni windows: para esos usa emoji o texto. Si no estás seguro de que el slug exista, usa emoji o texto.
   · Si no es marca (meses, días, sabores, comidas, mascotas, países, estaciones, signos) → {"tipo":"emoji","valor":"🍫"}: UN emoji que se reconozca al instante (países: su bandera 🇨🇱).
   · Personas reales (futbolistas, artistas): NUNCA su cara; usa la bandera de su país o {"tipo":"texto","valor":"CR7"} (1–3 caracteres).
-  · No repitas el mismo emoji dentro de una carrera; el icono y el color deben "contar" lo mismo que la etiqueta.`;
+  · No repitas el mismo emoji dentro de una carrera; el icono y el color deben "contar" lo mismo que la etiqueta.
+- Plantilla "carrera": EXACTAMENTE 4 participantes y SIEMPRE props.votacion = true (votación con acciones del público: al 1.º le toca "❤️ ME GUSTA", al 2.º "💬 COMENTA", al 3.º "🔁 COMPARTE" y al 4.º "🔔 SUSCRÍBETE"; el panel de votación reemplaza a ganchoAbajo, que puedes omitir). El validador rechaza una carrera con votación que no tenga 4 participantes.`;
 
 /**
  * Fórmula narrativa de "dato" (desde 2026-11-05), sacada del referente Ñerd (Shorts de mapas/historia,
