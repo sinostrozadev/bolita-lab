@@ -344,8 +344,8 @@ export const generarMaquina = (props: GuionMaquina, partitura: PartituraMaquina)
     } },
     // 2. Bajada al bajo de madera y el bombo (travelling lateral).
     { nombre: 'bajo-bombo', desde: P(10), hasta: P(17.5), pose: (_t, u) => ({
-      p: lerp3({ x: -52, y: 88, z: 120 }, { x: 18, y: 70, z: 125 }, suave(u)),
-      t: lerp3({ x: -32, y: 62, z: 10 }, { x: 18, y: 46, z: 10 }, suave(u)), fov: 34,
+      p: lerp3({ x: -46, y: 104, z: 196 }, { x: 34, y: 88, z: 190 }, suave(u)),
+      t: lerp3({ x: -30, y: 60, z: 10 }, { x: 16, y: 48, z: 10 }, suave(u)), fov: 34,
     }) },
     // 3. Grúa: noria → ascensor → arriba (el ciclo).
     { nombre: 'noria-ascensor', desde: P(17.5), hasta: P(24), corte: true, pose: (_t, u) => ({

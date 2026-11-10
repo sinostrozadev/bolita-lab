@@ -71,18 +71,19 @@ export const DEPOSITO = { x0: -62, x1: 62, z0: -32, z1: 48, yFondo: 2, yPila: 13
 /** Gira en sentido horario visto de frente: los bolsillos suben por la izquierda y vuelcan arriba en la canaleta. */
 export const NORIA = { x: 0, y: 54, z: -18, radio: 38, bolsillos: 16, ancho: 7 } as const;
 /** Canaleta de la cima de la noria al pie del ascensor. */
-export const CANALETA = { desde: { x: -4, y: 94, z: -14 }, hasta: { x: -54, y: 86, z: -2 } } as const;
+export const CANALETA = { desde: { x: -7, y: 89.5, z: -10 }, hasta: { x: -53, y: 81, z: -1 } } as const;
 
 // ---------- Ascensor (izquierda): cadena de cangilones ----------
-export const ASCENSOR = { x: -56, z: 0, y0: 84, y1: 210, paso: 6 } as const;
+export const ASCENSOR = { x: -56, z: 0, y0: 80, y1: 210 } as const;
 
 // ---------- Circuito superior ----------
 /** Riel superior: del cabezal del ascensor hacia la derecha, bajando suave. */
 export const RIEL_SUPERIOR = { desde: { x: -52, y: 211, z: 0 }, hasta: { x: 36, y: 205, z: 0 } } as const;
 /** Espiral (hélice) arriba a la derecha. */
-export const ESPIRAL = { x: 44, z: 0, y0: 204, y1: 172, radio: 8, vueltas: 3 } as const;
+/** Empieza en θ = π (x = 36, donde termina el riel) y gira hacia la cámara 3¼ vueltas hasta el frente (θ = π/2 − 6π). */
+export const ESPIRAL = { x: 44, z: 0, y0: 204.5, y1: 172, radio: 8, th0: Math.PI, th1: Math.PI / 2 - 6 * Math.PI } as const;
 /** Riel de reparto: pasa sobre los cargadores del vibráfono de derecha a izquierda. */
-export const RIEL_REPARTO = { desde: { x: 46, y: 167, z: VIBRA.zGolpe }, hasta: { x: -52, y: 165, z: VIBRA.zGolpe } } as const;
+export const RIEL_REPARTO = { desde: { x: 44, y: 167, z: VIBRA.zGolpe }, hasta: { x: -52, y: 165, z: VIBRA.zGolpe } } as const;
 /** Tubo de bajada al bajo y riel corto sobre sus cargadores. */
 export const TUBO_BAJO = { desde: { x: -54, y: 164, z: VIBRA.zGolpe }, hasta: { x: -54, y: 99, z: BAJO.zGolpe } } as const;
 export const RIEL_BAJO = { desde: { x: -54, y: 98.5, z: BAJO.zGolpe }, hasta: { x: -16, y: 97, z: BAJO.zGolpe } } as const;
@@ -126,4 +127,43 @@ export const holgura = (pieza: Pieza, i: number, p: { x: number; y: number; z: n
   const d = n.x * (p.x - PLATILLO.x) + n.y * (p.y - PLATILLO.y) + n.z * (p.z - PLATILLO.z);
   const dentro = Math.hypot(p.x - PLATILLO.x, p.z - PLATILLO.z) <= PLATILLO.radio;
   return { h: d - R_CANICA, dentro };
+};
+
+// ---------- Circuito de canicas decorativas (flujo continuo) ----------
+
+export type P3 = { x: number; y: number; z: number };
+/** Polilínea con longitud acumulada: `en(s)` da el punto a distancia s del inicio. */
+export const crearRecorrido = (pts: P3[]) => {
+  const acum = [0];
+  for (let i = 1; i < pts.length; i++) acum.push(acum[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y, pts[i].z - pts[i - 1].z));
+  const L = acum[acum.length - 1];
+  const en = (s: number): P3 => {
+    const d = Math.max(0, Math.min(L, s));
+    let lo = 0, hi = acum.length - 1;
+    while (hi - lo > 1) { const m = (lo + hi) >> 1; if (acum[m] <= d) lo = m; else hi = m; }
+    const u = (d - acum[lo]) / (acum[hi] - acum[lo] || 1);
+    const a = pts[lo], b = pts[hi];
+    return { x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * u, z: a.z + (b.z - a.z) * u };
+  };
+  return { pts, acum, L, en };
+};
+
+/** Puntos de la hélice de la espiral (centro de la canica). */
+export const puntosEspiral = (n = 260): P3[] => Array.from({ length: n + 1 }, (_, k) => {
+  const u = k / n;
+  const th = ESPIRAL.th0 + (ESPIRAL.th1 - ESPIRAL.th0) * u;
+  return { x: ESPIRAL.x + ESPIRAL.radio * Math.cos(th), y: ESPIRAL.y0 + (ESPIRAL.y1 - ESPIRAL.y0) * u, z: ESPIRAL.z + ESPIRAL.radio * Math.sin(th) };
+});
+
+/**
+ * El circuito completo de vuelta arriba: canaleta (desde la cima de la noria) → ascensor → riel superior → espiral →
+ * riel de reparto (sobre los cargadores) → tubo de bajada → riel del bajo. `sAscensor` = distancia en que empieza el
+ * ascensor (los cangilones van en fase con las canicas).
+ */
+export const circuito = () => {
+  const pts: P3[] = [CANALETA.desde, CANALETA.hasta, { x: ASCENSOR.x, y: ASCENSOR.y0, z: ASCENSOR.z }];
+  const sAscensor = crearRecorrido(pts).L;
+  pts.push({ x: ASCENSOR.x, y: ASCENSOR.y1, z: ASCENSOR.z }, RIEL_SUPERIOR.desde, RIEL_SUPERIOR.hasta, ...puntosEspiral(),
+    RIEL_REPARTO.desde, RIEL_REPARTO.hasta, TUBO_BAJO.desde, TUBO_BAJO.hasta, RIEL_BAJO.desde, RIEL_BAJO.hasta);
+  return { ...crearRecorrido(pts), sAscensor };
 };
