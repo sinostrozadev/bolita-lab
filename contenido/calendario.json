@@ -1,20 +1,97 @@
 {
   "zonaHoraria": "America/Santiago",
-  "comentario": "Ranuras de publicación (dias: 0=domingo … 6=sábado). Normal: 1 Short diario a las 18:00 y un 2.º a las 12:00 sábados y domingos. Hasta 'dobleHasta' (inclusive, fecha local) se usan 'ranurasDoble': 2 Shorts al día, 12:00 y 18:00 (las dos primeras semanas del canal; ajusta la fecha al día real de lanzamiento + 13). Los videos largos (compilaciones) usan 'ranurasLargo' y no ocupan ranuras de Shorts. La rotación de plantillas es cíclica.",
+  "comentario": "Ranuras de publicación (dias: 0=domingo … 6=sábado). Normal: 1 Short diario a las 18:00 y un 2.º a las 12:00 sábados y domingos. Hasta 'dobleHasta' (inclusive, fecha local) se usan 'ranurasDoble': 2 Shorts al día, 12:00 y 18:00 (las dos primeras semanas del canal; ajusta la fecha al día real de lanzamiento + 13). Los videos largos (compilaciones) usan 'ranurasLargo' y no ocupan ranuras de Shorts. La rotación de plantillas es cíclica. 2026-11-09 (Santiago): se agrega un 3.er Short diario a las 07:00 (en ambas fases) para probar más formatos.",
   "ranuras": [
-    { "dias": [0, 1, 2, 3, 4, 5, 6], "hora": "18:00" },
-    { "dias": [6, 0], "hora": "12:00" }
+    {
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "hora": "07:00"
+    },
+    {
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "hora": "12:00"
+    },
+    {
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "hora": "18:00"
+    }
   ],
-  "dobleHasta": "2026-11-16",
+  "dobleHasta": null,
   "ranurasDoble": [
-    { "dias": [0, 1, 2, 3, 4, 5, 6], "hora": "12:00" },
-    { "dias": [0, 1, 2, 3, 4, 5, 6], "hora": "18:00" }
+    {
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "hora": "07:00"
+    },
+    {
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "hora": "12:00"
+    },
+    {
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "hora": "18:00"
+    }
   ],
   "ranurasLargo": [
-    { "dias": [0], "hora": "10:00" }
+    {
+      "dias": [
+        0
+      ],
+      "hora": "10:00"
+    }
   ],
-  "rotacion": ["bola", "dato", "carrera"],
-  "minimoBandeja": 3,
-  "minimoBacklog": 6,
+  "rotacion": [
+    "bola",
+    "dato",
+    "carrera"
+  ],
+  "minimoBandeja": 4,
+  "minimoBacklog": 9,
   "margenMinutos": 20
 }
