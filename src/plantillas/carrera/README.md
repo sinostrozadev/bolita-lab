@@ -142,5 +142,12 @@ Ideas de Santiago. Todo en la simulación determinista (paso fijo, semilla); el 
   platillo. Master `masterizar` (wav.mts): RMS −15 dB con compuerta + limitador con anticipación a −2,2 dBFS
   → medido −14 LUFS integrado, true peak < −0,5 dBTP.
 
+## Votación con acciones del público (2026-11-09, prop `votacion`)
+Idea de Santiago. Cada participante tiene una acción por su orden: 1.º "❤️ Me gusta", 2.º "💬 Comenta", 3.º "🔁 Comparte",
+4.º "🔔 Suscríbete"; con 5–6, los extra "💬 Comenta su nombre" (en la grilla, "💬 Su nombre"). Grilla fija de 2 filas
+(2×2 con 4; 3×2 con 5–6) en y 1464–1582 desde el frame 0, en lugar de `ganchoAbajo`; la pregunta de arriba se mantiene.
+Tras la meta (k = 30–40) la grilla se apaga y entra "¿Acertaste? Si votaste con <acción de la ganadora>, ¡ganaste! 🎉"
+con el color de la ganadora. Ausente = apagada (guiones viejos sin cambio); `generar-guiones` la pone en `true`.
+
 ## Duración del video
 `frames hasta el cruce (incluye cámara lenta) + 2,5 s de celebración + 1,2 s de cierre` ≈ 30–50 s.

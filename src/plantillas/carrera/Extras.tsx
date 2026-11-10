@@ -224,3 +224,60 @@ export const Aviso: React.FC<{ sim: SimulacionCarrera; colores: string[]; etique
     </div>
   );
 };
+
+/**
+ * Votación con acciones del público: grilla fija (2 filas; 2 columnas con 4 participantes, 3 con 5–6) en la zona
+ * inferior segura desde el frame 0, en lugar de `ganchoAbajo`. Tras la meta se apaga y entra
+ * "¿Acertaste? Si votaste con <acción de la ganadora>, ¡ganaste! 🎉".
+ */
+export const Votacion: React.FC<{
+  sim: SimulacionCarrera; colores: string[]; iconos: React.ReactNode[]; acciones: { emoji: string; texto: string; corto: string }[]; opacidad: number;
+}> = ({ sim, colores, iconos, acciones, opacidad }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const n = acciones.length;
+  const cols = n <= 4 ? 2 : 3;
+  const TOP = 1464, FILA_V = 54, GAP = 6;
+  const ancho = ANCHO - 2 * FORMATO.seguro.lados + 20;
+  const celda = (ancho - GAP * (cols - 1)) / cols;
+  const k = frame - sim.frameGanadora;
+  const grilla = interpolate(k, [30, 40], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  const final = spring({ frame: k - 40, fps, config: { damping: 12, stiffness: 150 } });
+  const g = sim.ganadora;
+  const tamTexto = cols === 2 ? 34 : 29;
+  return (
+    <div style={{ position: 'absolute', left: (ANCHO - ancho) / 2, top: TOP, width: ancho, height: FILA_V * 2 + GAP, opacity: opacidad, pointerEvents: 'none' }}>
+      {grilla > 0 && acciones.map((a, i) => {
+        const col = i % cols, fila = Math.floor(i / cols);
+        const latido = 1 + 0.04 * Math.max(0, Math.sin(frame * 0.12 - i * 0.9));
+        return (
+          <div key={i} style={{
+            position: 'absolute', left: col * (celda + GAP), top: fila * (FILA_V + GAP), width: celda, height: FILA_V, boxSizing: 'border-box',
+            display: 'flex', alignItems: 'center', gap: 8, padding: '0 12px 0 6px', borderRadius: 999, whiteSpace: 'nowrap', overflow: 'hidden',
+            background: `linear-gradient(90deg, ${colores[i]}38, ${PALETA.fondo}F0 60%)`, border: `3px solid ${colores[i]}`,
+            boxShadow: `0 0 14px ${colores[i]}66`, opacity: grilla, transform: `scale(${latido})`,
+            fontFamily: TIPO.display, fontWeight: 800, fontSize: tamTexto, color: PALETA.tinta,
+          }}>
+            <span style={{
+              width: 44, height: 44, flex: 'none', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: `radial-gradient(circle at 34% 30%, #FFFFFFAA 0, ${colores[i]} 40%)`, boxShadow: `0 0 10px ${colores[i]}`,
+            }}>{iconos[i]}</span>
+            <span>{a.emoji} {cols === 2 ? a.texto : a.corto}</span>
+          </div>
+        );
+      })}
+      {k >= 40 && (
+        <div style={{
+          position: 'absolute', left: 0, right: 0, top: -4, height: FILA_V * 2 + GAP + 8, borderRadius: 30, boxSizing: 'border-box',
+          display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2,
+          background: `${PALETA.fondo}F0`, border: `3px solid ${colores[g]}`, boxShadow: `0 0 24px ${colores[g]}88`,
+          opacity: Math.min(1, final), transform: `scale(${0.8 + 0.2 * final})`,
+          fontFamily: TIPO.display, fontWeight: 800, color: PALETA.tinta, whiteSpace: 'nowrap',
+        }}>
+          <span style={{ fontSize: 34 }}>¿Acertaste? Si votaste con</span>
+          <span style={{ fontSize: acciones[g].texto.length > 12 ? 34 : 40 }}><span style={{ color: colores[g], textShadow: `0 0 14px ${colores[g]}AA` }}>{acciones[g].emoji} {acciones[g].texto}</span>, ¡ganaste! 🎉</span>
+        </div>
+      )}
+    </div>
+  );
+};

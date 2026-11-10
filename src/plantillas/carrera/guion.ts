@@ -68,6 +68,13 @@ export const GuionCarrera = z.object({
    * `false` = tablero clásico (solo clavijas, rampas y embudos).
    */
   extras: z.boolean().optional(),
+  /**
+   * Votación con acciones del público (2026-11-09): cada participante tiene una ACCIÓN ("❤️ Me gusta", "💬 Comenta",
+   * "🔁 Comparte", "🔔 Suscríbete"; con 5–6 participantes los extra van como "💬 Comenta su nombre"). Grilla fija
+   * abajo desde el frame 0 (reemplaza `ganchoAbajo`) y, en el final, "¿Acertaste? Si votaste con <acción>, ¡ganaste! 🎉".
+   * Ausente = apagada (los guiones viejos quedan igual); los guiones nuevos la llevan en `true`.
+   */
+  votacion: z.boolean().optional(),
   /** Llamado a suscribirse en el clímax (opcional; ausente = activado con variante por id; false = apagado; texto = ese texto). */
   llamado: CampoLlamado,
 });
@@ -77,3 +84,14 @@ export type GuionCarrera = z.infer<typeof GuionCarrera>;
 export const VARIANTES_GANCHO_ABAJO_CARRERA = ['El último te sorprende 💀', '¿Cuál es el tuyo? 👇', 'El final es de infarto 💀'] as const;
 export const ganchoAbajoCarrera = (g: Pick<GuionCarrera, 'id' | 'ganchoAbajo'>): string =>
   g.ganchoAbajo ?? VARIANTES_GANCHO_ABAJO_CARRERA[semillaDesde(`abajo:${g.id}`) % VARIANTES_GANCHO_ABAJO_CARRERA.length];
+
+/** Acción de voto de cada participante (por posición en `participantes`). */
+export const ACCIONES_VOTO = [
+  { emoji: '❤️', texto: 'Me gusta' },
+  { emoji: '💬', texto: 'Comenta' },
+  { emoji: '🔁', texto: 'Comparte' },
+  { emoji: '🔔', texto: 'Suscríbete' },
+] as const;
+/** `corto`: rótulo de la grilla (con 5–6 participantes las celdas son angostas). */
+export const accionVoto = (i: number): { emoji: string; texto: string; corto: string } =>
+  i < ACCIONES_VOTO.length ? { ...ACCIONES_VOTO[i], corto: ACCIONES_VOTO[i].texto } : { emoji: '💬', texto: 'Comenta su nombre', corto: 'Su nombre' };

@@ -7,10 +7,10 @@ import { Cierre } from '../../marca/Cierre';
 import { Llamado, textoLlamado } from '../../marca/Llamado';
 import { BloqueTexto } from '../../marca/BloqueTexto';
 import { crearAzar } from '../../lib/azar';
-import { ganchoAbajoCarrera, type GuionCarrera, type IconoCompetidor } from './guion';
+import { accionVoto, ganchoAbajoCarrera, type GuionCarrera, type IconoCompetidor } from './guion';
 import { Icono, iconoAportaJuntoAlNombre } from './Icono';
 import { CIERRE_FRAMES, type SimulacionCarrera } from './tipos';
-import { Aviso, Bloques, TubosFondo, TubosFrente } from './Extras';
+import { Aviso, Bloques, TubosFondo, TubosFrente, Votacion } from './Extras';
 
 /** Ruta pública del JSON de simulación de un guion. */
 export const rutaSim = (id: string) => staticFile(`sim/${id}.json`);
@@ -545,7 +545,10 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
 
       {/* Dos bloques fijos (frame 0 → cierre): la pregunta arriba, la intriga abajo. */}
       <BloqueTexto texto={textoArriba} color={PALETA.neon.cian} top={ARRIBA_TOP} tam={tamArriba(textoArriba)} opacidad={fadeCierre} />
-      <BloqueTexto texto={ganchoAbajoCarrera(props)} color={PALETA.neon.magenta} centroY={ABAJO_CENTRO_Y} tam={58} opacidad={fadeCierre} />
+      {props.votacion
+        ? <Votacion sim={sim} colores={colores} acciones={props.participantes.map((_, i) => accionVoto(i))} opacidad={fadeCierre}
+            iconos={iconos.map((ic, i) => <Icono key={i} icono={ic} tam={28} fondo={colores[i]} />)} />
+        : <BloqueTexto texto={ganchoAbajoCarrera(props)} color={PALETA.neon.magenta} centroY={ABAJO_CENTRO_Y} tam={58} opacidad={fadeCierre} />}
 
       {/* Llamado a suscribirse en la recta final (se queda durante la celebración). Color de marca: el de
           la líder o la ganadora delataría el resultado antes de la meta. */}
