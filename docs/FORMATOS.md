@@ -28,7 +28,7 @@
 | 9 | **Apuesta** | `bola` + `juego: apuesta` | "¿en qué rebote llena el círculo? comenta tu número" | 11-11 | en prueba |
 | 10 | **Ritmo plano** | `ritmo` estilo `plano` | 5 bolitas = 5 instrumentos; cada choque es una nota; caídas simples | 11-14 | en prueba |
 | 11 | **Ritmo figuras** | `ritmo` estilo `figuras` | igual, con rieles, rizos, portales, péndulos, hélices | 11-15 | en prueba |
-| 12 | **Batalla de colores** | `colores` | equipos de color: mismo color se fusiona, distinto se divide, los chicos mueren, gana el que sobrevive | en construcción | prototipo |
+| 12 | **Batalla de colores** | `colores` (rama `colores`) | equipos de color: mismo color se fusiona, distinto se divide, los chicos mueren, gana el que sobrevive; votación | 11-10 | prototipo privado `yV2xgpjEOpY` (espera veredicto) |
 | 13 | **Máquina de canicas musical 3D** | `maquina` | máquina tipo Wintergatan en Three.js: noria, xilófono, bombo; la melodía la tocan las canicas | en construcción | prototipo |
 | 15 | **Votación por acciones** | variable en `colores` y `carrera` v2 | "❤️ = ROJO · 💬 = AZUL · 🔁 = AMARILLO · 🔔 = VERDE": cada acción vota un color | en construcción | variable a medir (me gusta/comentarios/compartidos/subs por 1.000 vistas) |
 | 14 | **Compilación / largo** | `compilar.mts` | largo 16:9 con Shorts | — | pausado (la del 11-08 no se sube); próximo: quiz "¿Cuántas adivinas?" |
