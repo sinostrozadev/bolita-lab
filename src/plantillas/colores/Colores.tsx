@@ -27,11 +27,14 @@ const CIERRE_DESDE_S = 26;
 const ARRIBA_TOP = FORMATO.seguro.arriba + 58; // pregunta: 278 → ~382
 const BARRA_TOP = 396;
 const BARRA_ALTO = 56;
-const AVISO_CENTRO_Y = 505; // "¡Cae el VERDE!" entre la barra y la arena (arena: 555 → 1415)
+const AVISO_CENTRO_Y = 514; // "¡Cae el VERDE!" entre la barra y la arena (arena: 555 → 1415)
 const GRILLA_TOP = 1430; // votación 2×2: 1430 → 1566 (UI de YouTube desde 1580)
 const LLAMADO_CENTRO_Y = 1330;
 const LLAMADO_ANTES = 6 * 60;
 const FRAMES_AVISO = 84;
+/** Final: "GANA: X" sobre la arena, la bola ganadora al centro y el remate de la votación debajo. */
+const GANA_CENTRO_Y = 610;
+const REMATE_CENTRO_Y = 1228;
 
 const rutaSim = (id: string) => staticFile(`sim/${id}.json`);
 const rutaAudio = (id: string) => staticFile(`audio/generado/${id}.wav`);
@@ -145,11 +148,21 @@ const Arena: React.FC<{ sim: SimColores; R: number; cerrando: number; colorBorde
   );
 };
 
-const Bolitas: React.FC<{ sim: SimColores; fs: number }> = ({ sim, fs }) => {
+/**
+ * `final` (0..1): tras la victoria las bolitas del ganador se juntan al centro en una sola grande (`rFinal`).
+ */
+const Bolitas: React.FC<{ sim: SimColores; fs: number; final: number; rFinal: number }> = ({ sim, fs, final, rFinal }) => {
   const vivas: { b: BolitaSim; x: number; y: number; r: number }[] = [];
   for (const b of sim.bolitas) {
     const p = posicion(b, fs);
     if (p) vivas.push({ b, x: p[0], y: p[1], r: p[2] });
+  }
+  if (final > 0) {
+    const suma = Math.sqrt(vivas.reduce((acc, v) => acc + v.r * v.r, 0)) || 1;
+    for (const v of vivas) {
+      v.x += (sim.arena.cx - v.x) * final; v.y += (sim.arena.cy - v.y) * final;
+      v.r += (rFinal * (v.r / suma) ** 0.35 - v.r) * final;
+    }
   }
   vivas.sort((a, c) => a.r - c.r); // las grandes encima
   return (
@@ -325,17 +338,28 @@ export const Colores: React.FC<GuionColores> = (props) => {
   const vV = sim.victoriaVideo;
   const enFinal = F >= vV;
   const trasV = F - vV;
+  const juntar = enFinal ? spring({ frame: trasV - 20, fps, config: { damping: 14, stiffness: 60 }, durationInFrames: 60 }) : 0;
+  // Cámara: acompaña el cierre de la arena (las bolitas se ven más grandes en el desenlace).
+  const empuje = Math.min(1.6, Math.pow(sim.arena.r / R, 0.6));
   const cerrando = !enFinal && R < sim.arena.r - 0.5 ? 1 : 0;
   const ganadorColor = colorEq(sim, sim.ganador);
 
   let lider = -1, desdeLider = -1;
   for (const e of datos.lideres) if (e.f <= fs) { lider = e.equipo; desdeLider = fs - e.f; }
+  {
+    // La corona sigue al líder del sim (con histéresis) salvo que otro lo supere claramente ahora mismo.
+    const a = sim.areas[f0];
+    let max = 0; for (let e = 1; e < a.length; e++) if (a[e] > a[max]) max = e;
+    const tot = a.reduce((x, y) => x + y, 0) || 1;
+    if (lider >= 0 && max !== lider && (a[max] - a[lider]) / tot > 0.03) lider = max;
+  }
   if (enFinal) lider = sim.ganador;
 
   // Cámara: en la cámara lenta, acercamiento suave hacia la última caída; luego vuelve.
   const [lentoDesde, lentoHasta] = sim.lentoVideo;
-  const zoom = 1 + 0.14 * interpolate(F, [lentoDesde, lentoDesde + 40, lentoHasta, lentoHasta + 40], [0, 1, 1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: (x) => x * x * (3 - 2 * x) });
-  const foco = datos.ultimaMuerte ? `${(sim.arena.cx + datos.ultimaMuerte.x) / 2}px ${(sim.arena.cy + datos.ultimaMuerte.y) / 2}px` : `${sim.arena.cx}px ${sim.arena.cy}px`;
+  const zoom = empuje * (1 + 0.14 * interpolate(F, [lentoDesde, lentoDesde + 40, lentoHasta, lentoHasta + 40], [0, 1, 1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: (x) => x * x * (3 - 2 * x) }));
+  const enfoque = interpolate(F, [lentoDesde, lentoDesde + 40, lentoHasta, lentoHasta + 40], [0, 1, 1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  const foco = datos.ultimaMuerte ? `${sim.arena.cx + (datos.ultimaMuerte.x - sim.arena.cx) * 0.5 * enfoque}px ${sim.arena.cy + (datos.ultimaMuerte.y - sim.arena.cy) * 0.5 * enfoque}px` : `${sim.arena.cx}px ${sim.arena.cy}px`;
   const lento = F >= lentoDesde && F < lentoHasta;
 
   const fadeCierre = interpolate(F, [durationInFrames - FRAMES_CIERRE, durationInFrames - FRAMES_CIERRE + 10], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
@@ -343,6 +367,7 @@ export const Colores: React.FC<GuionColores> = (props) => {
   const tinte = enFinal ? interpolate(trasV, [0, 30], [0, 1], { extrapolateRight: 'clamp' }) : 0;
   const cartel = enFinal ? spring({ frame: trasV - 6, fps, config: { damping: 11, stiffness: 140 } }) : 0;
   const acciones = accionesDe(props);
+  const textoGana = TEXTOS_COLORES.gana.replace('{color}', nombreEq(sim, sim.ganador));
   const remate = acciones ? remateDe(props, acciones[sim.ganador]) : null;
 
   // Aviso del momento: "¡Cae el VERDE!" o "¡La arena se cierra!".
@@ -361,7 +386,7 @@ export const Colores: React.FC<GuionColores> = (props) => {
         <svg width={FORMATO.ancho} height={FORMATO.alto} viewBox={`0 0 ${FORMATO.ancho} ${FORMATO.alto}`}>
           <Defs sim={sim} />
           <Arena sim={sim} R={R} cerrando={cerrando} colorBorde={enFinal ? ganadorColor : '#C9C9F0'} F={F} />
-          <Bolitas sim={sim} fs={fs} />
+          <Bolitas sim={sim} fs={fs} final={juntar} rFinal={Math.min(110, R * 0.5)} />
           <Efectos sim={sim} fs={fs} eventos={datos.efectos} />
         </svg>
       </AbsoluteFill>
@@ -374,23 +399,27 @@ export const Colores: React.FC<GuionColores> = (props) => {
 
       {/* Final: GANA + remate de la votación */}
       {enFinal && (
-        <div style={{ position: 'absolute', left: 0, right: 0, top: sim.arena.cy - 150, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 22, opacity: fadeCierre, pointerEvents: 'none' }}>
-          <div style={{
-            transform: `scale(${0.5 + 0.5 * cartel})`, padding: '10px 44px 18px', borderRadius: 40, background: '#0B0B12E8',
-            border: `6px solid ${ganadorColor}`, boxShadow: `0 0 60px ${ganadorColor}, 0 10px 40px #000`,
-            fontFamily: TIPO.display, fontWeight: 800, fontSize: 118, color: ganadorColor, letterSpacing: -3, whiteSpace: 'nowrap',
-            textShadow: `0 0 30px ${hexA(ganadorColor, 0.8)}`,
-          }}>{TEXTOS_COLORES.gana.replace('{color}', nombreEq(sim, sim.ganador))}</div>
-          {remate && (
+        <>
+          <div style={{ position: 'absolute', left: 0, right: 0, top: GANA_CENTRO_Y, transform: 'translateY(-50%)', display: 'flex', justifyContent: 'center', opacity: fadeCierre, pointerEvents: 'none' }}>
             <div style={{
-              opacity: interpolate(trasV, [24, 36], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }),
-              transform: `translateY(${interpolate(trasV, [24, 40], [20, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })}px)`,
-              maxWidth: 900, padding: '14px 30px 18px', borderRadius: 28, background: '#0B0B12E0', textAlign: 'center',
-              fontFamily: TIPO.display, fontWeight: 800, fontSize: 50, lineHeight: 1.12, color: PALETA.tinta, letterSpacing: -1,
-              boxShadow: '0 8px 30px #000',
-            }}>{remate}</div>
+              transform: `scale(${0.5 + 0.5 * cartel})`, padding: '8px 40px 16px', borderRadius: 40, background: '#0B0B12E8',
+              border: `6px solid ${ganadorColor}`, boxShadow: `0 0 60px ${ganadorColor}, 0 10px 40px #000`,
+              fontFamily: TIPO.display, fontWeight: 800, fontSize: textoGana.length > 11 ? 96 : 118, color: ganadorColor, letterSpacing: -3, whiteSpace: 'nowrap',
+              textShadow: `0 0 30px ${hexA(ganadorColor, 0.8)}`,
+            }}>{textoGana}</div>
+          </div>
+          {remate && (
+            <div style={{ position: 'absolute', left: 0, right: 0, top: REMATE_CENTRO_Y, transform: 'translateY(-50%)', display: 'flex', justifyContent: 'center', opacity: fadeCierre, pointerEvents: 'none' }}>
+              <div style={{
+                opacity: interpolate(trasV, [24, 36], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }),
+                transform: `translateY(${interpolate(trasV, [24, 40], [20, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })}px)`,
+                maxWidth: 900, padding: '12px 30px 16px', borderRadius: 28, background: '#0B0B12E6', textAlign: 'center',
+                fontFamily: TIPO.display, fontWeight: 800, fontSize: 46, lineHeight: 1.1, color: PALETA.tinta, letterSpacing: -1,
+                boxShadow: '0 8px 30px #000',
+              }}>{remate}</div>
+            </div>
           )}
-        </div>
+        </>
       )}
 
       <Llamado texto={textoLlamado('colores', props.id, props.llamado)}

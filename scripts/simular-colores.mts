@@ -24,12 +24,17 @@ const FPS = FORMATO.fps;
 const SUB = 4;
 const DT = 1 / (FPS * SUB);
 export const ARENA = { cx: FORMATO.ancho / 2, cy: 985, r: 430 } as const;
-const R0 = 30; // radio inicial de cada bolita
+const R0 = Number(process.env.CR0 ?? 36); // radio inicial de cada bolita
 const A0 = Math.PI * R0 * R0;
-const AMIN = Math.PI * 13 * 13; // por debajo: muere
+const AMIN = Math.PI * 12 * 12; // por debajo: muere
+/** Tope de la fusión: si el resultado pasaría de este radio, rebotan en vez de fusionarse (así no se forma una mancha única). */
+const AMAX = Math.PI * Math.pow(Number(process.env.CRMAX ?? 58), 2);
 const APARTIR = 3 * AMIN; // desde aquí, tras un golpe se parte en 2
-const V0 = Number(process.env.CV0 ?? 380); // px/s para r = R0
-const ACC_CAZA = Number(process.env.CACC ?? 220); // px/s² hacia el rival más cercano
+const V0 = Number(process.env.CV0 ?? 200); // px/s para r = R0
+/** Caza: aceleración hacia el rival más cercano; crece con el tiempo (tranquilo al inicio, encarnizado al final). */
+const ACC_CAZA = Number(process.env.CACC ?? 450);
+const cazaEn = (t: number) => 40 + ACC_CAZA * Math.min(1.5, (t / CAZA_T) ** 3);
+const CAZA_T = Number(process.env.CCT ?? 34);
 const INMUNE = 0.3; // s sin fusionar ni dañar tras nacer o recibir un golpe
 /**
  * ESCUDO del que va perdiendo (da partidas largas y con vuelcos): el daño que recibe una bolita se multiplica
@@ -38,9 +43,15 @@ const INMUNE = 0.3; // s sin fusionar ni dañar tras nacer o recibir un golpe
  */
 const ESCUDO = Number(process.env.CESC ?? 2);
 // Arena que se cierra: desde CIERRE_DESDE s de partida, CIERRE_VEL px/s hasta CIERRE_MIN.
-const CIERRE_DESDE = 26;
-const CIERRE_VEL = 14;
-const CIERRE_MIN = 200;
+export const CIERRE_DESDE = Number(process.env.CCD ?? 26);
+const CIERRE_VEL = 20;
+const CIERRE_MIN = 210;
+/**
+ * El daño crece con la partida: `dano` × (0,3 + 1,7·(t/DANO_T)²), tope 2,5×. Al inicio casi solo hay
+ * fusiones y divisiones (la arena se llena de trozos); al final los golpes matan y caen los equipos.
+ */
+const DANO_T = Number(process.env.CDT ?? 32);
+const danoEn = (base: number, t: number) => base * Math.min(2.5, 0.3 + 1.7 * (t / DANO_T) ** 2);
 // Final: cámara lenta S1 frames antes y S2 después de la victoria, a VEL_LENTA×; después POST frames de video.
 export const S1 = 36, S2 = 6, VEL_LENTA = 0.3;
 export const FRAMES_POST = 150, FRAMES_CIERRE = 72;
@@ -60,6 +71,8 @@ const velObjetivo = (r: number) => Math.max(210, Math.min(640, V0 * Math.pow(R0 
 type Resultado = {
   ok: boolean; motivo: string; bolitas: Bolita[]; eventos: EventoColores[]; areas: number[][]; arenaR: number[];
   victoria: number; ganador: number; vuelcos: number; framesSim: number; primerChoque: number; eliminaciones: number[];
+  /** Bolitas vivas por frame (para exigir arena poblada). */
+  cuenta: number[];
 };
 
 export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | 'caja', semilla: number, dano: number): Resultado => {
@@ -68,6 +81,7 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
   const vivas: Bolita[] = [];
   const eventos: EventoColores[] = [];
   const areas: number[][] = [];
+  const cuenta: number[] = [];
   const arenaR: number[] = [];
   let sigId = 0;
   const nueva = (eq: number, x: number, y: number, vx: number, vy: number, a: number, nace: number, t: number): Bolita => {
@@ -105,12 +119,13 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
     const ar = new Array(equipos).fill(0);
     for (const b of vivas) { b.p.push(Math.round(b.x), Math.round(b.y), Math.round(b.r * 10) / 10); ar[b.eq] += b.a; }
     areas.push(ar.map((v) => Math.round(v)));
+    cuenta.push(vivas.length);
     framesSim = f + 1;
     // Liderazgo (con histéresis: 4 % de ventaja sostenida 0,5 s).
     if (victoria < 0) {
       let c = 0; for (let e = 1; e < equipos; e++) if (ar[e] > ar[c]) c = e;
       const ref = lider >= 0 ? ar[lider] : Math.max(...ar.filter((_, e) => e !== c));
-      if (c !== lider && ar[c] > ref * 1.04) {
+      if (c !== lider && ar[c] > ref * 1.03) {
         if (candidato !== c) { candidato = c; desdeCand = f; }
         else if (f - desdeCand >= 30) {
           if (lider >= 0) { vuelcos++; eventos.push({ f, tipo: 'lider', equipo: c, otro: lider, x: 0, y: 0, r: 0 }); }
@@ -120,7 +135,7 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
       } else candidato = -1;
     }
     if (victoria >= 0 && f >= finVideoSim()) break;
-    if (victoria < 0 && f >= maxFrames) return { ok: false, motivo: `sin ganador a los ${MAX_PARTIDA_S} s`, bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones };
+    if (victoria < 0 && f >= maxFrames) return { ok: false, motivo: `sin ganador a los ${MAX_PARTIDA_S} s`, bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones, cuenta };
 
     // --- avanzar SUB sub-pasos; lo que pase aquí se ve desde el frame f+1
     const fv = f + 1;
@@ -140,7 +155,8 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
         }
         if (mejor < Infinity) {
           const n = Math.hypot(tx, ty) || 1;
-          b.vx += (tx / n) * ACC_CAZA * DT; b.vy += (ty / n) * ACC_CAZA * DT;
+          const acc = victoria >= 0 ? ACC_CAZA : cazaEn(t);
+          b.vx += (tx / n) * acc * DT; b.vy += (ty / n) * acc * DT;
         }
         // Rapidez hacia la objetivo (chicas rápidas, grandes lentas): nadie se queda quieto.
         const v = Math.hypot(b.vx, b.vy) || 1, vt = velObjetivo(b.r);
@@ -181,7 +197,7 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
         const nx = dx / d, ny = dy / d;
         const libres = A.inmune <= t && B.inmune <= t && !tocadas.has(A) && !tocadas.has(B);
         if (primerChoque < 0 && libres) primerChoque = fv;
-        if (A.eq === B.eq && libres) {
+        if (A.eq === B.eq && libres && (A.a + B.a <= AMAX || victoria >= 0)) {
           // FUSIÓN: la grande absorbe a la chica (se queda en su lugar; momento conservado).
           const [G, C] = A.a >= B.a ? [A, B] : [B, A];
           const a = G.a + C.a;
@@ -203,7 +219,7 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
         B.x += nx * solape * (mA / (mA + mB)); B.y += ny * solape * (mA / (mA + mB));
         if (A.eq === B.eq || !libres) continue;
         // DIVISIÓN: las dos pierden la misma área (dano × la más chica); la grande se parte, la chica puede morir.
-        const perdida = dano * Math.min(A.a, B.a);
+        const perdida = danoEn(dano, t) * Math.min(A.a, B.a);
         const cx = Math.round((A.x + B.x) / 2), cy = Math.round((A.y + B.y) / 2);
         eventos.push({ f: fv, tipo: 'division', equipo: A.a >= B.a ? A.eq : B.eq, otro: A.a >= B.a ? B.eq : A.eq, x: cx, y: cy, r: Math.round(Math.min(A.r, B.r)) });
         // Si las dos quedarían bajo el mínimo, la más grande aguanta en el mínimo (no hay empates).
@@ -245,13 +261,13 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
             eventos.push({ f: fv, tipo: 'victoria', equipo: ganador, x: ARENA.cx, y: ARENA.cy, r: 0 });
             for (const b of vivas) b.inmune = 0;
           } else if (restantes.length === 0) {
-            return { ok: false, motivo: 'empate (murieron todas a la vez)', bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones };
+            return { ok: false, motivo: 'empate (murieron todas a la vez)', bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones, cuenta };
           }
         }
       }
     }
   }
-  return { ok: true, motivo: '', bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones };
+  return { ok: true, motivo: '', bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones, cuenta };
 };
 
 /** Frames de video totales para una victoria en el frame de sim `v`. */
@@ -278,6 +294,9 @@ const evaluar = (r: Resultado) => {
   if (!r.ok) return r.motivo;
   const seg = duracionVideo(r.victoria) / FPS;
   if (seg < DUR_MIN || seg > DUR_MAX) return `dura ${seg.toFixed(1)} s`;
+  // Arena poblada: no se vacía a mitad de partida.
+  const vivasEn = (x: number) => r.cuenta[Math.floor(r.victoria * x)];
+  if (vivasEn(0.5) < 25 || vivasEn(0.75) < 9 || vivasEn(0.85) < 5) return `arena vacía (${vivasEn(0.5)} a la mitad, ${vivasEn(0.75)} al 75 %)`;
   if (r.vuelcos < VUELCOS_MIN) return `${r.vuelcos} vuelcos`;
   if (r.primerChoque < 0 || r.primerChoque > PRIMER_CHOQUE_MAX) return `primer choque a los ${(r.primerChoque / FPS).toFixed(2)} s`;
   const gaps = r.eliminaciones.slice(1).map((e, i) => e - r.eliminaciones[i]);
@@ -294,7 +313,7 @@ export const buscarSimulacion = (props: GuionColores) => {
   const porEquipo = props.bolasPorEquipo ?? 10;
   const forma = props.arena ?? 'circulo';
   const base = props.semilla ?? semillaDesde(`colores:${props.id}`);
-  const danos = [0.3, 0.35, 0.25, 0.4, 0.45];
+  const danos = [0.12, 0.1, 0.14, 0.11, 0.13];
   const motivos: Record<string, number> = {};
   for (let k = 0; k < 600; k++) {
     const semilla = (base + k * 7919) >>> 0;
