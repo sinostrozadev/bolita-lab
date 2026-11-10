@@ -46,8 +46,8 @@ flock /tmp/bolita-render.lock -w 3600 npx remotion render src/index.ts Maquina s
 
 ## Rendimiento (WSL, SwiftShader, 2026-11-10)
 
-- Render completo 1080×1920 a 30 fps (1296 frames): **17,7 min** (≈ 0,8 s/frame con la máquina poco cargada; con otros
-  renders al lado sube a 2–2,5 s/frame). A 60 fps (2592 frames) ≈ 35–40 min si la máquina está libre.
+- Render completo 1080×1920: **60 fps (2592 frames) en 32,5 min** y 30 fps (1296 frames) en 17,7 min (≈ 0,75–0,8 s/frame
+  con la máquina poco cargada; con otros renders al lado sube a 2–2,5 s/frame y 60 fps ya no cabe en 1 h: usar 30 fps).
 - Lo que más costaba: cientos de mallas estáticas (llamadas de dibujo) → `Fusionar` las une por material al montar;
   pared sin iluminación (`MeshBasicMaterial`), piso y pila con Lambert. El MSAA cuesta ~30 %; se dejó activado.
 - `scripts/medir-maquina.mts <id> <frame> "" sinaa sombra1k …` mide s/frame con banderas de la prop `prueba`.
