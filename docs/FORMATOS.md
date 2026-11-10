@@ -30,6 +30,7 @@
 | 11 | **Ritmo figuras** | `ritmo` estilo `figuras` | igual, con rieles, rizos, portales, péndulos, hélices | 11-15 | en prueba |
 | 12 | **Batalla de colores** | `colores` | equipos de color: mismo color se fusiona, distinto se divide, los chicos mueren, gana el que sobrevive | en construcción | prototipo |
 | 13 | **Máquina de canicas musical 3D** | `maquina` | máquina tipo Wintergatan en Three.js: noria, xilófono, bombo; la melodía la tocan las canicas | en construcción | prototipo |
+| 15 | **Votación por acciones** | variable en `colores` y `carrera` v2 | "❤️ = ROJO · 💬 = AZUL · 🔁 = AMARILLO · 🔔 = VERDE": cada acción vota un color | en construcción | variable a medir (me gusta/comentarios/compartidos/subs por 1.000 vistas) |
 | 14 | **Compilación / largo** | `compilar.mts` | largo 16:9 con Shorts | — | pausado (la del 11-08 no se sube); próximo: quiz "¿Cuántas adivinas?" |
 
 ## Videos por formato
@@ -57,6 +58,9 @@
     { "formato": 7, "id": "yO7rByQZW2k", "fecha": "2026-11-12", "nota": "Jingle Bells, campana" },
     { "formato": 8, "id": "bpZcIdShLpg", "fecha": "2026-11-13", "nota": "Still D.R.E." },
     { "formato": 10, "id": "ujPXyUS7ASY", "fecha": "2026-11-14", "nota": "Canon, 15:00" },
+    { "formato": 4, "id": "5QFQ3xWI71c", "fecha": "2026-11-10", "nota": "carrera zodiaco, 07:00" },
+    { "formato": 6, "id": "SKwduvciVTk", "fecha": "2026-11-11", "nota": "dato miel, 07:00" },
+    { "formato": 6, "id": "E4wtIUfjZbE", "fecha": "2026-11-12", "nota": "dato Torre Eiffel, 07:00" },
     { "formato": 11, "id": "V-geJGHFy48", "fecha": "2026-11-15", "nota": "Creep (notas de tutorial), 15:00" }
   ]
 }
