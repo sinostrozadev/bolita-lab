@@ -354,8 +354,8 @@ export const generarMaquina = (props: GuionMaquina, partitura: PartituraMaquina)
     }) },
     // 4. Riel superior → espiral → riel de reparto (de izquierda a derecha y abajo).
     { nombre: 'espiral', desde: P(24), hasta: P(30), pose: (_t, u) => ({
-      p: lerp3({ x: 6, y: 210, z: 125 }, { x: 70, y: 180, z: 100 }, suave(u)),
-      t: lerp3({ x: 20, y: 200, z: 0 }, { x: 42, y: 184, z: 0 }, suave(u)), fov: 36,
+      p: lerp3({ x: 34, y: 206, z: 128 }, { x: 58, y: 182, z: 104 }, suave(u)),
+      t: lerp3({ x: 28, y: 199, z: 0 }, { x: 44, y: 186, z: 0 }, suave(u)), fov: 36,
     }) },
     // 5. Contrapicado del vibráfono: compuertas abriéndose arriba y canicas cayendo.
     { nombre: 'contrapicado', desde: P(30), hasta: P(34), pose: (t, u) => {
@@ -376,7 +376,7 @@ export const generarMaquina = (props: GuionMaquina, partitura: PartituraMaquina)
     // 8. Frase 4 con segunda voz: cenital suave de las láminas (dos canicas a la vez).
     { nombre: 'laminas-arriba', desde: P(50), hasta: P(60), corte: true, pose: (t, u) => {
       const x = xMelodia(t);
-      return { p: { x: x - 42 + 6 * u, y: 168, z: 84 }, t: { x: x + 6, y: 126, z: 4 }, fov: 32 };
+      return { p: { x: x - 52 + 8 * u, y: 172, z: 112 }, t: { x: x + 4, y: 128, z: 4 }, fov: 32 };
     } },
     // 9. El vibráfono entero para el acorde final.
     { nombre: 'acorde', desde: P(60), hasta: P(64.6), pose: (_t, u) => ({
