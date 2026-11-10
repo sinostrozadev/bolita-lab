@@ -8,7 +8,7 @@ instante exacto de cada evento.
 ## Flujo
 
 ```bash
-npx tsx scripts/preparar-ritmo.mts contenido/backlog/ritmo-canon.json   # sim + wav + props (≈ 3 s)
+npx tsx scripts/preparar-ritmo.mts contenido/backlog/ritmo-creep.json   # sim + wav + props (≈ 2,5 min con figuras)
 npx tsx scripts/verificar-ritmo.mts pendiente-ritmo-canon 10            # sincronía partitura ↔ choque ↔ wav
 flock /tmp/bolita-render.lock -w 900 npx remotion render src/index.ts Ritmo salida/bandeja/<id>.mp4 \
   --props=salida/trabajo/<id>.props.json --gl=swangle --concurrency=1
@@ -66,3 +66,13 @@ por CPU) renderiza estable y rápido para esta escena.
 Integrarla en `scripts/lib/operacion.mts` (`PLANTILLAS`, rotación) y en `diario.mts` (el render debe pasar
 `--gl=swangle`), más partituras (Marcha turca, Oda, Para Elisa, Cisnes) y variación visual por video (paletas,
 forma de las clavijas, densidad) para no caer en "contenido repetitivo".
+
+## v2 (2026-11-09): figuras, más luz, Creep
+
+- Vista de 1100 u de ancho (cámara cerca), bolitas de r 70–78 (diámetro ≥ 7 % del alto), escalonadas en altura.
+- Fondo con más luz (degradado radial violeta, luz hemisférica, niebla luminosa de manchas aditivas), metal claro.
+- Clavijas y rieles aparecen por delante de las bolitas (clavija 0,67 s antes de su golpe; riel 0,9 s antes) y se
+  disuelven detrás: solo estorban en su ventana de vida. Los defectos se ponderan (bolitas montadas 4, atravesar 2,
+  choque sin rebote real 20) y quedan como "avisos" del generador; la sincronía no depende de ellos.
+- `RITMO_DIAG=1` cuenta los motivos de rechazo por figura; `RITMO_BOLITAS=n` genera solo las n primeras (pruebas).
+- `contenido/partituras/creep.json` (92 bpm, Content ID aceptado por Santiago) y `contenido/backlog/ritmo-creep.json`.
