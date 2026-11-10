@@ -1,0 +1,25 @@
+{
+  "plantilla": "colores",
+  "id": "pendiente-colores-rosa-contra-cian-que-color-se-queda",
+  "titulo": "Rosa contra cian: ¿qué color se queda con la arena? 🎨",
+  "descripcion": "Solo dos colores en una arena redonda: rosa y cian. Si dos bolitas del mismo color se tocan, se fusionan; si son de colores distintos, se parten y pierden tamaño. Las muy chicas mueren.\nVota con tu acción y comenta si acertaste.\nSimulación física determinista hecha en Bolita Lab.",
+  "hashtags": [
+    "#shorts",
+    "#satisfying",
+    "#batalladecolores",
+    "#fisica",
+    "#bolita",
+    "#simulacion"
+  ],
+  "props": {
+    "id": "pendiente-colores-rosa-contra-cian-que-color-se-queda",
+    "pregunta": "¿Rosa o cian? ¿Quién gana? 🎨",
+    "equipos": [
+      "rosa",
+      "cian"
+    ],
+    "bolasPorEquipo": 12,
+    "arena": "circulo",
+    "votacion": true
+  }
+}

@@ -89,7 +89,8 @@
   "rotacion": [
     "bola",
     "dato",
-    "carrera"
+    "carrera",
+    "colores"
   ],
   "minimoBandeja": 4,
   "minimoBacklog": 9,

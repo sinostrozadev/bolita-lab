@@ -8,7 +8,11 @@
  * - distinto color al tocarse → las dos pierden la misma área (`dano` × área de la más chica) y cada una
  *   que siga siendo grande se PARTE en 2;
  * - por debajo del área mínima → MUERE (estallido de partículas);
- * - gana el último color con bolitas. Desde los ~26 s de partida la arena se cierra.
+ * - desde los 18 s, CONQUISTA: la que cae bajo el mínimo ya no muere, se pasa al color que la golpeó (la arena
+ *   sigue llena y el final es una pelea grande que se decide en cascada);
+ * - gana el color que se queda con todas las bolitas. Desde los ~26 s de partida la arena se cierra.
+ * Descripción sugerida: "mismo color se fusiona, distinto se parte, las chicas mueren… y al final, las que caen
+ * se cambian de bando". El título y la descripción NO dicen quién gana.
  */
 import { z } from 'zod';
 import { CampoLlamado } from '../../marca/llamado-texto';

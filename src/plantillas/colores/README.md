@@ -19,6 +19,11 @@ npx remotion render src/index.ts Colores salida/bandeja/<id>.mp4 --props=salida/
   (42–58 %), las mitades salen en ángulo. 0,3 s de inmunidad tras un golpe o al nacer (rebotan).
 - **Bajo el área mínima (r 12 px) → MUERE** (estallido de partículas). Si ambas morirían, la más grande aguanta
   en el mínimo (no hay empates).
+- **CONQUISTA (desde los 18 s, aviso "¡CONQUISTA! Los que caen cambian de color")**: la que cae bajo el mínimo ya
+  no muere, se pasa al color que la golpeó (renace con 1,8 × el área mínima; anillo del color nuevo + chispas del
+  viejo + "flip" sonoro). En esta fase el escudo se invierte (exponente −0,5: el grande resiste) y solo se fusionan
+  las chicas, así la arena sigue llena y el que va ganando arrastra a los demás en cascada. Medido en
+  `colores-batalla-4`: 19–23 bolitas entre 5 y 2 s antes de la victoria, duelo 10 vs 9 a 3 s del final.
 - **Escudo del que va perdiendo** (lo que da vuelcos): el daño que recibe una bolita se multiplica por
   `(área de su equipo / área media de los equipos vivos)^2`, acotado a [0,35; 1,6].
 - **Daño que crece**: `daño × (0,3 + 1,7·(t/32 s)²)`, tope 2,5×. Al inicio casi solo hay fusiones y
@@ -32,15 +37,18 @@ npx remotion render src/index.ts Colores salida/bandeja/<id>.mp4 --props=salida/
 Semilla base = hash del id (o `semilla`); prueba hasta 600 semillas × 5 daños base (0,10–0,14) hasta cumplir:
 video 35–50 s · ≥ 2 vuelcos de liderazgo (líder = mayor área total, histéresis 3 % sostenida 0,5 s) · primer
 choque ≤ 0,3 s · eliminaciones separadas ≥ 1,5 s · arena poblada (≥ 25 bolitas a la mitad de la partida, ≥ 9 al
-75 %, ≥ 5 al 85 %) · si el ganador iba primero cuando cayó el primer equipo, exige ≥ 3 vuelcos.
+75 %, ≥ 5 al 85 %) · **final masivo**: ≥ 15 bolitas desde la conquista hasta 3 s antes de la victoria y ≥ 2
+equipos con ≥ 5 bolitas hasta 5 s antes · si el ganador iba primero cuando cayó el primer equipo, exige ≥ 3 vuelcos.
 
 ## Pantalla
 - Arriba fijo desde el frame 0: `pregunta` ("¿Qué color gana? 🎨") y el **marcador**: barra apilada con el % de
   área de cada color (crece/encoge en vivo, 👑 en el líder, pop al cambiar).
 - Entre la barra y la arena: avisos "¡Cae el VERDE!" (1,4 s) y "¡La arena se cierra!".
-- Abajo fijo: **votación** 2×2 ("❤️ Me gusta = ROJO", "💬 Comenta = AZUL", "🔁 Comparte = AMARILLO",
-  "🔔 Suscríbete = VERDE"; el orden se sortea por id). Los equipos eliminados se tachan; el ganador brilla.
-  Con `votacion: false` vuelve el CTA "Comenta tu color 👇".
+- Abajo: **votación** con el panel compartido `src/marca/Votacion.tsx` (mismo formato que `carrera`): los primeros
+  4 s "VOTA POR TU FAVORITO 👇" y una fila por color "[pulgar] ME GUSTA → ● ROJO" (íconos dibujados como los de
+  YouTube Shorts: pulgar, burbuja, flecha de compartir, campana; sin emoji); después franja compacta 2×2
+  "[ícono] → ● ROJO" (eliminados tachados); en el final "GANÓ ROJO → si le diste [ícono] COMENTA, ¡acertaste! 🎉".
+  Acciones sorteadas por id (`votacion: { orden }` las fija). Con `votacion: false` vuelve el CTA "Comenta tu color 👇".
 - Llamado a suscribirse (src/marca/Llamado.tsx) 6 s antes de la victoria hasta el cierre.
 
 ## Props (ver `guion.ts`)
