@@ -60,6 +60,8 @@ export const PESO: Record<FiguraRitmo, number> = {
   parabola: 0.8, riel: 1.2, zigzag: 1.15, portal: 0.9, cruce: 1.0, pendulo: 1.4, trampolin: 1.1, espiral: 1.5, loop: 1.5,
 };
 
+/** Franja en que cabe el centro de un tubo de vidrio (radio r + 12) sin asomar de la franja de la bolita. */
+const franjaTubo = (c: Contexto): [number, number] => [c.franja[0] + 12, c.franja[1] - 12];
 const add = (a: V, b: V): V => ({ x: a.x + b.x, y: a.y + b.y });
 const esc = (a: V, k: number): V => ({ x: a.x * k, y: a.y * k });
 const len = (a: V) => Math.hypot(a.x, a.y);
@@ -176,7 +178,7 @@ export const zigzag = (c: Contexto): Candidato | null => {
   const a = Math.max(c.franja[0], centro - h), b = Math.min(c.franja[1], centro + h), L = b - a;
   if (L < 40) return null;
   if (P.x < a + 3 || P.x > b - 3) return null;
-  const m = 1 + Math.floor(azar() * (dt > 0.6 ? 3 : 2));
+  const m = 1 + Math.floor(azar() * (dt > 1.0 ? 5 : dt > 0.6 ? 3 : 2));
   const signo = azar() < 0.5 ? -1 : 1;
   const u = a + azar() * L;
   const primera = signo > 0 ? b - P.x : P.x - a;
@@ -233,7 +235,7 @@ export const conector = (
     const yLo = Math.min(A.y, B.y) - 120, yHi = Math.max(A.y, B.y) + 240;
     let lado = azar() < 0.5 ? -1 : 1;
     for (let k = 1; k <= n; k++) {
-      pts.push({ x: Math.max(-c.xMax + 10, Math.min(c.xMax - 10, carril + lado * (30 + azar() * Math.min(110, c.semiCarril)))), y: yLo + azar() * (yHi - yLo) });
+      pts.push({ x: Math.max(franjaTubo(c)[0], Math.min(franjaTubo(c)[1], carril + lado * (20 + azar() * Math.max(10, c.semiCarril - 20)))), y: yLo + azar() * (yHi - yLo) });
       lado = -lado;
     }
   }
@@ -380,17 +382,20 @@ const tablaRizo = (R: number, vL: number, G: number) => {
 export const loop = (c: Contexto): Candidato | null => {
   const { P, azar, dt, G, ti, r } = c;
   const dir = c.P.x > c.carril ? -1 : 1; // el rizo avanza hacia el centro del carril
-  const R = r + 32 + azar() * 30;
+  const R = r + 12 + azar() * 22; // v3: rizo más compacto, cabe en la franja de la melodía
   const vL = Math.sqrt((5.5 + azar() * 1.5) * G * R); // arriba va a √((1,5..3)·g·R): pasa el rizo con soltura
   const tabla = tablaRizo(R, vL, G);
   if (!tabla) return null;
   // Geometría desde la llegada: clavija Pj, delante la salida del rizo B2, el rizo en B y la rampa de entrada E→B.
   const o = c.objetivo(dir);
-  const corrimiento = dir * r * 1.1; // la salida queda al lado de la entrada (como un rizo real visto de frente)
-  const B = { x: Math.max(-c.xMax + R + 5, Math.min(c.xMax - R - 5 - Math.abs(corrimiento), P.x + dir * (20 + azar() * 60))), y: o.y - 60 - azar() * 80 };
+  const corrimiento = dir * r * 0.45; // la salida queda al lado de la entrada (como un rizo real visto de frente)
+  const [f0, f1] = franjaTubo(c);
+  const bMin = dir > 0 ? f0 + R : f0 + R + Math.abs(corrimiento), bMax = dir > 0 ? f1 - R - Math.abs(corrimiento) : f1 - R;
+  if (bMin > bMax) return no('loop-no-cabe');
+  const B = { x: Math.max(bMin, Math.min(bMax, P.x + dir * (20 + azar() * 60))), y: o.y - 60 - azar() * 80 };
   const B2 = { x: B.x + corrimiento, y: B.y };
-  const Pj = { x: Math.max(-c.xMax, Math.min(c.xMax, B2.x + dir * (110 + azar() * 110))), y: B2.y + 60 + azar() * 70 };
-  const E = { x: B.x - dir * (90 + azar() * 80), y: B.y - 150 - azar() * 90 };
+  const Pj = { x: Math.max(f0, Math.min(f1, B2.x + dir * (40 + azar() * 80))), y: B2.y + 70 + azar() * 70 };
+  const E = { x: Math.max(f0, Math.min(f1, B.x - dir * (60 + azar() * 80))), y: B.y - 150 - azar() * 90 };
   const T1 = 0.26 + azar() * 0.12;
   const T3 = Math.hypot(Pj.x - B2.x, Pj.y - B2.y) / (0.85 * vL);
   const ta = dt - T1 - tabla.T - T3;
@@ -422,21 +427,21 @@ export const loop = (c: Contexto): Candidato | null => {
 export const espiral = (c: Contexto): Candidato | null => {
   const { P, azar, dt, G, ti, r } = c;
   const dir = azar() < 0.5 ? -1 : 1;
-  const ax = 60 + azar() * 45, az = 200 + azar() * 120, w = 9 + azar() * 4;
+  const ax = 45 + azar() * 40, az = 200 + azar() * 120, w = 9 + azar() * 4;
   const vy = 260 + azar() * 240;
   const vueltas = [1, 1.5, 2].filter((n) => (2 * Math.PI * n) / w <= dt - 0.45);
   if (!vueltas.length) return no('espiral-sin-tiempo');
   const n = vueltas[Math.floor(azar() * vueltas.length)];
   const Th = (2 * Math.PI * n) / w;
   const o = c.objetivo();
-  const H0 = { x: Math.max(-c.xMax + ax + 5, Math.min(c.xMax - ax - 5, Math.max(c.carril - 60, Math.min(c.carril + 60, P.x + dir * (10 + azar() * 50))))), y: o.y - 110 - vy * Th - azar() * 60 };
+  const H0 = { x: Math.max(franjaTubo(c)[0] + ax, Math.min(franjaTubo(c)[1] - ax, P.x + dir * (10 + azar() * 50))), y: o.y - 110 - vy * Th - azar() * 60 };
   const posH = (s: number): V3 => [H0.x + dir * ax * Math.sin(w * s), H0.y + vy * s, az * Math.cos(w * s)];
   const fin = posH(Th);
   const H1 = { x: fin[0], y: fin[1] };
   const v0 = { x: dir * ax * w, y: vy }, v1 = { x: dir * ax * w * Math.cos(w * Th), y: vy };
   const sx = Math.sign(v1.x) || 1;
-  const Pj = { x: Math.max(-c.xMax, Math.min(c.xMax, H1.x + sx * (70 + azar() * 90))), y: H1.y + 70 + azar() * 70 };
-  const E = { x: H0.x - dir * (80 + azar() * 70), y: H0.y - 110 - azar() * 70 };
+  const Pj = { x: Math.max(franjaTubo(c)[0], Math.min(franjaTubo(c)[1], H1.x + sx * (40 + azar() * 70))), y: H1.y + 70 + azar() * 70 };
+  const E = { x: Math.max(franjaTubo(c)[0], Math.min(franjaTubo(c)[1], H0.x - dir * (60 + azar() * 70))), y: H0.y - 110 - azar() * 70 };
   const T1 = 0.18 + azar() * 0.1;
   const sp1 = len(v1);
   const T3 = Math.hypot(Pj.x - H1.x, Pj.y - H1.y) / (0.95 * sp1);

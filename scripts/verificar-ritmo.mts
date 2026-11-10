@@ -63,6 +63,15 @@ function distSup(x: number, y: number, c: { x: number; y: number; nx: number; ny
  * 40 frames antes de su golpe hasta 18 después; riel desde 0,9 s antes de que entre la bolita hasta 0,32 s después
  * de que pasa cada punto; pared mientras dura su zigzag; columpio en sus frames; portal 0,9 s antes → 0,5 s después.
  */
+/** Escala de dibujo de una clavija (igual que Ritmo.tsx y simular-ritmo.mts) en el frame (de simulación) f. */
+function escala(c: ClavijaSim, f: number) {
+  const tras = f - c.golpe, antes = c.golpe - (c.aparece ?? c.golpe - 40);
+  if (tras < -antes) return 0;
+  if (tras < 0) { const nace = Math.min(1, (tras + antes) / 12); return nace * (1 + 0.15 * Math.sin(nace * Math.PI)); }
+  const d = Math.min(1, tras / 18);
+  return (1 + 0.35 * Math.exp(-tras / 3)) * (1 - d * d);
+}
+
 function auditarGeometria(sim: SimRitmo) {
   const fps = sim.fps;
   const ALTO = (sim.mundo.ancho * 1920) / 1080 / 2, ANCHO = sim.mundo.ancho / 2;
@@ -82,8 +91,7 @@ function auditarGeometria(sim: SimRitmo) {
   const rieles = sim.objetos.flatMap((o) => (o.tipo === 'riel' ? [o] : []));
   const paredes = sim.objetos.flatMap((o) => (o.tipo === 'pared' ? [o] : []));
   const columpios = sim.objetos.flatMap((o) => (o.tipo === 'pendulo' ? [o] : []));
-  const golpeDe = new Map<number, number>(); // clavija → frame de su golpe
-  for (const g of sim.golpes) golpeDe.set(g.clavija, g.frame);
+  let huecoMin = { d: Infinity, f: 0, a: '', b: '' };
   for (let f = 0; f < fin; f++) {
     const t = tSim(f);
     const camX = sim.camara[f * 2], camY = sim.camara[f * 2 + 1];
@@ -98,13 +106,17 @@ function auditarGeometria(sim: SimRitmo) {
         const o = sim.bolitas[j];
         if (oculta(o, f)) continue;
         const q = pos(o, f);
-        if (Math.hypot(p.x - q.x, p.y - q.y) < b.r + o.r + 2) marcar('bolitas-se-tocan', `${i}-${j}`, f, `${b.pista} y ${o.pista}`);
+        const hueco = Math.hypot(p.x - q.x, p.y - q.y) - b.r - o.r;
+        if (hueco < huecoMin.d) huecoMin = { d: hueco, f, a: b.pista, b: o.pista };
+        if (hueco < 2) marcar('bolitas-se-tocan', `${i}-${j}`, f, `${b.pista} y ${o.pista}`);
       }
       // clavijas vivas
-      sim.clavijas.forEach((c, k) => {
-        if (Math.abs(c.y - p.y) > b.r + c.largo + c.radio + 10) return;
-        // (nace chica: los primeros 6 frames no estorban)
-        if (t < ((c.aparece ?? c.golpe - 40) + 6) / fps || t > (c.golpe + 18) / fps) return;
+      sim.clavijas.forEach((c0, k) => {
+        if (Math.abs(c0.y - p.y) > b.r + c0.largo + c0.radio + 10) return;
+        // la clavija con el tamaño con que se DIBUJA en ese instante (nace en 12 frames, se disuelve en 18)
+        const e = escala(c0, t * fps);
+        if (e < 0.3) return;
+        const c = { ...c0, largo: c0.largo * e, radio: c0.radio * e };
         const d = distSup(p.x, p.y, c) - b.r;
         if (c.bolita !== i) { if (d < 2) marcar('clavija-ajena', `${i}-${k}`, f, `${b.pista} ${d < 0 ? 'atraviesa' : 'roza'} una clavija de ${sim.bolitas[c.bolita].pista} (${d.toFixed(1)} u)`); }
         else if (Math.abs(f - c.golpe) > 2 && d < -2) marcar('clavija-propia', `${i}-${k}`, f, `${b.pista} atraviesa su clavija del frame ${c.golpe} (${d.toFixed(1)} u)`);
@@ -135,6 +147,7 @@ function auditarGeometria(sim: SimRitmo) {
     const grandes = sim.tramos.filter((tr) => tr.grande && t >= tr.desde / fps - 0.9 && t <= tr.hasta / fps + 0.5).length;
     if (grandes > 2) marcar('grandes', 'tope', f, `${grandes} figuras grandes a la vista`);
   }
+  console.log(`hueco mínimo entre bolitas: ${huecoMin.d.toFixed(1)} u (${huecoMin.a} y ${huecoMin.b}, frame ${huecoMin.f}); figuras grandes: ${sim.tramos.filter((t) => t.grande).length}`);
   return avisos;
 }
 
