@@ -220,7 +220,7 @@ export const Aviso: React.FC<{ sim: SimulacionCarrera; colores: string[]; etique
         background: `${PALETA.fondo}EE`, border: `3px solid ${borde}`, boxShadow: `0 0 20px ${borde}66, 0 6px 22px rgba(0,0,0,0.55)`,
         transform: `scale(${0.8 + 0.2 * entrada})`, opacity: op,
         fontFamily: TIPO.display, fontWeight: 800, fontSize: tam, color: PALETA.tinta, letterSpacing: 0.2,
-      }}>{contenido}</div>
+      }}><span>{contenido}</span></div>
     </div>
   );
 };
