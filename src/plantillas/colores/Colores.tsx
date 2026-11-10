@@ -15,8 +15,9 @@ import { MarcaDeAgua } from '../../marca/MarcaDeAgua';
 import { Cierre } from '../../marca/Cierre';
 import { Llamado, textoLlamado } from '../../marca/Llamado';
 import { BloqueTexto } from '../../marca/BloqueTexto';
+import { PanelVotacion } from '../../marca/Votacion';
 import {
-  ACCIONES_VOTO, TEXTOS_COLORES, accionesDe, remateDe, textoAccion,
+  TEXTOS_COLORES, accionesDe,
   type BolitaSim, type EventoColores, type GuionColores, type SimColores,
 } from './guion';
 
@@ -34,7 +35,6 @@ const LLAMADO_ANTES = 6 * 60;
 const FRAMES_AVISO = 84;
 /** Final: "GANA: X" sobre la arena, la bola ganadora al centro y el remate de la votación debajo. */
 const GANA_CENTRO_Y = 610;
-const REMATE_CENTRO_Y = 1228;
 
 const rutaSim = (id: string) => staticFile(`sim/${id}.json`);
 const rutaAudio = (id: string) => staticFile(`audio/generado/${id}.wav`);
@@ -192,7 +192,7 @@ const Bolitas: React.FC<{ sim: SimColores; fs: number; final: number; rFinal: nu
   );
 };
 
-const VIDA_EFECTO: Record<string, number> = { muerte: 26, division: 16, fusion: 22 };
+const VIDA_EFECTO: Record<string, number> = { muerte: 26, division: 16, fusion: 22, conquista: 24 };
 
 const Efectos: React.FC<{ sim: SimColores; fs: number; eventos: EventoColores[] }> = ({ sim, fs, eventos }) => {
   const piezas: React.ReactNode[] = [];
@@ -215,6 +215,14 @@ const Efectos: React.FC<{ sim: SimColores; fs: number; eventos: EventoColores[] 
         const d = v * u;
         piezas.push(<line key={`d${k}-${i}`} x1={e.x + Math.cos(a) * d * 0.5} y1={e.y + Math.sin(a) * d * 0.5} x2={e.x + Math.cos(a) * d} y2={e.y + Math.sin(a) * d}
           stroke={i % 2 ? c : c2} strokeWidth={4} strokeLinecap="round" opacity={1 - u} />);
+      }
+    } else if (e.tipo === 'conquista') {
+      // Conquista: anillo del color nuevo que se cierra sobre la bolita + chispas del color perdido.
+      const c2 = e.otro !== undefined ? colorEq(sim, e.otro) : '#ffffff';
+      piezas.push(<circle key={`q${k}`} cx={e.x} cy={e.y} r={e.r * (2.6 - 1.6 * u)} fill="none" stroke={c} strokeWidth={6 * (1 - u) + 1} opacity={1 - u} />);
+      for (let i = 0; i < 6; i++) {
+        const a = hash(k * 19 + i * 5) * Math.PI * 2, d = (30 + 50 * hash(k * 7 + i)) * u;
+        piezas.push(<circle key={`q${k}-${i}`} cx={e.x + Math.cos(a) * d} cy={e.y + Math.sin(a) * d} r={Math.max(0.5, 5 * (1 - u))} fill={c2} opacity={1 - u} />);
       }
     } else if (e.tipo === 'muerte') {
       piezas.push(<circle key={`m${k}`} cx={e.x} cy={e.y} r={e.r * (1 + 2.2 * u)} fill="none" stroke={c} strokeWidth={5 * (1 - u)} opacity={1 - u} />);
@@ -280,40 +288,6 @@ const Aviso: React.FC<{ texto: string; color: string; edad: number; fps: number;
   );
 };
 
-const Votos: React.FC<{ sim: SimColores; props: GuionColores; fs: number; opacidad: number; ganador: number | null; F: number }> = ({ sim, props, fs, opacidad, ganador, F }) => {
-  const acciones = accionesDe(props);
-  if (!acciones) return null;
-  const a = sim.areas[Math.min(Math.floor(fs), sim.areas.length - 1)];
-  const celdaW = 474, celdaH = 62, gap = 12;
-  return (
-    <div style={{
-      position: 'absolute', top: GRILLA_TOP, left: (FORMATO.ancho - (2 * celdaW + gap)) / 2, width: 2 * celdaW + gap,
-      display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap, opacity: opacidad, pointerEvents: 'none',
-    }}>
-      {acciones.map((acc, e) => {
-        const c = colorEq(sim, e);
-        const muerto = a[e] <= 0;
-        const gana = ganador === e;
-        const latido = gana ? 1 + 0.05 * Math.sin(F / 5) : 1;
-        return (
-          <div key={e} style={{
-            width: celdaW, height: celdaH, borderRadius: 999, display: 'flex', alignItems: 'center', gap: 10, padding: '0 18px',
-            background: gana ? hexA(c, 0.28) : '#0B0B12DD', border: `3px solid ${hexA(c, muerto ? 0.3 : 0.95)}`,
-            boxShadow: gana ? `0 0 28px ${c}` : `0 0 14px ${hexA(c, muerto ? 0 : 0.35)}`,
-            opacity: muerto && !gana ? 0.42 : 1, transform: `scale(${latido})`,
-            fontFamily: TIPO.texto, fontWeight: 800, fontSize: 30, color: PALETA.tinta, whiteSpace: 'nowrap', letterSpacing: -0.5,
-          }}>
-            <span style={{ width: 22, height: 22, flex: 'none', borderRadius: '50%', background: c, boxShadow: `0 0 10px ${c}` }} />
-            <span style={{ textDecoration: muerto ? 'line-through' : 'none' }}>{ACCIONES_VOTO[acc].icono} {textoAccion(props, acc)}</span>
-            <span style={{ color: PALETA.tintaSuave }}>=</span>
-            <span style={{ color: c, fontFamily: TIPO.display, fontSize: 32, textDecoration: muerto ? 'line-through' : 'none' }}>{nombreEq(sim, e)}</span>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
-
 // ---------------------------------------------------------------- composición
 
 export const Colores: React.FC<GuionColores> = (props) => {
@@ -324,11 +298,11 @@ export const Colores: React.FC<GuionColores> = (props) => {
 
   const datos = useMemo(() => {
     if (!sim) return null;
-    const efectos = sim.eventos.filter((e) => e.tipo === 'fusion' || e.tipo === 'division' || e.tipo === 'muerte');
+    const efectos = sim.eventos.filter((e) => e.tipo === 'fusion' || e.tipo === 'division' || e.tipo === 'muerte' || e.tipo === 'conquista');
     const lideres = sim.eventos.filter((e) => e.tipo === 'lider');
     const elim = sim.eventos.filter((e) => e.tipo === 'eliminado' && e.f < sim.victoriaFrame).map((e) => ({ e, v: videoDe(sim, e.f) }));
     const ultimaMuerte = [...sim.eventos].reverse().find((e) => e.tipo === 'eliminado') ?? null;
-    return { efectos, lideres, elim, ultimaMuerte, vCierre: videoDe(sim, CIERRE_DESDE_S * sim.fps) };
+    return { efectos, lideres, elim, ultimaMuerte, vCierre: videoDe(sim, sim.cierreDesde ?? CIERRE_DESDE_S * sim.fps), vConquista: sim.conquistaDesde !== undefined ? videoDe(sim, sim.conquistaDesde) : -1 };
   }, [sim]);
   if (!sim || !datos) return <AbsoluteFill style={{ background: PALETA.fondo }} />;
 
@@ -368,12 +342,12 @@ export const Colores: React.FC<GuionColores> = (props) => {
   const cartel = enFinal ? spring({ frame: trasV - 6, fps, config: { damping: 11, stiffness: 140 } }) : 0;
   const acciones = accionesDe(props);
   const textoGana = TEXTOS_COLORES.gana.replace('{color}', nombreEq(sim, sim.ganador));
-  const remate = acciones ? remateDe(props, acciones[sim.ganador]) : null;
 
   // Aviso del momento: "¡Cae el VERDE!" o "¡La arena se cierra!".
   let aviso: React.ReactNode = null;
   for (const { e, v } of datos.elim) if (F >= v && F - v <= FRAMES_AVISO) aviso = <Aviso key={`a${e.f}`} texto={TEXTOS_COLORES.cae.replace('{color}', nombreEq(sim, e.equipo))} color={colorEq(sim, e.equipo)} edad={F - v} fps={fps} centroY={AVISO_CENTRO_Y} />;
-  if (!aviso && cerrando && F - datos.vCierre <= FRAMES_AVISO) aviso = <Aviso texto="¡La arena se cierra!" color={PALETA.rojo} edad={F - datos.vCierre} fps={fps} centroY={AVISO_CENTRO_Y} tam={54} />;
+  if (!aviso && cerrando && F - datos.vCierre <= FRAMES_AVISO) aviso = <Aviso texto={TEXTOS_COLORES.cierre} color={PALETA.rojo} edad={F - datos.vCierre} fps={fps} centroY={AVISO_CENTRO_Y} tam={54} />;
+  if (!aviso && datos.vConquista >= 0 && F >= datos.vConquista && F - datos.vConquista <= FRAMES_AVISO + 30) aviso = <Aviso texto={TEXTOS_COLORES.conquista} color={PALETA.neon.amarillo} edad={(F - datos.vConquista) * FRAMES_AVISO / (FRAMES_AVISO + 30)} fps={fps} centroY={AVISO_CENTRO_Y} tam={40} />;
 
   return (
     <AbsoluteFill style={{ background: PALETA.fondo, overflow: 'hidden' }}>
@@ -408,17 +382,6 @@ export const Colores: React.FC<GuionColores> = (props) => {
               textShadow: `0 0 30px ${hexA(ganadorColor, 0.8)}`,
             }}>{textoGana}</div>
           </div>
-          {remate && (
-            <div style={{ position: 'absolute', left: 0, right: 0, top: REMATE_CENTRO_Y, transform: 'translateY(-50%)', display: 'flex', justifyContent: 'center', opacity: fadeCierre, pointerEvents: 'none' }}>
-              <div style={{
-                opacity: interpolate(trasV, [24, 36], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }),
-                transform: `translateY(${interpolate(trasV, [24, 40], [20, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })}px)`,
-                maxWidth: 900, padding: '12px 30px 16px', borderRadius: 28, background: '#0B0B12E6', textAlign: 'center',
-                fontFamily: TIPO.display, fontWeight: 800, fontSize: 46, lineHeight: 1.1, color: PALETA.tinta, letterSpacing: -1,
-                boxShadow: '0 8px 30px #000',
-              }}>{remate}</div>
-            </div>
-          )}
         </>
       )}
 
@@ -427,7 +390,9 @@ export const Colores: React.FC<GuionColores> = (props) => {
 
       <BloqueTexto texto={props.pregunta ?? TEXTOS_COLORES.pregunta} color={PALETA.neon.amarillo} top={ARRIBA_TOP} tam={70} opacidad={fadeCierre} />
       {acciones
-        ? <Votos sim={sim} props={props} fs={fs} opacidad={fadeCierre} ganador={enFinal ? sim.ganador : null} F={F} />
+        ? <PanelVotacion colores={sim.equipos.map((_, e) => colorEq(sim, e))} etiquetas={sim.equipos.map((_, e) => nombreEq(sim, e))}
+            acciones={acciones} frameFinal={vV} ganador={sim.ganador} grandeAntes={false} opacidad={fadeCierre}
+            eliminados={sim.areas[f0].map((a) => a <= 0)} />
         : <BloqueTexto texto={props.cta ?? TEXTOS_COLORES.cta} color={PALETA.neon.magenta} centroY={1500} tam={60} opacidad={fadeCierre} />}
 
       <MarcaDeAgua />

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ACCIONES, type Accion } from '../../marca/votacion-texto';
 import { CampoLlamado } from '../../marca/llamado-texto';
 import { semillaDesde } from '../../lib/azar';
 
@@ -70,7 +71,8 @@ export const GuionCarrera = z.object({
   extras: z.boolean().optional(),
   /**
    * Votación con acciones del público (2026-11-09; rehecha el 2026-11-10): EXIGE exactamente 4 participantes y a cada
-   * uno le toca una ACCIÓN por su orden: 1.º "❤️ ME GUSTA", 2.º "💬 COMENTA", 3.º "🔁 COMPARTE", 4.º "🔔 SUSCRÍBETE".
+   * uno le toca una ACCIÓN por su orden: 1.º ME GUSTA (pulgar), 2.º COMENTA (burbuja), 3.º COMPARTE (flecha), 4.º SUSCRÍBETE (campana), con
+   * íconos dibujados como los de YouTube Shorts (panel compartido src/marca/Votacion.tsx).
    * Panel "VOTA POR TU FAVORITO 👇" abajo desde el frame 0 (reemplaza `ganchoAbajo`) y, en el final,
    * "GANÓ X → si le diste <acción>, ¡acertaste! 🎉". Ausente = apagada (los guiones viejos y los de 5–6 quedan igual);
    * los guiones nuevos de carrera llevan `votacion: true` y 4 participantes.
@@ -91,10 +93,4 @@ export const ganchoAbajoCarrera = (g: Pick<GuionCarrera, 'id' | 'ganchoAbajo'>):
   g.ganchoAbajo ?? VARIANTES_GANCHO_ABAJO_CARRERA[semillaDesde(`abajo:${g.id}`) % VARIANTES_GANCHO_ABAJO_CARRERA.length];
 
 /** Acción de voto de cada participante (por posición en `participantes`; la votación exige 4). */
-export const ACCIONES_VOTO = [
-  { emoji: '❤️', texto: 'ME GUSTA' },
-  { emoji: '💬', texto: 'COMENTA' },
-  { emoji: '🔁', texto: 'COMPARTE' },
-  { emoji: '🔔', texto: 'SUSCRÍBETE' },
-] as const;
-export const accionVoto = (i: number): { emoji: string; texto: string } => ACCIONES_VOTO[i % ACCIONES_VOTO.length];
+export const accionVoto = (i: number): Accion => ACCIONES[i % ACCIONES.length];

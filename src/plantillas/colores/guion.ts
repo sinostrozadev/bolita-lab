@@ -13,6 +13,7 @@
 import { z } from 'zod';
 import { CampoLlamado } from '../../marca/llamado-texto';
 import { semillaDesde } from '../../lib/azar';
+import { ACCIONES, type Accion } from '../../marca/votacion-texto';
 
 /** Palabras "de verdad" (con letras o cifras): los emoji no cuentan. */
 const palabras = (t: string) => t.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
@@ -21,45 +22,26 @@ const palabras = (t: string) => t.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.tes
 export const EQUIPOS_COLORES = ['rojo', 'azul', 'amarillo', 'verde', 'violeta', 'naranja', 'cian', 'rosa'] as const;
 export type EquipoColores = (typeof EQUIPOS_COLORES)[number];
 
-/** Acciones del público para la votación (una por color; el orden de asignación lo sortea la semilla). */
-export const ACCIONES_VOTO = {
-  megusta: { icono: '❤️', texto: 'Me gusta' },
-  comenta: { icono: '💬', texto: 'Comenta' },
-  comparte: { icono: '🔁', texto: 'Comparte' },
-  suscribete: { icono: '🔔', texto: 'Suscríbete' },
-} as const;
-export type AccionVoto = keyof typeof ACCIONES_VOTO;
-export const ORDEN_ACCIONES: AccionVoto[] = ['megusta', 'comenta', 'comparte', 'suscribete'];
-
 /**
- * Votación con acciones del público: desde el frame 0 y toda la partida, una grilla 2×2 abajo asigna una
- * ACCIÓN a cada color ("❤️ Me gusta = ROJO"). En el final, bajo "GANA: X", el `remate` con la acción del
- * ganador. `true`/ausente = activada con textos por defecto; `false` = apagada (vuelve el `cta` de abajo).
+ * Votación con acciones del público (panel compartido `src/marca/Votacion.tsx`, mismo formato que `carrera`):
+ * "VOTA POR TU FAVORITO 👇" con una fila por color "[pulgar] ME GUSTA → ● ROJO" los primeros 4 s, luego franja
+ * compacta 2×2, y en el final "GANÓ ROJO → si le diste [pulgar] ME GUSTA, ¡acertaste! 🎉".
+ * `true`/ausente = activada (acciones sorteadas por id); `false` = apagada (vuelve el `cta`);
+ * `{ orden }` = acciones fijas en el orden de `equipos`.
  */
 export const Votacion = z.union([
   z.boolean(),
-  z.object({
-    /** Textos de las acciones (≤ 12 caracteres c/u); el ícono queda. */
-    textos: z.object({
-      megusta: z.string().min(1).max(12).optional(),
-      comenta: z.string().min(1).max(12).optional(),
-      comparte: z.string().min(1).max(12).optional(),
-      suscribete: z.string().min(1).max(12).optional(),
-    }).optional(),
-    /** Orden fijo de las acciones para los equipos (en el orden de `equipos`); si falta, lo sortea la semilla. */
-    orden: z.array(z.enum(['megusta', 'comenta', 'comparte', 'suscribete'])).min(2).max(4).optional(),
-    /** Remate del final; `{accion}` se reemplaza por "❤️ Me gusta" (la del ganador). */
-    remate: z.string().min(1).max(70).optional(),
-  }),
+  z.object({ orden: z.array(z.enum(ACCIONES)).min(2).max(4).optional() }),
 ]).optional();
 export type Votacion = z.infer<typeof Votacion>;
 
 export const TEXTOS_COLORES = {
   pregunta: '¿Qué color gana? 🎨',
   cta: 'Comenta tu color 👇',
-  remate: '¿Acertaste? Si votaste con {accion}, ¡ganaste! 🎉',
   cae: '¡Cae el {color}!',
   gana: 'GANA: {color}',
+  conquista: '¡CONQUISTA! Los que caen cambian de color',
+  cierre: '¡La arena se cierra!',
 } as const;
 
 export const GuionColores = z.object({
@@ -91,13 +73,13 @@ export const EQUIPOS_POR_DEFECTO: EquipoColores[] = ['rojo', 'azul', 'amarillo',
 export const equiposDe = (g: Pick<GuionColores, 'equipos'>): EquipoColores[] => g.equipos ?? EQUIPOS_POR_DEFECTO;
 
 /** Acción asignada a cada equipo (mismo orden que `equipos`), o null si la votación está apagada. */
-export const accionesDe = (g: Pick<GuionColores, 'id' | 'equipos' | 'votacion' | 'semilla'>): AccionVoto[] | null => {
+export const accionesDe = (g: Pick<GuionColores, 'id' | 'equipos' | 'votacion'>): Accion[] | null => {
   if (g.votacion === false) return null;
   const n = equiposDe(g).length;
   const fijo = typeof g.votacion === 'object' ? g.votacion.orden : undefined;
   if (fijo && fijo.length >= n) return fijo.slice(0, n);
   // Permutación determinista por id: no siempre la misma acción para el mismo color.
-  const acc = [...ORDEN_ACCIONES];
+  const acc: Accion[] = [...ACCIONES];
   let h = semillaDesde(`votacion:${g.id}`);
   for (let i = acc.length - 1; i > 0; i--) {
     h = (Math.imul(h, 1664525) + 1013904223) >>> 0;
@@ -105,14 +87,6 @@ export const accionesDe = (g: Pick<GuionColores, 'id' | 'equipos' | 'votacion' |
     [acc[i], acc[j]] = [acc[j], acc[i]];
   }
   return acc.slice(0, n);
-};
-export const textoAccion = (g: Pick<GuionColores, 'votacion'>, a: AccionVoto): string => {
-  const t = typeof g.votacion === 'object' ? g.votacion.textos?.[a] : undefined;
-  return t ?? ACCIONES_VOTO[a].texto;
-};
-export const remateDe = (g: Pick<GuionColores, 'votacion'>, a: AccionVoto): string => {
-  const plantilla = (typeof g.votacion === 'object' ? g.votacion.remate : undefined) ?? TEXTOS_COLORES.remate;
-  return plantilla.replace('{accion}', `${ACCIONES_VOTO[a].icono} ${textoAccion(g, a)}`);
 };
 
 // ---------------------------------------------------------------- simulación
@@ -127,12 +101,12 @@ export type BolitaSim = {
   nace: number;
   muere: number | null;
   /** Cómo termina: 'muerte' (estalla) o 'fusion' (la absorbe `en`). */
-  fin?: 'muerte' | 'fusion';
+  fin?: 'muerte' | 'fusion' | 'conquista';
   en?: number;
   p: number[];
 };
 
-export type TipoEventoColores = 'fusion' | 'division' | 'muerte' | 'eliminado' | 'victoria' | 'lider';
+export type TipoEventoColores = 'fusion' | 'division' | 'muerte' | 'conquista' | 'eliminado' | 'victoria' | 'lider';
 
 export type EventoColores = {
   /** Frame de SIMULACIÓN. */
@@ -143,7 +117,7 @@ export type EventoColores = {
   y: number;
   /** Radio involucrado (para el tamaño del efecto). */
   r: number;
-  /** División: equipo rival. Líder: equipo que pierde el primer lugar. */
+  /** División: equipo rival. Conquista: equipo que la perdió. Líder: equipo que pierde el primer lugar. */
   otro?: number;
 };
 
@@ -169,6 +143,9 @@ export type SimColores = {
   victoriaVideo: number;
   /** Frames de VIDEO [desde, hasta) de la cámara lenta. */
   lentoVideo: [number, number];
+  /** Frames de SIMULACIÓN en que empiezan la conquista y el cierre de la arena (sims viejos: ausentes). */
+  conquistaDesde?: number;
+  cierreDesde?: number;
   duracionFrames: number;
   vuelcos: number;
   semillaUsada: number;

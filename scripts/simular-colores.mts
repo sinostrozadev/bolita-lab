@@ -61,10 +61,21 @@ const DUR_MIN = 35, DUR_MAX = 50;
 const VUELCOS_MIN = 2;
 const PRIMER_CHOQUE_MAX = Math.round(0.3 * FPS);
 const MAX_PARTIDA_S = 46;
+/**
+ * Fase 2, CONQUISTA (desde T_CONQUISTA s): la bolita que cae bajo el mínimo ya no muere, se PASA al color que la
+ * golpeó (renace con AREA_CONQUISTA). Así la arena sigue llena hasta el final, el que va ganando arrastra a los
+ * demás en cascada y el desenlace es una pelea grande. En esta fase el escudo se invierte (ESCUDO_2): el grande
+ * resiste, para que la partida se decida.
+ */
+export const T_CONQUISTA = Number(process.env.CTQ ?? 18);
+const AREA_CONQUISTA = 1.8;
+const ESCUDO_2 = Number(process.env.CESC2 ?? -0.5);
+/** En la conquista solo se fusionan las chicas (resultado ≤ r RMAX_2): así no se apelotonan y siguen siendo muchas. */
+const AMAX_2 = Math.PI * Math.pow(Number(process.env.CRM2 ?? 58), 2);
 
 type Bolita = {
   id: number; eq: number; x: number; y: number; vx: number; vy: number; a: number; r: number;
-  inmune: number; nace: number; muere: number | null; fin?: 'muerte' | 'fusion'; en?: number; p: number[];
+  inmune: number; nace: number; muere: number | null; fin?: 'muerte' | 'fusion' | 'conquista'; en?: number; p: number[];
 };
 const radio = (a: number) => Math.sqrt(a / Math.PI);
 const velObjetivo = (r: number) => Math.max(210, Math.min(640, V0 * Math.pow(R0 / r, 0.4)));
@@ -72,8 +83,9 @@ const velObjetivo = (r: number) => Math.max(210, Math.min(640, V0 * Math.pow(R0 
 type Resultado = {
   ok: boolean; motivo: string; bolitas: Bolita[]; eventos: EventoColores[]; areas: number[][]; arenaR: number[];
   victoria: number; ganador: number; vuelcos: number; framesSim: number; primerChoque: number; eliminaciones: number[];
-  /** Bolitas vivas por frame (para exigir arena poblada). */
+  /** Bolitas vivas por frame (para exigir arena poblada) y por equipo. */
   cuenta: number[];
+  porEq: number[][];
 };
 
 export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | 'caja', semilla: number, dano: number): Resultado => {
@@ -85,6 +97,7 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
   const eventos: EventoColores[] = [];
   const areas: number[][] = [];
   const cuenta: number[] = [];
+  const porEq: number[][] = [];
   const arenaR: number[] = [];
   let sigId = 0;
   const nueva = (eq: number, x: number, y: number, vx: number, vy: number, a: number, nace: number, t: number): Bolita => {
@@ -123,6 +136,7 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
     for (const b of vivas) { b.p.push(Math.round(b.x), Math.round(b.y), Math.round(b.r * 10) / 10); ar[b.eq] += b.a; }
     areas.push(ar.map((v) => Math.round(v)));
     cuenta.push(vivas.length);
+    { const n = new Array(equipos).fill(0); for (const b of vivas) n[b.eq]++; porEq.push(n); }
     framesSim = f + 1;
     // Liderazgo (con histéresis: 4 % de ventaja sostenida 0,5 s).
     if (victoria < 0) {
@@ -138,7 +152,7 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
       } else candidato = -1;
     }
     if (victoria >= 0 && f >= finVideoSim()) break;
-    if (victoria < 0 && f >= maxFrames) return { ok: false, motivo: `sin ganador a los ${MAX_PARTIDA_S} s`, bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones, cuenta };
+    if (victoria < 0 && f >= maxFrames) return { ok: false, motivo: `sin ganador a los ${MAX_PARTIDA_S} s`, bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones, cuenta, porEq };
 
     // --- avanzar SUB sub-pasos; lo que pase aquí se ve desde el frame f+1
     const fv = f + 1;
@@ -188,7 +202,8 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
       for (const b of vivas) areaEq[b.eq] += b.a;
       const vivosEq = areaEq.filter((v) => v > 0);
       const media = vivosEq.reduce((x, y) => x + y, 0) / Math.max(1, vivosEq.length);
-      const factor = areaEq.map((v) => Math.max(0.35, Math.min(1.6, Math.pow(v / media, ESCUDO))));
+      const conquista = t >= T_CONQUISTA && victoria < 0;
+      const factor = areaEq.map((v) => Math.max(0.35, Math.min(1.6, Math.pow(v / media, conquista ? ESCUDO_2 : ESCUDO))));
       const tocadas = new Set<Bolita>();
       const muertas = new Set<Bolita>();
       const n0 = vivas.length;
@@ -200,7 +215,7 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
         const nx = dx / d, ny = dy / d;
         const libres = A.inmune <= t && B.inmune <= t && !tocadas.has(A) && !tocadas.has(B);
         if (primerChoque < 0 && libres) primerChoque = fv;
-        if (A.eq === B.eq && libres && (A.a + B.a <= AMAX || victoria >= 0)) {
+        if (A.eq === B.eq && libres && (A.a + B.a <= (t >= T_CONQUISTA ? AMAX_2 : AMAX) || victoria >= 0)) {
           // FUSIÓN: la grande absorbe a la chica (se queda en su lugar; momento conservado).
           const [G, C] = A.a >= B.a ? [A, B] : [B, A];
           const a = G.a + C.a;
@@ -232,7 +247,14 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
           X.a -= perdida * factor[X.eq];
           if (X === aguanta) X.a = AMIN * 1.02; X.r = radio(Math.max(X.a, 1));
           tocadas.add(X); X.inmune = t + INMUNE;
-          if (X.a < AMIN) {
+          if (X.a < AMIN && conquista) {
+            // CONQUISTA: renace del color de la que la golpeó.
+            const Y = X === A ? B : A;
+            X.muere = fv; X.fin = 'conquista'; muertas.add(X);
+            const N = nueva(Y.eq, X.x, X.y, X.vx, X.vy, AMIN * AREA_CONQUISTA, fv, t);
+            N.inmune = t + INMUNE * 1.5; X.en = N.id;
+            eventos.push({ f: fv, tipo: 'conquista', equipo: Y.eq, otro: X.eq, x: Math.round(X.x), y: Math.round(X.y), r: Math.round(N.r) });
+          } else if (X.a < AMIN) {
             X.muere = fv; X.fin = 'muerte'; muertas.add(X);
             eventos.push({ f: fv, tipo: 'muerte', equipo: X.eq, x: Math.round(X.x), y: Math.round(X.y), r: Math.round(X.r) });
           } else if (X.a >= APARTIR) {
@@ -264,13 +286,13 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
             eventos.push({ f: fv, tipo: 'victoria', equipo: ganador, x: ARENA.cx, y: ARENA.cy, r: 0 });
             for (const b of vivas) b.inmune = 0;
           } else if (restantes.length === 0) {
-            return { ok: false, motivo: 'empate (murieron todas a la vez)', bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones, cuenta };
+            return { ok: false, motivo: 'empate (murieron todas a la vez)', bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones, cuenta, porEq };
           }
         }
       }
     }
   }
-  return { ok: true, motivo: '', bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones, cuenta };
+  return { ok: true, motivo: '', bolitas, eventos, areas, arenaR, victoria, ganador, vuelcos, framesSim, primerChoque, eliminaciones, cuenta, porEq };
 };
 
 /** Frames de video totales para una victoria en el frame de sim `v`. */
@@ -293,12 +315,18 @@ const simAVideo = (victoria: number, fs: number) => {
   return lentoDesde + lentoFrames + (fs - victoria - S2);
 };
 
+export const evaluarExport = (r: Resultado) => evaluar(r);
 const evaluar = (r: Resultado) => {
   if (!r.ok) return r.motivo;
   const seg = duracionVideo(r.victoria) / FPS;
   if (seg < DUR_MIN || seg > DUR_MAX) return `dura ${seg.toFixed(1)} s`;
   // Arena poblada: no se vacía a mitad de partida.
   const vivasEn = (x: number) => r.cuenta[Math.floor(r.victoria * x)];
+  // Final masivo: ≥ 15 bolitas hasta 3 s antes de la victoria y ≥ 2 equipos con ≥ 5 hasta 5 s antes.
+  const f3 = r.victoria - 3 * FPS, f5 = r.victoria - 5 * FPS;
+  const minVivas = Math.min(...r.cuenta.slice(Math.round(T_CONQUISTA * FPS), f3 + 1));
+  if (minVivas < 15) return `final flaco (${minVivas} bolitas a 3 s)`;
+  for (let f = Math.round(T_CONQUISTA * FPS); f <= f5; f++) if (r.porEq[f].filter((n) => n >= 5).length < 2) return `final sin pelea (${(f / FPS).toFixed(1)} s)`;
   if (vivasEn(0.5) < 25 || vivasEn(0.75) < 9 || vivasEn(0.85) < 5) return `arena vacía (${vivasEn(0.5)} a la mitad, ${vivasEn(0.75)} al 75 %)`;
   if (r.vuelcos < VUELCOS_MIN) return `${r.vuelcos} vuelcos`;
   if (r.primerChoque < 0 || r.primerChoque > PRIMER_CHOQUE_MAX) return `primer choque a los ${(r.primerChoque / FPS).toFixed(2)} s`;
@@ -363,7 +391,7 @@ export const sintetizar = (sim: SimColores, ruta: string) => {
   const ultimo: Record<string, number> = {};
   for (const e of sim.eventos) {
     const t = tv(e.f);
-    const espacio = e.tipo === 'fusion' ? 0.05 : e.tipo === 'division' ? 0.035 : 0.03;
+    const espacio = e.tipo === 'fusion' ? 0.05 : e.tipo === 'division' ? 0.035 : e.tipo === 'conquista' ? 0.06 : 0.03;
     if (e.tipo !== 'eliminado' && e.tipo !== 'victoria' && t - (ultimo[e.tipo] ?? -1) < espacio) continue;
     ultimo[e.tipo] = t;
     const raiz = RAICES[e.equipo % RAICES.length];
@@ -382,6 +410,11 @@ export const sintetizar = (sim: SimColores, ruta: string) => {
       case 'muerte': // pop agudo
         barrido(pista, t, 700, 2100, 0.06, 0.2);
         nota(pista, { inicio: t + 0.03, hz: midiAHz(raiz + 24), duracion: 0.05, volumen: 0.1, timbre: 'pluck', liberacion: 0.08 });
+        break;
+      case 'conquista': // "flip": dos notas que suben en el tono del conquistador
+        nota(pista, { inicio: t, hz: midiAHz(raiz + 12), duracion: 0.05, volumen: 0.09, timbre: 'pluck', liberacion: 0.06 });
+        nota(pista, { inicio: t + 0.05, hz: midiAHz(raiz + 19), duracion: 0.07, volumen: 0.09, timbre: 'pluck', liberacion: 0.1 });
+        golpe(pista, t, { duracion: 0.03, volumen: 0.12, tono: 0.8, semilla: sem });
         break;
       case 'eliminado': // boom y tres notas que caen
         barrido(pista, t, 220, 38, 0.45, 0.5);
@@ -430,6 +463,7 @@ export const simularYSintetizar = (props: GuionColores, raiz = process.cwd()): S
     bolitas: r.bolitas.map((b): BolitaSim => ({ id: b.id, equipo: b.eq, nace: b.nace, muere: b.muere, fin: b.fin, en: b.en, p: b.p })),
     eventos: r.eventos, areas: r.areas, victoriaFrame: r.victoria, ganador: r.ganador, mapa,
     victoriaVideo: Math.round(simAVideo(r.victoria, r.victoria)), duracionFrames: mapa.length,
+    conquistaDesde: Math.round(T_CONQUISTA * FPS), cierreDesde: Math.round(CIERRE_DESDE * FPS),
     lentoVideo: [r.victoria - S1, r.victoria - S1 + Math.round((S1 + S2) / VEL_LENTA)],
     vuelcos: r.vuelcos, semillaUsada: semilla, danoUsado: dano,
   };
