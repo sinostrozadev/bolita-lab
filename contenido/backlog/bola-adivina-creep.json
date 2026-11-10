@@ -1,0 +1,200 @@
+{
+  "plantilla": "bola",
+  "id": "bola-adivina-creep",
+  "titulo": "¿Qué canción toca esta bolita? 🎸 Un himno de los 90",
+  "descripcion": "Cada rebote de la bolita de neón toca la siguiente nota de una canción que todos han cantado. Tres pistas: ¿la reconoces? Escríbela en los comentarios sin mirar las respuestas.\nSimulación física determinista hecha en Bolita Lab. Melodía interpretada en versión instrumental sintetizada; derechos de la composición de sus autores.",
+  "hashtags": [
+    "#shorts",
+    "#adivinalacancion",
+    "#satisfying",
+    "#fisica",
+    "#bolita",
+    "#neon",
+    "#piano"
+  ],
+  "props": {
+    "id": "bola-adivina-creep",
+    "gancho": "¿Qué canción es? 🎵",
+    "bolas": 1,
+    "modo": "crecer",
+    "timbre": "piano",
+    "acompanamiento": "acorde",
+    "melodiaNotas": {
+      "bpm": 92,
+      "compas": 4,
+      "tonica": 0,
+      "menor": false,
+      "acordes": [
+        [
+          0,
+          false
+        ],
+        [
+          4,
+          false
+        ],
+        [
+          5,
+          false
+        ],
+        [
+          5,
+          true
+        ]
+      ],
+      "notas": [
+        [
+          72,
+          1
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          74,
+          0.5
+        ],
+        [
+          72,
+          1
+        ],
+        [
+          75,
+          1
+        ],
+        [
+          72,
+          2
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          74,
+          0.5
+        ],
+        [
+          76,
+          1.5
+        ],
+        [
+          76,
+          3
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          74,
+          0.5
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          76,
+          1
+        ],
+        [
+          71,
+          0.5
+        ],
+        [
+          69,
+          0.5
+        ],
+        [
+          68,
+          2
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          77,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          74,
+          0.5
+        ],
+        [
+          74,
+          1
+        ],
+        [
+          76,
+          2
+        ],
+        [
+          72,
+          1
+        ],
+        [
+          74,
+          0.5
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          75,
+          1
+        ],
+        [
+          72,
+          3
+        ]
+      ]
+    },
+    "juego": {
+      "tipo": "adivina",
+      "pistas": [
+        {
+          "t": 6,
+          "texto": "rock de los 90 🎸"
+        },
+        {
+          "t": 14,
+          "texto": "banda inglesa 🇬🇧"
+        },
+        {
+          "t": 22,
+          "texto": "la canta todo el karaoke 🎤"
+        }
+      ]
+    }
+  },
+  "derechos": true,
+  "nota": "Notas aportadas por Santiago (tutorial con letra y notas; transposición a Do mayor). Música con derechos: Content ID probable; reserva, publicar solo con el sí de Santiago."
+}

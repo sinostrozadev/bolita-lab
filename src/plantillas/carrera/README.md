@@ -24,6 +24,7 @@ npx remotion render src/index.ts Carrera salida/bandeja/<id>.mp4 --props=salida/
 | `participantes` | 4–6 `{ etiqueta (≤18), color: lima·cian·magenta·naranja·violeta·amarillo, icono? }` |
 | `semilla?` | si falta, `semillaDesde(id)` |
 | `tema?` | informativo |
+| `extras?` | v2: bloques con vida, tubos y avisos. Ausente = activados; `false` = tablero clásico (idéntico al v1, mismo azar) |
 
 Los guiones del backlog (`contenido/backlog/carrera-<slug>.json`) llevan `id` = nombre de
 archivo: el pipeline le quita `carrera-` y antepone la fecha al promover.
@@ -110,6 +111,47 @@ acorde) en el cruce. Normalizado a −1 dBFS con limitador suave.
   etiquetas entran a 1 s.
 - **Podio vacío** (2.º · 1.º · 3.º con "?") sobre el bloque de abajo desde el frame 0: cada puesto se llena con
   la bola (color + icono, con pop) en el frame en que cruza la meta; se apaga cuando entra la fila del resultado.
+
+## Carrera v2: más giros y suspenso (2026-11-09, rama `carrera-v2`)
+Ideas de Santiago. Todo en la simulación determinista (paso fijo, semilla); el extra usa su **propio azar**
+(`semilla ^ 0x7b10c5`), así que con `extras: false` el tablero, la física y la sim salen idénticos al v1
+(verificado contra master con `carrera-super-poder`).
+- **Bloques con vida** (~20–25 % de los obstáculos): rectángulos redondeados de 112 × 68 px con el número 1, 2 o 3
+  (Bricolage 58 px), en clavijas interiores (x 230–850, nunca dos a < 260 px: dos bloques vecinos cerrarían el paso
+  de una bola de 116 px). Cada golpe (vn > 110 px/s, enfriamiento 9 frames por bola) resta 1: destello blanco,
+  temblor, el número salta y aparece una grieta; el color baja de rojo (3) a naranja (2) y amarillo (1). En 0 se
+  rompe: anillo del color de la bola que lo rompió, flash y 14 fragmentos con gravedad; desaparece de la física.
+  Golpe sobre la cara plana → empujoncito lateral de 55 px/s (no se queda posada encima).
+- **Tubos** (2–3 por carrera, en franjas laterales de 380 px libres de embudos y rampas, alternando lado): boca en
+  embudo con cartel `⚡ ATAJO` o `🌀 VUELTAS`, pared del lado de la cancha, y tubo de vidrio de 136 px. La bola que
+  cae en la franja entra; recorre la línea central (re-muestreada cada 8 px) con velocidad que converge en 0,3 s a la
+  del tubo (atajo 1300 px/s: serpentina + 1 rizo, ≈ 1,2 s para ~1000 px, gana ≈ 2 s; vueltas 480 px/s: 3–4 rizos,
+  ≈ 4,3 s para ~800 px, pierde ≈ 2 s) y sale por abajo en vertical (≤ 760 px/s). Dentro van en **fila india** (no se
+  acercan a menos de un diámetro) y no chocan con nadie. El vidrio tiene una capa detrás de la bola y un brillo
+  delante: se ve la bola dentro. Mientras hay una bola dentro, el borde brilla de su color.
+- **Búsqueda de semilla**: además de duración 25–45 s y ventaja < 1,5 s, pide ≥ 1 tubo usado, ≥ 1 bloque roto y
+  ≥ 1 "le abrió el camino" (hasta 60 carreras válidas; si no, la mejor por extras y luego por ventaja).
+- **Avisos** (`sim.avisos`, `Extras.tsx`): "💥 ¡X le abrió el camino a Y!" cuando Y pasa (≤ 8 s después) por donde
+  estaba el bloque que rompió X, y "🌀/⚡ ¡X se metió al tubo!". Máx. 1 cada 3 s, 2,4 s en pantalla, en el lugar del
+  llamado (y 668, bajo el marcador y sobre la banda de la líder) y solo hasta que entra el llamado.
+- **Sonido** (`scripts/lib/sonido-carrera.mts`): clavija = marimba en Do pentatónica según la ALTURA (la escala
+  baja con las filas y vuelve a empezar cada 11: cascadas que suenan musicales); bloque = golpe grave + crujido;
+  rotura = boom + estallido brillante + campanitas; tubo = "fiuuu" continuo (tono por velocidad, sube en los rizos y
+  baja al caer, doppler leve) con "chup" al entrar y "pop" al salir; cama a 110 bpm (bajo Do–La–Fa–Sol + bombo +
+  hi-hat; en los últimos ~8 s entra caja y semicorcheas) que se corta en la cámara lenta; fanfarria de metales +
+  platillo. Master `masterizar` (wav.mts): RMS −15 dB con compuerta + limitador con anticipación a −2,2 dBFS
+  → medido −14 LUFS integrado, true peak < −0,5 dBTP.
+
+## Votación con acciones del público (prop `votacion`; rehecha el 2026-11-10 tras "no se entiende")
+- **Exactamente 4 competidores** (el schema lo exige con `votacion: true`; `generar-guiones` pide 4). Acción por orden:
+  1.º "❤️ ME GUSTA", 2.º "💬 COMENTA", 3.º "🔁 COMPARTE", 4.º "🔔 SUSCRÍBETE". Los guiones de 5–6 van sin votación.
+- **Panel grande** (frames 0–240 y los 3 s antes de la meta): placa oscura x 56–940 (deja libre la columna de botones de
+  YouTube) y y 1204–1580, con "VOTA POR TU FAVORITO 👇" (48 px, amarillo) y 4 filas "● NOMBRE → ❤️ ME GUSTA"
+  (bola de 64 px con el icono, nombre de 46 px en su color, acción de 42 px). Mientras está grande, el podio se oculta.
+- **Franja compacta** (el resto de la carrera): 2×2 "● NOMBRE → ❤️" en y 1470–1580, con el podio encima.
+- **Final** (desde k = 40 tras la meta): "GANÓ X → / si le diste <acción>, ¡acertaste! 🎉" con el color de la ganadora.
+- Con votación, el llamado nunca usa "¿Acertaste? Suscríbete" (pasa a "Suscríbete y elige la próxima carrera 🏁").
+- La búsqueda de semilla con extras pide además que el **atajo** reciba al menos una bola.
 
 ## Duración del video
 `frames hasta el cruce (incluye cámara lenta) + 2,5 s de celebración + 1,2 s de cierre` ≈ 30–50 s.

@@ -379,3 +379,60 @@ export const melodiaATempo = (m: Melodia, instrumento: Instrumento, acompanamien
   normalizar(pista, -1);
   return pista.subarray(0, Math.floor(segundos * SR));
 };
+
+/**
+ * Masterización estéreo: lleva la mezcla a una sonoridad objetivo aproximada (RMS de bloques de 400 ms con
+ * compuerta a −50 dBFS, sin ponderación K: en estas mezclas da ≈ LUFS ± 1) y luego un limitador con
+ * anticipación (ventana simétrica de `anticipo` s, liberación exponencial) que deja los picos bajo `techoDb`.
+ * La misma ganancia en L y R (la imagen estéreo no se mueve). Modifica los buffers en el lugar.
+ */
+export const masterizar = (canales: Float32Array[], o: { rmsDb?: number; techoDb?: number; anticipo?: number; liberacion?: number } = {}) => {
+  const { rmsDb = -15, techoDb = -1, anticipo = 0.003, liberacion = 0.08 } = o;
+  const n = canales[0].length;
+  // 1. Sonoridad: energía media de los bloques que superan la compuerta.
+  const bloque = Math.floor(0.4 * SR);
+  let suma = 0, cuenta = 0;
+  for (let i = 0; i + bloque <= n; i += bloque) {
+    let e = 0;
+    for (let j = i; j < i + bloque; j++) for (const c of canales) e += c[j] * c[j];
+    e /= bloque * canales.length;
+    if (e > Math.pow(10, -50 / 10)) { suma += e; cuenta++; }
+  }
+  if (!cuenta) return canales;
+  const g0 = Math.pow(10, rmsDb / 20) / Math.sqrt(suma / cuenta);
+  for (const c of canales) for (let i = 0; i < n; i++) c[i] *= g0;
+  // 2. Limitador: ganancia deseada por muestra → mínimo en ventana simétrica → liberación → promedio
+  //    (el promedio de una ventana de mínimos nunca supera la ganancia que pide el pico: no hay clip).
+  const techo = Math.pow(10, techoDb / 20);
+  const La = Math.max(1, Math.floor(anticipo * SR));
+  const deseada = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    let p = 0;
+    for (const c of canales) p = Math.max(p, Math.abs(c[i]));
+    deseada[i] = p > techo ? techo / p : 1;
+  }
+  // Mínimo deslizante (deque) en [i − La, i + La].
+  const minimo = new Float32Array(n);
+  const dq = new Int32Array(n + 2 * La + 2);
+  let ini = 0, finq = 0;
+  for (let j = 0; j < n + La; j++) {
+    if (j < n) { while (finq > ini && deseada[dq[finq - 1]] >= deseada[j]) finq--; dq[finq++] = j; }
+    const i = j - La;
+    if (i < 0) continue;
+    while (dq[ini] < i - La) ini++;
+    minimo[i] = deseada[dq[ini]];
+  }
+  const rel = 1 - Math.exp(-1 / (liberacion * SR));
+  let g = 1;
+  for (let i = 0; i < n; i++) { g = minimo[i] < g ? minimo[i] : g + (minimo[i] - g) * rel; minimo[i] = g; }
+  const medio = Math.max(1, Math.floor(La / 2));
+  const pref = new Float64Array(n + 1);
+  for (let i = 0; i < n; i++) pref[i + 1] = pref[i] + minimo[i];
+  const ganancia = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const a = Math.max(0, i - medio), b = Math.min(n - 1, i + medio);
+    ganancia[i] = (pref[b + 1] - pref[a]) / (b - a + 1);
+  }
+  for (const c of canales) for (let i = 0; i < n; i++) c[i] = Math.max(-techo, Math.min(techo, c[i] * ganancia[i]));
+  return canales;
+};

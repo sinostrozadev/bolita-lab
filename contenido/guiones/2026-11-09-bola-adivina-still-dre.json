@@ -1,0 +1,314 @@
+{
+  "plantilla": "bola",
+  "id": "2026-11-09-bola-adivina-still-dre",
+  "titulo": "¿Qué canción toca esta bolita? 🎹 Un clásico del hip hop",
+  "descripcion": "Cada rebote de la bolita de neón toca la siguiente nota de un riff de piano que todo el mundo reconoce. Tres pistas: ¿la tienes? Escríbela en los comentarios sin mirar las respuestas.\nSimulación física determinista hecha en Bolita Lab. Melodía interpretada en versión instrumental sintetizada; derechos de la composición de sus autores.",
+  "hashtags": [
+    "#shorts",
+    "#adivinalacancion",
+    "#satisfying",
+    "#fisica",
+    "#bolita",
+    "#neon",
+    "#piano"
+  ],
+  "props": {
+    "id": "2026-11-09-bola-adivina-still-dre",
+    "gancho": "¿Qué canción es? 🎵",
+    "bolas": 1,
+    "modo": "escape",
+    "timbre": "piano",
+    "acompanamiento": "acorde",
+    "melodiaNotas": {
+      "bpm": 93,
+      "compas": 4,
+      "tonica": 9,
+      "menor": true,
+      "acordes": [
+        [
+          9,
+          true
+        ],
+        [
+          4,
+          true
+        ]
+      ],
+      "notas": [
+        [
+          72,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          71,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          71,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          79,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          71,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          71,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          79,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          71,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          71,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          79,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          72,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          71,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          81,
+          0.5
+        ],
+        [
+          71,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ],
+        [
+          79,
+          0.5
+        ],
+        [
+          76,
+          0.5
+        ]
+      ]
+    },
+    "juego": {
+      "tipo": "adivina",
+      "pistas": [
+        {
+          "t": 6,
+          "texto": "hip hop de la Costa Oeste 🌴"
+        },
+        {
+          "t": 14,
+          "texto": "un doctor y un perro 🐶"
+        },
+        {
+          "t": 22,
+          "texto": "año 1999 📀"
+        }
+      ]
+    }
+  }
+}
