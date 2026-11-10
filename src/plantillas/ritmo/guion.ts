@@ -36,6 +36,14 @@ export type PartituraRitmo = z.infer<typeof PartituraRitmo>;
 
 export const TIMBRES_RITMO = ['piano', 'campana', 'pluck'] as const;
 
+/**
+ * Estilo del nivel. 'plano' (v1, Canon): solo parábolas entre clavijas que se disuelven. 'figuras' (v2/v3): además
+ * rieles, rizos, zigzag, columpios, hélices, trampolines y portales, con a lo más 2 figuras grandes a la vista.
+ * Se conservan los dos para comparar cuál tiene mejor aceptación.
+ */
+export const ESTILOS_RITMO = ['plano', 'figuras'] as const;
+export type EstiloRitmo = (typeof ESTILOS_RITMO)[number];
+
 export const TEXTOS_RITMO = {
   arriba: '5 bolitas, 1 canción 🎵',
   abajo: '¿Cuál lleva la melodía? 👇',
@@ -52,6 +60,8 @@ export const GuionRitmo = z.object({
   abajo: z.string().min(1).max(40).refine((t) => palabras(t) <= 6, 'abajo: máximo 6 palabras').optional(),
   /** Timbre de la melodía (por defecto piano). */
   timbre: z.enum(TIMBRES_RITMO).optional(),
+  /** Estilo del nivel (por defecto 'figuras'). */
+  estilo: z.enum(ESTILOS_RITMO).optional(),
   /** Mostrar al final qué instrumento era cada bolita (por defecto sí). */
   revelar: z.boolean().optional(),
   /** Semilla del nivel; si falta, se deriva del id. */
@@ -95,6 +105,8 @@ export type BolitaSim = {
   brillo: number;
   /** Centro del carril (x). */
   carril: number;
+  /** Franja [xmin, xmax] del centro de la bolita (v3; las franjas de bolitas distintas no se tocan). */
+  franja?: [number, number];
   /** Repisa donde espera antes de soltarse: centro de la bolita en reposo y frame en que se abre. */
   repisa: { x: number; y: number; abre: number };
   /** Por frame: x, y (centro), aplanado. */
@@ -113,7 +125,7 @@ export const FIGURAS_RITMO = ['parabola', 'riel', 'loop', 'zigzag', 'pendulo', '
 export type FiguraRitmo = (typeof FIGURAS_RITMO)[number];
 
 /** Qué figura hizo cada bolita entre el golpe `desde` y el siguiente (`hasta`), en frames. */
-export type TramoSim = { bolita: number; figura: FiguraRitmo; desde: number; hasta: number };
+export type TramoSim = { bolita: number; figura: FiguraRitmo; desde: number; hasta: number; grande?: boolean };
 
 /** Objetos que justifican las figuras. Tiempos en SEGUNDOS de simulación salvo que diga frame. */
 export type ObjetoSim =
@@ -127,7 +139,11 @@ export type ObjetoSim =
   | { tipo: 'portal'; bolita: number; ax: number; ay: number; aAng: number; bx: number; by: number; bAng: number; entra: number; sale: number };
 
 /** Clavija o pad. Cápsula: eje perpendicular a la normal, de semilargo `largo` (0 = clavija redonda) y radio `radio`. */
-export type ClavijaSim = { bolita: number; x: number; y: number; nx: number; ny: number; largo: number; radio: number; golpe: number; estilo?: 'trampolin' };
+export type ClavijaSim = {
+  bolita: number; x: number; y: number; nx: number; ny: number; largo: number; radio: number; golpe: number; estilo?: 'trampolin';
+  /** Frame en que aparece (v3; falta = golpe − 40). En los redobles aparece recién con el golpe anterior de su bolita. */
+  aparece?: number;
+};
 
 export type GolpeSim = {
   frame: number;
@@ -149,8 +165,10 @@ export type GolpeSim = {
 };
 
 export type SimRitmo = {
-  version: 2;
+  version: 2 | 3;
   id: string;
+  /** Estilo con que se generó (v3; falta = 'figuras'). */
+  estilo?: EstiloRitmo;
   fps: number;
   duracionFrames: number;
   /** Frame del golpe final de todas (clímax). */

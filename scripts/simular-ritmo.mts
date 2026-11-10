@@ -20,7 +20,7 @@ import path from 'node:path';
 import { crearAzar, semillaDesde } from '../src/lib/azar';
 import { PALETA } from '../src/marca/tokens';
 import {
-  FIGURAS_RITMO, GuionRitmo, PartituraRitmo, type BolitaSim, type ClavijaSim, type FiguraRitmo, type GolpeSim, type ObjetoSim,
+  GuionRitmo, PartituraRitmo, type EstiloRitmo, type BolitaSim, type ClavijaSim, type FiguraRitmo, type GolpeSim, type ObjetoSim,
   type PistaRitmo, type SimRitmo, type TramoSim,
 } from '../src/plantillas/ritmo/guion';
 import { CONSTRUCTORES, DT_MIN, PESO, vParab, type Candidato, type Contexto, type Solido, type Tramo } from './lib/figuras-ritmo.mjs';
@@ -36,26 +36,77 @@ export const FRAMES_CLIMAX = 96;
 export const LENTO_CLIMAX = 0.35;
 export const FRAMES_CIERRE = 72;
 
-const G = 2800; // unidades/s² (la vista mide 1100 unidades de ancho)
+/** Gravedad (u/s²; la vista mide 1100 u de ancho). 'figuras': 2800. 'plano': la de v1 a escala de la cámara nueva
+ * (2800 · 1100/1500 ≈ 2050), así las parábolas de las notas largas se ven como en el Canon v1 y caben en el cuadro. */
+const GRAVEDAD = { figuras: 2800, plano: 2050 } as const;
+/** Escalonado vertical por estilo: en 'plano' las franjas ya separan a las bolitas y los arcos altos necesitan alto. */
+const ESCALA_DESFASE = { figuras: 1, plano: 0.4 } as const;
+let G = 2800;
+/** Límites verticales del centro respecto de la cámara (el cuadro mide ±977 u): arriba la bolita entera dentro del
+ * cuadro, abajo sin meterse bajo el texto inferior (centro a 568 u bajo la cámara). */
+const ARRIBA_MAX = 970, ABAJO_MAX = 560;
+/** Ruido vertical del objetivo de cada golpe alrededor de su línea (u). */
+const RUIDO_Y = 90;
+
+/**
+ * Altura de cada bolita respecto de la cámara (v3). Parte del escalonado preferido de CONFIG y lo acota para que una
+ * parábola del 90 % de sus Δt (la más larga razonable) quepa entera: las pistas de notas largas (arcos altos) bajan,
+ * las de notas cortas pueden ir arriba.
+ */
+const calcularOffsets = (ev: Record<PistaRitmo, EventoPista[]>, estilo: EstiloRitmo) => {
+  const pref = CONFIG.map((c) => c.desfase * ESCALA_DESFASE[estilo]);
+  const media = pref.reduce((a, b) => a + b, 0) / pref.length;
+  return CONFIG.map((c, b) => {
+    const l = ev[c.pista];
+    const dts = l.slice(1).map((e, k) => (e.frame - l[k].frame) / FPS).sort((a, z) => a - z);
+    const dt90 = dts[Math.floor(dts.length * 0.9)] ?? 0.5;
+    const vy = Math.max(0, (G * dt90) / 2 - 220);
+    const apice = (vy * vy) / (2 * G);
+    const oMin = -ARRIBA_MAX + c.r + RUIDO_Y + apice + 40, oMax = ABAJO_MAX - c.r / 2 - RUIDO_Y - 30;
+    const o = pref[b] - media - 60;
+    return Math.round(oMin > oMax ? oMax : Math.max(oMin, Math.min(oMax, o)));
+  });
+};
 /** Ancho de la vista en unidades de mundo (debe coincidir con ANCHO_VISTA de Ritmo.tsx): cámara cerca del grupo. */
 const ANCHO_MUNDO = 1100;
-/** |x| + r ≤ BORDE: la bolita entera dentro del cuadro. */
-const BORDE = 540;
-/** Semiancho útil del carril para el centro de la bolita. */
-const SEMI_CARRIL = 95;
+/** |x| + r ≤ BORDE: la bolita entera dentro del cuadro (la cámara no se mueve en x). */
+const BORDE = 538;
+/** Separación mínima (u) entre cosas de bolitas distintas: bolitas, clavijas, rieles, paredes, columpios, portales. */
+export const SEP = 18;
+/** Ventana en que una figura "grande" se ve (s antes de empezar / después de terminar). */
+const GRANDE_ANTES = 0.9, GRANDE_DESPUES = 0.5;
+/** A lo más 2 figuras grandes a la vista en todo el cuadro (v3: "se ve muy amontonado"). */
+const TOPE_GRANDES = 2;
+/** Figuras grandes: llenan el cuadro. El riel cuenta como grande si es largo (serpenteante). */
+const GRANDES = new Set<FiguraRitmo>(['loop', 'espiral', 'pendulo', 'trampolin']);
 /** Muestreo para detectar choques no deseados (240 Hz: < 13 unidades entre muestras a 3000 u/s). */
 const SUB = 4;
 
-type Config = { pista: PistaRitmo; carril: number; r: number; color: string; brillo: number; largo: number; radio: number; desfase: number };
+type Config = {
+  pista: PistaRitmo; carril: number; r: number; color: string; brillo: number; largo: number; radio: number; desfase: number;
+  /** Semiancho del carril para el centro de la bolita. */
+  semi: number;
+  /** Figuras permitidas en el estilo 'figuras' (la percusión solo hace figuras chicas). */
+  figuras: FiguraRitmo[];
+  /** Figuras distintas mínimas (estilo 'figuras'). */
+  minFiguras: number;
+};
+const CHICAS: FiguraRitmo[] = ['parabola', 'zigzag'];
+const TODAS: FiguraRitmo[] = ['parabola', 'riel', 'loop', 'zigzag', 'pendulo', 'espiral', 'trampolin', 'portal'];
 const CONFIG: Config[] = [
-  // Orden de generación = orden de prioridad (la melodía elige primero su camino). Bolitas grandes (diámetro ≥ 7 % del
-  // alto del cuadro) y escalonadas en altura (desfase) para que las figuras tengan lugar sin chocar con la vecina.
-  { pista: 'melodia', carril: 0, r: 78, color: PALETA.neon.amarillo, brillo: 1.0, largo: 56, radio: 15, desfase: 0 },
-  { pista: 'bajo', carril: -190, r: 76, color: PALETA.neon.violeta, brillo: 0.55, largo: 60, radio: 16, desfase: -170 },
-  { pista: 'kick', carril: -380, r: 72, color: PALETA.neon.naranja, brillo: 0.85, largo: 0, radio: 22, desfase: 160 },
-  { pista: 'snare', carril: 190, r: 71, color: PALETA.rojo, brillo: 0.85, largo: 0, radio: 19, desfase: 170 },
-  { pista: 'hat', carril: 380, r: 70, color: PALETA.neon.cian, brillo: 0.85, largo: 0, radio: 16, desfase: -150 },
+  // Orden de generación = orden de prioridad (la melodía elige primero su camino). v3: tamaño y brillo por rol (la
+  // melodía es la más grande y brillante; la percusión, chica y discreta), 5 tonos bien separados (amarillo, violeta,
+  // rojo, verde, cian) y escalonadas en altura (desfase) para que las vecinas no compartan franja.
+  // Franjas (centro de la bolita) disjuntas con ≥ SEP entre cuerpos: melodía al centro (±100), bajo y bombo a la
+  // izquierda, caja y platillo a la derecha. Solo las figuras grandes pueden salirse (hasta 110 u) si hay lugar.
+  { pista: 'melodia', carril: 0, r: 80, color: PALETA.neon.amarillo, brillo: 1.0, largo: 56, radio: 15, desfase: 0, semi: 100, figuras: TODAS, minFiguras: 4 },
+  { pista: 'bajo', carril: -301, r: 56, color: PALETA.neon.violeta, brillo: 0.6, largo: 46, radio: 14, desfase: -250, semi: 47, figuras: TODAS, minFiguras: 4 },
+  { pista: 'kick', carril: -480, r: 40, color: PALETA.rojo, brillo: 0.5, largo: 0, radio: 16, desfase: 230, semi: 18, figuras: CHICAS, minFiguras: 1 },
+  { pista: 'snare', carril: 262, r: 36, color: PALETA.verde, brillo: 0.5, largo: 0, radio: 15, desfase: 250, semi: 28, figuras: CHICAS, minFiguras: 1 },
+  { pista: 'hat', carril: 441, r: 30, color: PALETA.neon.cian, brillo: 0.5, largo: 0, radio: 13, desfase: -230, semi: 67, figuras: CHICAS, minFiguras: 1 },
 ];
+/** Franja del centro de una bolita. */
+const franjaDe = (c: Config): [number, number] => [c.carril - c.semi, c.carril + c.semi];
 
 type V = { x: number; y: number };
 const sub = (a: V, b: V): V => ({ x: a.x - b.x, y: a.y - b.y });
@@ -106,8 +157,18 @@ const finVida = (c: { golpe: number }) => (c.golpe + FRAMES_DISOLVER) / FPS;
 /** Las clavijas aparecen (crecen) 0,67 s antes de su golpe, como los rieles: el circuito se arma por delante de las
  * bolitas. Así solo estorban en su ventana de vida y no durante todo el video. Debe coincidir con Ritmo.tsx. */
 export const FRAMES_APARECE = 40;
-const iniVida = (c: { golpe: number }) => (c.golpe - FRAMES_APARECE) / FPS;
-const conviven = (a: { golpe: number }, b: { golpe: number }) => iniVida(a) < finVida(b) && iniVida(b) < finVida(a);
+/** v3: una clavija aparece 40 frames antes de su golpe, pero nunca antes del golpe anterior de
+ * su bolita (`aparece`): en los redobles solo se ve la clavija siguiente, no tres por delante. */
+const iniVida = (c: { golpe: number; aparece?: number }) => (c.aparece ?? c.golpe - FRAMES_APARECE) / FPS;
+/** Escala con que Ritmo.tsx dibuja una clavija en el frame f (crece al nacer, late al golpe y se disuelve). */
+const escalaClavija = (c: { golpe: number; aparece?: number }, f: number) => {
+  const tras = f - c.golpe, antes = c.golpe - (c.aparece ?? c.golpe - FRAMES_APARECE);
+  if (tras < -antes) return 0;
+  if (tras < 0) { const nace = Math.min(1, (tras + antes) / 12); return nace * (1 + 0.15 * Math.sin(nace * Math.PI)); }
+  const d = Math.min(1, tras / FRAMES_DISOLVER);
+  return (1 + 0.35 * Math.exp(-tras / 3)) * (1 - d * d);
+};
+const conviven = (a: { golpe: number; aparece?: number }, b: { golpe: number; aparece?: number }) => iniVida(a) < finVida(b) && iniVida(b) < finVida(a);
 
 type Muestra = { t: number; x: number; y: number; r: number; b: number; oculto?: boolean };
 
@@ -142,6 +203,86 @@ class IndiceCaps<T extends Caps> {
     }
   }
 }
+
+/** Huella de algo visible: disco (x, y, rad) presente en [t0, t1] (s de simulación). */
+export type Huella = { x: number; y: number; rad: number; t0: number; t1: number };
+
+/**
+ * Ocupación del espacio-tiempo por las bolitas YA generadas (todo lo que se ve de ellas: su camino, clavijas, rieles,
+ * paredes, columpios, portales). Rejilla de celdas de 24 u; cada celda guarda intervalos de tiempo [t0, t1]. Un disco
+ * marca las celdas que toca (inflado en SEP/2), así que dos discos a menos de SEP siempre comparten una celda en un
+ * instante común: sin falsos negativos (los falsos positivos cuestan, como mucho, una celda de holgura).
+ */
+export class Ocupacion {
+  static CELDA = 24;
+  mapa = new Map<number, number[]>();
+  private celdas(x: number, y: number, R: number, fn: (k: number) => boolean | void) {
+    const c = Ocupacion.CELDA;
+    const ix0 = Math.floor((x - R) / c), ix1 = Math.floor((x + R) / c), iy0 = Math.floor((y - R) / c), iy1 = Math.floor((y + R) / c);
+    for (let iy = iy0; iy <= iy1; iy++) {
+      const dy = Math.max(iy * c - y, 0, y - (iy + 1) * c);
+      for (let ix = ix0; ix <= ix1; ix++) {
+        const dx = Math.max(ix * c - x, 0, x - (ix + 1) * c);
+        if (dx * dx + dy * dy > R * R) continue;
+        if (fn(iy * 16384 + ix + 8192)) return true;
+      }
+    }
+    return false;
+  }
+  ocupar(h: Huella) {
+    this.celdas(h.x, h.y, h.rad + SEP / 2, (k) => {
+      let l = this.mapa.get(k);
+      if (!l) { l = []; this.mapa.set(k, l); }
+      const n = l.length;
+      if (n && h.t0 <= l[n - 1] + 0.02 && h.t1 >= l[n - 2] - 0.02) { l[n - 2] = Math.min(l[n - 2], h.t0); l[n - 1] = Math.max(l[n - 1], h.t1); }
+      else l.push(h.t0, h.t1);
+    });
+  }
+  choca(h: Huella) {
+    return this.celdas(h.x, h.y, h.rad + SEP / 2, (k) => {
+      const l = this.mapa.get(k);
+      if (l) for (let i = 0; i < l.length; i += 2) if (h.t0 < l[i + 1] && l[i] < h.t1) return true;
+      return false;
+    });
+  }
+}
+
+/** Radio del tubo de vidrio alrededor del camino (debe coincidir con RAD_VIDRIO de Ritmo.tsx). */
+const RAD_VIDRIO = 12;
+/** Instante → intervalo corto (una muestra a 120 Hz). */
+const inst = (x: number, y: number, rad: number, t: number): Huella => ({ x, y, rad, t0: t - 1 / 120, t1: t + 1 / 120 });
+
+/** Huellas de una clavija (cápsula muestreada a lo largo del eje) durante su vida. */
+export const huellaClavija = (c: Caps & { golpe: number; aparece?: number }): Huella[] => {
+  const [a, b] = extremos(c);
+  const n = Math.max(1, Math.ceil((2 * c.largo) / 12));
+  const out: Huella[] = [];
+  for (let k = 0; k <= n; k++) { const u = k / n; out.push({ x: a.x + (b.x - a.x) * u, y: a.y + (b.y - a.y) * u, rad: c.radio, t0: iniVida(c), t1: finVida(c) }); }
+  return out;
+};
+
+/** Huellas de un objeto de figura mientras se ve (los rieles se dibujan 0,9 s antes y se borran 0,32 s detrás). */
+export const huellaObjeto = (o: ObjetoSim, r: number): Huella[] => {
+  const out: Huella[] = [];
+  if (o.tipo === 'riel') {
+    const n = o.tiempos.length, t0 = o.tiempos[0] - 0.9;
+    for (let i = 0; i < n; i += 2) out.push({ x: o.puntos[i * 3], y: o.puntos[i * 3 + 1], rad: r + RAD_VIDRIO, t0, t1: o.tiempos[i] + 0.32 });
+  } else if (o.tipo === 'pared') {
+    const n = Math.max(1, Math.ceil((o.y1 - o.y0) / 12));
+    for (let k = 0; k <= n; k++) out.push({ x: o.x, y: o.y0 + ((o.y1 - o.y0) * k) / n, rad: 8, t0: o.desde, t1: o.hasta + 0.25 });
+  } else if (o.tipo === 'pendulo') {
+    const t0 = o.desdeFrame / FPS, t1 = (o.desdeFrame + o.angulos.length) / FPS;
+    out.push({ x: o.px, y: o.py, rad: 16, t0, t1 });
+    o.angulos.forEach((th, k) => {
+      const t = (o.desdeFrame + k) / FPS;
+      out.push(inst(o.px + o.largo * Math.sin(th), o.py + o.largo * Math.cos(th), r + 16, t));
+      for (const u of [0.33, 0.66]) out.push(inst(o.px + u * o.largo * Math.sin(th), o.py + u * o.largo * Math.cos(th), 6, t));
+    });
+  } else if (o.tipo === 'portal') {
+    for (const [x, y] of [[o.ax, o.ay], [o.bx, o.by]]) out.push({ x, y, rad: r + 24, t0: o.entra - 0.9, t1: o.sale + 0.5 });
+  }
+  return out;
+};
 
 export type EventoPista = { frame: number; nota?: number; dur?: number; abierto?: boolean; acento?: boolean };
 
@@ -180,10 +321,30 @@ export const leerPartitura = (nombre: string, raiz = process.cwd()): PartituraRi
 /** Genera el nivel. Devuelve el sim completo (sin escribirlo). */
 export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimRitmo => {
   const semilla = props.semilla ?? semillaDesde(`ritmo:${props.id}`);
+  const estilo = props.estilo ?? 'figuras';
+  G = GRAVEDAD[estilo];
+  /** Todo lo visible de las bolitas ya generadas (separación dura entre bolitas distintas). */
+  const ocup = new Ocupacion();
+  /** Ventanas de vista de las figuras grandes ya colocadas (de todas las bolitas). */
+  const grandes: [number, number][] = [];
   const ev = eventosDe(partitura);
   const finalFrame = Math.max(...Object.values(ev).map((l) => l[l.length - 1].frame));
   const duracionFrames = finalFrame + FRAMES_CLIMAX + FRAMES_CIERRE;
   const linea = crearLinea(duracionFrames / FPS + 2);
+  // Cámara (v3): sigue la línea de descenso con dos pasadas de suavizado exponencial (≈ 0,28 s de retraso), no se
+  // mueve en x y se congela en el clímax. Se calcula ANTES del nivel para que el generador sepa qué entra en cuadro.
+  const camY: number[] = [];
+  {
+    const tau = 0.14, alfa = 1 - Math.exp(-1 / (FPS * tau));
+    let y1 = linea(0), y2 = linea(0);
+    for (let f = 0; f <= finalFrame; f++) {
+      y1 += alfa * (linea(f / FPS) - y1);
+      y2 += alfa * (y1 - y2);
+      camY.push(Math.round(y2 * 100) / 100);
+    }
+  }
+  const camEn = (t: number) => camY[Math.max(0, Math.min(finalFrame, Math.round(t * FPS)))];
+  const offsets = calcularOffsets(ev, estilo);
   const clavijas: ClavijaSim[] = [];
   const golpes: GolpeSim[] = [];
   const bolitas: BolitaSim[] = [];
@@ -195,10 +356,44 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
   let avisos = 0;
   const resumen: string[] = [];
 
-  CONFIG.slice(0, Number(process.env.RITMO_BOLITAS ?? CONFIG.length)).forEach((cfg, b) => {
+  const activas = CONFIG.slice(0, Number(process.env.RITMO_BOLITAS ?? CONFIG.length));
+  /**
+   * Reserva de las bolitas que AÚN no se generan (v3): una figura que se sale de su franja no puede meterse en la
+   * franja de una bolita posterior en la banda de alto donde esa bolita va a estar (su línea ± ruido, más el ápice
+   * de la parábola de la nota que esté sonando, o su repisa antes de entrar). Así las de percusión, que van después y
+   * no pueden esquivar, siempre tienen su carril libre.
+   */
+  const reservas = activas.map((c, b) => {
+    const l = ev[c.pista], ts = l.map((e) => e.frame / FPS);
+    const fr = franjaDe(c), xa = fr[0] - c.r - SEP, xb = fr[1] + c.r + SEP;
+    const abajo = RUIDO_Y + c.r + 2 * c.radio + c.largo + SEP;
+    const apice = (dt: number) => { const vy = Math.max(0, (G * dt) / 2 - 220); return (vy * vy) / (2 * G); };
+    const apices = ts.slice(1).map((t, k) => apice(t - ts[k]));
+    const repY = linea(ts[0]) + offsets[b] - 0.5 * G * (FRAMES_CAIDA / FPS) ** 2;
+    /** ¿La huella h pisa la banda reservada de la bolita b? */
+    return (h: Huella) => {
+      if (h.x + h.rad < xa || h.x - h.rad > xb) return false;
+      let arriba: number, bajo: number;
+      if (h.t1 < ts[0]) { arriba = repY - c.r - SEP - 30; bajo = linea(ts[0]) + offsets[b] + c.r + SEP; }
+      else {
+        let k0 = 0;
+        while (k0 < ts.length - 1 && ts[k0 + 1] <= h.t0) k0++;
+        let ap = 0;
+        for (let k = k0; k < ts.length - 1 && ts[k] <= h.t1; k++) ap = Math.max(ap, apices[k]);
+        if (h.t1 > ts[ts.length - 1]) ap = Math.max(ap, 500);
+        arriba = Math.min(linea(Math.max(h.t0, ts[0])) + offsets[b] - RUIDO_Y - ap - c.r - SEP, h.t0 < ts[0] ? repY - c.r - SEP - 30 : Infinity);
+        bajo = linea(Math.min(h.t1, ts[ts.length - 1])) + offsets[b] + abajo;
+      }
+      return h.y + h.rad > arriba && h.y - h.rad < bajo;
+    };
+  });
+  activas.forEach((cfg, b) => {
+    const posteriores = reservas.slice(b + 1);
+    const reservado = (h: Huella) => posteriores.some((f) => f(h));
     const lista = ev[cfg.pista];
     const vecinos = CONFIG.slice(0, b).map((c) => c.carril);
     const xMax = BORDE - cfg.r;
+    const franja = franjaDe(cfg);
     /** Un intento completo de la bolita con un azar propio; devuelve sus clavijas, golpes y reparos (no toca lo global). */
     const intentarBolita = (azar: () => number) => {
       const mias: ClavijaSim[] = [];
@@ -212,8 +407,8 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
       const usos = new Map<FiguraRitmo, number>();
       const t0 = lista[0].frame / FPS;
       const dtCaida = FRAMES_CAIDA / FPS;
-      const objetivoY = (t: number) => linea(t) + cfg.desfase;
-      let P: V = { x: cfg.carril + (azar() * 2 - 1) * SEMI_CARRIL * 0.6, y: objetivoY(t0) };
+      const objetivoY = (t: number) => linea(t) + offsets[b];
+      let P: V = { x: cfg.carril + (azar() * 2 - 1) * cfg.semi * 0.6, y: objetivoY(t0) };
       let vIn: V = { x: 0, y: G * dtCaida };
       const repisa = { x: P.x, y: P.y - 0.5 * G * dtCaida * dtCaida, abre: lista[0].frame - FRAMES_CAIDA };
       const propias: Muestra[] = [];
@@ -233,11 +428,12 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
         { t0: repisa.abre / FPS, dur: dtCaida, pos: (s) => [repisa.x, repisa.y + 0.5 * G * s * s, 0] },
       ];
       let anterior: FiguraRitmo | null = null;
+      /** Huellas de los objetos propios por paso (para que un riel nuevo no pise uno propio que aún se ve). */
 
       // Pila de pasos aceptados: si un golpe no encuentra camino limpio, se deshace el anterior y se rehace con otro
       // azar (retroceso acotado). Lo deshecho se marca muerto en los índices propios.
       type Paso = { peg: ClavijaSim; muestras: Muestra[]; paredes: Solido[]; nSeg: number; nObj: number; figura: FiguraRitmo | null;
-        anterior: FiguraRitmo | null; P: V; vIn: V; reparo?: string };
+        anterior: FiguraRitmo | null; P: V; vIn: V; reparo?: string; huellas: Huella[]; grande?: [number, number] };
       const pila: Paso[] = [];
       const retros = new Array(lista.length).fill(0);
       let retrosTotales = 0;
@@ -249,26 +445,32 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
         const tj = ultimo ? ti + 1.0 : lista[i + 1].frame / FPS;
         const dt = tj - ti;
         const ctx: Contexto = {
-          P, vIn, ti, dt, tj, r: cfg.r, carril: cfg.carril, bolita: b, G, semiCarril: SEMI_CARRIL, azar, objetivoY, vecinos, xMax,
+          P, vIn, ti, dt, tj, r: cfg.r, carril: cfg.carril, bolita: b, G, semiCarril: cfg.semi, franja, tPrev: i > 0 ? lista[i - 1].frame / FPS : undefined, azar, objetivoY, vecinos, xMax,
           objetivo: (ladoForzado?: number) => {
             const lado = ladoForzado ?? (P.x > cfg.carril ? -1 : 1);
-            const x = cfg.carril + lado * azar() * SEMI_CARRIL * (ladoForzado || azar() < 0.75 ? 1 : -0.6);
-            return { x: Math.max(-xMax, Math.min(xMax, x)), y: objetivoY(tj) + (azar() * 2 - 1) * 110 };
+            const x = cfg.carril + lado * azar() * cfg.semi * (ladoForzado || azar() < 0.75 ? 1 : -0.6);
+            return { x: Math.max(franja[0], Math.min(franja[1], x)), y: objetivoY(tj) + (azar() * 2 - 1) * RUIDO_Y };
           },
         };
+        // Tope de figuras grandes: a lo más TOPE_GRANDES a la vista en todo el cuadro y una por bolita.
+        const ventana: [number, number] = [ti - GRANDE_ANTES, tj + GRANDE_DESPUES];
+        const solapa = (w: [number, number]) => w[0] < ventana[1] && ventana[0] < w[1];
+        const propiasGrandes = pila.filter((ps) => ps.grande && solapa(ps.grande)).length;
+        const cabeGrande = propiasGrandes === 0 && propiasGrandes + grandes.filter(solapa).length < TOPE_GRANDES;
         // Orden de figuras a probar: las que caben en Δt, nunca la anterior, las menos usadas primero (con azar).
         let orden: FiguraRitmo[];
-        if (ultimo) orden = ['parabola'];
+        if (ultimo || estilo === 'plano') orden = ['parabola'];
         else {
-          orden = FIGURAS_RITMO.filter((f) => f !== anterior && dt >= DT_MIN[f] && (f !== 'cruce' || vecinos.length > 0))
+          orden = cfg.figuras.filter((f) => (f !== anterior || cfg.minFiguras === 1) && dt >= DT_MIN[f] && (cabeGrande || !GRANDES.has(f)))
             .map((f) => ({ f, p: (PESO[f] / (1 + 1.4 * (usos.get(f) ?? 0))) * (0.4 + azar()) }))
             .sort((a, z) => z.p - a.p).map((o) => o.f).slice(0, 3);
-          if (!orden.includes('parabola') && anterior !== 'parabola') orden.push('parabola');
+          if (!orden.includes('parabola') && (anterior !== 'parabola' || cfg.minFiguras === 1)) orden.push('parabola');
         }
-        type Mejor = { costo: number; viol: number; cand: Candidato; n: V; e: number; peg: ClavijaSim; muestras: Muestra[]; motivos: string[] };
+        type Mejor = { costo: number; viol: number; cand: Candidato; n: V; e: number; peg: ClavijaSim; muestras: Muestra[]; motivos: string[]; huellas: Huella[] };
         let mejor: Mejor | null = null;
-        const vigentesPegs = [pegsGlobal, misPegs];
-        const vigentesMuros = [murosGlobal, misMuros];
+        // Lo ajeno (clavijas, paredes, caminos de las bolitas ya generadas) lo cubre la rejilla de ocupación `ocup`.
+        const vigentesPegs = [misPegs];
+        const vigentesMuros = [misMuros];
         for (const figura of orden) {
           let mejorFig: Mejor | null = null;
           const intentos = ultimo ? 40 : figura === 'parabola' ? 90 : 45;
@@ -281,8 +483,10 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
               cand = { figura: 'parabola', vOut: v, tramos: [{ t0: 0, dur: dt, pos: (s) => [P0.x + v.x * s, P0.y + v.y * s + 0.5 * G * s * s, 0] }], Pj, vFin: { x: v.x, y: v.y + G * dt }, objetos: [], paredes: [], costo: 0, motivos: [] };
             } else cand = CONSTRUCTORES[figura](ctx);
             if (!cand) continue;
+            if (cand.grande === undefined) cand.grande = GRANDES.has(cand.figura);
+            if (cand.grande && !cabeGrande) continue;
             const cota = DIAG ? 99 : Math.min(mejorFig?.viol ?? 99, mejor?.viol ?? 99);
-            const r = evaluar(cand, ctx, ultimo, i === 0, vigentesPegs, vigentesMuros, otras, propiasIdx, linea, xMax, cfg, cota);
+            const r = evaluar(cand, ctx, ultimo, i === 0, vigentesPegs, vigentesMuros, otras, propiasIdx, camEn, xMax, cfg, ocup, pila, reservado, cota);
             if (!r) continue;
             if (!mejorFig || r.viol < mejorFig.viol || (r.viol === mejorFig.viol && r.costo < mejorFig.costo)) mejorFig = { ...r, cand };
             if (mejorFig.viol === 0 && k > 5) break;
@@ -292,7 +496,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
         }
         if (!mejor) for (let k = 0; k < 60; k++) { // último recurso: parábola aunque repita figura
           const cand = CONSTRUCTORES.parabola(ctx)!;
-          const r = evaluar(cand, ctx, ultimo, i === 0, vigentesPegs, vigentesMuros, otras, propiasIdx, linea, xMax, cfg);
+          const r = evaluar(cand, ctx, ultimo, i === 0, vigentesPegs, vigentesMuros, otras, propiasIdx, camEn, xMax, cfg, ocup, pila, reservado);
           if (r && (!mejor || r.viol < mejor.viol || (r.viol === mejor.viol && r.costo < mejor.costo))) mejor = { ...r, cand };
         }
         if (!mejor) throw new Error(`sin candidato para ${cfg.pista} #${i}`);
@@ -312,7 +516,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
         }
         const { cand } = mejor;
         const paso: Paso = { peg: mejor.peg, muestras: mejor.muestras, paredes: cand.paredes, nSeg: segmentos.length, nObj: misObjetos.length,
-          figura: ultimo ? null : cand.figura, anterior, P, vIn,
+          figura: ultimo ? null : cand.figura, anterior, P, vIn, huellas: mejor.huellas, ...(cand.grande ? { grande: ventana } : {}),
           reparo: mejor.viol > 0 ? `${cfg.pista} golpe ${i} (frame ${lista[i].frame}, ${cand.figura}): ${mejor.motivos.join(', ')}` : undefined };
         const idx = mias.length;
         if (cand.estilo) mejor.peg.estilo = cand.estilo;
@@ -326,9 +530,9 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
         for (const w of cand.paredes) { misMuros.agregar(w); murosLista.push(w); }
         misObjetos.push(...cand.objetos);
         if (!ultimo) {
-          misTramos.push({ bolita: b, figura: cand.figura, desde: lista[i].frame, hasta: lista[i + 1].frame });
+          misTramos.push({ bolita: b, figura: cand.figura, desde: lista[i].frame, hasta: lista[i + 1].frame, ...(cand.grande ? { grande: true } : {}) });
           usos.set(cand.figura, (usos.get(cand.figura) ?? 0) + 1);
-          if (anterior === cand.figura) paso.reparo = `${paso.reparo ?? `${cfg.pista} golpe ${i}:`} figura repetida (${cand.figura})`;
+          if (anterior === cand.figura && estilo !== 'plano' && cfg.minFiguras > 1) paso.reparo = `${paso.reparo ?? `${cfg.pista} golpe ${i}:`} figura repetida (${cand.figura})`;
           anterior = cand.figura;
         }
         pila.push(paso);
@@ -338,7 +542,8 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
       }
       for (const ps of pila) if (ps.reparo) reparos.push(ps.reparo);
 
-      if (usos.size < 4) reparos.push(`${cfg.pista}: solo ${usos.size} figuras distintas`);
+      if (estilo !== 'plano' && usos.size < cfg.minFiguras) reparos.push(`${cfg.pista}: solo ${usos.size} figuras distintas`);
+      const misGrandes = pila.flatMap((ps) => (ps.grande ? [ps.grande] : []));
       // Muestreo por frame de todos los tramos (respeta la cámara lenta del clímax).
       const cuadros: number[] = [], zs: number[] = [], ocultos: [number, number][] = [];
       let k = 0;
@@ -355,14 +560,14 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
         }
       }
       const bolita: BolitaSim = {
-        pista: cfg.pista, color: cfg.color, r: cfg.r, brillo: cfg.brillo, carril: cfg.carril, repisa, cuadros,
+        pista: cfg.pista, color: cfg.color, r: cfg.r, brillo: cfg.brillo, carril: cfg.carril, franja, repisa, cuadros,
         ...(zs.some((z) => z !== 0) ? { z: zs } : {}), ...(ocultos.length ? { ocultos } : {}),
       };
-      return { mias, misGolpes, reparos, propias, bolita, misTramos, misObjetos, murosLista, usos };
+      return { mias, misGolpes, reparos, propias, bolita, misTramos, misObjetos, murosLista, usos, misGrandes };
     };
     // Varios intentos con azar distinto (determinista): se queda el primero sin reparos o el que tenga menos.
     let elegido: ReturnType<typeof intentarBolita> | null = null;
-    for (let intento = 0; intento < 3; intento++) {
+    for (let intento = 0; intento < 6; intento++) {
       const r = intentarBolita(crearAzar((semilla ^ Math.imul(b + 1, 0x9e3779b1) ^ Math.imul(intento + 1, 0x85ebca6b)) >>> 0));
       if (!elegido || r.reparos.length < elegido.reparos.length) elegido = r;
       if (r.reparos.length === 0) break;
@@ -379,30 +584,21 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
     tramosSim.push(...e.misTramos);
     objetos.push(...e.misObjetos);
     for (const m of e.propias) otras.agregar(m);
+    // Todo lo visible de esta bolita pasa a la ocupación común (las siguientes deben quedar a ≥ SEP).
+    e.propias.forEach((m, k) => { if (!m.oculto && k % 2 === 0) ocup.ocupar(inst(m.x, m.y, m.r, m.t)); });
+    for (const c of e.mias) for (const h of huellaClavija(c)) ocup.ocupar(h);
+    for (const o of e.misObjetos) for (const h of huellaObjeto(o, cfg.r)) ocup.ocupar(h);
+    grandes.push(...e.misGrandes);
     resumen.push(`${cfg.pista}: ${[...e.usos.entries()].sort((a, z) => z[1] - a[1]).map(([f, n]) => `${f} ${n}`).join(', ')}`);
   });
 
-  // Cámara: sigue al centroide con dos pasadas de suavizado exponencial (≈ 0,25 s de retraso); se congela en el clímax.
   const camara: number[] = [];
-  const tau = 0.14, alfa = 1 - Math.exp(-1 / (FPS * tau));
-  let y1 = NaN, y2 = NaN, x1 = NaN;
-  for (let f = 0; f < duracionFrames; f++) {
-    const ff = Math.min(f, finalFrame);
-    let cx = 0, cy = 0;
-    for (const bo of bolitas) { cx += bo.cuadros[ff * 2]; cy += bo.cuadros[ff * 2 + 1]; }
-    cx /= bolitas.length; cy /= bolitas.length;
-    const objetivo = cy + 90; // mira por delante (abajo): el grupo queda algo sobre el centro, se ve adónde va
-    if (Number.isNaN(y1)) { y1 = y2 = objetivo; x1 = cx * 0.15; }
-    y1 += alfa * (objetivo - y1);
-    y2 += alfa * (y1 - y2);
-    x1 += alfa * 0.3 * (cx * 0.15 - x1);
-    camara.push(Math.round(x1 * 100) / 100, Math.round(y2 * 100) / 100);
-  }
+  for (let f = 0; f < duracionFrames; f++) camara.push(0, camY[Math.min(f, finalFrame)]);
   golpes.sort((a, z) => a.frame - z.frame || a.bolita - z.bolita);
   console.log(`nivel: ${golpes.length} golpes, ${clavijas.length} clavijas, ${objetos.length} objetos, ${avisos} con reparos, semilla ${semilla}`);
   for (const l of resumen) console.log(`  ${l}`);
   return {
-    version: 2, id: props.id, fps: FPS, duracionFrames, finalFrame, lentoClimax: LENTO_CLIMAX, mundo: { ancho: ANCHO_MUNDO, gravedad: G },
+    version: 3, estilo, id: props.id, fps: FPS, duracionFrames, finalFrame, lentoClimax: LENTO_CLIMAX, mundo: { ancho: ANCHO_MUNDO, gravedad: G },
     camara, bolitas, clavijas, golpes, tramos: tramosSim, objetos, semillaUsada: semilla,
   };
 };
@@ -410,7 +606,8 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
 /** Evalúa un candidato: el choque con la clavija, y que el camino nuevo no atraviese nada ni a nadie. */
 const evaluar = (
   cand: Candidato, ctx: Contexto, ultimo: boolean, primero: boolean, pegs: IndiceCaps<ClavijaSim>[], muros: IndiceCaps<Solido>[],
-  otras: Indice, propiasIdx: Indice, linea: (t: number) => number, xMax: number, cfg: Config, cota = 99,
+  otras: Indice, propiasIdx: Indice, camEn: (t: number) => number, xMax: number, cfg: Config,
+  ocup: Ocupacion, pila: { huellas: Huella[] }[], reservado: (h: Huella) => boolean, cota = 99,
 ) => {
   const { P, vIn, ti, dt } = ctx;
   const vOut = cand.vOut;
@@ -425,7 +622,7 @@ const evaluar = (
   let costo = cand.costo;
   // Peso del defecto: dos bolitas que se montan se ve muchísimo; un roce o salir un poco del cuadro, poco.
   // Un choque que no rebota de verdad (restitución absurda o rasante) rompe la sincronía visible: casi prohibido.
-  const PESOS: Record<string, number> = { 'bolita-bolita': 4, atraviesa: 2, 'clavija-en-otra': 2, 'pared-en-otra': 2, e: 20, 'rasante-in': 20, 'rasante-out': 20 };
+  const PESOS: Record<string, number> = { 'bolita-bolita': 4, atraviesa: 2, 'clavija-en-otra': 2, 'pared-en-otra': 2, 'sep-bolita': 2, 'sep-objeto': 2, 'sep-clavija': 2, e: 20, 'rasante-in': 20, 'rasante-out': 20 };
   const malo = (m: string) => { viol += PESOS[m.replace(/=.*/, '')] ?? 1; motivos.push(m); };
   const rasanteIn = -vin_n / Math.max(1e-6, len(vIn));
   const rasanteOut = vout_n / Math.max(1e-6, len(vOut));
@@ -437,31 +634,50 @@ const evaluar = (
   const subida = vOut.y < 0 ? (vOut.y * vOut.y) / (2 * G) : 0;
   if (subida > (cand.subidaMax ?? 1000)) malo('subida');
   if (cand.estilo === 'trampolin' && n.y > -0.75) malo('trampolin-inclinado');
+  // el golpe siguiente no puede quedar casi encima de este: su clavija nacería dentro de la bolita
+  if (!ultimo && Math.hypot(cand.Pj.x - P.x, cand.Pj.y - P.y) < 1.2 * cfg.r) malo('golpe-encima');
   costo += 3 * (e - 0.62) ** 2 * (cand.estilo ? 0.2 : 1) + 0.6 * Math.max(0, 0.5 - rasanteIn) + Math.max(0, n.y + 0.35) * 2
     - 0.25 * Math.min(Math.abs(cand.Pj.x - P.x), 90) / 90 + subida / 3000;
   const off = cfg.r + cfg.radio;
   const peg: ClavijaSim = { bolita: ctx.bolita, x: P.x - n.x * off, y: P.y - n.y * off, nx: n.x, ny: n.y, largo: cand.estilo === 'trampolin' ? cfg.largo + 40 : cfg.largo, radio: cfg.radio, golpe: Math.round(ti * FPS) };
+  if (ctx.tPrev !== undefined) { const a = Math.round(ctx.tPrev * FPS); if (a > peg.golpe - FRAMES_APARECE) peg.aparece = a; }
   const vidaPeg = finVida(peg), nacePeg = iniVida(peg);
   if (viol > cota) return null;
-  // (1) clavija contra clavijas y paredes vivas
-  for (const ix of pegs) for (const c of ix.cerca(peg.y, 300)) if (conviven(peg, c) && distClavijas(peg, c) < 8) { malo('clavija-clavija'); break; }
+  // (0) separación dura de la clavija nueva con todo lo visible de las bolitas ya generadas (rejilla de ocupación)
+  for (const h of huellaClavija(peg)) if (ocup.choca(h)) { malo('sep-clavija'); break; }
+  if (viol > cota) return null;
+  // (1) clavija contra clavijas y paredes vivas PROPIAS (lo ajeno lo cubre la rejilla)
+  // Con la clavija propia anterior (que se disuelve mientras la nueva nace) se compara cuadro a cuadro con sus escalas
+  // reales de dibujo (Ritmo.tsx): nace en 12 frames, se disuelve en 18.
+  for (const ix of pegs) for (const c of ix.cerca(peg.y, 300)) {
+    if (!(iniVida(peg) < finVida(c) && iniVida(c) < finVida(peg))) continue;
+    let pisa = false;
+    for (let f = Math.round(iniVida(peg) * FPS); f <= Math.min(peg.golpe, c.golpe + FRAMES_DISOLVER) && !pisa; f += 2) {
+      const sn = escalaClavija(peg, f), sv = escalaClavija(c, f);
+      if (sn < 0.02 || sv < 0.02) continue;
+      if (distClavijas({ ...peg, largo: peg.largo * sn, radio: peg.radio * sn }, { ...c, largo: c.largo * sv, radio: c.radio * sv }) < 6) pisa = true;
+    }
+    if (pisa) { malo('clavija-clavija'); break; }
+  }
   for (const ix of muros) for (const w of ix.cerca(peg.y, 300)) if (w.desde < vidaPeg && w.hasta > nacePeg && distClavijas(peg, w) < 8) { malo('clavija-pared'); break; }
   for (const w of cand.paredes) if (distClavijas(peg, w) < 4) { malo('clavija-pared-propia'); break; }
-  // (2) clavija contra la trayectoria de las demás bolitas y la propia anterior
-  for (const m of otras.cerca(peg.y, 220)) if (!m.oculto && m.t < vidaPeg && m.t > nacePeg && distClavija(m, peg) < m.r - 8) { malo('clavija-en-otra'); break; }
-  // (la llegada reciente solo cuenta si de verdad penetra la clavija: con bolitas grandes y llegadas lentas el último
-  // tramo pasa legítimamente a pocas unidades de ella)
-  if (!primero) for (const m of propiasIdx.cerca(peg.y, 220)) {
-    if (m.oculto || m.t >= ti - 0.02 || m.t < nacePeg) continue;
-    if (distClavija(m, peg) < (m.t > ti - 0.5 ? m.r - 1 : m.r + 5)) { malo('clavija-en-propia'); break; }
+  // (2) clavija contra la trayectoria propia anterior mientras la clavija ya se ve (la llegada reciente solo cuenta si
+  // de verdad penetra la clavija: con llegadas lentas el último tramo pasa legítimamente a pocas unidades de ella)
+  // (la clavija nace chica y crece en 12 frames: los primeros 6 no estorban)
+  if (!primero) fuera2: for (let q = Math.ceil((nacePeg + 0.1) * FPS * SUB); q < (ti - 0.02) * FPS * SUB; q++) {
+    for (const m of propiasIdx.enInstante(q / (FPS * SUB))) {
+      if (m.oculto) continue;
+      if (distClavija(m, peg) < (m.t > ti - 0.5 ? m.r - 2 : m.r + 5)) { malo('clavija-en-propia'); if (process.env.RITMO_DBG && Math.abs(ti - 30.8) < 0.01) console.log('CP', (ti - m.t).toFixed(3), distClavija(m, peg).toFixed(1), m.r, peg.aparece, peg.golpe); break fuera2; }
+    }
   }
   if (viol > cota) return null;
   // (3) el camino nuevo (muestreado a 240 Hz) no atraviesa (roces de < 8 u contra clavijas ajenas se toleran: no se ven) clavijas, paredes ni bolitas, y no sale de cuadro
   const muestras: Muestra[] = [];
   const nS = Math.round(dt * FPS * SUB);
-  let k = 0, choca = false, fuera = false, junta = false;
-  const margen = cand.figura === 'cruce' ? 30 : 2;
-  let cruza = false, mejorCruce = Infinity;
+  let k = 0, choca = false, fuera = false, salida = false;
+  // Fuera de la franja: la parábola nunca; las figuras chicas un poco (40 u) y las grandes hasta 110 u, siempre que
+  // la separación con lo ajeno se cumpla.
+  const fr = franjaDe(cfg), tolFr = cand.grande ? 110 : cand.figura === 'parabola' ? 3 : 40;
   for (let s = 1; s <= nS; s++) {
     const tt = (s / nS) * dt;
     while (k < cand.tramos.length - 1 && tt > cand.tramos[k].t0 + cand.tramos[k].dur + 1e-9) k++;
@@ -471,28 +687,56 @@ const evaluar = (
     muestras.push(m);
     if (viol > cota) return null;
     if (m.oculto) continue;
-    if (!fuera && !ultimo && (Math.abs(m.x) > xMax + 4 || m.y - linea(m.t) < -700 || m.y - linea(m.t) > 640)) { fuera = true; malo('fuera-de-cuadro'); if (DIAG && Math.random() < 0.001) console.log('FUERA', cand.figura, cfg.pista, m.x.toFixed(0), (m.y - linea(m.t)).toFixed(0), xMax, (m.t - ti).toFixed(2), dt.toFixed(2)); }
+    if (!fuera && !ultimo && (Math.abs(m.x) > xMax || m.y - camEn(m.t) < -ARRIBA_MAX + m.r || m.y - camEn(m.t) > ABAJO_MAX - m.r / 2)) { fuera = true; malo('fuera-de-cuadro'); }
+    if (!salida && (m.x < fr[0] - tolFr || m.x > fr[1] + tolFr)) { salida = true; malo('fuera-franja'); }
     if (!choca && tt >= 0.03) {
-      for (const ix of pegs) { for (const c of ix.cerca(m.y, 200)) if (m.t < finVida(c) && m.t > iniVida(c) && distClavija(m, c) < cfg.r - 8) { choca = true; break; } if (choca) break; }
+      for (const ix of pegs) { for (const c of ix.cerca(m.y, 200)) if (m.t < finVida(c) && m.t > iniVida(c) && distClavija(m, c) < cfg.r - 1) { choca = true; break; } if (choca) break; }
       if (!choca) for (const ix of muros) { for (const w of ix.cerca(m.y, 200)) if (m.t >= w.desde && m.t <= w.hasta && distClavija(m, w) < cfg.r + 3) { choca = true; break; } if (choca) break; }
+      // la clavija del golpe de salida sigue sólida 0,3 s: la bolita no puede volver a caerle encima
+      if (!choca && m.t < vidaPeg && distClavija(m, peg) < cfg.r - 1) choca = true;
       if (choca) malo('atraviesa');
     }
-    if (!junta) for (const o of otras.enInstante(m.t)) if (!o.oculto && Math.hypot(o.x - m.x, o.y - m.y) < o.r + m.r + margen) { junta = true; malo('bolita-bolita'); break; }
-    if (cand.figura === 'cruce' && s % 4 === 0) for (const o of otras.cerca(m.y, cfg.r + 80)) {
-      if (o.oculto) continue;
-      const dT = Math.abs(o.t - m.t);
-      if (dT >= 0.15 && dT < 3 && Math.hypot(o.x - m.x, o.y - m.y) < o.r + m.r) { cruza = true; mejorCruce = Math.min(mejorCruce, dT); }
-    }
   }
-  if (cand.figura === 'cruce') { if (!cruza) malo('sin-cruce'); else costo += mejorCruce * 0.5 - 0.6; }
-  // (4) paredes nuevas contra las otras bolitas, la propia anterior y las clavijas vivas
+  // (4) paredes nuevas contra la trayectoria propia anterior y las clavijas propias vivas (lo ajeno: rejilla)
   for (const w of cand.paredes) {
-    for (const m of otras.cerca(w.y, 260 + w.largo)) if (!m.oculto && m.t >= w.desde && m.t <= w.hasta && distClavija(m, w) < m.r + 4) { malo('pared-en-otra'); break; }
-    for (const m of propiasIdx.cerca(w.y, 260 + w.largo)) if (m.t >= w.desde && m.t < ti - 0.02 && distClavija(m, w) < m.r + 4) { malo('pared-en-propia'); break; }
+    fuera4: for (let q = Math.ceil(w.desde * FPS * SUB); q < (ti - 0.02) * FPS * SUB; q++) {
+      for (const m of propiasIdx.enInstante(q / (FPS * SUB))) if (distClavija(m, w) < m.r + 4) { malo('pared-en-propia'); break fuera4; }
+    }
     for (const ix of pegs) for (const c of ix.cerca(w.y, 300 + w.largo)) if (w.desde < finVida(c) && w.hasta > iniVida(c) && distClavijas(w, c) < 8) { malo('pared-clavija'); break; }
   }
+  // (5) separación dura (≥ SEP) con todo lo visible de las bolitas ya generadas: su camino, clavijas y objetos.
+  const huellas = cand.objetos.flatMap((o) => huellaObjeto(o, cfg.r));
+  if (viol <= cota) for (let q = 0; q < muestras.length; q += 2) {
+    const m = muestras[q];
+    if (!m.oculto && ocup.choca(inst(m.x, m.y, m.r, m.t))) { malo('sep-bolita'); break; }
+  }
+  if (viol <= cota) for (const h of huellas) if (ocup.choca(h)) { malo('sep-objeto'); break; }
+  // (5b) lo que sale de la franja propia no invade la banda reservada de una bolita posterior
+  if (viol <= cota) {
+    const fr = franjaDe(cfg);
+    const sale = (h: Huella, tol = 1) => h.x - h.rad < fr[0] - cfg.r - tol || h.x + h.rad > fr[1] + cfg.r + tol;
+    // (una clavija puede asomar SEP/2 de la franja: la vecina igual queda a ≥ SEP/2 de ella)
+    for (const h of huellaClavija(peg)) if (sale(h, SEP / 2) && reservado(h)) { malo('reserva'); break; }
+    const todas = [...huellas, ...muestras.filter((m, q) => !m.oculto && q % 2 === 0).map((m) => inst(m.x, m.y, m.r, m.t))];
+    for (const h of todas) if (sale(h) && reservado(h)) { malo('reserva'); if (process.env.RITMO_DBG) console.log('RES', cfg.pista, ti.toFixed(2), h.x.toFixed(0), h.y.toFixed(0), h.rad, h.t0.toFixed(2), h.t1.toFixed(2), (h.y - camEn(ti)).toFixed(0)); break; }
+  }
+  // (6) un objeto nuevo no pisa uno propio que todavía se ve (fuera de la unión, cerca del golpe P): el siguiente
+  // aparece cuando el anterior ya se desvaneció en esa zona.
+  if (viol <= cota && pila.length) {
+    const exc = 2 * cfg.r + 40;
+    const lejos = (h: Huella) => Math.hypot(h.x - P.x, h.y - P.y) > exc;
+    const t0n = Math.min(ti - 1, ...huellas.map((h) => h.t0));
+    const viejas: Huella[] = [];
+    for (let q = pila.length - 1; q >= Math.max(0, pila.length - 6); q--) for (const h of pila[q].huellas) if (h.t1 > t0n && lejos(h)) viejas.push(h);
+    if (viejas.length) {
+      const nuevas = [...huellas.filter(lejos), ...muestras.filter((m, q) => !m.oculto && q % 4 === 0).map((m) => inst(m.x, m.y, m.r, m.t)).filter(lejos)];
+      fuera: for (const h of nuevas) for (const o of viejas) {
+        if (h.t0 < o.t1 && o.t0 < h.t1 && Math.hypot(h.x - o.x, h.y - o.y) < h.rad + o.rad + 6) { malo('pisa-propio'); break fuera; }
+      }
+    }
+  }
   if (DIAG) { const k = cand.figura; const d = DIAG.get(k) ?? new Map<string, number>(); DIAG.set(k, d); d.set('_n', (d.get('_n') ?? 0) + 1); if (!viol) d.set('_ok', (d.get('_ok') ?? 0) + 1); for (const m of new Set(motivos.map((x) => x.replace(/=.*/, '')))) d.set(m, (d.get(m) ?? 0) + 1); }
-  return { viol, motivos, costo, n, e, peg, muestras };
+  return { viol, motivos, costo, n, e, peg, muestras, huellas };
 };
 /** RITMO_DIAG=1: cuenta por figura los motivos de rechazo (para afinar el catálogo). */
 const DIAG = process.env.RITMO_DIAG ? new Map<string, Map<string, number>>() : null;

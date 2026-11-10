@@ -146,12 +146,18 @@ const Fondo: React.FC<{ sim: SimRitmo }> = ({ sim }) => {
   );
 };
 
-const Rieles: React.FC<{ camY: number }> = ({ camY }) => (
+/** Guías verticales tenues: los bordes del cuadro y, desde v3, el hueco entre las franjas de bolitas vecinas. */
+const guias = (sim: SimRitmo) => {
+  const fr = sim.bolitas.filter((b) => b.franja).map((b) => [b.franja![0] - b.r, b.franja![1] + b.r]).sort((a, z) => a[0] - z[0]);
+  if (fr.length < 2) return [-300, -100, 100, 300];
+  return fr.slice(1).map((f, k) => Math.round((fr[k][1] + f[0]) / 2));
+};
+const Rieles: React.FC<{ camY: number; xs: number[] }> = ({ camY, xs }) => (
   <>
-    {[-550, -300, -100, 100, 300, 550].map((x) => (
+    {[-550, ...xs, 550].map((x) => (
       <mesh key={x} position={[x, Y(camY), -120]}>
         <planeGeometry args={[Math.abs(x) === 550 ? 10 : 4, ALTO_VISTA * 1.6]} />
-        <meshBasicMaterial color="#4A4680" transparent opacity={Math.abs(x) === 550 ? 0.5 : 0.28} depthWrite={false} />
+        <meshBasicMaterial color="#4A4680" transparent opacity={Math.abs(x) === 550 ? 0.5 : 0.22} depthWrite={false} />
       </mesh>
     ))}
   </>
@@ -362,11 +368,12 @@ const Objetos: React.FC<{ sim: SimRitmo; f: number; camY: number; textura: THREE
 /** Clavija o pad metálico: se enciende al golpe y se disuelve en chispas; deja una huella tenue. */
 const Clavija: React.FC<{ c: ClavijaSim; f: number; color: string; textura: THREE.Texture }> = ({ c, f, color, textura }) => {
   const tras = f - c.golpe;
-  if (tras < -FRAMES_APARECE) return null;
+  const antes = c.aparece !== undefined ? c.golpe - c.aparece : FRAMES_APARECE;
+  if (tras < -antes) return null;
   const flash = tras >= 0 ? Math.exp(-tras / 7) : 0;
   const disuelta = tras >= 0 ? Math.min(1, tras / FRAMES_DISOLVER) : 0;
   // crece (con un pequeño rebote) al aparecer 0,67 s antes de su golpe
-  const nace = Math.min(1, (tras + FRAMES_APARECE) / 12);
+  const nace = Math.min(1, (tras + antes) / 12);
   const escala = tras < 0 ? nace * (1 + 0.15 * Math.sin(nace * Math.PI)) : (1 + 0.35 * Math.exp(-tras / 3)) * (1 - disuelta * disuelta);
   // Normal en coordenadas de Three y ángulo del eje (perpendicular a la normal).
   const ang = Math.atan2(-c.ny, c.nx) - Math.PI; // eje Y local → tangente
@@ -437,6 +444,7 @@ const Impacto: React.FC<{ g: GolpeSim; idx: number; f: number; sim: SimRitmo; co
 
 const Escena: React.FC<{ sim: SimRitmo; f: number; camX: number; camY: number }> = ({ sim, f, camX, camY }) => {
   const textura = useMemo(crearTexturaBrillo, []);
+  const xsGuias = useMemo(() => guias(sim), [sim]);
   const rango = ALTO_VISTA * 0.75;
   const visibles = sim.clavijas.map((c, i) => [c, i] as const).filter(([c]) => Math.abs(c.y - camY) < rango);
   // Último golpe de cada bolita (para su destello) y golpes recientes (impactos).
@@ -456,7 +464,7 @@ const Escena: React.FC<{ sim: SimRitmo; f: number; camX: number; camY: number }>
       <directionalLight position={[1200, -600, 900]} intensity={0.8} color={PALETA.neon.cian} />
       <NieblaLuminosa camX={camX} camY={camY} textura={textura} />
       <Fondo sim={sim} />
-      <Rieles camY={camY} />
+      <Rieles camY={camY} xs={xsGuias} />
       {visibles.map(([c, i]) => <Clavija key={i} c={c} f={f} color={sim.bolitas[c.bolita].color} textura={textura} />)}
       <Objetos sim={sim} f={f} camY={camY} textura={textura} />
       {/* repisas: se abren (giran y se apagan) cuando suelta su bolita */}
@@ -490,7 +498,7 @@ const Escena: React.FC<{ sim: SimRitmo; f: number; camX: number; camY: number }>
             {estela}
             <pointLight position={[x, Y(y), z + b.r * 2.2]} color={b.color} intensity={(260 + 900 * flash) * (0.5 + 0.5 * b.brillo)} distance={650} decay={1} />
             <mesh position={[x, Y(y), z]} scale={[1 + 0.12 * flash, 1 - 0.08 * flash, 1]}>
-              <sphereGeometry args={[b.r, 48, 32]} />
+              <sphereGeometry args={b.r >= 60 ? [b.r, 40, 28] : [b.r, 24, 16]} />
               <meshPhysicalMaterial color={b.color} emissive={b.color} emissiveIntensity={0.12 + 0.38 * b.brillo + 1.3 * flash} roughness={0.18} metalness={0.05} clearcoat={1} clearcoatRoughness={0.08} />
             </mesh>
             <Brillo x={x} y={y} z={z + b.r + 4} tam={b.r * 3.2} color={b.color} opacidad={0.35 * b.brillo + 0.5 * flash} textura={textura} />

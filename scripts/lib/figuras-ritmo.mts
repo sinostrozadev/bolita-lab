@@ -31,6 +31,8 @@ export type Candidato = {
   subidaMax?: number;
   costo: number;
   motivos: string[];
+  /** Figura grande (cuenta para el tope de figuras grandes a la vista). Falta = según la figura. */
+  grande?: boolean;
 };
 
 export type Contexto = {
@@ -43,6 +45,10 @@ export type Contexto = {
   vecinos: number[];
   /** |x| máximo del centro de la bolita (entera dentro del cuadro). */
   xMax: number;
+  /** Franja [xmin, xmax] del centro de la bolita (v3: las franjas de bolitas distintas no se tocan). */
+  franja: [number, number];
+  /** Instante del golpe anterior de la bolita (falta en el primero). */
+  tPrev?: number;
 };
 
 /** Δt mínimo con que cabe cada figura (s). */
@@ -165,10 +171,10 @@ const plegar = (X: number, a: number, L: number) => {
 
 export const zigzag = (c: Contexto): Candidato | null => {
   const { P, r, azar, dt, G } = c;
-  const h = 30 + azar() * 95; // semiancho del pasillo para el CENTRO de la bolita
+  const h = 25 + azar() * 70; // semiancho del pasillo para el CENTRO de la bolita
   const centro = P.x + (azar() * 2 - 1) * h * 0.7;
-  const a = Math.max(-c.xMax, centro - h), b = Math.min(c.xMax, centro + h), L = b - a;
-  if (L < 50) return null;
+  const a = Math.max(c.franja[0], centro - h), b = Math.min(c.franja[1], centro + h), L = b - a;
+  if (L < 40) return null;
   if (P.x < a + 3 || P.x > b - 3) return null;
   const m = 1 + Math.floor(azar() * (dt > 0.6 ? 3 : 2));
   const signo = azar() < 0.5 ? -1 : 1;
@@ -221,12 +227,13 @@ export const conector = (
   else {
     const cuerda = Math.hypot(B.x - A.x, B.y - A.y);
     const vObj = Math.max(600, Math.min(1400, (len(vA) + len(vB)) / 2));
-    const n = cuerda > 0.75 * vObj * T ? 0 : Math.min(4, Math.max(1, Math.round((vObj * T - cuerda) / 380)));
+    // v3: a lo más 2 puntos de paso (rieles menos enredados); el resto del tiempo lo absorbe una rapidez menor.
+    const n = cuerda > 0.6 * vObj * T ? 0 : Math.min(2, Math.max(1, Math.round((vObj * T - cuerda) / 420)));
     // Puntos de paso en una caja alrededor del carril (el riel puede bajar de más y volver a subir a la clavija).
     const yLo = Math.min(A.y, B.y) - 120, yHi = Math.max(A.y, B.y) + 240;
     let lado = azar() < 0.5 ? -1 : 1;
     for (let k = 1; k <= n; k++) {
-      pts.push({ x: Math.max(-c.xMax + 10, Math.min(c.xMax - 10, carril + lado * (40 + azar() * 130))), y: yLo + azar() * (yHi - yLo) });
+      pts.push({ x: Math.max(-c.xMax + 10, Math.min(c.xMax - 10, carril + lado * (30 + azar() * Math.min(110, c.semiCarril)))), y: yLo + azar() * (yHi - yLo) });
       lado = -lado;
     }
   }
@@ -250,7 +257,49 @@ export const conector = (
     if (calidadCurva(pos, dur, r)) return null;
     tramos.push({ t0: t0 + ts[k], dur, pos });
   }
+  if (!rielLimpio(tramos, r)) return null;
   return tramos;
+};
+
+/** Largo de un camino (u), muestreado a 120 Hz. */
+export const largoCamino = (tramos: Tramo[]) => {
+  let L = 0;
+  for (const tr of tramos) {
+    const n = Math.max(2, Math.ceil(tr.dur * 120));
+    let a = tr.pos(0);
+    for (let k = 1; k <= n; k++) { const b = tr.pos((k / n) * tr.dur); L += Math.hypot(b[0] - a[0], b[1] - a[1]); a = b; }
+  }
+  return L;
+};
+
+/**
+ * v3: un riel "limpio" no tiene curvas más cerradas que 1,25 radios de la bolita (se ve como un codo) ni se cruza
+ * consigo mismo (dos tramos del tubo que se tocan se leen como un nudo).
+ */
+export const rielLimpio = (tramos: Tramo[], r: number) => {
+  const p: V[] = [];
+  for (const tr of tramos) {
+    const n = Math.max(2, Math.ceil(tr.dur / (1 / 120)));
+    for (let k = p.length ? 1 : 0; k <= n; k++) { const q = tr.pos((k / n) * tr.dur); p.push({ x: q[0], y: q[1] }); }
+  }
+  const arco = [0];
+  for (let k = 1; k < p.length; k++) arco.push(arco[k - 1] + Math.hypot(p[k].x - p[k - 1].x, p[k].y - p[k - 1].y));
+  const rMin = 1.25 * r, tubo = r + 12;
+  // radio de curvatura con puntos separados ~ r/2 de arco
+  for (let k = 0, j = 0, l = 0; k < p.length; k++) {
+    while (j < p.length - 1 && arco[j] < arco[k] + r * 0.5) j++;
+    while (l < p.length - 1 && arco[l] < arco[j] + r * 0.5) l++;
+    if (l === j || j === k) break;
+    const a = p[k], b = p[j], c = p[l];
+    const ab = Math.hypot(b.x - a.x, b.y - a.y), bc = Math.hypot(c.x - b.x, c.y - b.y), ca = Math.hypot(a.x - c.x, a.y - c.y);
+    const area2 = Math.abs((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x));
+    if (area2 > 1e-6 && (ab * bc * ca) / (2 * area2) < rMin) { no('riel-codo'); return false; }
+  }
+  for (let i = 0; i < p.length; i += 2) for (let j = i + 2; j < p.length; j += 2) {
+    if (arco[j] - arco[i] < 3.2 * tubo) continue;
+    if (Math.hypot(p[j].x - p[i].x, p[j].y - p[i].y) < 2 * tubo + 4) { no('riel-nudo'); return false; }
+  }
+  return true;
 };
 
 /** Velocidad de llegada a una clavija para un riel de duración T: hacia abajo y hacia donde viaja. */
@@ -282,6 +331,7 @@ export const riel = (c: Contexto): Candidato | null => {
   if (!resto) return null;
   const tramos: Tramo[] = [tParab(0, ta, P, vOut, G), ...resto];
   const cand = base(c, 'riel', vOut, tramos, Pj, vA);
+  cand.grande = largoCamino(resto) > 520; // el riel serpenteante largo cuenta como figura grande
   cand.objetos.push({ tipo: 'riel', bolita: c.bolita, figura: 'riel', ...puntosRiel(resto, ti) });
   return cand;
 };
