@@ -63,6 +63,9 @@ por CPU) renderiza estable y rápido para esta escena.
 
 ## Falta para producción
 
+(v3) Elegir el estilo por video con la prop `estilo`; para comparar aceptación, alternar `plano`/`figuras` con la
+misma canción o canciones parecidas y medir retención y comentarios.
+
 Integrarla en `scripts/lib/operacion.mts` (`PLANTILLAS`, rotación) y en `diario.mts` (el render debe pasar
 `--gl=swangle`), más partituras (Marcha turca, Oda, Para Elisa, Cisnes) y variación visual por video (paletas,
 forma de las clavijas, densidad) para no caer en "contenido repetitivo".
@@ -129,4 +132,10 @@ publica tal cual; para los siguientes videos de este estilo rige v3. Y se conser
 9. **Tiempos.** Generar el nivel bajó de 143 s (Canon v2) / ~150 s (Creep v2) a 3–5 s (Canon) y 3–6 s (Creep):
    la rejilla reemplazó los recorridos por muestras de las otras bolitas (eran el 75 % del tiempo) y las jugadas ya
    no se atascan. Render: una sola luz puntual (la melodía), esferas con menos polígonos según tamaño, estelas
-   cortas en la percusión y menos objetos a la vez.
+   cortas en la percusión y menos objetos a la vez. Medido en el mismo tramo de Creep (frames 1200–1319, escala 1,
+   con el arranque incluido): v2 44 s → v3 23 s (figuras) / 22 s (plano), ≈ 2,6× por cuadro: el render completo de
+   ~33 min debería quedar en ~13–15 min (sin medir entero). Escala 0,25 del Canon: 5,7–6 min por estilo.
+
+**Pruebas** (`salida/pruebas/ritmo/v3/`, no versionado): `canon-plano.json`, `canon-figuras.json`, `creep-plano.json`,
+`creep-figuras.json` (ids `prueba-ritmo-*`); renders 0,25 y fotogramas a 0/5/12/20/30 s del Canon. Diagnóstico:
+`RITMO_DIAG=1 [RITMO_DIAG_PISTA=melodia]` cuenta los motivos de rechazo por figura.
