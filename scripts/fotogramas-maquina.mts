@@ -27,3 +27,4 @@ for (const s of lista) {
   await renderStill({ serveUrl, composition: comp, frame, output: out, inputProps: props, scale: escala, imageFormat: 'jpeg', jpegQuality: 88, chromiumOptions: { gl: 'swangle' } });
   console.log(`${out} (${((Date.now() - t1) / 1000).toFixed(1)} s)`);
 }
+process.exit(0);

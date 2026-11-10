@@ -89,7 +89,7 @@ const crearMateriales = () => {
     fieltro: std({ color: '#5A2230', roughness: 1 }),
     lacaRoja: new THREE.MeshPhysicalMaterial({ color: '#A3161D', roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1 }),
     parche: std({ color: '#EFE6D2', roughness: 0.55 }),
-    platillo: std({ map: texturaPlatillo(), metalness: 1, roughness: 0.3, color: '#C8963C' }),
+    platillo: std({ map: texturaPlatillo(), metalness: 1, roughness: 0.42, color: '#A87A2A' }),
     canica: new THREE.MeshPhysicalMaterial({ color: '#FFFFFF', roughness: 0.08, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.04 }),
     canicaPila: std({ color: '#FFFFFF', roughness: 0.18, metalness: 0.05 }),
     lamparaFoco: std({ color: '#FFE2A8', emissive: '#FFC56B', emissiveIntensity: 3 }),
@@ -726,11 +726,11 @@ const CanicasMusicales: React.FC<{ sim: SimMaquina; f: number; mats: Mats }> = (
     const k = d / 0.4;
     const pc = { x: c.x - c.n.x * R_CANICA, y: c.y - c.n.y * R_CANICA + 0.15, z: c.z - c.n.z * R_CANICA };
     if (k < 1) {
-      const esc = 2 + 9 * (1 - (1 - k) ** 3) * (g.acento || g.abierto ? 1.4 : 1);
+      const esc = 1.5 + 4.5 * (1 - (1 - k) ** 3) * (g.acento || g.abierto ? 1.4 : 1);
       efectos.push(
         <mesh key={`o${g.canica}`} position={[pc.x, pc.y, pc.z]} rotation={[-Math.PI / 2 + Math.atan2(c.n.z, c.n.y), 0, 0]} scale={[esc, esc, 1]}>
           <ringGeometry args={[0.82, 1, 40]} />
-          <meshBasicMaterial color={color} transparent opacity={0.85 * (1 - k) * (1 - k)} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
+          <meshBasicMaterial color={color} transparent opacity={0.6 * (1 - k) * (1 - k)} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} />
         </mesh>,
       );
     }

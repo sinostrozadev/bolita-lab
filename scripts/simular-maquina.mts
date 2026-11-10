@@ -340,7 +340,7 @@ export const generarMaquina = (props: GuionMaquina, partitura: PartituraMaquina)
     // 1. Primer plano de las láminas: sigue a la melodía (frase 1, primera mitad).
     { nombre: 'laminas', desde: P(3.2), hasta: P(10), pose: (t, u) => {
       const x = xMelodia(t);
-      return { p: { x: x + 14 - 10 * u, y: 150, z: 78 }, t: { x, y: 126, z: 4 }, fov: 30 };
+      return { p: { x: x + 44 - 8 * u, y: 147, z: 78 }, t: { x: x - 6, y: 128, z: 4 }, fov: 32 };
     } },
     // 2. Bajada al bajo de madera y el bombo (travelling lateral).
     { nombre: 'bajo-bombo', desde: P(10), hasta: P(17.5), pose: (_t, u) => ({
@@ -354,8 +354,8 @@ export const generarMaquina = (props: GuionMaquina, partitura: PartituraMaquina)
     }) },
     // 4. Riel superior → espiral → riel de reparto (de izquierda a derecha y abajo).
     { nombre: 'espiral', desde: P(24), hasta: P(30), pose: (_t, u) => ({
-      p: lerp3({ x: -10, y: 205, z: 115 }, { x: 34, y: 168, z: 95 }, suave(u)),
-      t: lerp3({ x: 10, y: 203, z: 0 }, { x: 30, y: 168, z: 4 }, suave(u)), fov: 36,
+      p: lerp3({ x: 6, y: 210, z: 125 }, { x: 70, y: 180, z: 100 }, suave(u)),
+      t: lerp3({ x: 20, y: 200, z: 0 }, { x: 42, y: 184, z: 0 }, suave(u)), fov: 36,
     }) },
     // 5. Contrapicado del vibráfono: compuertas abriéndose arriba y canicas cayendo.
     { nombre: 'contrapicado', desde: P(30), hasta: P(34), pose: (t, u) => {
@@ -370,13 +370,13 @@ export const generarMaquina = (props: GuionMaquina, partitura: PartituraMaquina)
     } },
     // 7. Bombo y platillo de cerca.
     { nombre: 'percusion', desde: P(44), hasta: P(50), pose: (_t, u) => ({
-      p: lerp3({ x: 40, y: 92, z: 92 }, { x: 0, y: 84, z: 98 }, suave(u)),
-      t: lerp3({ x: 22, y: 46, z: 10 }, { x: 8, y: 54, z: 8 }, suave(u)), fov: 34,
+      p: lerp3({ x: 46, y: 100, z: 150 }, { x: -4, y: 92, z: 150 }, suave(u)),
+      t: lerp3({ x: 24, y: 48, z: 10 }, { x: 6, y: 56, z: 8 }, suave(u)), fov: 34,
     }) },
     // 8. Frase 4 con segunda voz: cenital suave de las láminas (dos canicas a la vez).
     { nombre: 'laminas-arriba', desde: P(50), hasta: P(60), corte: true, pose: (t, u) => {
       const x = xMelodia(t);
-      return { p: { x: x + 6, y: 178 - 6 * u, z: 62 }, t: { x, y: 121, z: 6 }, fov: 32 };
+      return { p: { x: x - 42 + 6 * u, y: 168, z: 84 }, t: { x: x + 6, y: 126, z: 4 }, fov: 32 };
     } },
     // 9. El vibráfono entero para el acorde final.
     { nombre: 'acorde', desde: P(60), hasta: P(64.6), pose: (_t, u) => ({
