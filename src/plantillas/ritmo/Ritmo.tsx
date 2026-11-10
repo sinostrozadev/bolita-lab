@@ -27,8 +27,8 @@ import { NOMBRE_PISTA, TEXTOS_RITMO, type BolitaSim, type ClavijaSim, type Golpe
 const FRAMES_CIERRE = 72;
 /** Debe coincidir con FRAMES_DISOLVER de scripts/simular-ritmo.mts. */
 const FRAMES_DISOLVER = 18;
-/** Debe coincidir con FRAMES_APARECE de scripts/simular-ritmo.mts: la clavija aparece 1 s antes de su golpe. */
-const FRAMES_APARECE = 60;
+/** Debe coincidir con FRAMES_APARECE de scripts/simular-ritmo.mts: la clavija aparece 0,67 s antes de su golpe. */
+const FRAMES_APARECE = 40;
 const ARRIBA_TOP = FORMATO.seguro.arriba + 58;
 const ABAJO_CENTRO_Y = 1518;
 const LLAMADO_ANTES = 6 * 60;
@@ -365,7 +365,7 @@ const Clavija: React.FC<{ c: ClavijaSim; f: number; color: string; textura: THRE
   if (tras < -FRAMES_APARECE) return null;
   const flash = tras >= 0 ? Math.exp(-tras / 7) : 0;
   const disuelta = tras >= 0 ? Math.min(1, tras / FRAMES_DISOLVER) : 0;
-  // crece (con un pequeño rebote) al aparecer 1 s antes de su golpe
+  // crece (con un pequeño rebote) al aparecer 0,67 s antes de su golpe
   const nace = Math.min(1, (tras + FRAMES_APARECE) / 12);
   const escala = tras < 0 ? nace * (1 + 0.15 * Math.sin(nace * Math.PI)) : (1 + 0.35 * Math.exp(-tras / 3)) * (1 - disuelta * disuelta);
   // Normal en coordenadas de Three y ángulo del eje (perpendicular a la normal).

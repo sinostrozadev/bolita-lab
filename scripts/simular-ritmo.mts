@@ -103,9 +103,9 @@ const distClavijas = (c1: Caps, c2: Caps) => {
  * por donde ya hubo clavijas (las notas largas lanzan alto). */
 export const FRAMES_DISOLVER = 18;
 const finVida = (c: { golpe: number }) => (c.golpe + FRAMES_DISOLVER) / FPS;
-/** Las clavijas aparecen (crecen) 1 s antes de su golpe, como los rieles: el circuito se arma por delante de las
+/** Las clavijas aparecen (crecen) 0,67 s antes de su golpe, como los rieles: el circuito se arma por delante de las
  * bolitas. Así solo estorban en su ventana de vida y no durante todo el video. Debe coincidir con Ritmo.tsx. */
-export const FRAMES_APARECE = 60;
+export const FRAMES_APARECE = 40;
 const iniVida = (c: { golpe: number }) => (c.golpe - FRAMES_APARECE) / FPS;
 const conviven = (a: { golpe: number }, b: { golpe: number }) => iniVida(a) < finVida(b) && iniVida(b) < finVida(a);
 
@@ -361,7 +361,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
     };
     // Varios intentos con azar distinto (determinista): se queda el primero sin reparos o el que tenga menos.
     let elegido: ReturnType<typeof intentarBolita> | null = null;
-    for (let intento = 0; intento < 2; intento++) {
+    for (let intento = 0; intento < 3; intento++) {
       const r = intentarBolita(crearAzar((semilla ^ Math.imul(b + 1, 0x9e3779b1) ^ Math.imul(intento + 1, 0x85ebca6b)) >>> 0));
       if (!elegido || r.reparos.length < elegido.reparos.length) elegido = r;
       if (r.reparos.length === 0) break;
@@ -422,7 +422,9 @@ const evaluar = (
   let viol = cand.motivos.length;
   const motivos = [...cand.motivos];
   let costo = cand.costo;
-  const malo = (m: string) => { viol += 1; motivos.push(m); };
+  // Peso del defecto: dos bolitas que se montan se ve muchísimo; un roce o salir un poco del cuadro, poco.
+  const PESOS: Record<string, number> = { 'bolita-bolita': 4, atraviesa: 2, 'clavija-en-otra': 2, 'pared-en-otra': 2 };
+  const malo = (m: string) => { viol += PESOS[m] ?? 1; motivos.push(m); };
   const rasanteIn = -vin_n / Math.max(1e-6, len(vIn));
   const rasanteOut = vout_n / Math.max(1e-6, len(vOut));
   if (rasanteIn < 0.25) malo('rasante-in');
