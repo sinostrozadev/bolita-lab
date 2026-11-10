@@ -62,6 +62,12 @@ export const GuionCarrera = z.object({
   semilla: z.number().int().optional(),
   /** Tema libre, solo informativo (p. ej. "meses", "mascotas"). */
   tema: z.string().optional(),
+  /**
+   * Extras de la carrera v2 (2026-11-09): bloques con vida (1–3 golpes, se rompen y abren camino), 2–3 tubos
+   * transparentes con rizos (atajo o trampa) y avisos narrativos ("¡X le abrió el camino a Y!"). Ausente = activados;
+   * `false` = tablero clásico (solo clavijas, rampas y embudos).
+   */
+  extras: z.boolean().optional(),
   /** Llamado a suscribirse en el clímax (opcional; ausente = activado con variante por id; false = apagado; texto = ese texto). */
   llamado: CampoLlamado,
 });
