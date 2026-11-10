@@ -24,6 +24,7 @@ const FPS = FORMATO.fps;
 const SUB = 4;
 const DT = 1 / (FPS * SUB);
 export const ARENA = { cx: FORMATO.ancho / 2, cy: 985, r: 430 } as const;
+const RADIO_CAJA = 405;
 const R0 = Number(process.env.CR0 ?? 36); // radio inicial de cada bolita
 const A0 = Math.PI * R0 * R0;
 const AMIN = Math.PI * 12 * 12; // por debajo: muere
@@ -77,6 +78,8 @@ type Resultado = {
 
 export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | 'caja', semilla: number, dano: number): Resultado => {
   const azar = crearAzar(semilla);
+  // La caja es un poco más chica que el círculo: sus esquinas llegarían a la grilla de votación.
+  const RA = forma === 'caja' ? RADIO_CAJA : ARENA.r;
   const bolitas: Bolita[] = [];
   const vivas: Bolita[] = [];
   const eventos: EventoColores[] = [];
@@ -94,9 +97,9 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
   for (let i = orden.length - 1; i > 0; i--) { const j = Math.floor(azar() * (i + 1)); [orden[i], orden[j]] = [orden[j], orden[i]]; }
   for (const eq of orden) {
     for (let intento = 0; intento < 500; intento++) {
-      const ang = azar() * Math.PI * 2, d = Math.sqrt(azar()) * (ARENA.r - R0 - 14);
+      const ang = azar() * Math.PI * 2, d = Math.sqrt(azar()) * (RA - R0 - 14);
       const x = ARENA.cx + Math.cos(ang) * d, y = ARENA.cy + Math.sin(ang) * d;
-      if (forma === 'caja' && (Math.abs(x - ARENA.cx) > ARENA.r - R0 - 10 || Math.abs(y - ARENA.cy) > ARENA.r - R0 - 10)) continue;
+      if (forma === 'caja' && (Math.abs(x - ARENA.cx) > RA - R0 - 10 || Math.abs(y - ARENA.cy) > RA - R0 - 10)) continue;
       if (vivas.some((o) => Math.hypot(o.x - x, o.y - y) < 2 * R0 + 8)) continue;
       const dir = azar() * Math.PI * 2;
       const b = nueva(eq, x, y, Math.cos(dir) * V0, Math.sin(dir) * V0, A0, 0, -1);
@@ -114,7 +117,7 @@ export const simular = (equipos: number, porEquipo: number, forma: 'circulo' | '
   for (let f = 0; ; f++) {
     // --- registrar el estado del frame f
     const t0 = f / FPS;
-    const Rf = t0 < CIERRE_DESDE || victoria >= 0 && f > victoria ? (arenaR.at(-1) ?? ARENA.r) : Math.max(CIERRE_MIN, ARENA.r - CIERRE_VEL * (t0 - CIERRE_DESDE));
+    const Rf = t0 < CIERRE_DESDE || victoria >= 0 && f > victoria ? (arenaR.at(-1) ?? RA) : Math.max(CIERRE_MIN, RA - CIERRE_VEL * (t0 - CIERRE_DESDE));
     arenaR.push(Math.round(Rf * 10) / 10);
     const ar = new Array(equipos).fill(0);
     for (const b of vivas) { b.p.push(Math.round(b.x), Math.round(b.y), Math.round(b.r * 10) / 10); ar[b.eq] += b.a; }
@@ -422,7 +425,7 @@ export const simularYSintetizar = (props: GuionColores, raiz = process.cwd()): S
   const mapa = construirMapa(r.victoria);
   const sim: SimColores = {
     version: 1, id: props.id, fps: FPS, equipos: equiposDe(props),
-    arena: { forma: props.arena ?? 'circulo', cx: ARENA.cx, cy: ARENA.cy, r: ARENA.r },
+    arena: { forma: props.arena ?? 'circulo', cx: ARENA.cx, cy: ARENA.cy, r: (props.arena ?? 'circulo') === 'caja' ? RADIO_CAJA : ARENA.r },
     arenaR: r.arenaR, framesSim: r.framesSim,
     bolitas: r.bolitas.map((b): BolitaSim => ({ id: b.id, equipo: b.eq, nace: b.nace, muere: b.muere, fin: b.fin, en: b.en, p: b.p })),
     eventos: r.eventos, areas: r.areas, victoriaFrame: r.victoria, ganador: r.ganador, mapa,

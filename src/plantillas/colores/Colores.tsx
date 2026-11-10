@@ -288,7 +288,7 @@ const Votos: React.FC<{ sim: SimColores; props: GuionColores; fs: number; opacid
   return (
     <div style={{
       position: 'absolute', top: GRILLA_TOP, left: (FORMATO.ancho - (2 * celdaW + gap)) / 2, width: 2 * celdaW + gap,
-      display: 'flex', flexWrap: 'wrap', gap, opacity: opacidad, pointerEvents: 'none',
+      display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap, opacity: opacidad, pointerEvents: 'none',
     }}>
       {acciones.map((acc, e) => {
         const c = colorEq(sim, e);
