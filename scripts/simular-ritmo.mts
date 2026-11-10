@@ -42,29 +42,54 @@ const GRAVEDAD = { figuras: 2800, plano: 2050 } as const;
 /** Escalonado vertical por estilo: en 'plano' las franjas ya separan a las bolitas y los arcos altos necesitan alto. */
 const ESCALA_DESFASE = { figuras: 1, plano: 0.4 } as const;
 let G = 2800;
-/** Límites verticales del centro respecto de la cámara (el cuadro mide ±977 u): arriba la bolita entera dentro del
- * cuadro, abajo sin meterse bajo el texto inferior (centro a 568 u bajo la cámara). */
-const ARRIBA_MAX = 970, ABAJO_MAX = 560;
+/** Zona de juego respecto de la cámara (el cuadro mide ±977 u): la bolita ENTERA entre el bloque de texto de
+ * arriba (termina a ~588 u sobre el centro) y el de abajo (empieza a ~530 u bajo el centro): nunca tapada por texto. */
+const VISTA_ARRIBA = 575, VISTA_ABAJO = 520;
 /** Ruido vertical del objetivo de cada golpe alrededor de su línea (u). */
 const RUIDO_Y = 90;
 /** Ápice (sobre el punto de salida) de la parábola más alta de duración dt: la que baja lo menos posible (de la parte
  * baja del ruido a la alta). */
-const apiceParabola = (dt: number, baja = 220 * dt) => { const vy = Math.max(0, (G * dt) / 2 - (baja - 2 * RUIDO_Y) / dt); return (vy * vy) / (2 * G); };
+const apiceParabola = (dt: number, baja: number, g: number) => { const vy = Math.max(0, (g * dt) / 2 - (baja - 2 * RUIDO_Y) / dt); return (vy * vy) / (2 * g); };
+
+/** Δt entre eventos de una pista (s), con la bajada de la línea en cada tramo. */
+const tramosDe = (l: EventoPista[], linea: (t: number) => number) =>
+  l.slice(1).map((e, k) => { const a = l[k].frame / FPS, z = e.frame / FPS; return { dt: z - a, baja: linea(z) - linea(a) }; });
+
+/**
+ * Gravedad de cada bolita. 'figuras': 2800 para todas (las notas largas se vuelven figuras). 'plano': la de v1 a
+ * escala (2050), salvo que la nota más larga de la pista no quepa entre los textos: entonces baja lo justo para esa
+ * bolita (Creep: la melodía tiene silencios de 4 pulsos = 2,6 s). Solo parábolas no tienen otra salida.
+ */
+const calcularGravedades = (ev: Record<PistaRitmo, EventoPista[]>, estilo: EstiloRitmo, linea: (t: number) => number) =>
+  CONFIG.map((c) => {
+    if (estilo === 'figuras') return GRAVEDAD.figuras;
+    const presupuesto = (VISTA_ARRIBA - c.r) + (VISTA_ABAJO - c.r) - 2 * RUIDO_Y - 70;
+    let g = GRAVEDAD.plano;
+    for (let it = 0; it < 30; it++) {
+      const ap = Math.max(0, ...tramosDe(ev[c.pista], linea).map((x) => apiceParabola(x.dt, x.baja, g)));
+      if (ap <= presupuesto) break;
+      g *= 0.94;
+    }
+    return Math.round(g);
+  });
 
 /**
  * Altura de cada bolita respecto de la cámara (v3). Parte del escalonado preferido de CONFIG y lo acota para que la
  * parábola más alta de su pista quepa entera (así la parábola dentro de la franja siempre es una jugada válida): las pistas de notas largas (arcos altos) bajan,
  * las de notas cortas pueden ir arriba.
  */
-const calcularOffsets = (ev: Record<PistaRitmo, EventoPista[]>, estilo: EstiloRitmo, linea: (t: number) => number) => {
+const calcularOffsets = (ev: Record<PistaRitmo, EventoPista[]>, estilo: EstiloRitmo, linea: (t: number) => number, gs: number[]) => {
   const pref = CONFIG.map((c) => c.desfase * ESCALA_DESFASE[estilo]);
   const media = pref.reduce((a, b) => a + b, 0) / pref.length;
   return CONFIG.map((c, b) => {
     const l = ev[c.pista];
-    // la parábola más alta de la pista (con la bajada real de la línea en ese tramo: en la intro baja más lento)
-    let apice = 0;
-    for (let k = 1; k < l.length; k++) { const a = l[k - 1].frame / FPS, z = l[k].frame / FPS; apice = Math.max(apice, apiceParabola(z - a, linea(z) - linea(a))); }
-    const oMin = -ARRIBA_MAX + c.r + RUIDO_Y + apice + 40, oMax = ABAJO_MAX - c.r / 2 - RUIDO_Y - 30;
+    // la parábola más alta de la pista (con la bajada real de la línea: en la intro baja más lento). En 'figuras' la
+    // del 90 % de los tramos (las notas más largas las resuelve una figura), salvo la percusión, que no tiene figuras
+    // grandes.
+    const ap = tramosDe(l, linea).map((x) => apiceParabola(x.dt, x.baja, gs[b])).sort((a, z) => a - z);
+    const soloChicas = c.figuras.every((f) => !GRANDES.has(f) && f !== 'riel');
+    const apice = estilo === 'plano' || soloChicas ? (ap[ap.length - 1] ?? 0) : (ap[Math.floor(ap.length * 0.9)] ?? 0);
+    const oMin = -VISTA_ARRIBA + c.r + RUIDO_Y + apice + 30, oMax = VISTA_ABAJO - c.r - RUIDO_Y - 20;
     const o = pref[b] - media - 60;
     return Math.round(oMin > oMax ? oMax : Math.max(oMin, Math.min(oMax, o)));
   });
@@ -326,19 +351,11 @@ export const leerPartitura = (nombre: string, raiz = process.cwd()): PartituraRi
 export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimRitmo => {
   const semilla = props.semilla ?? semillaDesde(`ritmo:${props.id}`);
   const estilo = props.estilo ?? 'figuras';
-  G = GRAVEDAD[estilo];
   /** Todo lo visible de las bolitas ya generadas (separación dura entre bolitas distintas). */
   const ocup = new Ocupacion();
   /** Ventanas de vista de las figuras grandes ya colocadas (de todas las bolitas). */
   const grandes: [number, number][] = [];
   const ev = eventosDe(partitura);
-  if (estilo === 'plano') {
-    // Solo parábolas: si la partitura tiene silencios largos (Creep: 4 pulsos = 2,6 s) la gravedad baja lo justo para
-    // que el arco más largo quepa en el cuadro (ápice ≈ G·Δt²/8 ≤ 950 u).
-    let dtMax = 0;
-    for (const l of Object.values(ev)) for (let k = 1; k < l.length; k++) dtMax = Math.max(dtMax, (l[k].frame - l[k - 1].frame) / FPS);
-    G = Math.round(Math.min(G, (8 * 950) / (dtMax * dtMax)));
-  }
   const finalFrame = Math.max(...Object.values(ev).map((l) => l[l.length - 1].frame));
   const duracionFrames = finalFrame + FRAMES_CLIMAX + FRAMES_CIERRE;
   const linea = crearLinea(duracionFrames / FPS + 2);
@@ -355,7 +372,8 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
     }
   }
   const camEn = (t: number) => camY[Math.max(0, Math.min(finalFrame, Math.round(t * FPS)))];
-  const offsets = calcularOffsets(ev, estilo, linea);
+  const gravedades = calcularGravedades(ev, estilo, linea);
+  const offsets = calcularOffsets(ev, estilo, linea, gravedades);
   const clavijas: ClavijaSim[] = [];
   const golpes: GolpeSim[] = [];
   const bolitas: BolitaSim[] = [];
@@ -380,8 +398,8 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
     // ancha (platillo) la esquivan por la rejilla
     const xaC = c.semi >= 40 ? fr[0] - c.r - SEP : xa, xbC = c.semi >= 40 ? fr[1] + c.r + SEP : xb;
     const abajo = RUIDO_Y + c.r + 2 * c.radio + c.largo + SEP;
-    const apices = ts.slice(1).map((t, k) => apiceParabola(t - ts[k], linea(t) - linea(ts[k])));
-    const repY = linea(ts[0]) + offsets[b] - 0.5 * G * (FRAMES_CAIDA / FPS) ** 2;
+    const apices = ts.slice(1).map((t, k) => apiceParabola(t - ts[k], linea(t) - linea(ts[k]), gravedades[b]));
+    const repY = linea(ts[0]) + offsets[b] - 0.5 * gravedades[b] * (FRAMES_CAIDA / FPS) ** 2;
     /** ¿La huella h pisa la banda reservada de la bolita b? */
     return (h: Huella, clavija = false) => {
       if (h.x + h.rad < (clavija ? xaC : xa) || h.x - h.rad > (clavija ? xbC : xb)) return false;
@@ -400,6 +418,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
     };
   });
   activas.forEach((cfg, b) => {
+    G = gravedades[b];
     const posteriores = reservas.slice(b + 1);
     const reservado = (h: Huella, clavija = false) => posteriores.some((f) => f(h, clavija));
     const lista = ev[cfg.pista];
@@ -617,7 +636,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
   console.log(`nivel: ${golpes.length} golpes, ${clavijas.length} clavijas, ${objetos.length} objetos, ${avisos} con reparos, semilla ${semilla}`);
   for (const l of resumen) console.log(`  ${l}`);
   return {
-    version: 3, estilo, id: props.id, fps: FPS, duracionFrames, finalFrame, lentoClimax: LENTO_CLIMAX, mundo: { ancho: ANCHO_MUNDO, gravedad: G },
+    version: 3, estilo, id: props.id, fps: FPS, duracionFrames, finalFrame, lentoClimax: LENTO_CLIMAX, mundo: { ancho: ANCHO_MUNDO, gravedad: gravedades[0] },
     camara, bolitas, clavijas, golpes, tramos: tramosSim, objetos, semillaUsada: semilla,
   };
 };
@@ -682,12 +701,15 @@ const evaluar = (
   for (const w of cand.paredes) if (distClavijas(peg, w) < 4) { malo('clavija-pared-propia'); break; }
   // (2) clavija contra la trayectoria propia anterior mientras la clavija ya se ve (la llegada reciente solo cuenta si
   // de verdad penetra la clavija: con llegadas lentas el último tramo pasa legítimamente a pocas unidades de ella)
-  // (la clavija nace chica y crece en 12 frames: los primeros 6 no estorban)
-  if (!primero) fuera2: for (let q = Math.floor((nacePeg + 0.09) * FPS * SUB); q < (ti - 0.02) * FPS * SUB; q++) {
+  // (la clavija nace chica y crece en 12 frames: se compara con su tamaño de dibujo, como verificar-ritmo)
+  if (!primero) fuera2: for (let q = Math.floor(nacePeg * FPS * SUB); q < (ti - 0.02) * FPS * SUB; q++) {
+    const e = escalaClavija(peg, q / SUB);
+    if (e < 0.25) continue;
+    const pe = { ...peg, largo: peg.largo * e, radio: peg.radio * e };
     for (const m of propiasIdx.enInstante(q / (FPS * SUB))) {
       if (m.oculto) continue;
       // (en los últimos 0,06 s la bolita ya está llegando: solo cuenta si penetra; antes, ni rozarla)
-      if (distClavija(m, peg) < (m.t > ti - 0.06 ? m.r - 2 : m.t > ti - 0.5 ? m.r + 2 : m.r + 5)) { malo('clavija-en-propia'); break fuera2; }
+      if (distClavija(m, pe) < (m.t > ti - 0.06 ? m.r - 2 : m.t > ti - 0.5 ? m.r + 2 : m.r + 5)) { malo('clavija-en-propia'); break fuera2; }
     }
   }
   if (viol > cota) return null;
@@ -707,7 +729,7 @@ const evaluar = (
     muestras.push(m);
     if (viol > cota) return null;
     if (m.oculto) continue;
-    if (!fuera && !ultimo && (Math.abs(m.x) > xMax || m.y - camEn(m.t) < -ARRIBA_MAX + m.r || m.y - camEn(m.t) > ABAJO_MAX - m.r / 2)) { fuera = true; malo('fuera-de-cuadro'); }
+    if (!fuera && !ultimo && (Math.abs(m.x) > xMax || m.y - camEn(m.t) < -VISTA_ARRIBA + m.r || m.y - camEn(m.t) > VISTA_ABAJO - m.r)) { fuera = true; malo('fuera-de-cuadro'); }
     if (!salida && (m.x < fr[0] - tolFr || m.x > fr[1] + tolFr)) { salida = true; malo('fuera-franja'); }
     if (!choca && tt >= 0.03) {
       for (const ix of pegs) { for (const c of ix.cerca(m.y, 200)) if (m.t < finVida(c) && m.t > iniVida(c) && distClavija(m, c) < cfg.r - 1) { choca = true; break; } if (choca) break; }

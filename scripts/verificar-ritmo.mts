@@ -6,7 +6,7 @@
  *    ±6 frames, y la velocidad normal cambia de signo) y el ataque en el wav. Falla si algo se va de ±1 frame.
  * 2. GEOMETRÍA (v3, cuadro a cuadro): bolitas que se tocan; bolita que roza o atraviesa una clavija, pared, riel o
  *    columpio de OTRA bolita mientras se ve; bolita que atraviesa una clavija propia que no es la de su golpe; bolita
- *    que se sale del cuadro; más de 2 figuras grandes a la vista. Cada racha seguida cuenta como 1 aviso. Falla si
+ *    que se sale del cuadro o queda tapada por un bloque de texto; más de 2 figuras grandes a la vista. Cada racha seguida cuenta como 1 aviso. Falla si
  *    queda alguno.
  */
 import fs from 'node:fs';
@@ -101,6 +101,9 @@ function auditarGeometria(sim: SimRitmo) {
       // fuera del cuadro (la bolita entera debe verse)
       // (en reposo sobre su repisa no cuenta: la cámara llega hasta ella)
       if (f >= b.repisa.abre && (Math.abs(p.x - camX) + b.r > ANCHO + 0.5 || Math.abs(p.y - camY) + b.r > ALTO + 0.5)) marcar('fuera-de-cuadro', `${i}`, f, `${b.pista} sale del cuadro`);
+      // tapada por los bloques de texto (arriba termina ~588 u sobre el centro; abajo empieza ~530 u bajo él); no
+      // cuenta en la repisa ni tras el golpe final (clímax)
+      if (f >= b.repisa.abre && f <= sim.finalFrame && (p.y - b.r < camY - 588 || p.y + b.r > camY + 530)) marcar('bajo-el-texto', `${i}`, f, `${b.pista} queda tapada por un texto`);
       // bolitas que se tocan
       for (let j = i + 1; j < sim.bolitas.length; j++) {
         const o = sim.bolitas[j];
