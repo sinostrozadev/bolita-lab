@@ -2,7 +2,7 @@
   "id": "2026-11-09-ritmo-canon-prototipo",
   "plantilla": "ritmo",
   "tipo": "short",
-  "estado": "privado",
+  "estado": "subido",
   "titulo": "PROTOTIPO ritmo · 5 bolitas, 1 canción (Canon) · privado",
   "descripcion": "Cinco bolitas caen por un nivel lleno de clavijas y cada choque toca una nota: melodía, bajo, bombo, caja y platillo. Todo suena a tiempo con el Canon en Re de Pachelbel (dominio público). ¿Cuál lleva la melodía?\nSimulación determinista hecha en Bolita Lab: el nivel se construyó desde la partitura.\n#shorts #satisfying #musica #pachelbel #canon #bolita\n[PROTOTIPO PRIVADO para evaluar la idea · 2026-11-09]",
   "hashtags": [
@@ -15,5 +15,6 @@
   "nota": "prototipo privado, no programar",
   "videoId": "ujPXyUS7ASY",
   "url": "https://youtube.com/shorts/ujPXyUS7ASY",
-  "subidoEn": "2026-11-09T10:14:58.542Z"
+  "subidoEn": "2026-11-09T10:14:58.542Z",
+  "publicarEn": "2026-11-14T18:00:00.000Z"
 }
