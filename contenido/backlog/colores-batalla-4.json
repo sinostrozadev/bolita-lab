@@ -1,0 +1,14 @@
+{
+  "plantilla": "colores",
+  "id": "pendiente-colores-batalla-4",
+  "titulo": "Batalla de 4 colores: ¿cuál sobrevive? 🎨",
+  "descripcion": "Rojo, azul, amarillo y verde en una arena. Si dos bolitas del mismo color se tocan, se fusionan; si son de colores distintos, se parten. Las muy chicas mueren. Gana el último color en pie.\nVota con tu acción: Me gusta, Comenta, Comparte o Suscríbete. ¿Acertaste?\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #batalladecolores #fisica #bolita #simulacion",
+  "hashtags": ["#shorts", "#satisfying", "#batalladecolores", "#fisica", "#bolita", "#simulacion"],
+  "props": {
+    "id": "pendiente-colores-batalla-4",
+    "equipos": ["rojo", "azul", "amarillo", "verde"],
+    "bolasPorEquipo": 10,
+    "arena": "circulo",
+    "votacion": true
+  }
+}

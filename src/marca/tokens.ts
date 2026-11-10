@@ -31,6 +31,23 @@ export const PALETA = {
 
 export const NEONES = Object.values(PALETA.neon);
 
+/**
+ * Colores de EQUIPO (plantilla "colores"): saturados y bien separados entre sí para leerse en el celular
+ * (rojo/azul/amarillo/verde son los cuatro por defecto). `nombre` va en mayúsculas en pantalla.
+ */
+export const EQUIPOS = {
+  rojo: { color: PALETA.rojo, nombre: 'ROJO' },
+  azul: { color: '#3D8BFF', nombre: 'AZUL' },
+  amarillo: { color: PALETA.neon.amarillo, nombre: 'AMARILLO' },
+  verde: { color: PALETA.verde, nombre: 'VERDE' },
+  violeta: { color: PALETA.neon.violeta, nombre: 'VIOLETA' },
+  naranja: { color: PALETA.neon.naranja, nombre: 'NARANJO' },
+  cian: { color: PALETA.neon.cian, nombre: 'CELESTE' },
+  rosa: { color: PALETA.neon.magenta, nombre: 'ROSADO' },
+} as const;
+export type Equipo = keyof typeof EQUIPOS;
+export const NOMBRES_EQUIPO = Object.keys(EQUIPOS) as Equipo[];
+
 export const TIPO = {
   /** Display para títulos: muy gruesa, legible en teléfono. */
   display: 'Bricolage Grotesque',

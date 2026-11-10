@@ -48,7 +48,7 @@ export const asegurarDirectorios = () => {
 };
 
 // ---------------------------------------------------------------- tipos
-export const PLANTILLAS = ['bola', 'dato', 'carrera'] as const;
+export const PLANTILLAS = ['bola', 'dato', 'carrera', 'colores'] as const;
 export type Plantilla = (typeof PLANTILLAS)[number];
 
 /** Guion: contrato con las plantillas (contenido/guiones/<id>.json o contenido/backlog/<plantilla>-<slug>.json). */

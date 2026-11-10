@@ -22,7 +22,7 @@ export const CampoLlamado = z
   .describe('Llamado a suscribirse en el clímax. Por defecto activado (variante por id); false lo apaga; un texto lo reemplaza.');
 export type CampoLlamado = z.infer<typeof CampoLlamado>;
 
-export type PlantillaLlamado = 'bola' | 'carrera' | 'dato';
+export type PlantillaLlamado = 'bola' | 'carrera' | 'dato' | 'colores';
 
 /**
  * Variantes por plantilla. El botón "Suscribirse" de los Shorts está ABAJO (junto al nombre del
@@ -41,6 +41,12 @@ export const VARIANTES_LLAMADO: Record<PlantillaLlamado, readonly string[]> = {
     'Suscríbete y elige la próxima carrera 🏁',
     'Sigue a Bolita Lab para la revancha',
     'Suscríbete: mañana, otra carrera 👇',
+  ],
+  colores: [
+    'Suscríbete y elige el color de mañana 🎨',
+    'Suscríbete: mañana, otra batalla 👇',
+    'Sigue a Bolita Lab para la revancha',
+    'Suscríbete y defiende tu color 👇',
   ],
   dato: [
     '¿Lo sabías? Suscríbete 👇',
