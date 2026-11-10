@@ -404,7 +404,7 @@ const Clavija: React.FC<{ c: ClavijaSim; f: number; color: string; textura: THRE
         </group>
       )}
       {/* destello del golpe y huella que queda */}
-      <Brillo x={contactoX} y={contactoY} tam={(c.largo > 0 ? 260 : 170) * (0.4 + flash)} color={color} opacidad={1.1 * flash} textura={textura} />
+      <Brillo x={contactoX} y={contactoY} tam={(c.largo > 0 ? 220 : 150) * (0.4 + flash)} color={color} opacidad={0.6 * flash} textura={textura} />
       {tras >= FRAMES_DISOLVER * 0.5 && <Brillo x={c.x} y={c.y} z={-10} tam={c.largo > 0 ? 70 : 44} color={color} opacidad={0.22 * Math.min(1, (tras - 9) / 10)} textura={textura} />}
     </>
   );
@@ -502,7 +502,7 @@ const Escena: React.FC<{ sim: SimRitmo; f: number; camX: number; camY: number }>
             <mesh position={[x, Y(y), z]} scale={[1 + 0.12 * flash, 1 - 0.08 * flash, 1]}>
               <sphereGeometry args={b.r >= 60 ? [b.r, 40, 28] : [b.r, 24, 16]} />
               {/* v3: el destello no lleva la bolita a blanco (se perdía el color, que es lo que la identifica) */}
-              <meshPhysicalMaterial color={b.color} emissive={b.color} emissiveIntensity={0.12 + 0.38 * b.brillo + 0.45 * flash} roughness={0.18} metalness={0.05} clearcoat={1} clearcoatRoughness={0.08} />
+              <meshPhysicalMaterial color={b.color} emissive={b.color} emissiveIntensity={0.12 + 0.38 * b.brillo + 0.3 * flash} roughness={0.18} metalness={0.05} clearcoat={1} clearcoatRoughness={0.08} />
             </mesh>
             <Brillo x={x} y={y} z={z + b.r + 4} tam={b.r * 3.2} color={b.color} opacidad={0.35 * b.brillo + 0.2 * flash} textura={textura} />
             <Brillo x={x} y={y} z={z - 4} tam={b.r * (7 + 4 * flash)} color={b.color} opacidad={0.16 + 0.12 * b.brillo + 0.35 * flash} textura={textura} />

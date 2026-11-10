@@ -85,11 +85,11 @@ publica tal cual; para los siguientes videos de este estilo rige v3. Y se conser
 **Dos estilos en la misma plantilla** (prop `estilo`):
 
 - `'plano'` (v1, el del Canon): solo parábolas entre clavijas que se disuelven. Gravedad de v1 a escala de la
-  cámara nueva (2050 u/s²); si la partitura tiene silencios largos baja lo justo para que el arco más largo quepa
-  (Creep: 1306). Una nota larga que pediría un rebote imposible usa una clavija-trampolín (sigue siendo parábola).
-  Escalonado vertical al 40 %: las franjas ya las separan.
-- `'figuras'` (v2 mejorado, por defecto): rieles, zigzag, portales, rizo, hélice, columpio y trampolín, con las
-  reglas nuevas de abajo. El `cruce` (riel que invade el carril vecino) sale del catálogo: era amontonamiento puro.
+  cámara nueva (2050 u/s²). Una nota larga que pediría un rebote imposible usa una clavija-trampolín (sigue siendo
+  parábola). Escalonado vertical al 40 %: las franjas ya las separan.
+- `'figuras'` (v2 mejorado, por defecto): rieles, zigzag, portales, rizo, columpio y trampolín (gravedad 2800), con
+  las reglas nuevas de abajo. Salen del catálogo el `cruce` (invadía el carril vecino) y la `espiral` (la hélice 3D
+  proyectada se lee como un riel que se cruza consigo mismo); el código sigue en `figuras-ritmo.mts`.
 
 **Lo que cambió (ambos estilos):**
 
@@ -98,7 +98,7 @@ publica tal cual; para los siguientes videos de este estilo rige v3. Y se conser
 2. **Tamaño, brillo y color por rol.** Melodía r 74, brillo 1,0, amarillo `#FFE23D`, estela larga y la única con
    luz puntual; bajo r 52 violeta `#9D5CFF`; bombo r 38 rojo `#FF4D5B`; caja r 34 verde `#3DFF8F`; platillo r 28
    cian `#2EF2FF` (percusión con brillo 0,5 y estela corta). El bombo ya no se parece a la melodía (era naranja y casi
-   del mismo tamaño).
+   del mismo tamaño). El destello del golpe ya no lleva la bolita ni la clavija a blanco (se perdía el color).
 3. **Separación dura entre bolitas** (`Ocupacion`, rejilla espacio-tiempo de 24 u): todo lo que se VE de las
    bolitas ya generadas (camino, clavijas, rieles, paredes, columpios, portales, con su ventana de vida) queda a
    ≥ 18 u de lo nuevo. Ya no es un costo: el candidato que lo viola se descarta y, si un golpe no tiene salida, el
@@ -106,23 +106,27 @@ publica tal cual; para los siguientes videos de este estilo rige v3. Y se conser
 4. **Reserva de carril.** Una figura que sale de su franja no puede entrar en la banda donde estará una bolita que
    se genera DESPUÉS (su línea ± ruido + el ápice de la nota que suena, o su repisa antes de entrar): la percusión,
    que va última y casi sin holgura, siempre tiene su carril libre.
-5. **Altura por pista.** Cada bolita va a la altura (respecto de la cámara) en que su parábola más alta cabe en el
-   cuadro: las pistas de notas largas bajan. La cámara sigue la línea de descenso (calculada antes del nivel), así el
-   generador sabe exactamente qué entra en cuadro.
+5. **Zona de juego entre los textos.** La bolita entera queda siempre entre el bloque de texto de arriba y el de
+   abajo (en v2 la melodía pasaba por detrás de "5 bolitas, 1 canción"). Cada bolita va a la altura en que su
+   parábola más alta cabe; si ni así cabe, su gravedad baja lo justo (solo esa bolita: en Creep la melodía tiene
+   silencios de 2,6 s y queda en ~1040 en ambos estilos; en el Canon 2050/2186). La cámara sigue la línea de
+   descenso (calculada antes del nivel) y no se mueve en x, así el generador sabe exactamente qué entra en cuadro.
 6. **Clavijas.** Aparecen 40 frames antes de su golpe pero nunca antes del golpe anterior de su bolita (en un
    redoble se ve una sola por delante). Se comparan con su tamaño real de dibujo (nacen en 12 frames, se disuelven
    en 18). El golpe siguiente no puede quedar casi encima del actual.
 7. **Estilo 'figuras' menos amontonado.** A lo más **2 figuras grandes** a la vista en todo el cuadro (rizo, hélice,
    columpio, trampolín y riel serpenteante de más de 520 u) y una por bolita; la percusión solo hace parábola y
-   zigzag. Rieles: a lo más 2 puntos de paso, radio de curvatura ≥ 1,25 r, sin nudos (el tubo no se toca consigo
-   mismo) y dentro de la franja; rizo y hélice compactos, dentro de la franja. Un objeto nuevo no pisa uno propio que
+   zigzag (paredes de a lo más 2r + 236 u de alto y dentro del cuadro). Rieles: a lo más 2 puntos de paso, radio de
+   curvatura ≥ 1,25 r, sin nudos (el tubo no se toca consigo mismo) y dentro de la franja; rizo compacto, dentro de
+   la franja. Un objeto nuevo no pisa uno propio que
    todavía se ve. Variedad: solo la melodía exige ≥ 4 figuras y no repetir seguidas; si no cabe otra cosa repite
    parábola y queda como `nota:` (no es un defecto visual).
 8. **Verificador independiente** (`verificar-ritmo.mts <id>`): sincronía de TODOS los golpes y auditoría
    geométrica cuadro a cuadro (bolitas que se tocan; bolita que roza o atraviesa clavija, pared, riel o columpio
-   ajenos; bolita que atraviesa una clavija propia que no es la de su golpe; fuera de cuadro; > 2 figuras grandes).
+   ajenos; bolita que atraviesa una clavija propia que no es la de su golpe; fuera de cuadro o tapada por un texto;
+   > 2 figuras grandes). Las clavijas se miden con su tamaño de dibujo en ese cuadro.
    Sale con código 1 si queda un solo aviso. Informa el hueco mínimo entre bolitas.
-9. **Tiempos.** Generar el nivel bajó de 143 s (Canon v2) / ~150 s (Creep v2) a 6–20 s (Canon) y 11–45 s (Creep):
+9. **Tiempos.** Generar el nivel bajó de 143 s (Canon v2) / ~150 s (Creep v2) a 3–5 s (Canon) y 3–6 s (Creep):
    la rejilla reemplazó los recorridos por muestras de las otras bolitas (eran el 75 % del tiempo) y las jugadas ya
    no se atascan. Render: una sola luz puntual (la melodía), esferas con menos polígonos según tamaño, estelas
    cortas en la percusión y menos objetos a la vez.
