@@ -586,7 +586,9 @@ const simular = (guion: GuionCarrera) => {
   for (let intento = 0; intento < 240; intento++) {
     const r = correr(n, semilla, gravedad, extras);
     const dur = r ? r.tGanadora / FPS : Infinity;
-    if (r && dur >= DURACION_MIN && dur <= DURACION_MAX) {
+    // El 1.er choque con clavija debe llegar en ≤ 0,3 s (con gravedad baja la salida se vuelve lenta).
+    const primerChoque = r?.eventos.find((e) => e.tipo === 'clavija')?.frame ?? Infinity;
+    if (r && dur >= DURACION_MIN && dur <= DURACION_MAX && (!extras || primerChoque <= 0.3 * FPS)) {
       validas++;
       const p = extras ? puntajeExtras(r) : 0;
       const reñida = r.ventaja < VENTAJA_MAX_SEG;
@@ -596,7 +598,9 @@ const simular = (guion: GuionCarrera) => {
       if ((reñida && p >= meta) || validas >= maxValidas) return { ...mejor, intentos: intento + 1 };
     } else {
       // Duración fuera de rango: acerca la gravedad al objetivo.
-      if (r) gravedad = Math.max(700, Math.min(2500, gravedad * Math.pow(dur / DURACION_OBJETIVO, 1.2)));
+      // Con extras la gravedad no baja de 950: más floja, la salida tarda > 0,3 s en el 1.er choque y la caída se ve
+      // "flotando" (medido 2026-11-09: g=729 → 1.er choque a 417 ms). Si la carrera sale corta, cambia la semilla.
+      if (r) gravedad = Math.max(extras ? 950 : 700, Math.min(2500, gravedad * Math.pow(dur / DURACION_OBJETIVO, 1.2)));
       else gravedad = Math.min(2500, gravedad * 1.3);
     }
     semilla = (semilla + 0x9e3779b9) >>> 0;
@@ -693,13 +697,17 @@ const alVideo = (r: Resultado) => {
   const candidatos: AvisoCarrera[] = [
     ...r.caminos.map((c): AvisoCarrera => ({ frame: aVideo(c.frame), tipo: 'camino', bola: c.bola, otra: c.otra })),
     ...tubos.flatMap((tb, k) => tb.usos.map((u): AvisoCarrera => ({ frame: u.desde, tipo: 'tubo', bola: u.bola, tubo: k }))),
-  ].sort((a, b) => a.frame - b.frame || (a.tipo === 'camino' ? -1 : 1));
+  ].sort((a, b) => a.frame - b.frame);
+  // Prioridad: primero cada entrada a un tubo (es lo nuevo y se ve en cámara), luego los "le abrió el camino".
   const avisos: AvisoCarrera[] = [];
-  for (const a of candidatos) {
-    if (a.frame >= camaraLenta.desde - 60) break;
-    if (avisos.length && a.frame - avisos[avisos.length - 1].frame < AVISO_SEPARACION) continue;
-    avisos.push(a);
+  for (const tipo of ['tubo', 'camino'] as const) {
+    for (const a of candidatos) {
+      if (a.tipo !== tipo || a.frame >= camaraLenta.desde - 60) continue;
+      if (avisos.some((o) => Math.abs(o.frame - a.frame) < AVISO_SEPARACION)) continue;
+      avisos.push(a);
+    }
   }
+  avisos.sort((a, b) => a.frame - b.frame);
   return { posiciones, eventos, llegadas, frameGanadora, camaraLenta, camara, ranking, frameRiser, duracionFrames: t.length, bloques, tubos, avisos };
 };
 
