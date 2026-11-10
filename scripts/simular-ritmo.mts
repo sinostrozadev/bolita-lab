@@ -277,7 +277,8 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
             if (ultimo) {
               const Pj = { x: Math.max(-xMax, Math.min(xMax, P.x + (azar() * 2 - 1) * 60)), y: P.y - 150 - azar() * 120 };
               const v = vParab(P, Pj, dt, G);
-              cand = { figura: 'parabola', vOut: v, tramos: [{ t0: 0, dur: dt, pos: (s) => [P.x + v.x * s, P.y + v.y * s + 0.5 * G * s * s, 0] }], Pj, vFin: { x: v.x, y: v.y + G * dt }, objetos: [], paredes: [], costo: 0, motivos: [] };
+              const P0 = { ...P }; // copia: P se reasigna después y el cierre debe quedarse con este punto
+              cand = { figura: 'parabola', vOut: v, tramos: [{ t0: 0, dur: dt, pos: (s) => [P0.x + v.x * s, P0.y + v.y * s + 0.5 * G * s * s, 0] }], Pj, vFin: { x: v.x, y: v.y + G * dt }, objetos: [], paredes: [], costo: 0, motivos: [] };
             } else cand = CONSTRUCTORES[figura](ctx);
             if (!cand) continue;
             const cota = DIAG ? 99 : Math.min(mejorFig?.viol ?? 99, mejor?.viol ?? 99);
@@ -423,8 +424,9 @@ const evaluar = (
   const motivos = [...cand.motivos];
   let costo = cand.costo;
   // Peso del defecto: dos bolitas que se montan se ve muchísimo; un roce o salir un poco del cuadro, poco.
-  const PESOS: Record<string, number> = { 'bolita-bolita': 4, atraviesa: 2, 'clavija-en-otra': 2, 'pared-en-otra': 2 };
-  const malo = (m: string) => { viol += PESOS[m] ?? 1; motivos.push(m); };
+  // Un choque que no rebota de verdad (restitución absurda o rasante) rompe la sincronía visible: casi prohibido.
+  const PESOS: Record<string, number> = { 'bolita-bolita': 4, atraviesa: 2, 'clavija-en-otra': 2, 'pared-en-otra': 2, e: 20, 'rasante-in': 20, 'rasante-out': 20 };
+  const malo = (m: string) => { viol += PESOS[m.replace(/=.*/, '')] ?? 1; motivos.push(m); };
   const rasanteIn = -vin_n / Math.max(1e-6, len(vIn));
   const rasanteOut = vout_n / Math.max(1e-6, len(vOut));
   if (rasanteIn < 0.25) malo('rasante-in');
