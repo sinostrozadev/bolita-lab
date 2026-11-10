@@ -30,7 +30,7 @@ Logs en `salida/logs/<fecha>.log` (diario) y `salida/logs/cron.log` (todo lo que
 | Solo subir/exportar | `npx tsx scripts/diario.mts --solo-subir` |
 | No generar guiones nuevos | `--sin-generar` |
 | Ver qué haría sin tocar nada | `--dry-run` |
-| Generar guiones | `npx tsx scripts/generar-guiones.mts [--plantilla bola\|dato\|carrera] [--n 5] [--modelo X] [--mostrar-prompt]` |
+| Generar guiones | `npx tsx scripts/generar-guiones.mts [--plantilla bola\|dato\|carrera\|colores] [--n 5] [--modelo X] [--mostrar-prompt]` |
 | Autorizar YouTube (1 vez) | `npx tsx scripts/subir.mts autorizar` |
 | Listar pendientes con su ranura | `npx tsx scripts/subir.mts pendientes` |
 | Subir uno / todos | `npx tsx scripts/subir.mts subir --id <id>` · `subir --todos [--publicar-en ISO] [--dry-run]` |
@@ -43,7 +43,7 @@ Variables: `BOLITA_MEMORIA_MIN_MB` (por defecto 1200), `BOLITA_CONCURRENCIA` (po
 `BOLITA_RENDER_MAX_MIN` (por defecto 90), `FFMPEG_BIN` (opcional, ffmpeg alternativo para compilar).
 
 ## Contrato con las plantillas
-- Guion: `{ plantilla:'bola'|'dato'|'carrera', id, titulo, descripcion, hashtags, props }`; `props.id` = `id`.
+- Guion: `{ plantilla:'bola'|'dato'|'carrera'|'colores', id, titulo, descripcion, hashtags, props }`; `props.id` = `id`.
 - Backlog: `contenido/backlog/<plantilla>-<slug>.json` con id `pendiente-<plantilla>-<slug>`.
   Al promoverlo, el diario quita `pendiente-` y `<plantilla>-` del id y le antepone la fecha:
   `pendiente-carrera-cafe-te-mate` → `2026-11-03-carrera-cafe-te-mate` (si ya existe, sufijo `-2`, `-3`…).
