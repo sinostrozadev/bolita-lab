@@ -7,6 +7,7 @@
   "props": {
     "id": "pendiente-maquina-oda",
     "partitura": "oda-alegria",
+    "fps": 30,
     "arriba": "Esta máquina toca una canción 🎶",
     "abajo": "¿La reconoces? 👇"
   }

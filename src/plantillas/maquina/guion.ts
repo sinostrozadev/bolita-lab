@@ -58,6 +58,8 @@ export const GuionMaquina = z.object({
   /** Lo fija preparar-maquina desde el sim. */
   duracionFrames: z.number().int().positive().optional(),
   llamado: CampoLlamado,
+  /** Solo para medir el costo del render (no usar en guiones): banderas separadas por coma (sinaa, sombra1k, sinsombra, sinpila). */
+  prueba: z.string().optional(),
 });
 export type GuionMaquina = z.infer<typeof GuionMaquina>;
 

@@ -18,6 +18,7 @@ import { ThreeCanvas } from '@remotion/three';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { FORMATO, PALETA } from '../../marca/tokens';
 import { cargarFuentes } from '../../marca/fuentes';
 import { MarcaDeAgua } from '../../marca/MarcaDeAgua';
@@ -33,6 +34,8 @@ import { TEXTOS_MAQUINA, type GuionMaquina, type SimMaquina } from './guion';
 import { hash, texturaBokeh, texturaBrillo, texturaMadera, texturaParche, texturaPlatillo } from './texturas';
 
 const ARRIBA_TOP = FORMATO.seguro.arriba + 58;
+/** Banderas de prueba de rendimiento (prop `prueba`). */
+let PRUEBA = new Set<string>();
 const ABAJO_CENTRO_Y = 1518;
 const LLAMADO_CENTRO_Y = 520;
 
@@ -79,8 +82,8 @@ const crearMateriales = () => {
     madera: std({ map: madera, roughness: 0.62, metalness: 0 }),
     maderaB: std({ map: maderaB, roughness: 0.66, metalness: 0 }),
     palisandro: std({ map: palisandro, roughness: 0.42, metalness: 0 }),
-    pared: std({ map: pared, roughness: 0.9, metalness: 0, color: '#9A8A80' }),
-    piso: std({ map: piso, roughness: 0.75, metalness: 0, color: '#8A7A70' }),
+    pared: new THREE.MeshLambertMaterial({ map: pared, color: '#8A7A70' }),
+    piso: new THREE.MeshLambertMaterial({ map: piso, color: '#7A6A60' }),
     laton: std({ color: '#D2A04A', metalness: 1, roughness: 0.3 }),
     latonOscuro: std({ color: '#9C7432', metalness: 1, roughness: 0.42 }),
     acero: std({ color: '#C9CED6', metalness: 1, roughness: 0.22 }),
@@ -91,7 +94,7 @@ const crearMateriales = () => {
     parche: std({ map: texturaParche('Bolita Lab'), roughness: 0.55 }),
     platillo: std({ map: texturaPlatillo(), metalness: 1, roughness: 0.42, color: '#A87A2A' }),
     canica: new THREE.MeshPhysicalMaterial({ color: '#FFFFFF', roughness: 0.08, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.04 }),
-    canicaPila: std({ color: '#FFFFFF', roughness: 0.18, metalness: 0.05 }),
+    canicaPila: new THREE.MeshLambertMaterial({ color: '#FFFFFF' }),
     lamparaFoco: std({ color: '#FFE2A8', emissive: '#FFC56B', emissiveIntensity: 3 }),
     cable: std({ color: '#151210', roughness: 0.8 }),
     brillo: texturaBrillo(),
@@ -293,7 +296,7 @@ const Deposito: React.FC<{ mats: Mats }> = React.memo(({ mats }) => {
   const { x0, x1, z0, z1, yFondo, yPila } = DEPOSITO;
   const W = x1 - x0, D = z1 - z0, cx = (x0 + x1) / 2, cz = (z0 + z1) / 2;
   const pila = useRef<THREE.InstancedMesh>(null);
-  const N = 1100;
+  const N = PRUEBA.has('sinpila') ? 1 : 1100;
   useLayoutEffect(() => {
     const m = pila.current!;
     const o = new THREE.Object3D();
@@ -425,6 +428,49 @@ const Cargadores: React.FC<{ sim: SimMaquina; mats: Mats }> = React.memo(({ sim,
 
 // ---------- Partes animadas ----------
 
+/**
+ * Fusiona la geometría estática de sus hijos por material (una malla por material y modo de sombra): SwiftShader paga
+ * caro cada llamada de dibujo, y la escena tiene cientos de piezas fijas. Los hijos originales quedan ocultos.
+ * Solo para contenido que no cambia (los hijos deben estar memorizados).
+ */
+const Fusionar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const ref = useRef<THREE.Group>(null);
+  useLayoutEffect(() => {
+    const g = ref.current;
+    if (!g) return;
+    g.updateMatrixWorld(true);
+    const inv = g.matrixWorld.clone().invert();
+    const grupos = new Map<string, { mat: THREE.Material; cast: boolean; recv: boolean; geos: THREE.BufferGeometry[] }>();
+    const originales: THREE.Object3D[] = [];
+    g.traverse((o) => {
+      const m = o as THREE.Mesh;
+      if (!m.isMesh || (m as unknown as THREE.InstancedMesh).isInstancedMesh || Array.isArray(m.material) || o.userData.fusion) return;
+      const geo = (m.geometry.index ? m.geometry.toNonIndexed() : m.geometry.clone());
+      for (const k of Object.keys(geo.attributes)) if (!['position', 'normal', 'uv'].includes(k)) geo.deleteAttribute(k);
+      if (!geo.attributes.uv || !geo.attributes.normal) return;
+      geo.applyMatrix4(inv.clone().multiply(m.matrixWorld));
+      const mat = m.material as THREE.Material;
+      const clave = `${mat.uuid}:${m.castShadow}:${m.receiveShadow}`;
+      const e = grupos.get(clave) ?? { mat, cast: m.castShadow, recv: m.receiveShadow, geos: [] };
+      e.geos.push(geo);
+      grupos.set(clave, e);
+      originales.push(m);
+    });
+    for (const o of originales) o.visible = false;
+    const nuevas: THREE.Mesh[] = [];
+    for (const e of grupos.values()) {
+      const geo = mergeGeometries(e.geos, false);
+      if (!geo) continue;
+      const malla = new THREE.Mesh(geo, e.mat);
+      malla.castShadow = e.cast; malla.receiveShadow = e.recv; malla.userData.fusion = true;
+      g.add(malla);
+      nuevas.push(malla);
+    }
+    return () => { for (const n of nuevas) { g.remove(n); n.geometry.dispose(); } for (const o of originales) o.visible = true; };
+  }, []);
+  return <group ref={ref}>{children}</group>;
+};
+
 const Camara: React.FC<{ c: number[] }> = ({ c }) => {
   const { camera } = useThree();
   const cam = camera as THREE.PerspectiveCamera;
@@ -524,6 +570,38 @@ const Flujo: React.FC<{ t: number; mats: Mats }> = ({ t, mats }) => {
   );
 };
 
+/** Cuerpo de la noria (aros, rayos, cubo, bolsillos): estático en su propio marco, gira el grupo que lo contiene. */
+const RuedaNoria: React.FC<{ mats: Mats }> = React.memo(({ mats }) => {
+  const tope = Math.PI / 2 + 0.12;
+  const rB = NORIA.radio - 2.2;
+  return (
+    <>
+        {[-NORIA.ancho / 2, NORIA.ancho / 2].map((z) => (
+        <group key={z}>
+          <mesh position={[0, 0, z]} material={mats.madera} castShadow receiveShadow><torusGeometry args={[NORIA.radio, 1.5, 10, 72]} /></mesh>
+          <mesh position={[0, 0, z]} material={mats.laton}><torusGeometry args={[NORIA.radio - 2.2, 0.4, 6, 72]} /></mesh>
+          {Array.from({ length: 8 }, (_, k) => (
+            <mesh key={k} position={[0, 0, z]} rotation={[0, 0, (k * Math.PI) / 8]} material={mats.maderaB} castShadow>
+              <boxGeometry args={[NORIA.radio * 2 - 1, 2.2, 1.6]} />
+            </mesh>
+          ))}
+        </group>
+        ))}
+        <mesh rotation={[Math.PI / 2, 0, 0]} material={mats.laton} castShadow><cylinderGeometry args={[5.5, 5.5, NORIA.ancho + 4, 24]} /></mesh>
+        <mesh position={[0, 0, NORIA.ancho / 2 + 2.1]} material={mats.latonOscuro}><circleGeometry args={[5.5, 24]} /></mesh>
+        {Array.from({ length: NORIA.bolsillos }, (_, k) => {
+          const phi = tope + (2 * Math.PI * k) / NORIA.bolsillos;
+          return (
+            <group key={k} position={[Math.cos(phi) * rB, Math.sin(phi) * rB, 0]} rotation={[0, 0, phi]}>
+              <mesh position={[0, 0, 0]} material={mats.laton} castShadow><boxGeometry args={[0.7, 4.6, NORIA.ancho]} /></mesh>
+              <mesh position={[1.8, -2.1, 0]} material={mats.laton}><boxGeometry args={[3.6, 0.6, NORIA.ancho]} /></mesh>
+            </group>
+          );
+        })}
+        </>
+  );
+});
+
 /** Noria: rueda de madera con bolsillos de latón; gira un bolsillo por pulso (el trinquete hace clac en cada negra). */
 const Noria: React.FC<{ t: number; sim: SimMaquina; mats: Mats }> = ({ t, sim, mats }) => {
   const beat = 60 / sim.bpm;
@@ -556,28 +634,7 @@ const Noria: React.FC<{ t: number; sim: SimMaquina; mats: Mats }> = ({ t, sim, m
   return (
     <>
       <group position={[NORIA.x, NORIA.y, NORIA.z]} rotation={[0, 0, giro]}>
-        {[-NORIA.ancho / 2, NORIA.ancho / 2].map((z) => (
-          <group key={z}>
-            <mesh position={[0, 0, z]} material={mats.madera} castShadow receiveShadow><torusGeometry args={[NORIA.radio, 1.5, 10, 72]} /></mesh>
-            <mesh position={[0, 0, z]} material={mats.laton}><torusGeometry args={[NORIA.radio - 2.2, 0.4, 6, 72]} /></mesh>
-            {Array.from({ length: 8 }, (_, k) => (
-              <mesh key={k} position={[0, 0, z]} rotation={[0, 0, (k * Math.PI) / 8]} material={mats.maderaB} castShadow>
-                <boxGeometry args={[NORIA.radio * 2 - 1, 2.2, 1.6]} />
-              </mesh>
-            ))}
-          </group>
-        ))}
-        <mesh rotation={[Math.PI / 2, 0, 0]} material={mats.laton} castShadow><cylinderGeometry args={[5.5, 5.5, NORIA.ancho + 4, 24]} /></mesh>
-        <mesh position={[0, 0, NORIA.ancho / 2 + 2.1]} material={mats.latonOscuro}><circleGeometry args={[5.5, 24]} /></mesh>
-        {Array.from({ length: NORIA.bolsillos }, (_, k) => {
-          const phi = tope + (2 * Math.PI * k) / NORIA.bolsillos;
-          return (
-            <group key={k} position={[Math.cos(phi) * rB, Math.sin(phi) * rB, 0]} rotation={[0, 0, phi]}>
-              <mesh position={[0, 0, 0]} material={mats.laton} castShadow><boxGeometry args={[0.7, 4.6, NORIA.ancho]} /></mesh>
-              <mesh position={[1.8, -2.1, 0]} material={mats.laton}><boxGeometry args={[3.6, 0.6, NORIA.ancho]} /></mesh>
-            </group>
-          );
-        })}
+        <Fusionar><RuedaNoria mats={mats} /></Fusionar>
       </group>
       <instancedMesh ref={canicas} args={[undefined, undefined, NORIA.bolsillos * 2]} material={mats.canica} frustumCulled={false} castShadow>
         <sphereGeometry args={[R_CANICA, 18, 12]} />
@@ -766,8 +823,8 @@ const Luces: React.FC = () => {
     const l = new THREE.DirectionalLight('#FFD8A6', 2.6);
     l.position.set(-150, 300, 260);
     l.target.position.set(0, 100, 0);
-    l.castShadow = true;
-    l.shadow.mapSize.set(2048, 2048);
+    l.castShadow = !PRUEBA.has('sinsombra');
+    l.shadow.mapSize.set(PRUEBA.has('sombra1k') ? 1024 : 2048, PRUEBA.has('sombra1k') ? 1024 : 2048);
     const c = l.shadow.camera as THREE.OrthographicCamera;
     c.left = -130; c.right = 130; c.top = 150; c.bottom = -150; c.near = 100; c.far = 800;
     l.shadow.bias = -0.0004;
@@ -802,18 +859,20 @@ const Escena: React.FC<{ sim: SimMaquina; f: number }> = ({ sim, f }) => {
       <Camara c={cam} />
       <Entorno />
       <Luces />
-      <Taller mats={mats} />
-      <Lamparas mats={mats} />
-      <Bastidor mats={mats} />
-      <Vibrafono mats={mats} />
-      <Bandeja mats={mats} />
-      <Embudo mats={mats} />
-      <Deposito mats={mats} />
-      <BajoMadera mats={mats} />
-      <Ascensor mats={mats} />
-      <Circuito mats={mats} />
-      <Percusion mats={mats} />
-      <Cargadores sim={sim} mats={mats} />
+      {PRUEBA.has('sinestatico') ? null : <Fusionar>
+        <Taller mats={mats} />
+        <Lamparas mats={mats} />
+        <Bastidor mats={mats} />
+        <Vibrafono mats={mats} />
+        <Bandeja mats={mats} />
+        <Embudo mats={mats} />
+        <Deposito mats={mats} />
+        <BajoMadera mats={mats} />
+        <Ascensor mats={mats} />
+        <Circuito mats={mats} />
+        <Percusion mats={mats} />
+        <Cargadores sim={sim} mats={mats} />
+      </Fusionar>}
       <Noria t={t} sim={sim} mats={mats} />
       <Flujo t={t} mats={mats} />
       <Instrumentos sim={sim} f={f} mats={mats} golpesPor={golpesPor} />
@@ -828,6 +887,7 @@ export const Maquina: React.FC<GuionMaquina> = (props) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
   const sim = useSim(props.id);
+  PRUEBA = new Set((props.prueba ?? '').split(',').filter(Boolean));
   if (!sim) return null;
   const f = Math.min(frame, sim.duracionFrames - 1);
   const framesCierre = Math.round(1.2 * fps);
@@ -838,9 +898,9 @@ export const Maquina: React.FC<GuionMaquina> = (props) => {
   return (
     <AbsoluteFill style={{ background: '#140D09', overflow: 'hidden' }}>
       <Audio src={rutaAudio(props.id)} />
-      <ThreeCanvas width={FORMATO.ancho} height={FORMATO.alto} shadows="soft" gl={{ antialias: true, toneMappingExposure: 1.05 }}
+      <ThreeCanvas width={FORMATO.ancho} height={FORMATO.alto} shadows={PRUEBA.has('pcf') ? true : 'soft'} gl={{ antialias: !PRUEBA.has('sinaa'), toneMappingExposure: 1.05 }}
         camera={{ fov: 32, near: 2, far: 4000, position: [0, 120, 400] }}>
-        <Escena sim={sim} f={f} />
+        {PRUEBA.has('vacio') ? null : <Escena sim={sim} f={f} />}
       </ThreeCanvas>
       {/* viñeta cálida de cine */}
       <AbsoluteFill style={{ background: 'radial-gradient(ellipse at 50% 48%, #00000000 55%, #0A050299 100%)', pointerEvents: 'none' }} />
