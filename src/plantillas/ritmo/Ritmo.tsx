@@ -197,7 +197,7 @@ const Trampolin: React.FC<{ c: ClavijaSim; flash: number; tras: number; color: s
     <>
       <mesh>
         <boxGeometry args={[c.radio * 1.6, c.largo * 2 + c.radio * 2, 40]} />
-        <meshStandardMaterial color={METAL} metalness={0.5} roughness={0.35} emissive={color} emissiveIntensity={0.55 + 2.4 * flash} />
+        <meshStandardMaterial color={METAL} metalness={0.5} roughness={0.35} emissive={color} emissiveIntensity={0.55 + 1.2 * flash} />
       </mesh>
       {[-0.6, 0.6].map((u) => (
         <mesh key={u} position={[-(c.radio * 0.8 + alto / 2), u * c.largo, 0]} rotation={[0, 0, Math.PI / 2]}>
@@ -387,13 +387,13 @@ const Clavija: React.FC<{ c: ClavijaSim; f: number; color: string; textura: THRE
           ) : c.largo > 0 ? (
             <mesh>
               <capsuleGeometry args={[c.radio, c.largo * 2, 6, 14]} />
-              <meshStandardMaterial color={METAL} metalness={0.6} roughness={0.3} emissive={color} emissiveIntensity={0.3 + 2.4 * flash} />
+              <meshStandardMaterial color={METAL} metalness={0.6} roughness={0.3} emissive={color} emissiveIntensity={0.3 + 1.2 * flash} />
             </mesh>
           ) : (
             <group rotation={[Math.PI / 2, 0, 0]}>
               <mesh>
                 <cylinderGeometry args={[c.radio, c.radio, 34, 22]} />
-                <meshStandardMaterial color={METAL} metalness={0.65} roughness={0.28} emissive={color} emissiveIntensity={0.28 + 2.4 * flash} />
+                <meshStandardMaterial color={METAL} metalness={0.65} roughness={0.28} emissive={color} emissiveIntensity={0.28 + 1.2 * flash} />
               </mesh>
               <mesh position={[0, 17.5, 0]} rotation={[-Math.PI / 2, 0, 0]}>
                 <ringGeometry args={[c.radio * 0.55, c.radio * 0.95, 22]} />
@@ -501,9 +501,10 @@ const Escena: React.FC<{ sim: SimRitmo; f: number; camX: number; camY: number }>
             {protagonista && <pointLight position={[x, Y(y), z + b.r * 2.2]} color={b.color} intensity={260 + 900 * flash} distance={650} decay={1} />}
             <mesh position={[x, Y(y), z]} scale={[1 + 0.12 * flash, 1 - 0.08 * flash, 1]}>
               <sphereGeometry args={b.r >= 60 ? [b.r, 40, 28] : [b.r, 24, 16]} />
-              <meshPhysicalMaterial color={b.color} emissive={b.color} emissiveIntensity={0.12 + 0.38 * b.brillo + 1.3 * flash} roughness={0.18} metalness={0.05} clearcoat={1} clearcoatRoughness={0.08} />
+              {/* v3: el destello no lleva la bolita a blanco (se perdía el color, que es lo que la identifica) */}
+              <meshPhysicalMaterial color={b.color} emissive={b.color} emissiveIntensity={0.12 + 0.38 * b.brillo + 0.45 * flash} roughness={0.18} metalness={0.05} clearcoat={1} clearcoatRoughness={0.08} />
             </mesh>
-            <Brillo x={x} y={y} z={z + b.r + 4} tam={b.r * 3.2} color={b.color} opacidad={0.35 * b.brillo + 0.5 * flash} textura={textura} />
+            <Brillo x={x} y={y} z={z + b.r + 4} tam={b.r * 3.2} color={b.color} opacidad={0.35 * b.brillo + 0.2 * flash} textura={textura} />
             <Brillo x={x} y={y} z={z - 4} tam={b.r * (7 + 4 * flash)} color={b.color} opacidad={0.16 + 0.12 * b.brillo + 0.35 * flash} textura={textura} />
           </group>
         );

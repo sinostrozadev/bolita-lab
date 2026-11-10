@@ -204,7 +204,10 @@ export const zigzag = (c: Contexto): Candidato | null => {
     const mios = toques.filter((t) => t.lado === lado);
     if (!mios.length) continue;
     const y0 = Math.min(...mios.map((t) => t.y)) - (r + 28), y1 = Math.max(...mios.map((t) => t.y)) + (r + 28);
+    // v3: nada de paredes larguísimas (se ven como palos sueltos) ni que asomen del cuadro
+    if (y1 - y0 > 2 * r + 56 + 180) return no('zigzag-pared-larga');
     const x = lado < 0 ? a - r - 8 : b + r + 8;
+    if (Math.abs(x) + 8 > 546) return no('zigzag-pared-fuera');
     const desde = c.ti - 0.25, hasta = c.tj + 0.3;
     cand.objetos.push({ tipo: 'pared', bolita: c.bolita, x, y0, y1, lado, desde, hasta, toques: mios.map((t) => c.ti + t.s) });
     cand.paredes.push({ x, y: (y0 + y1) / 2, nx: -lado, ny: 0, largo: (y1 - y0) / 2, radio: 8, desde, hasta, bolita: c.bolita });

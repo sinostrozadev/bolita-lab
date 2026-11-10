@@ -56,15 +56,15 @@ const tramosDe = (l: EventoPista[], linea: (t: number) => number) =>
   l.slice(1).map((e, k) => { const a = l[k].frame / FPS, z = e.frame / FPS; return { dt: z - a, baja: linea(z) - linea(a) }; });
 
 /**
- * Gravedad de cada bolita. 'figuras': 2800 para todas (las notas largas se vuelven figuras). 'plano': la de v1 a
- * escala (2050), salvo que la nota más larga de la pista no quepa entre los textos: entonces baja lo justo para esa
- * bolita (Creep: la melodía tiene silencios de 4 pulsos = 2,6 s). Solo parábolas no tienen otra salida.
+ * Gravedad de cada bolita: la del estilo ('figuras' 2800; 'plano' la de v1 a escala, 2050), salvo que la parábola de
+ * la nota más larga de la pista no quepa entre los textos: entonces baja lo justo para ESA bolita (Creep: la melodía
+ * tiene silencios de 4 pulsos = 2,6 s y flota un poco más). La parábola (o el trampolín) es la jugada de último
+ * recurso y tiene que caber siempre.
  */
 const calcularGravedades = (ev: Record<PistaRitmo, EventoPista[]>, estilo: EstiloRitmo, linea: (t: number) => number) =>
   CONFIG.map((c) => {
-    if (estilo === 'figuras') return GRAVEDAD.figuras;
     const presupuesto = (VISTA_ARRIBA - c.r) + (VISTA_ABAJO - c.r) - 2 * RUIDO_Y - 70;
-    let g = GRAVEDAD.plano;
+    let g: number = GRAVEDAD[estilo];
     for (let it = 0; it < 30; it++) {
       const ap = Math.max(0, ...tramosDe(ev[c.pista], linea).map((x) => apiceParabola(x.dt, x.baja, g)));
       if (ap <= presupuesto) break;
@@ -83,12 +83,9 @@ const calcularOffsets = (ev: Record<PistaRitmo, EventoPista[]>, estilo: EstiloRi
   const media = pref.reduce((a, b) => a + b, 0) / pref.length;
   return CONFIG.map((c, b) => {
     const l = ev[c.pista];
-    // la parábola más alta de la pista (con la bajada real de la línea: en la intro baja más lento). En 'figuras' la
-    // del 90 % de los tramos (las notas más largas las resuelve una figura), salvo la percusión, que no tiene figuras
-    // grandes.
-    const ap = tramosDe(l, linea).map((x) => apiceParabola(x.dt, x.baja, gs[b])).sort((a, z) => a - z);
-    const soloChicas = c.figuras.every((f) => !GRANDES.has(f) && f !== 'riel');
-    const apice = estilo === 'plano' || soloChicas ? (ap[ap.length - 1] ?? 0) : (ap[Math.floor(ap.length * 0.9)] ?? 0);
+    // la parábola más alta de la pista (con la bajada real de la línea: en la intro baja más lento): la parábola es la
+    // jugada de último recurso y tiene que caber siempre
+    const apice = Math.max(0, ...tramosDe(l, linea).map((x) => apiceParabola(x.dt, x.baja, gs[b])));
     const oMin = -VISTA_ARRIBA + c.r + RUIDO_Y + apice + 30, oMax = VISTA_ABAJO - c.r - RUIDO_Y - 20;
     const o = pref[b] - media - 60;
     return Math.round(oMin > oMax ? oMax : Math.max(oMin, Math.min(oMax, o)));
@@ -120,7 +117,9 @@ type Config = {
   minFiguras: number;
 };
 const CHICAS: FiguraRitmo[] = ['parabola', 'zigzag'];
-const TODAS: FiguraRitmo[] = ['parabola', 'riel', 'loop', 'zigzag', 'pendulo', 'espiral', 'trampolin', 'portal'];
+// v3: sin 'espiral' (la hélice 3D proyectada en el plano se ve como un riel que se cruza consigo mismo: enredo) ni
+// 'cruce' (invadía el carril vecino). Siguen en el catálogo de figuras-ritmo.mts por si se quieren volver a probar.
+const TODAS: FiguraRitmo[] = ['parabola', 'riel', 'loop', 'zigzag', 'pendulo', 'trampolin', 'portal'];
 const CONFIG: Config[] = [
   // Orden de generación = orden de prioridad (la melodía elige primero su camino). v3: tamaño y brillo por rol (la
   // melodía es la más grande y brillante; la percusión, chica y discreta), 5 tonos bien separados (amarillo, violeta,
