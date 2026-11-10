@@ -1,0 +1,13 @@
+{
+  "plantilla": "maquina",
+  "id": "pendiente-maquina-oda",
+  "titulo": "Esta máquina de canicas toca una canción: ¿la reconoces? 🎶",
+  "descripcion": "Una máquina de canicas en 3D: una noria y un ascensor suben las canicas, bajan por una espiral y cada compuerta se abre en el instante justo para que la canica caiga sobre su lámina, el bajo de madera, el bombo o el platillo. Toda la canción sale de las canicas. ¿La reconoces?\nMúsica: tema de dominio público, arreglo propio. Animación y sonido sintetizados en Bolita Lab.\n#shorts #satisfying #maquinadecanicas #marblemachine #musica #bolita",
+  "hashtags": ["#shorts", "#satisfying", "#maquinadecanicas", "#marblemachine", "#musica", "#bolita"],
+  "props": {
+    "id": "pendiente-maquina-oda",
+    "partitura": "oda-alegria",
+    "arriba": "Esta máquina toca una canción 🎶",
+    "abajo": "¿La reconoces? 👇"
+  }
+}
