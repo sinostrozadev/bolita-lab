@@ -73,7 +73,7 @@ const crearMateriales = () => {
   const maderaB = texturaMadera([150, 96, 52], [84, 48, 22], 11);
   const palisandro = texturaMadera([112, 52, 34], [52, 20, 12], 5);
   const pared = texturaMadera([58, 38, 26], [30, 18, 12], 7, 9, 512, 512);
-  pared.repeat.set(3, 2);
+  pared.repeat.set(7, 4);
   const piso = texturaMadera([86, 58, 38], [44, 28, 18], 13, 6, 512, 512);
   piso.repeat.set(4, 6);
   piso.rotation = Math.PI / 2;
@@ -82,7 +82,7 @@ const crearMateriales = () => {
     madera: std({ map: madera, roughness: 0.62, metalness: 0 }),
     maderaB: std({ map: maderaB, roughness: 0.66, metalness: 0 }),
     palisandro: std({ map: palisandro, roughness: 0.42, metalness: 0 }),
-    pared: new THREE.MeshBasicMaterial({ map: pared, color: '#6E5E54' }),
+    pared: new THREE.MeshBasicMaterial({ map: pared, color: new THREE.Color(1.45, 1.2, 1.05) }),
     piso: new THREE.MeshLambertMaterial({ map: piso, color: '#B0A090' }),
     laton: std({ color: '#D2A04A', metalness: 1, roughness: 0.3 }),
     latonOscuro: std({ color: '#9C7432', metalness: 1, roughness: 0.42 }),
