@@ -26,10 +26,10 @@
 | 7 | **Adivina la canción (dominio público)** | `bola` + `juego: adivina` | la bolita toca una melodía conocida, 3 pistas, "escríbela en los comentarios" | 11-10 | en prueba |
 | 8 | **Adivina la canción (con derechos)** | `bola` + `juego: adivina` | igual, con un hit (notas aportadas por Santiago); Content ID probable | 11-13 | en prueba (1 video) |
 | 9 | **Apuesta** | `bola` + `juego: apuesta` | "¿en qué rebote llena el círculo? comenta tu número" | 11-11 | en prueba |
-| 10 | **Ritmo plano** | `ritmo` estilo `plano` | 5 bolitas = 5 instrumentos; cada choque es una nota; caídas simples | 11-14 | en prueba |
+| 10 | **Ritmo plano** | `ritmo` estilo `plano` (v3 en master: 0 choques, colores por rol) | 5 bolitas = 5 instrumentos; cada choque es una nota; caídas simples | 11-14 | en prueba |
 | 11 | **Ritmo figuras** | `ritmo` estilo `figuras` | igual, con rieles, rizos, portales, péndulos, hélices | 11-15 | en prueba |
 | 12 | **Batalla de colores** | `colores` (rama `colores`) | equipos de color: mismo color se fusiona, distinto se divide, los chicos mueren, gana el que sobrevive; votación | 11-10 | en prueba: `yV2xgpjEOpY` sáb 11-14 07:00 (aprobado); mejoras del final y votación unificada en curso |
-| 13 | **Máquina de canicas musical 3D** | `maquina` | máquina tipo Wintergatan en Three.js: noria, xilófono, bombo; la melodía la tocan las canicas | en construcción | prototipo |
+| 13 | **Máquina de canicas musical 3D** | `maquina` | máquina tipo Wintergatan en Three.js: noria, vibráfono, bombo, platillo; la melodía la tocan las canicas (179 golpes sincronizados) | 11-10 | prototipo privado `Liq64V3Kn34` (espera veredicto); render 32 min a 60 fps |
 | 15 | **Votación por acciones** | variable en `colores` y `carrera` v2 | "❤️ = ROJO · 💬 = AZUL · 🔁 = AMARILLO · 🔔 = VERDE": cada acción vota un color | en construcción | variable a medir (me gusta/comentarios/compartidos/subs por 1.000 vistas) |
 | 14 | **Compilación / largo** | `compilar.mts` | largo 16:9 con Shorts | — | pausado (la del 11-08 no se sube); próximo: quiz "¿Cuántas adivinas?" |
 

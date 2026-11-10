@@ -1,0 +1,70 @@
+{
+  "plantilla": "carrera",
+  "id": "2026-11-09-carrera-que-signo-del-zodiaco-llega-primero",
+  "titulo": "¿Qué signo del zodiaco llega primero? Carrera de bolitas",
+  "descripcion": "Seis signos del zodiaco bajan a toda velocidad por un tablero de clavijas. Cada rebote suena, cada choque cambia el orden. ¿El tuyo gana o se queda atrás? Apuesta en los comentarios antes de que termine.",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#satisfying",
+    "#bolitas",
+    "#fisica",
+    "#zodiaco",
+    "#signos"
+  ],
+  "props": {
+    "id": "2026-11-09-carrera-que-signo-del-zodiaco-llega-primero",
+    "gancho": "¿Qué signo gana?",
+    "tema": "signos del zodiaco",
+    "participantes": [
+      {
+        "etiqueta": "ARIES",
+        "color": "naranja",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♈"
+        }
+      },
+      {
+        "etiqueta": "GÉMINIS",
+        "color": "amarillo",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♊"
+        }
+      },
+      {
+        "etiqueta": "LEO",
+        "color": "magenta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♌"
+        }
+      },
+      {
+        "etiqueta": "LIBRA",
+        "color": "cian",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♎"
+        }
+      },
+      {
+        "etiqueta": "ESCORPIO",
+        "color": "violeta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♏"
+        }
+      },
+      {
+        "etiqueta": "ACUARIO",
+        "color": "lima",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "♒"
+        }
+      }
+    ]
+  }
+}
