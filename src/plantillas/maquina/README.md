@@ -44,6 +44,14 @@ flock /tmp/bolita-render.lock -w 3600 npx remotion render src/index.ts Maquina s
   canicas en `InstancedMesh` (flujo, noria, cargadores, partitura), láminas que se encienden y vibran, parche que se
   hunde, platillo que oscila, ondas y chispas aditivas en cada golpe, textos fijos, llamado, marca de agua y cierre.
 
+## Rendimiento (WSL, SwiftShader, 2026-11-10)
+
+- Render completo 1080×1920 a 30 fps (1296 frames): **17,7 min** (≈ 0,8 s/frame con la máquina poco cargada; con otros
+  renders al lado sube a 2–2,5 s/frame). A 60 fps (2592 frames) ≈ 35–40 min si la máquina está libre.
+- Lo que más costaba: cientos de mallas estáticas (llamadas de dibujo) → `Fusionar` las une por material al montar;
+  pared sin iluminación (`MeshBasicMaterial`), piso y pila con Lambert. El MSAA cuesta ~30 %; se dejó activado.
+- `scripts/medir-maquina.mts <id> <frame> "" sinaa sombra1k …` mide s/frame con banderas de la prop `prueba`.
+
 ## Partituras
 
 `contenido/partituras/<nombre>.json`: `bpm`, `compas`, `pistas.melodia|bajo` = `[midi, pulso, duración]` (la melodía
