@@ -88,3 +88,18 @@ export const texturaBokeh = () => {
   g.fillStyle = grad; g.fillRect(0, 0, 128, 128);
   return aTextura(c, false);
 };
+
+/** Parche del bombo: piel clara con el nombre del canal en el borde y un círculo al centro. */
+export const texturaParche = (nombre: string) => {
+  const { c, g } = lienzo(512, 512);
+  const grad = g.createRadialGradient(256, 256, 20, 256, 256, 256);
+  grad.addColorStop(0, '#F6EFDF'); grad.addColorStop(0.85, '#E9DEC6'); grad.addColorStop(1, '#CDBE9F');
+  g.fillStyle = grad; g.fillRect(0, 0, 512, 512);
+  g.strokeStyle = 'rgba(150,40,30,0.85)'; g.lineWidth = 10;
+  g.beginPath(); g.arc(256, 256, 150, 0, Math.PI * 2); g.stroke();
+  g.fillStyle = '#9C2A1E';
+  g.font = 'bold 64px "Bricolage Grotesque", sans-serif';
+  g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillText(nombre.toUpperCase(), 256, 256);
+  return aTextura(c, false);
+};

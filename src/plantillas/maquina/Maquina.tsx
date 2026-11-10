@@ -30,7 +30,7 @@ import {
   largoBajo, largoLamina, puntosEspiral, xBajo, xLamina, yBandeja, type P3, type Pieza,
 } from './geometria';
 import { TEXTOS_MAQUINA, type GuionMaquina, type SimMaquina } from './guion';
-import { hash, texturaBokeh, texturaBrillo, texturaMadera, texturaPlatillo } from './texturas';
+import { hash, texturaBokeh, texturaBrillo, texturaMadera, texturaParche, texturaPlatillo } from './texturas';
 
 const ARRIBA_TOP = FORMATO.seguro.arriba + 58;
 const ABAJO_CENTRO_Y = 1518;
@@ -88,7 +88,7 @@ const crearMateriales = () => {
     vidrio: new THREE.MeshPhysicalMaterial({ color: '#E8F4FF', metalness: 0, roughness: 0.05, transparent: true, opacity: 0.16, depthWrite: false, side: THREE.DoubleSide, clearcoat: 1 }),
     fieltro: std({ color: '#5A2230', roughness: 1 }),
     lacaRoja: new THREE.MeshPhysicalMaterial({ color: '#A3161D', roughness: 0.25, clearcoat: 1, clearcoatRoughness: 0.1 }),
-    parche: std({ color: '#EFE6D2', roughness: 0.55 }),
+    parche: std({ map: texturaParche('Bolita Lab'), roughness: 0.55 }),
     platillo: std({ map: texturaPlatillo(), metalness: 1, roughness: 0.42, color: '#A87A2A' }),
     canica: new THREE.MeshPhysicalMaterial({ color: '#FFFFFF', roughness: 0.08, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.04 }),
     canicaPila: std({ color: '#FFFFFF', roughness: 0.18, metalness: 0.05 }),
