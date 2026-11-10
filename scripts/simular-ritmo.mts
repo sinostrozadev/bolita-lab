@@ -51,10 +51,10 @@ const CONFIG: Config[] = [
   // Orden de generación = orden de prioridad (la melodía elige primero su camino). Bolitas grandes (diámetro ≥ 7 % del
   // alto del cuadro) y escalonadas en altura (desfase) para que las figuras tengan lugar sin chocar con la vecina.
   { pista: 'melodia', carril: 0, r: 78, color: PALETA.neon.amarillo, brillo: 1.0, largo: 56, radio: 15, desfase: 0 },
-  { pista: 'bajo', carril: -200, r: 76, color: PALETA.neon.violeta, brillo: 0.55, largo: 60, radio: 16, desfase: -170 },
-  { pista: 'kick', carril: -400, r: 72, color: PALETA.neon.naranja, brillo: 0.85, largo: 0, radio: 22, desfase: 160 },
-  { pista: 'snare', carril: 200, r: 71, color: PALETA.verde, brillo: 0.85, largo: 0, radio: 19, desfase: 170 },
-  { pista: 'hat', carril: 400, r: 70, color: PALETA.neon.cian, brillo: 0.85, largo: 0, radio: 16, desfase: -150 },
+  { pista: 'bajo', carril: -190, r: 76, color: PALETA.neon.violeta, brillo: 0.55, largo: 60, radio: 16, desfase: -170 },
+  { pista: 'kick', carril: -380, r: 72, color: PALETA.neon.naranja, brillo: 0.85, largo: 0, radio: 22, desfase: 160 },
+  { pista: 'snare', carril: 190, r: 71, color: PALETA.rojo, brillo: 0.85, largo: 0, radio: 19, desfase: 170 },
+  { pista: 'hat', carril: 380, r: 70, color: PALETA.neon.cian, brillo: 0.85, largo: 0, radio: 16, desfase: -150 },
 ];
 
 type V = { x: number; y: number };
@@ -103,6 +103,11 @@ const distClavijas = (c1: Caps, c2: Caps) => {
  * por donde ya hubo clavijas (las notas largas lanzan alto). */
 export const FRAMES_DISOLVER = 18;
 const finVida = (c: { golpe: number }) => (c.golpe + FRAMES_DISOLVER) / FPS;
+/** Las clavijas aparecen (crecen) 1 s antes de su golpe, como los rieles: el circuito se arma por delante de las
+ * bolitas. Así solo estorban en su ventana de vida y no durante todo el video. Debe coincidir con Ritmo.tsx. */
+export const FRAMES_APARECE = 60;
+const iniVida = (c: { golpe: number }) => (c.golpe - FRAMES_APARECE) / FPS;
+const conviven = (a: { golpe: number }, b: { golpe: number }) => iniVida(a) < finVida(b) && iniVida(b) < finVida(a);
 
 type Muestra = { t: number; x: number; y: number; r: number; b: number; oculto?: boolean };
 
@@ -244,7 +249,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
         const tj = ultimo ? ti + 1.0 : lista[i + 1].frame / FPS;
         const dt = tj - ti;
         const ctx: Contexto = {
-          P, vIn, ti, dt, tj, r: cfg.r, carril: cfg.carril, bolita: b, G, semiCarril: SEMI_CARRIL, azar, objetivoY, vecinos,
+          P, vIn, ti, dt, tj, r: cfg.r, carril: cfg.carril, bolita: b, G, semiCarril: SEMI_CARRIL, azar, objetivoY, vecinos, xMax,
           objetivo: (ladoForzado?: number) => {
             const lado = ladoForzado ?? (P.x > cfg.carril ? -1 : 1);
             const x = cfg.carril + lado * azar() * SEMI_CARRIL * (ladoForzado || azar() < 0.75 ? 1 : -0.6);
@@ -290,7 +295,7 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
           if (r && (!mejor || r.viol < mejor.viol || (r.viol === mejor.viol && r.costo < mejor.costo))) mejor = { ...r, cand };
         }
         if (!mejor) throw new Error(`sin candidato para ${cfg.pista} #${i}`);
-        if (mejor.viol > 0 && i > 0 && retros[i] < 4 && retrosTotales < 3 * lista.length) {
+        if (mejor.viol > 0 && i > 0 && retros[i] < 8 && retrosTotales < 6 * lista.length) {
           // deshacer el paso anterior y rehacerlo
           retros[i]++; retrosTotales++;
           const ps = pila.pop()!;
@@ -378,14 +383,14 @@ export const generarNivel = (props: GuionRitmo, partitura: PartituraRitmo): SimR
 
   // Cámara: sigue al centroide con dos pasadas de suavizado exponencial (≈ 0,25 s de retraso); se congela en el clímax.
   const camara: number[] = [];
-  const tau = 0.18, alfa = 1 - Math.exp(-1 / (FPS * tau));
+  const tau = 0.14, alfa = 1 - Math.exp(-1 / (FPS * tau));
   let y1 = NaN, y2 = NaN, x1 = NaN;
   for (let f = 0; f < duracionFrames; f++) {
     const ff = Math.min(f, finalFrame);
     let cx = 0, cy = 0;
     for (const bo of bolitas) { cx += bo.cuadros[ff * 2]; cy += bo.cuadros[ff * 2 + 1]; }
     cx /= bolitas.length; cy /= bolitas.length;
-    const objetivo = cy + 30;
+    const objetivo = cy + 90; // mira por delante (abajo): el grupo queda algo sobre el centro, se ve adónde va
     if (Number.isNaN(y1)) { y1 = y2 = objetivo; x1 = cx * 0.15; }
     y1 += alfa * (objetivo - y1);
     y2 += alfa * (y1 - y2);
@@ -432,26 +437,26 @@ const evaluar = (
     - 0.25 * Math.min(Math.abs(cand.Pj.x - P.x), 90) / 90 + subida / 3000;
   const off = cfg.r + cfg.radio;
   const peg: ClavijaSim = { bolita: ctx.bolita, x: P.x - n.x * off, y: P.y - n.y * off, nx: n.x, ny: n.y, largo: cand.estilo === 'trampolin' ? cfg.largo + 40 : cfg.largo, radio: cfg.radio, golpe: Math.round(ti * FPS) };
-  const vidaPeg = finVida(peg);
+  const vidaPeg = finVida(peg), nacePeg = iniVida(peg);
   if (viol > cota) return null;
   // (1) clavija contra clavijas y paredes vivas
-  for (const ix of pegs) for (const c of ix.cerca(peg.y, 300)) if (distClavijas(peg, c) < 8) { malo('clavija-clavija'); break; }
-  for (const ix of muros) for (const w of ix.cerca(peg.y, 300)) if (w.desde < vidaPeg && distClavijas(peg, w) < 8) { malo('clavija-pared'); break; }
+  for (const ix of pegs) for (const c of ix.cerca(peg.y, 300)) if (conviven(peg, c) && distClavijas(peg, c) < 8) { malo('clavija-clavija'); break; }
+  for (const ix of muros) for (const w of ix.cerca(peg.y, 300)) if (w.desde < vidaPeg && w.hasta > nacePeg && distClavijas(peg, w) < 8) { malo('clavija-pared'); break; }
   for (const w of cand.paredes) if (distClavijas(peg, w) < 4) { malo('clavija-pared-propia'); break; }
   // (2) clavija contra la trayectoria de las demás bolitas y la propia anterior
-  for (const m of otras.cerca(peg.y, 220)) if (!m.oculto && m.t < vidaPeg && distClavija(m, peg) < m.r + 5) { malo('clavija-en-otra'); break; }
+  for (const m of otras.cerca(peg.y, 220)) if (!m.oculto && m.t < vidaPeg && m.t > nacePeg && distClavija(m, peg) < m.r - 8) { malo('clavija-en-otra'); break; }
   // (la llegada reciente solo cuenta si de verdad penetra la clavija: con bolitas grandes y llegadas lentas el último
   // tramo pasa legítimamente a pocas unidades de ella)
   if (!primero) for (const m of propiasIdx.cerca(peg.y, 220)) {
-    if (m.oculto || m.t >= ti - 0.02) continue;
+    if (m.oculto || m.t >= ti - 0.02 || m.t < nacePeg) continue;
     if (distClavija(m, peg) < (m.t > ti - 0.5 ? m.r - 1 : m.r + 5)) { malo('clavija-en-propia'); break; }
   }
   if (viol > cota) return null;
-  // (3) el camino nuevo (muestreado a 240 Hz) no atraviesa clavijas, paredes ni bolitas, y no sale de cuadro
+  // (3) el camino nuevo (muestreado a 240 Hz) no atraviesa (roces de < 8 u contra clavijas ajenas se toleran: no se ven) clavijas, paredes ni bolitas, y no sale de cuadro
   const muestras: Muestra[] = [];
   const nS = Math.round(dt * FPS * SUB);
   let k = 0, choca = false, fuera = false, junta = false;
-  const margen = cand.figura === 'cruce' ? 40 : 8;
+  const margen = cand.figura === 'cruce' ? 30 : 2;
   let cruza = false, mejorCruce = Infinity;
   for (let s = 1; s <= nS; s++) {
     const tt = (s / nS) * dt;
@@ -464,7 +469,7 @@ const evaluar = (
     if (m.oculto) continue;
     if (!fuera && !ultimo && (Math.abs(m.x) > xMax + 4 || m.y - linea(m.t) < -700 || m.y - linea(m.t) > 640)) { fuera = true; malo('fuera-de-cuadro'); if (DIAG && Math.random() < 0.001) console.log('FUERA', cand.figura, cfg.pista, m.x.toFixed(0), (m.y - linea(m.t)).toFixed(0), xMax, (m.t - ti).toFixed(2), dt.toFixed(2)); }
     if (!choca && tt >= 0.03) {
-      for (const ix of pegs) { for (const c of ix.cerca(m.y, 200)) if (m.t < finVida(c) && distClavija(m, c) < cfg.r + 3) { choca = true; break; } if (choca) break; }
+      for (const ix of pegs) { for (const c of ix.cerca(m.y, 200)) if (m.t < finVida(c) && m.t > iniVida(c) && distClavija(m, c) < cfg.r - 8) { choca = true; break; } if (choca) break; }
       if (!choca) for (const ix of muros) { for (const w of ix.cerca(m.y, 200)) if (m.t >= w.desde && m.t <= w.hasta && distClavija(m, w) < cfg.r + 3) { choca = true; break; } if (choca) break; }
       if (choca) malo('atraviesa');
     }
@@ -480,7 +485,7 @@ const evaluar = (
   for (const w of cand.paredes) {
     for (const m of otras.cerca(w.y, 260 + w.largo)) if (!m.oculto && m.t >= w.desde && m.t <= w.hasta && distClavija(m, w) < m.r + 4) { malo('pared-en-otra'); break; }
     for (const m of propiasIdx.cerca(w.y, 260 + w.largo)) if (m.t >= w.desde && m.t < ti - 0.02 && distClavija(m, w) < m.r + 4) { malo('pared-en-propia'); break; }
-    for (const ix of pegs) for (const c of ix.cerca(w.y, 300 + w.largo)) if (w.desde < finVida(c) && distClavijas(w, c) < 8) { malo('pared-clavija'); break; }
+    for (const ix of pegs) for (const c of ix.cerca(w.y, 300 + w.largo)) if (w.desde < finVida(c) && w.hasta > iniVida(c) && distClavijas(w, c) < 8) { malo('pared-clavija'); break; }
   }
   if (DIAG) { const k = cand.figura; const d = DIAG.get(k) ?? new Map<string, number>(); DIAG.set(k, d); d.set('_n', (d.get('_n') ?? 0) + 1); if (!viol) d.set('_ok', (d.get('_ok') ?? 0) + 1); for (const m of new Set(motivos.map((x) => x.replace(/=.*/, '')))) d.set(m, (d.get(m) ?? 0) + 1); }
   return { viol, motivos, costo, n, e, peg, muestras };

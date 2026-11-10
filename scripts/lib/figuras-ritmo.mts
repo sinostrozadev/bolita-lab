@@ -41,6 +41,8 @@ export type Contexto = {
   objetivoY: (t: number) => number;
   /** Carriles de bolitas ya generadas (para el cruce). */
   vecinos: number[];
+  /** |x| máximo del centro de la bolita (entera dentro del cuadro). */
+  xMax: number;
 };
 
 /** Δt mínimo con que cabe cada figura (s). */
@@ -165,7 +167,8 @@ export const zigzag = (c: Contexto): Candidato | null => {
   const { P, r, azar, dt, G } = c;
   const h = 30 + azar() * 95; // semiancho del pasillo para el CENTRO de la bolita
   const centro = P.x + (azar() * 2 - 1) * h * 0.7;
-  const a = centro - h, b = centro + h, L = b - a;
+  const a = Math.max(-c.xMax, centro - h), b = Math.min(c.xMax, centro + h), L = b - a;
+  if (L < 50) return null;
   if (P.x < a + 3 || P.x > b - 3) return null;
   const m = 1 + Math.floor(azar() * (dt > 0.6 ? 3 : 2));
   const signo = azar() < 0.5 ? -1 : 1;
@@ -223,7 +226,7 @@ export const conector = (
     const yLo = Math.min(A.y, B.y) - 120, yHi = Math.max(A.y, B.y) + 240;
     let lado = azar() < 0.5 ? -1 : 1;
     for (let k = 1; k <= n; k++) {
-      pts.push({ x: Math.max(carril - 170, Math.min(carril + 170, carril + lado * (40 + azar() * 130))), y: yLo + azar() * (yHi - yLo) });
+      pts.push({ x: Math.max(-c.xMax + 10, Math.min(c.xMax - 10, carril + lado * (40 + azar() * 130))), y: yLo + azar() * (yHi - yLo) });
       lado = -lado;
     }
   }
@@ -334,9 +337,9 @@ export const loop = (c: Contexto): Candidato | null => {
   // Geometría desde la llegada: clavija Pj, delante la salida del rizo B2, el rizo en B y la rampa de entrada E→B.
   const o = c.objetivo(dir);
   const corrimiento = dir * r * 1.1; // la salida queda al lado de la entrada (como un rizo real visto de frente)
-  const B = { x: P.x + dir * (20 + azar() * 60), y: o.y - 60 - azar() * 80 };
+  const B = { x: Math.max(-c.xMax + R + 5, Math.min(c.xMax - R - 5 - Math.abs(corrimiento), P.x + dir * (20 + azar() * 60))), y: o.y - 60 - azar() * 80 };
   const B2 = { x: B.x + corrimiento, y: B.y };
-  const Pj = { x: B2.x + dir * (110 + azar() * 110), y: B2.y + 60 + azar() * 70 };
+  const Pj = { x: Math.max(-c.xMax, Math.min(c.xMax, B2.x + dir * (110 + azar() * 110))), y: B2.y + 60 + azar() * 70 };
   const E = { x: B.x - dir * (90 + azar() * 80), y: B.y - 150 - azar() * 90 };
   const T1 = 0.26 + azar() * 0.12;
   const T3 = Math.hypot(Pj.x - B2.x, Pj.y - B2.y) / (0.85 * vL);
@@ -376,13 +379,13 @@ export const espiral = (c: Contexto): Candidato | null => {
   const n = vueltas[Math.floor(azar() * vueltas.length)];
   const Th = (2 * Math.PI * n) / w;
   const o = c.objetivo();
-  const H0 = { x: Math.max(c.carril - 60, Math.min(c.carril + 60, P.x + dir * (10 + azar() * 50))), y: o.y - 110 - vy * Th - azar() * 60 };
+  const H0 = { x: Math.max(-c.xMax + ax + 5, Math.min(c.xMax - ax - 5, Math.max(c.carril - 60, Math.min(c.carril + 60, P.x + dir * (10 + azar() * 50))))), y: o.y - 110 - vy * Th - azar() * 60 };
   const posH = (s: number): V3 => [H0.x + dir * ax * Math.sin(w * s), H0.y + vy * s, az * Math.cos(w * s)];
   const fin = posH(Th);
   const H1 = { x: fin[0], y: fin[1] };
   const v0 = { x: dir * ax * w, y: vy }, v1 = { x: dir * ax * w * Math.cos(w * Th), y: vy };
   const sx = Math.sign(v1.x) || 1;
-  const Pj = { x: H1.x + sx * (70 + azar() * 90), y: H1.y + 70 + azar() * 70 };
+  const Pj = { x: Math.max(-c.xMax, Math.min(c.xMax, H1.x + sx * (70 + azar() * 90))), y: H1.y + 70 + azar() * 70 };
   const E = { x: H0.x - dir * (80 + azar() * 70), y: H0.y - 110 - azar() * 70 };
   const T1 = 0.18 + azar() * 0.1;
   const sp1 = len(v1);
