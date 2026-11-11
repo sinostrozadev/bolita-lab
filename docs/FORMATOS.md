@@ -34,7 +34,7 @@
 | 14 | **Compilación / largo** | `compilar.mts` | largo 16:9 con Shorts | — | pausado (la del 11-08 no se sube); próximo: quiz "¿Cuántas adivinas?" |
 
 ## Experimento "una canción, siete formatos" (11-16 → 11-22, 07:00)
-Misma canción (transcripción de Santiago, compases 1–8 ×2, 80 bpm) en: bola adivina, bola apuesta, ritmo plano, ritmo figuras, máquina 3D, carrera v2 (cama musical) y colores (cama musical). Uno por día, siempre 07:00. Se compara vistas 48 h, "se queda a ver" y comentarios: la única variable es el formato.
+Misma canción (transcripción de Santiago, compases 1–8 ×2, 80 bpm) en: bola adivina, bola apuesta, ritmo plano, ritmo figuras, máquina 3D, carrera v2 (cama musical) y colores (cama musical). Uno por día, siempre 07:00, del **11-11 al 11-17** (máquina el 11-15). Los 07:00 que ocupaban se movieron al 11-18/19/20/21. Se compara vistas 48 h, "se queda a ver" y comentarios: la única variable es el formato.
 
 ## Videos por formato
 
@@ -66,6 +66,12 @@ Misma canción (transcripción de Santiago, compases 1–8 ×2, 80 bpm) en: bola
     { "formato": 6, "id": "E4wtIUfjZbE", "fecha": "2026-11-12", "nota": "dato Torre Eiffel, 07:00" },
     { "formato": 5, "id": "Hw8RS-K-KRM", "fecha": "2026-11-13", "nota": "carrera v2 superpoderes, 5 competidores, votación v1, 07:00" },
     { "formato": 12, "id": "yV2xgpjEOpY", "fecha": "2026-11-14", "nota": "batalla 4 colores, gana amarillo, votación v1, 07:00" },
+    { "formato": 7, "id": "fHVj0At4E0U", "fecha": "2026-11-11", "nota": "DBGT adivina, 07:00" },
+    { "formato": 9, "id": "iUBhm8a36Dc", "fecha": "2026-11-12", "nota": "DBGT apuesta, 07:00" },
+    { "formato": 10, "id": "2p6VCKA2V9s", "fecha": "2026-11-13", "nota": "DBGT ritmo plano, 07:00" },
+    { "formato": 11, "id": "7ja9SS_rMxA", "fecha": "2026-11-14", "nota": "DBGT ritmo figuras, 07:00" },
+    { "formato": 5, "id": "4xZI3VplZw0", "fecha": "2026-11-16", "nota": "DBGT carrera (cama), 07:00" },
+    { "formato": 12, "id": "oFa1laPNopI", "fecha": "2026-11-17", "nota": "DBGT colores (cama), 07:00" },
     { "formato": 11, "id": "V-geJGHFy48", "fecha": "2026-11-15", "nota": "Creep (notas de tutorial), 15:00" }
   ]
 }
