@@ -1,0 +1,59 @@
+{
+ "plantilla": "carrera",
+ "id": "prueba-cancion-carrera",
+ "titulo": "¿Qué instrumento gana? 🎹🎸🥁🎺 Con Dragon Ball GT de fondo 🐉",
+ "descripcion": "Piano, guitarra, batería y trompeta en una carrera de bolitas de neón, con el opening de Dragon Ball GT sonando de fondo. Vota con tu acción: Me gusta, Comenta, Comparte o Suscríbete. ¿Acertaste?\nMúsica de fondo: opening de Dragon Ball GT en versión instrumental sintetizada (arreglo propio); derechos de la composición de sus autores. Simulación física determinista hecha en Bolita Lab.",
+ "hashtags": [
+  "#shorts",
+  "#dragonball",
+  "#dragonballgt",
+  "#anime",
+  "#carrera",
+  "#satisfying",
+  "#bolitas",
+  "#fisica"
+ ],
+ "derechos": true,
+ "props": {
+  "id": "prueba-cancion-carrera",
+  "gancho": "¿Qué instrumento gana?",
+  "tema": "instrumentos",
+  "votacion": true,
+  "musica": "cancion-santiago-tema",
+  "llamado": "Comenta o dale like si eres un verdadero guerrero saiyajin 🐉",
+  "participantes": [
+   {
+    "etiqueta": "PIANO",
+    "color": "cian",
+    "icono": {
+     "tipo": "emoji",
+     "valor": "🎹"
+    }
+   },
+   {
+    "etiqueta": "GUITARRA",
+    "color": "naranja",
+    "icono": {
+     "tipo": "emoji",
+     "valor": "🎸"
+    }
+   },
+   {
+    "etiqueta": "BATERÍA",
+    "color": "magenta",
+    "icono": {
+     "tipo": "emoji",
+     "valor": "🥁"
+    }
+   },
+   {
+    "etiqueta": "TROMPETA",
+    "color": "amarillo",
+    "icono": {
+     "tipo": "emoji",
+     "valor": "🎺"
+    }
+   }
+  ]
+ }
+}

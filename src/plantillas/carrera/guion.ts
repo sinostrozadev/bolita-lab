@@ -80,6 +80,12 @@ export const GuionCarrera = z.object({
   votacion: z.boolean().optional(),
   /** Llamado a suscribirse en el clímax (opcional; ausente = activado con variante por id; false = apagado; texto = ese texto). */
   llamado: CampoLlamado,
+  /**
+   * Canción de fondo (2026-11-10): nombre de una partitura de `contenido/partituras/` (p. ej. "cancion-santiago-tema")
+   * o ruta a un .json. Reemplaza la cama genérica por esa canción (piano suave + bajo + percusión suave) y baja los
+   * golpes de las clavijas a la mitad. Ausente = cama genérica.
+   */
+  musica: z.string().regex(/^[a-z0-9-]+$|\.json$/).optional(),
 }).superRefine((g, ctx) => {
   if (g.votacion && g.participantes.length !== 4) {
     ctx.addIssue({ code: 'custom', path: ['participantes'], message: 'votacion: true exige exactamente 4 participantes (una acción por competidor)' });

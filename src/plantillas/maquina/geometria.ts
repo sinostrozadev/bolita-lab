@@ -13,15 +13,15 @@
 export const G = 981; // cm/s²
 export const R_CANICA = 1.3;
 
-// ---------- Vibráfono (melodía): 8 láminas Sol4 … Sol5 ----------
-export const NOTAS_VIBRA = [67, 69, 71, 72, 74, 76, 77, 79] as const;
+// ---------- Vibráfono (melodía): 9 láminas Sol4 … La5 (diatónicas; La5 desde 2026-11-10 para la canción de Santiago) ----------
+export const NOTAS_VIBRA = [67, 69, 71, 72, 74, 76, 77, 79, 81] as const;
 /** Colores de las láminas (graves → agudas): arcoíris cálido de aluminio anodizado. */
-export const COLORES_VIBRA = ['#E5483C', '#F2832B', '#F4C434', '#83C44A', '#2DB5A2', '#3189E0', '#7062E8', '#C54FCC'] as const;
+export const COLORES_VIBRA = ['#E5483C', '#F2832B', '#F4C434', '#83C44A', '#2DB5A2', '#3189E0', '#7062E8', '#C54FCC', '#E8509A'] as const;
 export const VIBRA = {
   /** Cara superior de las láminas. */
   yTop: 120,
   grosor: 2.2,
-  ancho: 9,
+  ancho: 8.4,
   /** z del punto de golpe (todas las láminas se golpean a 7 cm delante de su centro, cerca del nodo). */
   zGolpe: 7,
   /** Centro de la canica que espera en la compuerta (cae 18,7 cm: 0,195 s). */
@@ -29,7 +29,8 @@ export const VIBRA = {
   /** Tope de los cargadores (ahí pasa el riel de reparto). */
   yCargador: 163,
 } as const;
-export const xLamina = (i: number) => -42 + 12 * i;
+/** Mismo ancho total que con 8 láminas (−42 … 42): los planos de cámara no cambian. */
+export const xLamina = (i: number) => -42 + 10.5 * i;
 export const largoLamina = (i: number) => 30 - 1.1 * i;
 
 // ---------- Bandeja delantera del vibráfono → embudo ----------
@@ -43,23 +44,24 @@ export const EMBUDO = { x: 50, z: 10.5, yBoca: 101, rBoca: 13, yFondo: 86, rFond
 /** Tubo de vidrio del embudo al depósito. */
 export const TUBO_EMBUDO = { x: EMBUDO.x, z: EMBUDO.z, y0: EMBUDO.yFondo, y1: 15, r: 2.6 } as const;
 
-// ---------- Bajo de madera: 4 láminas grandes Sol2 Do3 Re3 Mi3 ----------
-export const NOTAS_BAJO = [43, 48, 50, 52] as const;
-export const BAJO = { yTop: 62, grosor: 3.2, ancho: 8, z: 8, zGolpe: 21, yCompuerta: 82, yCargador: 96 } as const;
-export const xBajo = (i: number) => -50 + 10 * i;
-export const largoBajo = (i: number) => 36 - 2 * i;
+// ---------- Bajo de madera: 7 láminas grandes Fa2 Sol2 La2 Si2 Do3 Re3 Mi3 (2026-11-10; antes Sol2 Do3 Re3 Mi3) ----------
+export const NOTAS_BAJO = [41, 43, 45, 47, 48, 50, 52] as const;
+export const BAJO = { yTop: 62, grosor: 3.2, ancho: 6, z: 8, zGolpe: 21, yCompuerta: 82, yCargador: 96 } as const;
+export const xBajo = (i: number) => -50 + 7.2 * i;
+/** ≥ 28 cm en todas: el golpe (zGolpe, 13 cm delante del centro) cae siempre sobre la lámina. */
+export const largoBajo = (i: number) => 36 - 1.2 * i;
 
 // ---------- Bombo (membrana horizontal) ----------
-export const BOMBO = { x: 26, z: 10, yParche: 38, rParche: 13, alto: 22, xGolpe: 27, zGolpe: 14, yCompuerta: 82, yCargador: 100 } as const;
+export const BOMBO = { x: 28, z: 10, yParche: 38, rParche: 13, alto: 22, xGolpe: 29, zGolpe: 14, yCompuerta: 82, yCargador: 100 } as const;
 
 // ---------- Platillo (inclinado hacia la cámara) ----------
 const nP = { x: 0, y: 0.97, z: 0.24 };
 const lP = Math.hypot(nP.x, nP.y, nP.z);
 export const PLATILLO = {
-  x: 2, y: 55, z: 8, radio: 12,
+  x: 12, y: 55, z: 8, radio: 11,
   /** Normal de la cara superior (inclinado ~14° hacia la cámara: la canica sale despedida hacia adelante). */
   n: { x: nP.x / lP, y: nP.y / lP, z: nP.z / lP },
-  xGolpe: 2, zGolpe: 11, yCompuerta: 76, yCargador: 92,
+  xGolpe: 12, zGolpe: 11, yCompuerta: 76, yCargador: 92,
 } as const;
 /** y de la superficie del platillo en (x, z). */
 export const yPlatillo = (x: number, z: number) => PLATILLO.y - (PLATILLO.n.x * (x - PLATILLO.x) + PLATILLO.n.z * (z - PLATILLO.z)) / PLATILLO.n.y;
@@ -86,7 +88,7 @@ export const ESPIRAL = { x: 44, z: 0, y0: 204.5, y1: 172, radio: 8, th0: Math.PI
 export const RIEL_REPARTO = { desde: { x: 44, y: 167, z: VIBRA.zGolpe }, hasta: { x: -52, y: 165, z: VIBRA.zGolpe } } as const;
 /** Tubo de bajada al bajo y riel corto sobre sus cargadores. */
 export const TUBO_BAJO = { desde: { x: -54, y: 164, z: VIBRA.zGolpe }, hasta: { x: -54, y: 99, z: BAJO.zGolpe } } as const;
-export const RIEL_BAJO = { desde: { x: -54, y: 98.5, z: BAJO.zGolpe }, hasta: { x: -16, y: 97, z: BAJO.zGolpe } } as const;
+export const RIEL_BAJO = { desde: { x: -54, y: 98.5, z: BAJO.zGolpe }, hasta: { x: -50 + 7.2 * 6 + 4, y: 97, z: BAJO.zGolpe } } as const;
 
 /** Rapidez del flujo de canicas decorativas por el circuito (cm/s) y separación entre ellas (cm). */
 export const FLUJO = { v: 34, esp: 6.5 } as const;

@@ -2,16 +2,17 @@
  "plantilla": "bola",
  "hashtags": [
   "#shorts",
+  "#dragonball",
+  "#dragonballgt",
+  "#anime",
   "#satisfying",
   "#fisica",
   "#bolita",
-  "#neon",
-  "#piano",
-  "#apuesta"
+  "#piano"
  ],
  "id": "prueba-cancion-bola-apuesta",
- "titulo": "¿En cuántos rebotes llena el círculo? 🎵 Apuesta en los comentarios",
- "descripcion": "La bolita crece con cada rebote y cada rebote toca una nota de la canción. ¿Cuántos rebotes necesita para llenar el círculo? Comenta tu número antes del final.\nSimulación física determinista hecha en Bolita Lab.",
+ "titulo": "Dragon Ball GT tocado por una bolita 🐉 ¿En cuántos rebotes llena el círculo?",
+ "descripcion": "La bolita crece con cada rebote y cada rebote toca una nota del opening de Dragon Ball GT. ¿Cuántos rebotes necesita para llenar el círculo? Comenta tu número antes del final.\nSimulación física determinista hecha en Bolita Lab. Melodía interpretada en versión instrumental sintetizada; derechos de la composición de sus autores.",
  "props": {
   "id": "prueba-cancion-bola-apuesta",
   "gancho": "¿Cuántos rebotes para llenarlo?",
@@ -392,6 +393,8 @@
   "juego": {
    "tipo": "apuesta",
    "pregunta": "¿Cuántos rebotes para llenar el círculo?"
-  }
- }
+  },
+  "llamado": "Comenta o dale like si eres un verdadero guerrero saiyajin 🐉"
+ },
+ "derechos": true
 }

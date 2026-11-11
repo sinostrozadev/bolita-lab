@@ -14,10 +14,10 @@ import { semillaDesde } from '../lib/azar';
  * Campo de props compartido por las tres plantillas (`llamado`):
  * - ausente o `true`: rótulo con una variante elegida por el id del guion (determinista);
  * - `false`: sin rótulo;
- * - texto: ese texto tal cual (máx. 40 caracteres).
+ * - texto: ese texto tal cual (máx. 64 caracteres; más de 40 se parte en 2 líneas).
  */
 export const CampoLlamado = z
-  .union([z.boolean(), z.string().min(1).max(40)])
+  .union([z.boolean(), z.string().min(1).max(64)])
   .optional()
   .describe('Llamado a suscribirse en el clímax. Por defecto activado (variante por id); false lo apaga; un texto lo reemplaza.');
 export type CampoLlamado = z.infer<typeof CampoLlamado>;

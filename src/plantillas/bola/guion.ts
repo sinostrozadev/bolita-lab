@@ -50,8 +50,10 @@ const textoCorto = (chars: number, max: number, campo: string) =>
  */
 export const JuegoAdivina = z.object({
   tipo: z.literal('adivina'),
-  pistas: z.array(z.object({ t: z.number().min(0).max(58), texto: textoCorto(40, 6, 'pista') })).min(1).max(3),
-  cta: textoCorto(40, 7, 'cta').optional(),
+  /** 0–3 pistas (vacío = sin pistas: el juego se sostiene solo con la pregunta y el CTA). */
+  pistas: z.array(z.object({ t: z.number().min(0).max(58), texto: textoCorto(40, 6, 'pista') })).max(3),
+  /** CTA del bloque de abajo: ≤ 9 palabras y 56 caracteres (pasa a 2 líneas si es largo). */
+  cta: textoCorto(56, 9, 'cta').optional(),
   cierre: textoCorto(48, 7, 'cierre').optional(),
 });
 /**

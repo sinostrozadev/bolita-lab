@@ -2,20 +2,21 @@
  "plantilla": "bola",
  "hashtags": [
   "#shorts",
+  "#dragonball",
+  "#dragonballgt",
+  "#anime",
   "#adivinalacancion",
   "#satisfying",
-  "#fisica",
   "#bolita",
-  "#neon",
   "#piano"
  ],
  "id": "prueba-cancion-bola-adivina",
- "titulo": "¿Qué canción toca esta bolita? 🎵 Escúchala hasta el final",
- "descripcion": "Cada rebote de la bolita de neón toca la siguiente nota de una canción. Tres pistas: ¿la reconoces? Escríbela en los comentarios sin mirar las respuestas.\nSimulación física determinista hecha en Bolita Lab.",
+ "titulo": "¿La reconoces? 🐉 Solo los verdaderos saiyajin",
+ "descripcion": "Cada rebote de la bolita de neón toca la siguiente nota de un opening que marcó una generación. ¿La reconoces? Escríbela en los comentarios sin mirar las respuestas.\nSimulación física determinista hecha en Bolita Lab. Melodía interpretada en versión instrumental sintetizada; derechos de la composición de sus autores.",
  "props": {
   "id": "prueba-cancion-bola-adivina",
-  "gancho": "¿Qué canción es? 🎵",
-  "ganchoArriba": "¿Qué canción es? 🎵",
+  "gancho": "¿La reconoces? 🐉",
+  "ganchoArriba": "¿La reconoces? 🐉",
   "bolas": 1,
   "modo": "escape",
   "timbre": "piano",
@@ -392,21 +393,10 @@
   },
   "juego": {
    "tipo": "adivina",
-   "pistas": [
-    {
-     "t": 6,
-     "texto": "muy famosa 🎵"
-    },
-    {
-     "t": 14,
-     "texto": "la tarareas seguro"
-    },
-    {
-     "t": 22,
-     "texto": "escúchala hasta el final"
-    }
-   ],
-   "cta": "Escríbela en los comentarios 👇"
+   "pistas": [],
+   "cta": "Dale like si eres un verdadero guerrero saiyajin 👇",
+   "cierre": "¿La reconociste? Coméntala 👇"
   }
- }
+ },
+ "derechos": true
 }
