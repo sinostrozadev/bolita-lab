@@ -65,3 +65,11 @@ Los planos de cámara están pensados para ~66 pulsos (16 compases); otra duraci
 Integrarla en `scripts/lib/operacion.mts` (`PLANTILLAS`, rotación) y en `diario.mts` (render con `--gl=swangle`),
 más partituras (Para Elisa, Marcha turca, Himno de la alegría en otra tonalidad, Cisnes) y variación visual por video
 (paleta de láminas, madera, hora del taller) para no caer en "contenido repetitivo".
+
+## Instrumento ampliado (2026-11-10, canción de Santiago)
+Vibráfono de **9 láminas Sol4–La5** (`xLamina = −42 + 10,5·i`: mismo ancho total, los planos no cambian; láminas de 8,4 cm) y
+bajo de **7 láminas Fa2–Mi3** (`xBajo = −50 + 7,2·i`, 6 cm, resonadores r 2,8, largo ≥ 28,8 cm para que el golpe a 13 cm del
+centro caiga dentro). Para dejarle sitio, el platillo pasó a x 12 (r 11) y el bombo a x 28. La Oda se re-verificó con la
+geometría nueva: 179/179 golpes. Partitura de la canción: `cancion-santiago-maquina` (80 bpm, 66 pulsos: cabe en los planos).
+A 30 fps y 80 bpm la corchea no cae en frame entero (11,25): `eventosDe` redondea y el audio se sintetiza en ese frame
+(verificador OK). Llamado: acepta textos de hasta 64 caracteres (2 líneas).
