@@ -33,6 +33,9 @@
 | 15 | **Votación por acciones** | variable en `colores` y `carrera` v2 | "❤️ = ROJO · 💬 = AZUL · 🔁 = AMARILLO · 🔔 = VERDE": cada acción vota un color | en construcción | variable a medir (me gusta/comentarios/compartidos/subs por 1.000 vistas) |
 | 14 | **Compilación / largo** | `compilar.mts` | largo 16:9 con Shorts | — | pausado (la del 11-08 no se sube); próximo: quiz "¿Cuántas adivinas?" |
 
+## Experimento "una canción, siete formatos" (11-16 → 11-22, 07:00)
+Misma canción (transcripción de Santiago, compases 1–8 ×2, 80 bpm) en: bola adivina, bola apuesta, ritmo plano, ritmo figuras, máquina 3D, carrera v2 (cama musical) y colores (cama musical). Uno por día, siempre 07:00. Se compara vistas 48 h, "se queda a ver" y comentarios: la única variable es el formato.
+
 ## Videos por formato
 
 ```json
