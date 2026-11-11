@@ -70,6 +70,12 @@ export const GuionColores = z.object({
   duracionFrames: z.number().int().positive().optional(),
   /** Llamado a suscribirse en el clímax (ausente = variante por id; false = apagado; texto = ese texto). */
   llamado: CampoLlamado,
+  /**
+   * Canción de fondo (2026-11-10): nombre de una partitura de `contenido/partituras/` (p. ej. "cancion-santiago-tema")
+   * o ruta a un .json. Reemplaza la cama rítmica genérica por esa canción (piano suave + bajo + percusión suave) y
+   * baja los efectos a la mitad. Ausente = cama genérica.
+   */
+  musica: z.string().regex(/^[a-z0-9-]+$|\.json$/).optional(),
 });
 export type GuionColores = z.infer<typeof GuionColores>;
 

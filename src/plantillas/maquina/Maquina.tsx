@@ -244,11 +244,11 @@ const Vibrafono: React.FC<{ mats: Mats }> = React.memo(({ mats }) => (
     {[-50, 50].map((x) => <Tabla key={x} c={[x, (VIBRA.yTop - 8 + 112) / 2, -2]} t={[3, VIBRA.yTop - 8 - 112 + 4, 3]} mat={mats.madera} />)}
     {/* resonadores de latón bajo cada lámina */}
     {NOTAS_VIBRA.map((_, i) => {
-      const largo = 30 - 2.4 * i;
+      const largo = 30 - 2.1 * i;
       return (
         <group key={i} position={[xLamina(i), VIBRA.yTop - VIBRA.grosor - 4 - largo / 2, 0]}>
-          <mesh material={mats.laton} castShadow><cylinderGeometry args={[3.2, 3.2, largo, 20, 1, true]} /></mesh>
-          <mesh position={[0, -largo / 2, 0]} rotation={[Math.PI / 2, 0, 0]} material={mats.latonOscuro}><circleGeometry args={[3.2, 20]} /></mesh>
+          <mesh material={mats.laton} castShadow><cylinderGeometry args={[3, 3, largo, 20, 1, true]} /></mesh>
+          <mesh position={[0, -largo / 2, 0]} rotation={[Math.PI / 2, 0, 0]} material={mats.latonOscuro}><circleGeometry args={[3, 20]} /></mesh>
         </group>
       );
     })}
@@ -333,17 +333,17 @@ const Deposito: React.FC<{ mats: Mats }> = React.memo(({ mats }) => {
 const BajoMadera: React.FC<{ mats: Mats }> = React.memo(({ mats }) => (
   <>
     {[-1, 1].map((s) => (
-      <Tabla key={s} c={[-35, BAJO.yTop - BAJO.grosor - 1.8, BAJO.z + s * 11]} t={[46, 3.2, 3]} mat={mats.madera} />
+      <Tabla key={s} c={[(xBajo(0) + xBajo(NOTAS_BAJO.length - 1)) / 2, BAJO.yTop - BAJO.grosor - 1.8, BAJO.z + s * 11]} t={[xBajo(NOTAS_BAJO.length - 1) - xBajo(0) + 13, 3.2, 3]} mat={mats.madera} />
     ))}
     {NOTAS_BAJO.map((_, i) => {
-      const largo = 34 - 3 * i;
+      const largo = 34 - 2.2 * i;
       return (
         <group key={i} position={[xBajo(i), BAJO.yTop - BAJO.grosor - 4 - largo / 2, BAJO.z]}>
-          <mesh material={mats.latonOscuro} castShadow><cylinderGeometry args={[3.4, 3.4, largo, 18, 1, true]} /></mesh>
+          <mesh material={mats.latonOscuro} castShadow><cylinderGeometry args={[2.8, 2.8, largo, 18, 1, true]} /></mesh>
         </group>
       );
     })}
-    {[-58, -12].map((x) => <Tabla key={x} c={[x, (BAJO.yTop - 5) / 2 + 8, BAJO.z]} t={[3, BAJO.yTop - 5 - 8, 3]} mat={mats.madera} />)}
+    {[xBajo(0) - 7, xBajo(NOTAS_BAJO.length - 1) + 4.6].map((x) => <Tabla key={x} c={[x, (BAJO.yTop - 5) / 2 + 8, BAJO.z]} t={[3, BAJO.yTop - 5 - 8, 3]} mat={mats.madera} />)}
   </>
 ));
 

@@ -155,3 +155,10 @@ Ideas de Santiago. Todo en la simulación determinista (paso fijo, semilla); el 
 
 ## Duración del video
 `frames hasta el cruce (incluye cámara lenta) + 2,5 s de celebración + 1,2 s de cierre` ≈ 30–50 s.
+
+## Canción de fondo (`musica`, 2026-11-10)
+Prop opcional `musica`: nombre de una partitura de `contenido/partituras/` (formato de `ritmo`: `bpm`, `pistas.melodia|bajo|ritmo`,
+`arpegio` opcional) o ruta a un `.json`. La cama genérica de 110 bpm se reemplaza por esa canción (piano suave + arpegio/bajo +
+percusión suave, `scripts/lib/cama-cancion.mts`) desde 0,12 s hasta la cámara lenta (fundido de 0,5 s); los choques bajan a la
+mitad y el bus de música sube al frente. Si el video dura más que la canción, se repite. Primer uso:
+`contenido/prototipos/cancion-santiago/carrera.json` (`cancion-santiago-tema`).

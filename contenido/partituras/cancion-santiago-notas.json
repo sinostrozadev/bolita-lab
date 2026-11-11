@@ -1,0 +1,2734 @@
+{
+  "aviso": "Transcripción visual preliminar: alturas y acordes pequeños requieren revisión contra fuente original. Los acordes desde el compás 9 son aproximados.",
+  "formato": "Cada item tiene notas MIDI name + duración en negras (quarter=1); null corresponde a silencio.",
+  "compases": [
+    {
+      "numero": 1,
+      "bpm": 80,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": "G4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A4",
+          "duracion_negras": 0.5
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": "C3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G3",
+          "duracion_negras": 0.5
+        }
+      ]
+    },
+    {
+      "numero": 2,
+      "bpm": 80,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": "G4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": "B2",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "B3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "B3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "B3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F3",
+          "duracion_negras": 0.5
+        }
+      ]
+    },
+    {
+      "numero": 3,
+      "bpm": 80,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 0.5
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": "A2",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E3",
+          "duracion_negras": 0.5
+        }
+      ]
+    },
+    {
+      "numero": 4,
+      "bpm": 80,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "B3",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": "G2",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "D3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "D3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "D3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "D3",
+          "duracion_negras": 0.5
+        }
+      ]
+    },
+    {
+      "numero": 5,
+      "bpm": 80,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "A3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "A4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": "F2",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C3",
+          "duracion_negras": 0.5
+        }
+      ]
+    },
+    {
+      "numero": 6,
+      "bpm": 80,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": "G4",
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": "C3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G3",
+          "duracion_negras": 0.5
+        }
+      ]
+    },
+    {
+      "numero": 7,
+      "bpm": 80,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": "F4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": "Bb2",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "Bb3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "Bb3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "Bb3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F3",
+          "duracion_negras": 0.5
+        }
+      ]
+    },
+    {
+      "numero": 8,
+      "bpm": 80,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": "D4",
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "B3",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": "C3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": null,
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": null,
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": null,
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": null,
+          "duracion_negras": 0.5
+        }
+      ]
+    },
+    {
+      "numero": 9,
+      "bpm": 80,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": [
+            "C4",
+            "C5"
+          ],
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": [
+            "E4",
+            "F5"
+          ],
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": [
+            "D4",
+            "C5"
+          ],
+          "duracion_negras": 0.5
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "A2",
+            "E3",
+            "A3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "E3",
+            "A3",
+            "C4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 10,
+      "bpm": 80,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "B4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": [
+            "G4",
+            "G5"
+          ],
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 0.5
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "E3",
+            "B3",
+            "E4"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "G3",
+            "B3",
+            "D4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 11,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": "F4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "C5",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C6",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "B5",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G5",
+          "duracion_negras": 0.5
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 12,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": "G4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G5",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F5",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E5",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "B4",
+          "duracion_negras": 0.5
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 13,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "C5",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C5",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C5",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C5",
+          "duracion_negras": 0.5
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 14,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "C5",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "B4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "A4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "B4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C5",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 15,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "Bb4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 2.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "C3",
+            "G3",
+            "C4"
+          ],
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": [
+            "C3",
+            "G3",
+            "C4"
+          ],
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 1.0
+        }
+      ]
+    },
+    {
+      "numero": 16,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 17,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 18,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 19,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 20,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 21,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": [
+            "E4",
+            "G4"
+          ],
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 22,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "B3",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "A3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A3",
+          "duracion_negras": 0.5
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 23,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "A4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 2.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 24,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 25,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "D4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 1.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 0.25
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.25
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 26,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "D4",
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 2.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 27,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 28,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 29,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 30,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 31,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 32,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 33,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 34,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 35,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 36,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 37,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 38,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 39,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 40,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 41,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 42,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 43,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 44,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 45,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 46,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 47,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 48,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 49,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 50,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 51,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 52,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "C3",
+            "G3",
+            "C4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 53,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "E3",
+            "G3",
+            "B3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "E3",
+            "G3",
+            "B3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 54,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": [
+            "E4",
+            "G4"
+          ],
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "E3",
+            "G3",
+            "B3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "F3",
+            "A3",
+            "C4"
+          ],
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": [
+            "G3",
+            "B3",
+            "D4"
+          ],
+          "duracion_negras": 1.0
+        }
+      ]
+    },
+    {
+      "numero": 55,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "B3",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "A3",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "A3",
+          "duracion_negras": 0.5
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 56,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "A4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "G4",
+          "duracion_negras": 2.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "C3",
+            "Eb3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 57,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "C3",
+            "Eb3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "C3",
+            "G3",
+            "C4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 58,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "D4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 1.5
+        },
+        {
+          "notas": "F4",
+          "duracion_negras": 0.25
+        },
+        {
+          "notas": "E4",
+          "duracion_negras": 0.25
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "D3",
+            "F3",
+            "A3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "D3",
+            "G3",
+            "Bb3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 59,
+      "bpm": 100,
+      "alteraciones_clave": -3,
+      "mano_derecha": [
+        {
+          "notas": "D4",
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 1.5
+        },
+        {
+          "notas": "D4",
+          "duracion_negras": 0.5
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 60,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": "D4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 0.5
+        },
+        {
+          "notas": "B3",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": "C4",
+          "duracion_negras": 2.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "E3",
+            "G3",
+            "C4"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 61,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": "C4",
+          "duracion_negras": 1.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 1.0
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 62,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 63,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 64,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "D3",
+            "F3",
+            "A3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 65,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "D3",
+            "F3",
+            "A3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "E3",
+            "G3",
+            "B3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 66,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "E3",
+            "G3",
+            "B3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "F3",
+            "A3",
+            "C4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 67,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "F3",
+            "A3",
+            "C4"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "G3",
+            "B3",
+            "D4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 68,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "G3",
+            "B3",
+            "D4"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "A3",
+            "C4",
+            "E4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 69,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "A3",
+            "C4",
+            "E4"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": null,
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 70,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 71,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 72,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 73,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 74,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "D3",
+            "F3",
+            "A3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 75,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "D3",
+            "F3",
+            "A3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "E3",
+            "G3",
+            "B3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 76,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "E3",
+            "G3",
+            "B3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "F3",
+            "A3",
+            "C4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 77,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "F3",
+            "A3",
+            "C4"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "G3",
+            "B3",
+            "D4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 78,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "G3",
+            "B3",
+            "D4"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "A3",
+            "C4",
+            "E4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 79,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "A3",
+            "C4",
+            "E4"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "A3",
+            "C4",
+            "E4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 80,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "A2",
+            "C3",
+            "E3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "A2",
+            "C3",
+            "E3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 81,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "B2",
+            "D3",
+            "F3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "B2",
+            "D3",
+            "F3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 82,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "C3",
+            "E3",
+            "G3"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 83,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 84,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 85,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 86,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 2.0
+        },
+        {
+          "notas": [
+            "C3",
+            "G3",
+            "C4"
+          ],
+          "duracion_negras": 2.0
+        }
+      ]
+    },
+    {
+      "numero": 87,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 88,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 89,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 90,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 91,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 92,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 93,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    },
+    {
+      "numero": 94,
+      "bpm": 100,
+      "alteraciones_clave": 0,
+      "mano_derecha": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ],
+      "mano_izquierda": [
+        {
+          "notas": null,
+          "duracion_negras": 4
+        }
+      ]
+    }
+  ]
+}

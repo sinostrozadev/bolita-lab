@@ -1,0 +1,25 @@
+{
+ "plantilla": "maquina",
+ "id": "prueba-cancion-maquina",
+ "titulo": "Esta máquina toca Dragon Ball GT 🎶🐉",
+ "descripcion": "Una máquina de canicas en 3D: una noria y un ascensor suben las canicas, bajan por una espiral y cada compuerta se abre en el instante justo para que la canica caiga sobre su lámina, el bajo de madera, el bombo o el platillo. Toda la canción, el opening de Dragon Ball GT, sale de las canicas.\nMúsica: versión instrumental sintetizada (arreglo propio); derechos de la composición de sus autores. Animación y sonido sintetizados en Bolita Lab.",
+ "hashtags": [
+  "#shorts",
+  "#dragonball",
+  "#dragonballgt",
+  "#anime",
+  "#satisfying",
+  "#maquinadecanicas",
+  "#marblemachine",
+  "#musica"
+ ],
+ "derechos": true,
+ "props": {
+  "id": "prueba-cancion-maquina",
+  "partitura": "cancion-santiago-maquina",
+  "arriba": "Esta máquina toca una canción 🎶",
+  "abajo": "¿La reconoces? 👇",
+  "fps": 30,
+  "llamado": "Comenta o dale like si eres un verdadero guerrero saiyajin 🐉"
+ }
+}

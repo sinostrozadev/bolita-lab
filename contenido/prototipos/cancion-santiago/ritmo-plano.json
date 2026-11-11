@@ -1,0 +1,24 @@
+{
+ "plantilla": "ritmo",
+ "id": "prueba-cancion-ritmo-plano",
+ "titulo": "Dragon Ball GT tocado por 5 bolitas 🐉 ¿Cuál lleva la melodía?",
+ "descripcion": "Cinco bolitas caen por un nivel lleno de clavijas y cada choque toca una nota: melodía, bajo, bombo, caja y platillo. Todo suena a tiempo con el opening de Dragon Ball GT. ¿Cuál lleva la melodía?\nMúsica: opening de Dragon Ball GT en versión instrumental sintetizada (arreglo propio); derechos de la composición de sus autores. Simulación determinista hecha en Bolita Lab: el nivel se construyó desde la partitura.",
+ "hashtags": [
+  "#shorts",
+  "#dragonball",
+  "#dragonballgt",
+  "#anime",
+  "#satisfying",
+  "#musica",
+  "#bolita"
+ ],
+ "derechos": true,
+ "props": {
+  "id": "prueba-cancion-ritmo-plano",
+  "partitura": "cancion-santiago-tema",
+  "estilo": "plano",
+  "arriba": "5 bolitas, 1 canción 🎵",
+  "abajo": "¿Cuál lleva la melodía? 👇",
+  "llamado": "Comenta o dale like si eres un verdadero guerrero saiyajin 🐉"
+ }
+}

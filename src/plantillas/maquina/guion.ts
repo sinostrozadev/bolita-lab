@@ -21,9 +21,9 @@ export const PartituraMaquina = z.object({
   bpm: z.number().min(40).max(200),
   compas: z.number().int().min(2).max(12),
   pistas: z.object({
-    /** Notas del vibráfono: deben existir en NOTAS_VIBRA (Sol4 … Sol5). */
+    /** Notas del vibráfono: deben existir en NOTAS_VIBRA (Sol4 … La5, diatónicas). */
     melodia: z.array(NotaPartitura).min(8),
-    /** Notas del bajo de madera: deben existir en NOTAS_BAJO (Sol2, Do3, Re3, Mi3). */
+    /** Notas del bajo de madera: deben existir en NOTAS_BAJO (Fa2, Sol2, La2, Si2, Do3, Re3, Mi3). */
     bajo: z.array(NotaPartitura).min(4),
     ritmo: z.array(z.object({
       tipo: z.enum(['bombo', 'platillo']),
@@ -45,7 +45,7 @@ export const TEXTOS_MAQUINA = {
 export const GuionMaquina = z.object({
   /** Id del guion: nombra el sim, el wav y el mp4. */
   id: z.string().min(1),
-  /** Partitura de contenido/partituras/<partitura>.json (melodía en Sol4–Sol5, bajo en Sol2/Do3/Re3/Mi3). */
+  /** Partitura de contenido/partituras/<partitura>.json (melodía en Sol4–La5, bajo en Fa2–Mi3, diatónicos). */
   partitura: z.string().regex(/^[a-z0-9-]+$/),
   /** Bloque fijo de ARRIBA (frame 0 → cierre), ≤ 8 palabras. */
   arriba: z.string().min(1).max(48).refine((t) => palabras(t) <= 8, 'arriba: máximo 8 palabras').optional(),

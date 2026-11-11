@@ -69,3 +69,8 @@ cámara lenta, "GANA" + remate, último cuadro (cierre). Revisar que el ganador 
 ## Fórmula de guion
 Título: "Batalla de N colores: ¿cuál sobrevive? 🎨" / "¿Qué color gana? Vota con tu like" · descripción con las
 reglas en 2 líneas + "Vota con tu acción" · el título y la descripción NO dicen quién gana.
+
+## Canción de fondo (`musica`, 2026-11-10)
+Igual que en `carrera`: `musica: "cancion-santiago-tema"` (o ruta a un `.json`) reemplaza la cama rítmica que acelera por la
+canción (piano suave + arpegio/bajo + percusión suave, `scripts/lib/cama-cancion.mts`) hasta la cámara lenta; los efectos bajan
+a la mitad. Primer uso: `contenido/prototipos/cancion-santiago/colores.json`.

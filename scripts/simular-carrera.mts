@@ -748,7 +748,7 @@ export const prepararSimulacion = (guion: GuionCarrera): SimulacionCarrera => {
   fs.mkdirSync(path.dirname(rutaSim), { recursive: true });
   fs.writeFileSync(rutaSim, JSON.stringify(sim));
   const rutaWav = path.join(RAIZ, 'public/audio/generado', `${guion.id}.wav`);
-  sintetizarCarrera(sim, rutaWav);
+  sintetizarCarrera(sim, rutaWav, guion.musica);
   const golpes = sim.eventos.filter((e) => e.tipo === 'clavija' || e.tipo === 'rampa').length;
   const choques = sim.eventos.filter((e) => e.tipo === 'bola').length;
   console.log(

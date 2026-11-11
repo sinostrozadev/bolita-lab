@@ -93,3 +93,8 @@ npx tsx scripts/preparar-bola.mts contenido/guiones/<guion>.json
 # antes de renderizar: free -m (available > 1200 MB) y nunca dos renders a la vez
 npx remotion render src/index.ts Bola salida/bandeja/<id>.mp4 --props=salida/trabajo/<id>.props.json --codec=h264 --crf=18 --concurrency=1
 ```
+
+## Adivina sin pistas y CTA largo (2026-11-10, Dragon Ball GT)
+`juego.pistas` puede ser `[]` (sin tarjetas de pista) y `juego.cta` acepta hasta 9 palabras / 56 caracteres (pasa a 2 líneas).
+El `llamado` de todas las plantillas acepta hasta 64 caracteres (más de 40 → píldora de 2 líneas). Ejemplo:
+`contenido/prototipos/cancion-santiago/bola-adivina.json`.

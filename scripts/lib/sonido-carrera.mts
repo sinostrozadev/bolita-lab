@@ -13,8 +13,11 @@
  *  - Cama musical a 110 bpm: bajo (Do–La–Fa–Sol) + bombo + hi-hat suave; en el último tramo entra caja,
  *    hi-hat en semicorcheas y el bajo sube. Se corta con el golpe grave de la cámara lenta.
  *  - Riser (la líder en el último 15 %) y fanfarria de metales sintéticos + platillo al cruzar.
+ *  - Prop `musica` (2026-11-10): la cama genérica se reemplaza por una canción de `contenido/partituras/` (piano suave +
+ *    bajo/arpegio + percusión suave, scripts/lib/cama-cancion.mts) y los golpes de los choques bajan a la mitad.
  */
 import { SR, barrido, escribirWav, golpe, masterizar, midiAHz, nota } from './wav.mjs';
+import { leerPartituraCama, tocarCama } from './cama-cancion.mjs';
 import type { SimulacionCarrera } from '../../src/plantillas/carrera/tipos';
 
 /** Do mayor pentatónica, dos octavas y algo (de agudo a grave según baja la clavija). */
@@ -69,7 +72,9 @@ const metal = (p: Float32Array, t: number, hz: number, dur: number, vol: number)
   }
 };
 
-export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string) => {
+export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string, musica?: string) => {
+  /** Con canción de fondo los choques suenan más bajos (se oyen encima sin tapar la melodía). */
+  const kGolpe = musica ? 0.5 : 1;
   const segundos = (sim.duracionFrames + 72) / sim.fps + 0.8;
   const largo = Math.ceil(segundos * SR);
   const L = new Float32Array(largo), R = new Float32Array(largo);
@@ -90,7 +95,7 @@ export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string) => {
       const idx = desde + i;
       if (idx < 0) continue;
       if (idx >= L.length) break;
-      L[idx] += vista[i] * l; R[idx] += vista[i] * r;
+      L[idx] += vista[i] * l * kGolpe; R[idx] += vista[i] * r * kGolpe;
     }
   };
   const xDe = (bola: number, frame: number) => sim.posiciones[bola][Math.max(0, Math.min(frame, sim.posiciones[bola].length - 1))][0];
@@ -207,9 +212,11 @@ export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string) => {
     }
   }
 
-  // ---- Cama musical (110 bpm) ----
+  // ---- Cama musical: la canción de `musica` o la genérica a 110 bpm ----
   const pulso = 60 / BPM;
   const tFin = tLenta; // se corta con el golpe grave de la cámara lenta
+  if (musica) tocarCama([mL, mR], leerPartituraCama(musica), { desde: 0.12, hasta: tFin, volumen: 1 });
+  else {
   const tIntenso = Math.max(4, Math.min(sim.frameRiser >= 0 ? sim.frameRiser / sim.fps : Infinity, tMeta - 8));
   const intensidad = (t: number) => Math.max(0, Math.min(1, (t - (tIntenso - 1)) / 1));
   const raices = [36, 33, 29, 31]; // Do · La · Fa · Sol (bajo)
@@ -245,6 +252,8 @@ export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string) => {
     }
   }
 
+  }
+
   // ---- Riser: la líder entra al último 15 % del tablero ----
   if (sim.frameRiser >= 0) {
     const t0 = sim.frameRiser / sim.fps;
@@ -277,7 +286,9 @@ export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string) => {
 
   // ---- Mezcla y master ----
   // Música ≈ 6 dB bajo los efectos: se siente el pulso sin tapar los golpes.
-  for (let i = 0; i < largo; i++) { L[i] += mL[i] * 0.5; R[i] += mR[i] * 0.5; }
+  // Con canción de fondo la música va al frente (los choques ya bajaron a la mitad).
+  const kMusica = musica ? 1 : 0.5;
+  for (let i = 0; i < largo; i++) { L[i] += mL[i] * kMusica; R[i] += mR[i] * kMusica; }
   masterizar([L, R], { rmsDb: -15, techoDb: -2.2 });
   escribirWav(ruta, [L, R]);
 };

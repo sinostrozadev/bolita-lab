@@ -17,6 +17,7 @@ import { FORMATO } from '../src/marca/tokens';
 import {
   GuionColores, equiposDe, type BolitaSim, type EventoColores, type SimColores,
 } from '../src/plantillas/colores/guion';
+import { leerPartituraCama, tocarCama } from './lib/cama-cancion.mjs';
 import { crearPista, escribirWav, golpe, barrido, midiAHz, nota, normalizar, SR } from './lib/wav.mjs';
 
 // ---------- Escena (debe coincidir con Colores.tsx) ----------
@@ -362,15 +363,22 @@ export const buscarSimulacion = (props: GuionColores) => {
 /** Raíz MIDI por equipo (cada color "suena" en su tono). */
 const RAICES = [60, 64, 67, 62, 65, 69, 59, 71];
 
-export const sintetizar = (sim: SimColores, ruta: string) => {
+export const sintetizar = (sim: SimColores, ruta: string, musica?: string) => {
   const segundos = sim.duracionFrames / FPS + 0.5;
-  const pista = crearPista(segundos);
+  /** Bus final. Con `musica` la canción va aquí y los efectos en su propio bus, a la mitad. */
+  const base = crearPista(segundos);
+  let pista = base;
   const tv = (fs: number) => simAVideo(sim.victoriaFrame, fs) / FPS;
   const tLento = (sim.victoriaFrame - S1) / FPS;
   const tVict = tv(sim.victoriaFrame);
+  // Cama: la canción de `musica` (hasta la cámara lenta) o la rítmica genérica.
+  if (musica) {
+    tocarCama([base], leerPartituraCama(musica), { desde: 0.1, hasta: tLento, volumen: 1 });
+    pista = crearPista(segundos);
+  }
   // Cama rítmica: bombo en cada pulso, platillo a contratiempo; acelera de 96 a 150 bpm hasta la cámara lenta.
   let fase = 0, pulso = 0;
-  for (let i = 0; i < Math.floor(tLento * SR); i++) {
+  for (let i = 0; !musica && i < Math.floor(tLento * SR); i++) {
     const t = i / SR, x = t / tLento;
     const bpm = 96 + 54 * x * x;
     fase += bpm / 60 / SR;
@@ -439,8 +447,9 @@ export const sintetizar = (sim: SimColores, ruta: string) => {
       }
     }
   }
-  normalizar(pista, -1);
-  escribirWav(ruta, [pista, pista]);
+  if (musica) for (let i = 0; i < base.length; i++) base[i] += pista[i] * 0.5;
+  normalizar(base, -1);
+  escribirWav(ruta, [base, base]);
 };
 
 // ---------------------------------------------------------------- envoltorio
@@ -469,7 +478,7 @@ export const simularYSintetizar = (props: GuionColores, raiz = process.cwd()): S
   };
   if (mapa.at(-1)! > r.framesSim - 1) throw new Error('el sim es más corto que el video');
   const rutaWav = path.join(raiz, 'public/audio/generado', `${props.id}.wav`);
-  sintetizar(sim, rutaWav);
+  sintetizar(sim, rutaWav, props.musica);
   const rutaSim = path.join(raiz, 'public/sim', `${props.id}.json`);
   fs.mkdirSync(path.dirname(rutaSim), { recursive: true });
   fs.writeFileSync(rutaSim, JSON.stringify(sim));

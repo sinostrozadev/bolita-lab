@@ -1,0 +1,679 @@
+{
+ "nombre": "Canción de Santiago (compases 1–8, arreglo v2, máquina)",
+ "nota": "Obra transcrita por Santiago (cancion-santiago-notas.json), compases 1–8. Arreglo v2 de Bolita Lab: 80 bpm, Do mayor, melodía (voz aguda de la mano derecha, una octava arriba) dos vueltas con Do final de 2 pulsos; bajo en blancas Do · Sol/Si · Lam · Sol · Fa · Do · Rem · Sol, cierre en Do; percusión desde el compás 9 (bombo 1 y 3, caja 2 y 4, platillo en corcheas). Generado por scripts/tema-cancion-santiago.mts. Versión máquina: platillo en 2 y 4 (la máquina no tiene caja), abierto al entrar la percusión y al final.",
+ "bpm": 80,
+ "compas": 4,
+ "pistas": {
+  "melodia": [
+   [
+    79,
+    0,
+    1
+   ],
+   [
+    79,
+    1,
+    1
+   ],
+   [
+    76,
+    2,
+    0.5
+   ],
+   [
+    77,
+    2.5,
+    0.5
+   ],
+   [
+    79,
+    3,
+    0.5
+   ],
+   [
+    81,
+    3.5,
+    0.5
+   ],
+   [
+    79,
+    4,
+    1
+   ],
+   [
+    77,
+    5,
+    1
+   ],
+   [
+    76,
+    6,
+    1
+   ],
+   [
+    74,
+    7,
+    1
+   ],
+   [
+    76,
+    8,
+    1
+   ],
+   [
+    76,
+    9,
+    1
+   ],
+   [
+    72,
+    10,
+    0.5
+   ],
+   [
+    74,
+    10.5,
+    0.5
+   ],
+   [
+    76,
+    11,
+    0.5
+   ],
+   [
+    77,
+    11.5,
+    0.5
+   ],
+   [
+    76,
+    12,
+    1
+   ],
+   [
+    74,
+    13,
+    1
+   ],
+   [
+    72,
+    14,
+    1
+   ],
+   [
+    71,
+    15,
+    1
+   ],
+   [
+    69,
+    17,
+    0.5
+   ],
+   [
+    69,
+    17.5,
+    0.5
+   ],
+   [
+    72,
+    18,
+    1
+   ],
+   [
+    81,
+    19,
+    1
+   ],
+   [
+    79,
+    20,
+    2
+   ],
+   [
+    72,
+    22,
+    1
+   ],
+   [
+    74,
+    23,
+    0.5
+   ],
+   [
+    76,
+    23.5,
+    0.5
+   ],
+   [
+    77,
+    24,
+    1
+   ],
+   [
+    76,
+    25,
+    1
+   ],
+   [
+    74,
+    26,
+    1
+   ],
+   [
+    72,
+    27,
+    1
+   ],
+   [
+    74,
+    28,
+    2
+   ],
+   [
+    72,
+    30,
+    1
+   ],
+   [
+    71,
+    31,
+    1
+   ],
+   [
+    79,
+    32,
+    1
+   ],
+   [
+    79,
+    33,
+    1
+   ],
+   [
+    76,
+    34,
+    0.5
+   ],
+   [
+    77,
+    34.5,
+    0.5
+   ],
+   [
+    79,
+    35,
+    0.5
+   ],
+   [
+    81,
+    35.5,
+    0.5
+   ],
+   [
+    79,
+    36,
+    1
+   ],
+   [
+    77,
+    37,
+    1
+   ],
+   [
+    76,
+    38,
+    1
+   ],
+   [
+    74,
+    39,
+    1
+   ],
+   [
+    76,
+    40,
+    1
+   ],
+   [
+    76,
+    41,
+    1
+   ],
+   [
+    72,
+    42,
+    0.5
+   ],
+   [
+    74,
+    42.5,
+    0.5
+   ],
+   [
+    76,
+    43,
+    0.5
+   ],
+   [
+    77,
+    43.5,
+    0.5
+   ],
+   [
+    76,
+    44,
+    1
+   ],
+   [
+    74,
+    45,
+    1
+   ],
+   [
+    72,
+    46,
+    1
+   ],
+   [
+    71,
+    47,
+    1
+   ],
+   [
+    69,
+    49,
+    0.5
+   ],
+   [
+    69,
+    49.5,
+    0.5
+   ],
+   [
+    72,
+    50,
+    1
+   ],
+   [
+    81,
+    51,
+    1
+   ],
+   [
+    79,
+    52,
+    2
+   ],
+   [
+    72,
+    54,
+    1
+   ],
+   [
+    74,
+    55,
+    0.5
+   ],
+   [
+    76,
+    55.5,
+    0.5
+   ],
+   [
+    77,
+    56,
+    1
+   ],
+   [
+    76,
+    57,
+    1
+   ],
+   [
+    74,
+    58,
+    1
+   ],
+   [
+    72,
+    59,
+    1
+   ],
+   [
+    74,
+    60,
+    2
+   ],
+   [
+    72,
+    62,
+    1
+   ],
+   [
+    71,
+    63,
+    1
+   ],
+   [
+    72,
+    64,
+    2
+   ]
+  ],
+  "bajo": [
+   [
+    48,
+    0,
+    2
+   ],
+   [
+    48,
+    2,
+    2
+   ],
+   [
+    47,
+    4,
+    2
+   ],
+   [
+    47,
+    6,
+    2
+   ],
+   [
+    45,
+    8,
+    2
+   ],
+   [
+    45,
+    10,
+    2
+   ],
+   [
+    43,
+    12,
+    2
+   ],
+   [
+    43,
+    14,
+    2
+   ],
+   [
+    41,
+    16,
+    2
+   ],
+   [
+    41,
+    18,
+    2
+   ],
+   [
+    48,
+    20,
+    2
+   ],
+   [
+    48,
+    22,
+    2
+   ],
+   [
+    50,
+    24,
+    2
+   ],
+   [
+    50,
+    26,
+    2
+   ],
+   [
+    43,
+    28,
+    2
+   ],
+   [
+    43,
+    30,
+    2
+   ],
+   [
+    48,
+    32,
+    2
+   ],
+   [
+    48,
+    34,
+    2
+   ],
+   [
+    47,
+    36,
+    2
+   ],
+   [
+    47,
+    38,
+    2
+   ],
+   [
+    45,
+    40,
+    2
+   ],
+   [
+    45,
+    42,
+    2
+   ],
+   [
+    43,
+    44,
+    2
+   ],
+   [
+    43,
+    46,
+    2
+   ],
+   [
+    41,
+    48,
+    2
+   ],
+   [
+    41,
+    50,
+    2
+   ],
+   [
+    48,
+    52,
+    2
+   ],
+   [
+    48,
+    54,
+    2
+   ],
+   [
+    50,
+    56,
+    2
+   ],
+   [
+    50,
+    58,
+    2
+   ],
+   [
+    43,
+    60,
+    2
+   ],
+   [
+    43,
+    62,
+    2
+   ],
+   [
+    48,
+    64,
+    2
+   ]
+  ],
+  "ritmo": [
+   {
+    "tipo": "bombo",
+    "pulso": 32,
+    "acento": true
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 32,
+    "abierto": true
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 33
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 34
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 35
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 36
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 37
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 38
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 39
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 40
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 41
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 42
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 43
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 44
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 45
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 46
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 47
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 48
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 49
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 50
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 51
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 52
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 53
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 54
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 55
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 56
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 57
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 58
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 59
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 60
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 61
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 62
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 63
+   },
+   {
+    "tipo": "bombo",
+    "pulso": 64,
+    "acento": true
+   },
+   {
+    "tipo": "platillo",
+    "pulso": 64,
+    "abierto": true,
+    "acento": true
+   }
+  ]
+ }
+}
