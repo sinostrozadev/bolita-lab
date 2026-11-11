@@ -70,6 +70,7 @@ Misma canción (transcripción de Santiago, compases 1–8 ×2, 80 bpm) en: bola
     { "formato": 9, "id": "iUBhm8a36Dc", "fecha": "2026-11-12", "nota": "DBGT apuesta, 07:00" },
     { "formato": 10, "id": "2p6VCKA2V9s", "fecha": "2026-11-13", "nota": "DBGT ritmo plano, 07:00" },
     { "formato": 11, "id": "7ja9SS_rMxA", "fecha": "2026-11-14", "nota": "DBGT ritmo figuras, 07:00" },
+    { "formato": 13, "id": "poa80223y84", "fecha": "2026-11-15", "nota": "DBGT máquina 3D, 07:00" },
     { "formato": 5, "id": "4xZI3VplZw0", "fecha": "2026-11-16", "nota": "DBGT carrera (cama), 07:00" },
     { "formato": 12, "id": "oFa1laPNopI", "fecha": "2026-11-17", "nota": "DBGT colores (cama), 07:00" },
     { "formato": 11, "id": "V-geJGHFy48", "fecha": "2026-11-15", "nota": "Creep (notas de tutorial), 15:00" }
