@@ -1,13 +1,24 @@
 {
   "plantilla": "colores",
-  "id": "pendiente-colores-caja-3",
+  "id": "2026-11-13-colores-caja-3",
   "titulo": "3 colores en una caja: ¿cuál queda en pie? 🎨",
   "descripcion": "Violeta, naranjo y celeste encerrados en una caja. Mismo color se fusiona, distinto color se parte, las muy chicas mueren. ¿Cuál queda en pie?\nVota con tu acción y comenta si acertaste.\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #batalladecolores #fisica #bolita #simulacion",
-  "hashtags": ["#shorts", "#satisfying", "#batalladecolores", "#fisica", "#bolita", "#simulacion"],
+  "hashtags": [
+    "#shorts",
+    "#satisfying",
+    "#batalladecolores",
+    "#fisica",
+    "#bolita",
+    "#simulacion"
+  ],
   "props": {
-    "id": "pendiente-colores-caja-3",
+    "id": "2026-11-13-colores-caja-3",
     "pregunta": "¿Cuál queda en pie? 🎨",
-    "equipos": ["violeta", "naranja", "cian"],
+    "equipos": [
+      "violeta",
+      "naranja",
+      "cian"
+    ],
     "bolasPorEquipo": 12,
     "arena": "caja"
   }

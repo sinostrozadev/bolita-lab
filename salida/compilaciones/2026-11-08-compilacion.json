@@ -1,0 +1,119 @@
+{
+  "id": "2026-11-08-compilacion",
+  "plantilla": "compilacion",
+  "tipo": "largo",
+  "titulo": "14 Shorts de Bolita Lab: rebotes, carreras y datos increíbles",
+  "descripcion": "Recopilación de Bolita Lab: 14 Shorts seguidos, sin cortes. Bolitas de neón que rebotan al ritmo de melodías clásicas, carreras con física real y datos sorprendentes con fuente.\n\nCapítulos:\n00:00 Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso\n00:33 ¿Messi, CR7, Neymar o Mbappé? ⚽ ¿Quién gana la carrera?\n01:08 Tu corazón late casi 3.000 millones de veces en tu vida\n01:37 ¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas\n02:08 ¿Qué día de la semana gana? 📅 Carrera de bolitas\n02:45 La bolita crece con cada rebote hasta llenar el círculo (Marcha Turca)\n03:34 3 bolitas, un hueco: ¿cuál escapa primero? Canon de Pachelbel\n04:11 Naces con unos 300 huesos y de adulto tienes 206\n04:44 ¿Pizza, hamburguesa, sushi o tacos? 🍕 ¿Qué comida gana?\n05:24 ¿En qué rebote escapa la bolita? El lago de los cisnes en neón\n05:56 El Everest no es la cima más cercana al espacio: es el Chimborazo\n06:43 ¿Qué color gana la carrera? 🎨 El tuyo, ¿llega primero?\n07:15 ¿Cuál de las 2 bolitas escapa por el hueco estrecho? Oda a la Alegría\n07:44 En el Canal de Panamá vas del Atlántico al Pacífico hacia el este\n\nLas fuentes de cada dato están en la descripción de su Short.\n\nSimulaciones físicas deterministas y sonido sincronizado a cada rebote. Música de dominio público.\nSuscríbete: hay un Short nuevo cada día.",
+  "hashtags": [
+    "#bolitalab",
+    "#satisfying",
+    "#simulacion",
+    "#fisica",
+    "#datoscuriosos"
+  ],
+  "duracionSeg": 515.2,
+  "estado": "listo",
+  "videos": [
+    "2026-11-04-dato-luz-pasado",
+    "2026-11-03-carrera-messi-cr7-neymar",
+    "2026-11-05-dato-corazon-latidos",
+    "2026-11-04-carrera-mascotas",
+    "2026-11-05-carrera-dias-semana",
+    "2026-11-04-bola-marcha-crecer",
+    "2026-11-05-bola-3bolas-canon",
+    "2026-11-04-dato-huesos-bebe-300-adulto-206",
+    "2026-11-06-carrera-pizza-vs-hamburguesa",
+    "2026-11-06-bola-cisnes-escape",
+    "2026-11-06-dato-el-everest-no-es-la-cima-mas-cercana-al",
+    "2026-11-07-carrera-que-color-favorito",
+    "2026-11-07-bola-cual-de-las-2-bolitas-escapa",
+    "2026-11-07-dato-en-el-canal-de-panama-vas-del-atlantico"
+  ],
+  "miniatura": "salida/marca/miniatura-compilacion.png",
+  "capitulos": [
+    {
+      "inicio": 0,
+      "marca": "00:00",
+      "titulo": "Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso",
+      "id": "2026-11-04-dato-luz-pasado"
+    },
+    {
+      "inicio": 33.63333333333334,
+      "marca": "00:33",
+      "titulo": "¿Messi, CR7, Neymar o Mbappé? ⚽ ¿Quién gana la carrera?",
+      "id": "2026-11-03-carrera-messi-cr7-neymar"
+    },
+    {
+      "inicio": 68.26666666666668,
+      "marca": "01:08",
+      "titulo": "Tu corazón late casi 3.000 millones de veces en tu vida",
+      "id": "2026-11-05-dato-corazon-latidos"
+    },
+    {
+      "inicio": 97.56666666666668,
+      "marca": "01:37",
+      "titulo": "¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas",
+      "id": "2026-11-04-carrera-mascotas"
+    },
+    {
+      "inicio": 128.33333333333334,
+      "marca": "02:08",
+      "titulo": "¿Qué día de la semana gana? 📅 Carrera de bolitas",
+      "id": "2026-11-05-carrera-dias-semana"
+    },
+    {
+      "inicio": 165.10000000000002,
+      "marca": "02:45",
+      "titulo": "La bolita crece con cada rebote hasta llenar el círculo (Marcha Turca)",
+      "id": "2026-11-04-bola-marcha-crecer"
+    },
+    {
+      "inicio": 214.5666666666667,
+      "marca": "03:34",
+      "titulo": "3 bolitas, un hueco: ¿cuál escapa primero? Canon de Pachelbel",
+      "id": "2026-11-05-bola-3bolas-canon"
+    },
+    {
+      "inicio": 251.3,
+      "marca": "04:11",
+      "titulo": "Naces con unos 300 huesos y de adulto tienes 206",
+      "id": "2026-11-04-dato-huesos-bebe-300-adulto-206"
+    },
+    {
+      "inicio": 284.73333333333335,
+      "marca": "04:44",
+      "titulo": "¿Pizza, hamburguesa, sushi o tacos? 🍕 ¿Qué comida gana?",
+      "id": "2026-11-06-carrera-pizza-vs-hamburguesa"
+    },
+    {
+      "inicio": 324.3666666666667,
+      "marca": "05:24",
+      "titulo": "¿En qué rebote escapa la bolita? El lago de los cisnes en neón",
+      "id": "2026-11-06-bola-cisnes-escape"
+    },
+    {
+      "inicio": 356.2,
+      "marca": "05:56",
+      "titulo": "El Everest no es la cima más cercana al espacio: es el Chimborazo",
+      "id": "2026-11-06-dato-el-everest-no-es-la-cima-mas-cercana-al"
+    },
+    {
+      "inicio": 403.8333333333333,
+      "marca": "06:43",
+      "titulo": "¿Qué color gana la carrera? 🎨 El tuyo, ¿llega primero?",
+      "id": "2026-11-07-carrera-que-color-favorito"
+    },
+    {
+      "inicio": 435.7,
+      "marca": "07:15",
+      "titulo": "¿Cuál de las 2 bolitas escapa por el hueco estrecho? Oda a la Alegría",
+      "id": "2026-11-07-bola-cual-de-las-2-bolitas-escapa"
+    },
+    {
+      "inicio": 464.8333333333333,
+      "marca": "07:44",
+      "titulo": "En el Canal de Panamá vas del Atlántico al Pacífico hacia el este",
+      "id": "2026-11-07-dato-en-el-canal-de-panama-vas-del-atlantico"
+    }
+  ]
+}

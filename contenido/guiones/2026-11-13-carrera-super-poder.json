@@ -1,6 +1,6 @@
 {
   "plantilla": "carrera",
-  "id": "carrera-super-poder",
+  "id": "2026-11-13-carrera-super-poder",
   "titulo": "¿Volar, ser invisible o leer mentes? ⚡ ¿Qué superpoder gana?",
   "descripcion": "Volar, invisibilidad, telepatía, superfuerza o controlar el tiempo: ¿qué superpoder gana la carrera de bolitas? Física real y sonido en cada rebote. ¿Cuál elegirías tú?",
   "hashtags": [
@@ -13,7 +13,7 @@
     "#debate"
   ],
   "props": {
-    "id": "carrera-super-poder",
+    "id": "2026-11-13-carrera-super-poder",
     "gancho": "¿Qué superpoder gana?",
     "tema": "superpoderes",
     "participantes": [
