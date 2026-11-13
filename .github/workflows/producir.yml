@@ -16,8 +16,20 @@ on:
   workflow_dispatch:
     inputs:
       cuantos:
-        description: 'Cuántos Shorts renderizar'
+        description: 'Cuántos Shorts renderizar (con guion explícito siempre es 1)'
         default: '2'
+        type: string
+      guion:
+        description: 'Opcional: ruta de un guion del repo (ej. contenido/prototipos/ritmo-canon.json) o texto contenido en el nombre de uno del backlog. Solo se renderiza ese'
+        default: ''
+        type: string
+      commit:
+        description: 'Commitear el estado (guion movido, json de bandeja, hoja) como bot. A mano por defecto NO: solo artifact. Schedule/push siempre commitean'
+        default: false
+        type: boolean
+      concurrencia:
+        description: 'Pestañas de Remotion (vacío = automático según vCPU/RAM)'
+        default: ''
         type: string
       subir:
         description: 'Subir a YouTube (queda privado mientras Google no audite el proyecto)'
@@ -45,26 +57,33 @@ jobs:
     timeout-minutes: 90
     env:
       BOLITA_NUBE: '1'
-      BOLITA_CONCURRENCIA: '2' # runner: 2 vCPU / 7 GB
       BOLITA_MEMORIA_MIN_MB: '1500'
       BOLITA_RENDER_MAX_MIN: '40'
       CUANTOS: ${{ inputs.cuantos || '2' }}
+      GUION: ${{ inputs.guion || '' }}
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: master # siempre el último estado, aunque lo dispare un push anterior
+          # siempre el último estado de master (aunque lo dispare un push anterior); a mano se puede lanzar con --ref <rama> para probar
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'master' }}
 
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
 
-      - name: Fecha (Chile) y nombre del artifact
+      - name: Máquina, fecha (Chile) y nombre del artifact
         id: fecha
         run: |
           fecha=$(TZ=America/Santiago date +%F)
           echo "fecha=$fecha" >> "$GITHUB_OUTPUT"
-          echo "BOLITA_ARTEFACTO=\`shorts-$fecha\` del run ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" >> "$GITHUB_ENV"
+          cpus=$(nproc); mem=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo)
+          # Runner público: 4 vCPU / 16 GB (privado: 2 / 7).
+          if [ "$cpus" -ge 4 ] && [ "$mem" -ge 12000 ]; then conc=3; else conc=2; fi
+          [ -n "${{ inputs.concurrencia }}" ] && conc="${{ inputs.concurrencia }}"
+          echo "BOLITA_CONCURRENCIA=$conc" >> "$GITHUB_ENV"
+          echo "CPU $cpus · RAM ${mem} MB · concurrency $conc"
+          echo "BOLITA_ARTEFACTO=\`shorts-$fecha-${GITHUB_RUN_ID}\` del run ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" >> "$GITHUB_ENV"
 
       - name: Fuentes del sistema (emoji a color para carrera)
         run: |
@@ -75,8 +94,27 @@ jobs:
       - name: Dependencias
         run: npm ci --no-audit --no-fund
 
+      # Chrome headless de Remotion (~100 MB): se baja una vez por versión de Remotion (package-lock).
+      - name: Caché del Chrome de Remotion
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.remotion
+          key: chrome-remotion-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - name: Chrome headless de Remotion
         run: npx remotion browser ensure
+
+      - name: Poner el guion elegido en el backlog (solo en el runner, no se commitea salvo commit=true)
+        if: env.GUION != ''
+        run: |
+          mkdir -p contenido/backlog
+          if [ -f "$GUION" ]; then origen="$GUION"
+          else origen=$(ls contenido/backlog/*"$GUION"*.json 2>/dev/null | head -1 || true); fi
+          [ -n "$origen" ] && [ -f "$origen" ] || { echo "::error::No encuentro el guion '$GUION'"; exit 1; }
+          case "$origen" in contenido/backlog/*) ;; *) cp "$origen" contenido/backlog/ ;; esac
+          for f in contenido/backlog/*.json; do [ "$f" = "contenido/backlog/$(basename "$origen")" ] || rm -f "$f"; done
+          echo "CUANTOS=1" >> "$GITHUB_ENV"
+          echo "Guion: $origen"
 
       - name: ¿Se sube a YouTube?
         id: subida
@@ -110,18 +148,37 @@ jobs:
         run: |
           banderas="--sin-guiones --cuantos $CUANTOS"
           [ "${{ steps.subida.outputs.subir }}" = "1" ] || banderas="$banderas --sin-subir"
+          inicio=$(date +%s)
+          set +e
           npx tsx scripts/diario.mts $banderas
+          codigo=$?
+          set -e
+          echo "⏱ diario: $(( ($(date +%s) - inicio) / 60 )) min"
+          exit $codigo
 
       - name: Hojas de contacto
         if: always() && steps.diario.outcome != 'skipped'
         run: npx tsx scripts/hojas.mts
 
-      - name: Publicar mp4 como artifact
+      - name: Reunir el resultado
+        if: always() && steps.diario.outcome != 'skipped'
+        run: |
+          mkdir -p resultado
+          # mp4 + json de bandeja + hoja de contacto + guion promovido (la bandeja versionada no trae mp4).
+          for mp4 in salida/bandeja/*.mp4; do
+            [ -f "$mp4" ] || continue
+            id=$(basename "$mp4" .mp4)
+            cp "$mp4" resultado/
+            for x in "salida/bandeja/$id.json" "salida/revisiones/hojas/$id.jpg" "contenido/guiones/$id.json"; do [ -f "$x" ] && cp "$x" resultado/ || true; done
+          done
+          ls -la resultado
+
+      - name: Publicar resultado como artifact
         if: always() && steps.diario.outcome != 'skipped'
         uses: actions/upload-artifact@v4
         with:
-          name: shorts-${{ steps.fecha.outputs.fecha }}
-          path: salida/bandeja/*.mp4
+          name: shorts-${{ steps.fecha.outputs.fecha }}-${{ github.run_id }}
+          path: resultado/
           retention-days: 14
           compression-level: 0 # el mp4 ya viene comprimido
           if-no-files-found: warn
@@ -131,7 +188,7 @@ jobs:
         run: rm -rf secrets
 
       - name: Commit del estado
-        if: always() && steps.diario.outcome != 'skipped'
+        if: always() && steps.diario.outcome != 'skipped' && (github.event_name != 'workflow_dispatch' || inputs.commit)
         run: |
           .github/scripts/commit-bot.sh "bot: producción ${{ steps.fecha.outputs.fecha }}" \
             contenido/backlog contenido/guiones salida/bandeja salida/revisiones/hojas

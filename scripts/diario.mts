@@ -189,6 +189,9 @@ const renderizarUno = async (g: Guion & { ruta: string }, log: Log): Promise<boo
     // kernel mató a ffmpeg por OOM (≈950 MB) en un render de carrera. Con crf 18 la calidad sobra.
     '--x264-preset=veryfast',
   ];
+  // Three.js (ritmo, maquina) no tiene GPU en WSL ni en el runner: render por software con swangle. BOLITA_GL lo fuerza a mano.
+  const gl = process.env.BOLITA_GL ?? (['ritmo', 'maquina'].includes(g.plantilla) ? 'swangle' : '');
+  if (gl) argsRender.push(`--gl=${gl}`);
   let r = { codigo: 1, salida: '' };
   for (let intento = 1; intento <= 2; intento++) {
     if (!(await esperarMemoria(log))) {
