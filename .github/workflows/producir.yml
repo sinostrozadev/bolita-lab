@@ -114,6 +114,7 @@ jobs:
           case "$origen" in contenido/backlog/*) ;; *) cp "$origen" contenido/backlog/ ;; esac
           for f in contenido/backlog/*.json; do [ "$f" = "contenido/backlog/$(basename "$origen")" ] || rm -f "$f"; done
           echo "CUANTOS=1" >> "$GITHUB_ENV"
+          echo "BOLITA_PLANTILLAS_MANUALES=1" >> "$GITHUB_ENV" # admite también ritmo y maquina (Three.js, --gl=swangle)
           echo "Guion: $origen"
 
       - name: ¿Se sube a YouTube?
@@ -172,6 +173,7 @@ jobs:
             for x in "salida/bandeja/$id.json" "salida/revisiones/hojas/$id.jpg" "contenido/guiones/$id.json"; do [ -f "$x" ] && cp "$x" resultado/ || true; done
           done
           ls -la resultado
+          if [ -n "$GUION" ] && ! ls resultado/*.mp4 >/dev/null 2>&1; then echo "::error::El guion '$GUION' no produjo ningún mp4 (ver el log de 'Producir')"; exit 1; fi
 
       - name: Publicar resultado como artifact
         if: always() && steps.diario.outcome != 'skipped'

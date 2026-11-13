@@ -237,6 +237,8 @@ const elegirDelBacklog = (log: Log): (Guion & { ruta: string }) | undefined => {
       return candidatos[0];
     }
   }
+  // Plantillas fuera de la rotación (ritmo, maquina): solo si el workflow pidió un guion explícito.
+  if (process.env.BOLITA_PLANTILLAS_MANUALES === '1') return backlog[0];
   return undefined;
 };
 
