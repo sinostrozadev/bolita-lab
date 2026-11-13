@@ -1,6 +1,6 @@
 {
   "zonaHoraria": "America/Santiago",
-  "comentario": "Ranuras de publicación (dias: 0=domingo … 6=sábado). Normal: 1 Short diario a las 18:00 y un 2.º a las 12:00 sábados y domingos. Hasta 'dobleHasta' (inclusive, fecha local) se usan 'ranurasDoble': 2 Shorts al día, 12:00 y 18:00 (las dos primeras semanas del canal; ajusta la fecha al día real de lanzamiento + 13). Los videos largos (compilaciones) usan 'ranurasLargo' y no ocupan ranuras de Shorts. La rotación de plantillas es cíclica. 2026-11-09 (Santiago): se agrega un 3.er Short diario a las 07:00 (en ambas fases) para probar más formatos.",
+  "comentario": "Ranuras de publicación (dias: 0=domingo … 6=sábado). Normal: 1 Short diario a las 18:00 y un 2.º a las 12:00 sábados y domingos. Hasta 'dobleHasta' (inclusive, fecha local) se usan 'ranurasDoble': 2 Shorts al día, 12:00 y 18:00 (las dos primeras semanas del canal; ajusta la fecha al día real de lanzamiento + 13). Los videos largos (compilaciones) usan 'ranurasLargo' y no ocupan ranuras de Shorts. La rotación de plantillas es cíclica. 2026-11-09 (Santiago): se agrega un 3.er Short diario a las 07:00 (en ambas fases) para probar más formatos. 2026-11-12 (Santiago): 3 largos 16:9 por semana, lunes (torneo), miércoles (¿cuántas adivinas?) y sábado (relajante) a las 19:00; sale el domingo 10:00.",
   "ranuras": [
     {
       "dias": [
@@ -81,9 +81,11 @@
   "ranurasLargo": [
     {
       "dias": [
-        0
+        1,
+        3,
+        6
       ],
-      "hora": "10:00"
+      "hora": "19:00"
     }
   ],
   "rotacion": [
