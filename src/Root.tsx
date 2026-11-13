@@ -11,6 +11,9 @@ import { registrar as marca } from './plantillas/marca';
 import { registrar as colores } from './plantillas/colores';
 import { registrar as ritmo } from './plantillas/ritmo';
 import { registrar as maquina } from './plantillas/maquina';
+import { registrar as torneo } from './plantillas/torneo';
+import { registrar as relajante } from './plantillas/relajante';
+import { registrar as quiz } from './plantillas/quiz';
 
 export const Root: React.FC = () => (
   <>
@@ -21,6 +24,7 @@ export const Root: React.FC = () => (
     <Folder name="Ritmo">{ritmo()}</Folder>
     <Folder name="Marca">{marca()}</Folder>
     <Folder name="Maquina">{maquina()}</Folder>
+    <Folder name="Largos">{torneo()}{relajante()}{quiz()}</Folder>
     <Folder name="Pruebas">
       <Composition
         id="Vacio"

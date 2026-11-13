@@ -1,0 +1,136 @@
+{
+  "plantilla": "torneo",
+  "id": "2026-11-16-torneo-paises",
+  "titulo": "TORNEO de bolitas: 16 países, 1 campeón 🏆",
+  "props": {
+    "id": "2026-11-16-torneo-paises",
+    "titulo": "TORNEO DE BOLITAS",
+    "subtitulo": "16 países · 1 campeón",
+    "tema": "países",
+    "pregunta": "¿Quién gana? Comenta tu país 👇",
+    "participantes": [
+      {
+        "etiqueta": "CHILE",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇨🇱"
+        }
+      },
+      {
+        "etiqueta": "MÉXICO",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇲🇽"
+        }
+      },
+      {
+        "etiqueta": "URUGUAY",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇺🇾"
+        }
+      },
+      {
+        "etiqueta": "GUATEMALA",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇬🇹"
+        }
+      },
+      {
+        "etiqueta": "ARGENTINA",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇦🇷"
+        }
+      },
+      {
+        "etiqueta": "PERÚ",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇵🇪"
+        }
+      },
+      {
+        "etiqueta": "COSTA RICA",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇨🇷"
+        }
+      },
+      {
+        "etiqueta": "R. DOMINICANA",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇩🇴"
+        }
+      },
+      {
+        "etiqueta": "COLOMBIA",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇨🇴"
+        }
+      },
+      {
+        "etiqueta": "ESPAÑA",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇪🇸"
+        }
+      },
+      {
+        "etiqueta": "BOLIVIA",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇧🇴"
+        }
+      },
+      {
+        "etiqueta": "HONDURAS",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇭🇳"
+        }
+      },
+      {
+        "etiqueta": "VENEZUELA",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇻🇪"
+        }
+      },
+      {
+        "etiqueta": "ECUADOR",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇪🇨"
+        }
+      },
+      {
+        "etiqueta": "PARAGUAY",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇵🇾"
+        }
+      },
+      {
+        "etiqueta": "EL SALVADOR",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇸🇻"
+        }
+      }
+    ]
+  },
+  "descripcion": "¿Qué país de habla hispana gana un torneo de bolitas? 16 países, 4 rondas y 10 carreras con bumpers, molinos, portales, trampolines, túneles y bloques que se rompen. Comenta tu país antes de ver la final 👇\n\nEl resultado sale de una simulación física (gravedad, choques y rebotes calculados por computador): nadie está favorecido, ni siquiera nosotros.\n\nCapítulos:\n{CAPITULOS}\n\nCómo funciona: octavos con 4 carreras de 4 (pasan las 2 primeras), cuartos con 2 carreras de 4, semifinales y final en duelos 1 contra 1, y la pelea por el bronce. Cada carrera tiene su propia pista, con secciones distintas de obstáculos.\n\n¿Qué torneo hacemos ahora? ¿Comidas, animales, equipos de fútbol? Déjalo en los comentarios.\nSimulación y música sintetizada por Bolita Lab. Banderas: Noto Color Emoji (licencia OFL).\n\n#bolitalab #carreradebolitas #marblerace",
+  "hashtags": [
+    "#bolitalab",
+    "#carreradebolitas",
+    "#marblerace",
+    "#torneo",
+    "#paises",
+    "#simulacion"
+  ],
+  "categoria": "24"
+}

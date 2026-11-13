@@ -70,3 +70,12 @@ export const MARCA = {
   /** Marca de agua discreta esquina superior derecha, dentro de la zona segura. */
   marcaDeAgua: { tamano: 34, opacidad: 0.55 },
 } as const;
+
+/** Formato de los LARGOS 16:9 (2026-11-12): 1920 × 1080 a 30 fps (los sims de 60 fps se leen cada 2 cuadros). */
+export const FORMATO_LARGO = {
+  ancho: 1920,
+  alto: 1080,
+  fps: 30,
+  /** En 16:9 la UI de YouTube solo tapa la barra de abajo al pausar: margen generoso igual. */
+  seguro: { arriba: 50, abajo: 70, lados: 60 },
+} as const;

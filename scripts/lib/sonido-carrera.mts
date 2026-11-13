@@ -32,7 +32,7 @@ const ruido = (semilla: number) => {
 };
 
 /** Bombo: seno que cae de 150 a 45 Hz en 0,16 s con clic de ataque. */
-const bombo = (p: Float32Array, t: number, vol: number) => {
+export const bombo = (p: Float32Array, t: number, vol: number) => {
   barrido(p, t, 150, 45, 0.16, vol, 'seno');
   golpe(p, t, { duracion: 0.008, volumen: vol * 0.4, tono: 0.6, semilla: Math.floor(t * 1000) });
 };
@@ -53,7 +53,7 @@ const ruidoAgudo = (p: Float32Array, t: number, dur: number, vol: number, semill
 };
 
 /** Metal sintético: armónicos 1..7 con 1/n, ataque de 25 ms y vibrato leve (fanfarria). */
-const metal = (p: Float32Array, t: number, hz: number, dur: number, vol: number) => {
+export const metal = (p: Float32Array, t: number, hz: number, dur: number, vol: number) => {
   const desde = Math.floor(t * SR), total = Math.floor((dur + 0.25) * SR);
   let fase = 0;
   for (let i = 0; i < total; i++) {
@@ -72,7 +72,8 @@ const metal = (p: Float32Array, t: number, hz: number, dur: number, vol: number)
   }
 };
 
-export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string, musica?: string) => {
+/** Sintetiza el wav de una carrera; con `ruta` null no escribe nada (el torneo mezcla los canales en su propio wav). */
+export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string | null, musica?: string): Float32Array[] => {
   /** Con canción de fondo los choques suenan más bajos (se oyen encima sin tapar la melodía). */
   const kGolpe = musica ? 0.5 : 1;
   const segundos = (sim.duracionFrames + 72) / sim.fps + 0.8;
@@ -165,6 +166,22 @@ export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string, musica?:
           nota(p, { inicio: 0.03 + k * 0.035, hz: midiAHz(midi), duracion: 0.03, volumen: 0.09, timbre: 'seno', caida: 0.02, liberacion: 0.22 });
         }
       }, 0.9);
+    } else if (ev.tipo === 'bumper') {
+      // Pinball: "ding" brillante de dos parciales + golpe seco.
+      colocar(t, x, (p) => {
+        nota(p, { inicio: 0, hz: 988, duracion: 0.05, volumen: 0.16 * (0.6 + 0.4 * f), timbre: 'seno', liberacion: 0.22 });
+        nota(p, { inicio: 0, hz: 1482, duracion: 0.03, volumen: 0.09, timbre: 'seno', liberacion: 0.16 });
+        golpe(p, 0, { duracion: 0.02, volumen: 0.14, tono: 0.7, semilla: ev.frame * 5 + ev.bola });
+      }, 0.4);
+    } else if (ev.tipo === 'trampolin') {
+      // "Boing": resorte que sube.
+      colocar(t, x, (p) => { barrido(p, 0, 170, 560, 0.2, 0.22 * (0.6 + 0.4 * f), 'triangulo'); golpe(p, 0, { duracion: 0.02, volumen: 0.1, tono: 0.4, semilla: ev.frame }); }, 0.3);
+    } else if (ev.tipo === 'molino') {
+      // Aspa de madera: "clac" grave.
+      colocar(t, x, (p) => { nota(p, { inicio: 0, hz: 196, duracion: 0.03, volumen: 0.2 * (0.5 + 0.5 * f), timbre: 'pluck', liberacion: 0.08 }); golpe(p, 0, { duracion: 0.03, volumen: 0.2, tono: 0.3, semilla: ev.frame * 9 }); }, 0.3);
+    } else if (ev.tipo === 'portal') {
+      // Teletransporte: barrido que baja + brillo.
+      colocar(t, x, (p) => { barrido(p, 0, 1400, 220, 0.32, 0.18, 'seno'); barrido(p, 0.02, 2600, 700, 0.3, 0.05, 'sierra'); }, 0.5);
     } else if (ev.tipo === 'tubo') {
       colocar(t, x, (p) => { barrido(p, 0, 260, 900, 0.12, 0.2, 'seno'); golpe(p, 0, { duracion: 0.03, volumen: 0.1, tono: 0.6, semilla: ev.frame }); }, 0.3);
     } else if (ev.tipo === 'tuboSale') {
@@ -290,5 +307,6 @@ export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string, musica?:
   const kMusica = musica ? 1 : 0.5;
   for (let i = 0; i < largo; i++) { L[i] += mL[i] * kMusica; R[i] += mR[i] * kMusica; }
   masterizar([L, R], { rmsDb: -15, techoDb: -2.2 });
-  escribirWav(ruta, [L, R]);
+  if (ruta) escribirWav(ruta, [L, R]);
+  return [L, R];
 };

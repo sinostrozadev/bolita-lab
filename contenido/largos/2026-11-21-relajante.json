@@ -1,0 +1,59 @@
+{
+  "plantilla": "relajante",
+  "id": "2026-11-21-relajante",
+  "titulo": "30 minutos de bolitas relajantes 🎵 para estudiar, concentrarse o dormir",
+  "props": {
+    "id": "2026-11-21-relajante",
+    "titulo": "30 minutos de bolitas relajantes",
+    "subtitulo": "para estudiar, concentrarse o dormir",
+    "escenas": [
+      {
+        "tipo": "llenar",
+        "pieza": "gymnopedie",
+        "tono": 205,
+        "nombre": "Una bolita llena el círculo · Gymnopédie n.º 1 (Satie)"
+      },
+      {
+        "tipo": "pendulos",
+        "pieza": "canon",
+        "tono": 32,
+        "nombre": "Ola de péndulos · Canon en Re (Pachelbel)"
+      },
+      {
+        "tipo": "tres",
+        "pieza": "brahms",
+        "tono": 320,
+        "nombre": "Tres bolitas en el anillo · Canción de cuna (Brahms)"
+      },
+      {
+        "tipo": "espirografo",
+        "pieza": "greensleeves",
+        "tono": 160,
+        "nombre": "Espirógrafo de luz · Greensleeves (tradicional)"
+      },
+      {
+        "tipo": "hexagono",
+        "pieza": "bruma",
+        "tono": 262,
+        "nombre": "Hexágono que gira · Bruma (música propia)"
+      },
+      {
+        "tipo": "gotas",
+        "pieza": "marea",
+        "tono": 215,
+        "nombre": "Gotas en el agua · Marea (música propia)"
+      }
+    ],
+    "segundosEscena": 305,
+    "fundido": 6
+  },
+  "categoria": "24",
+  "hashtags": [
+    "#bolitalab",
+    "#relajante",
+    "#musicaparadormir",
+    "#musicaparaestudiar",
+    "#satisfying"
+  ],
+  "descripcion": "30 minutos de bolitas que rebotan, péndulos, espirales de luz y gotas en el agua, con música tranquila: para estudiar, concentrarte o dormir. Sin anuncios en pantalla ni textos que distraigan.\n\nCapítulos:\n{CAPITULOS}\n\nMúsica: Gymnopédie n.º 1 (Erik Satie), Canon en Re (Johann Pachelbel), Canción de cuna (Johannes Brahms) y Greensleeves (tradicional), todas de dominio público, en arreglos sintetizados por Bolita Lab, más dos piezas propias. Simulaciones físicas hechas por computador.\n\n#bolitalab #relajante #musicaparadormir"
+}

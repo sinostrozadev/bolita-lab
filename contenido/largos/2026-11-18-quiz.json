@@ -1,0 +1,9 @@
+{
+  "plantilla": "quiz",
+  "id": "2026-11-18-quiz",
+  "titulo": "¿Cuántas adivinas? 10 canciones tocadas por una bolita 🎵",
+  "categoria": "24",
+  "hashtags": ["#bolitalab", "#adivinalacancion", "#quiz", "#musica", "#desafio"],
+  "descripcion": "Una bolita salta sobre un teclado y cada salto es una nota. 10 melodías famosas, de fácil a difícil: cuenta cuántas reconoces antes de la respuesta y comenta tu puntaje 👇\n\nCapítulos:\n{CAPITULOS}\n\nTodas las melodías son de dominio público (compositores clásicos y canciones tradicionales); arreglo y sonido sintetizados por Bolita Lab.\n\n#bolitalab #adivinalacancion #quiz",
+  "props": { "id": "2026-11-18-quiz", "titulo": "¿CUÁNTAS ADIVINAS?", "subtitulo": "10 canciones tocadas por una bolita" }
+}

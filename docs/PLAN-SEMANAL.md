@@ -107,6 +107,17 @@ Siguen, en orden de rotación (guiones listos, sin render):
 
 Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-poder` · `bola-furelise-crecer`.
 
+## Largos 16:9 desde el 2026-11-16: lunes, miércoles y sábado a las 19:00 (aprobado por Santiago 2026-11-12)
+
+| Día | Formato | Primer video | Estado |
+|---|---|---|---|
+| lun 11-16 19:00 | **Torneo de bolitas** (16 competidores, llave, 10 carreras con secciones de obstáculos) | 16 países de habla hispana | render |
+| mié 11-18 19:00 | **¿Cuántas adivinas?** (10 melodías de dominio público, versión simple) | 10 canciones, de fácil a difícil | guion + audio listos |
+| sáb 11-21 19:00 | **Bolitas relajantes** (30 min, 6 escenas con fundidos) | Satie, Pachelbel, Brahms, Greensleeves + 2 propias | espera OK de fotogramas/audio |
+
+Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` → `scripts/preparar-largo-<tipo>.mts` →
+`scripts/render-largo.mts` (tramos con lock) → `scripts/bandeja-largo.mts` (json de bandeja con capítulos y mid-rolls).
+
 ## Plan (JSON)
 
 ```json
@@ -114,7 +125,7 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
   "version": 1,
   "canal": "bolita-lab",
   "zona": "America/Santiago",
-  "actualizado": "2026-11-09T07:40:00-03:00",
+  "actualizado": "2026-11-12T23:59:00-03:00",
   "semanas": [
     {
       "inicio": "2026-11-02",
@@ -503,12 +514,12 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "tipo": "evergreen",
       "serie": "Compilación del domingo",
       "contingencia": null,
-      "estado": "idea",
+      "estado": "descartado",
       "guion": null,
       "videoId": null,
       "referente": "mikan2d (largos 8–9 min de carreras)",
       "porQue": "segunda compilación; mide si el largo suma horas o solo canibaliza",
-      "bloqueo": "cron dom 04:30; OK de Santiago antes de subir; si la del 11-08 no se aprobó, se revisa el formato antes de producir esta"
+      "bloqueo": "2026-11-12: compilaciones descartadas; los largos pasan a 3 nativos por semana (lun/mié/sáb 19:00)"
     },
     {
       "fecha": "2026-11-15",
@@ -731,6 +742,54 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "referente": "satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K)",
       "porQue": "bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación · movido el 11-09",
       "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-16",
+      "hora": "19:00",
+      "formato": "largo",
+      "plantilla": "torneo",
+      "tema": "TORNEO de bolitas: 16 países, 1 campeón 🏆",
+      "tipo": "serie",
+      "serie": "Torneo de bolitas (lunes)",
+      "contingencia": null,
+      "estado": "renderizando",
+      "guion": "contenido/largos/2026-11-16-torneo-paises.json",
+      "videoId": null,
+      "referente": "mikan2d / Jelle's Marble Runs (torneos de canicas, largos)",
+      "porQue": "3 largos/semana para las horas del YPP (aprobado por Santiago 2026-11-12); el torneo es el formato prioritario",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-18",
+      "hora": "19:00",
+      "formato": "largo",
+      "plantilla": "quiz",
+      "tema": "¿Cuántas adivinas? 10 canciones tocadas por una bolita 🎵",
+      "tipo": "serie",
+      "serie": "¿Cuántas adivinas? (miércoles)",
+      "contingencia": null,
+      "estado": "guion",
+      "guion": "contenido/largos/2026-11-18-quiz.json",
+      "videoId": null,
+      "referente": "quizzes musicales \"guess the song\" (largos 8–10 min)",
+      "porQue": "los adivina de Shorts piden comentarios; versión simple (Santiago aún no convencido)",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-21",
+      "hora": "19:00",
+      "formato": "largo",
+      "plantilla": "relajante",
+      "tema": "30 minutos de bolitas relajantes 🎵 para estudiar, concentrarse o dormir",
+      "tipo": "serie",
+      "serie": "Bolitas relajantes (sábado)",
+      "contingencia": null,
+      "estado": "guion",
+      "guion": "contenido/largos/2026-11-21-relajante.json",
+      "videoId": null,
+      "referente": "canales de visuales relajantes de 30–60 min (watch time alto por sesión)",
+      "porQue": "30 min por vista suma horas rápido; Santiago: \"tiene potencial, hay que trabajarlo más\" → fotogramas y preview de audio antes del render",
+      "bloqueo": "OK de Santiago a fotogramas + audio de 30 s antes del render completo"
     }
   ]
 }
