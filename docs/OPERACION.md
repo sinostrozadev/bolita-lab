@@ -196,6 +196,9 @@ de la API (docs/DECISIONES.md, 2026-11-04).
 | `.github/workflows/producir.yml` ("Producir Shorts") | push a `master` que toque `contenido/backlog/**` o `contenido/calendario.json`; a mano (`cuantos`, `subir`); diario 06:30 UTC (03:30 Chile) | `diario.mts --sin-guiones --cuantos N [--sin-subir]` → `hojas.mts` → artifact + commit del estado |
 | `.github/workflows/compilar.yml` ("Compilar semanal") | domingos 07:30 UTC (04:30 Chile) y a mano (`n`) | baja los mp4 de los artifacts `shorts-*` de los últimos 14 días, `compilar.mts --n 14`, `subir exportar` → artifact + commit |
 
+> **Variable `BOLITA_NUBE_AUTO`** (variable de repo, no secret): la corrida **programada** de `producir.yml` (03:30 Chile)
+> solo ejecuta si vale `1`; sin ella no hace nada, para no competir con el cron local por el mismo backlog. `workflow_dispatch` (a mano) siempre corre. Crearla o cambiarla: `gh variable set BOLITA_NUBE_AUTO -b 1` (o `-b 0` para apagar).
+
 **Reglas del diseño**
 - Todo lo que es código corre en Actions; los guiones llegan **ya escritos** al backlog (en la nube no hay
   `claude -p`: se generan en una sesión local o con `generar-guiones` y se pushean). Cada push al backlog
@@ -261,3 +264,10 @@ horas, progreso YPP, por video). Se versiona todo salvo `fallo-*.png`.
   vistas 28 d/48 h y horas, que tardan ~48 h en reflejarse); si falla, cae a curl público. `fuentes` del JSON dice cuál se usó.
 - **Capturas:** pestaña propia del piloto (:8777), cambia al canal Bolita Lab (`BOLITA_CANAL_ID`, `BOLITA_CANAL_NOMBRE`) si Studio
   pide elegirlo, y restaura la pestaña anterior. Si el piloto está caído, solo queda el JSON.
+
+### Producción en la nube POR FRAGMENTOS (2026-11-13, reemplaza el flujo de un solo runner)
+`producir.yml` ahora trabaja un video por run en 3 etapas: **preparar** (1 job: promueve el guion, voz, sonido, mapas, props; lee los frames con `remotion compositions`) → **fragmento ×N** (matriz, cada uno en su runner de 4 vCPU: `--frames a-b --codec=h264-mkv --audio-codec=pcm-16 --concurrency=4`) → **final** (une con ffmpeg de Remotion `-c copy`, codifica AAC 192k una vez, `diario.mts` con `NUBE_FASE=final` deja el json de bandeja, hoja de contacto, artifact `shorts-<fecha>-<run>` con mp4+json+hoja+guion, 14 días). Hooks en `diario.mts`: `NUBE_FASE=preparar|final` (sin la variable todo es igual que antes).
+- Lanzar: `gh workflow run producir.yml -f guion=<texto o ruta> [-f fragmentos=10] [-f commit=true]`; seguir: `gh run watch <id>`; bajar: `gh run download <id> -D salida/nube/`. A mano NO commitea (solo artifact) salvo `commit=true`; cada run a mano es independiente (se pueden lanzar varios a la vez). schedule/push siguen APAGADOS salvo variable de repo `WebGL por software (swangle) en ritmo/maquina=1`.
+- Medido 2026-11-13: x
+- Cuello de botella: el costo por frame del render (Short ritmo (Three.js, swangle) 42 s @60 fps, 10 fragmentos: **4 min 29 s** (preparar 50 s, fragmentos 111-185 s, final 29 s); antes 1 runner: 20 min. Short carrera 29,5 s: 2 min 51 s en un solo runner (ya era rápido). mp4 verificado: 1080x1920@60, 42,0 s, h264+aac.); más fragmentos = más rápido (el reparto no es parejo: el más lento manda). Sin fragmentar, 4 vCPU rinden ~6,5 fps en frontera y ~2 fps en ritmo (swangle). Concurrency 4 vs 3 ≈ -14 %; `--gl`, calidad JPEG y escala no cambian nada (medido). Caché de Chrome y de mapas ahorra segundos, no minutos.
+- Pendiente: largos (`render-largo.mts` ya parte en tramos: falta mapearlos a la matriz; no hay guion largo commiteado para medir); lotes semanales (script que lance un run por guion); `maquina` sin medir.

@@ -50,10 +50,17 @@ export const asegurarDirectorios = () => {
 // ---------------------------------------------------------------- tipos
 export const PLANTILLAS = ['bola', 'dato', 'carrera', 'colores'] as const;
 export type Plantilla = (typeof PLANTILLAS)[number];
+/**
+ * Plantillas fuera de la rotación del diario (se producen a mano, con guion explícito): ritmo y maquina (Three.js).
+ * El diario solo las admite con BOLITA_PLANTILLAS_MANUALES=1 (la pone el workflow de la nube cuando se pide un guion);
+ * sin la variable, un guion `ritmo`/`maquina` en el backlog sigue siendo "inválido" como siempre.
+ */
+export const PLANTILLAS_MANUALES = ['ritmo', 'maquina'] as const;
+const ADMITIDAS = (process.env.BOLITA_PLANTILLAS_MANUALES === '1' ? [...PLANTILLAS, ...PLANTILLAS_MANUALES] : [...PLANTILLAS]) as unknown as typeof PLANTILLAS;
 
 /** Guion: contrato con las plantillas (contenido/guiones/<id>.json o contenido/backlog/<plantilla>-<slug>.json). */
 export const GuionSchema = z.object({
-  plantilla: z.enum(PLANTILLAS),
+  plantilla: z.enum(ADMITIDAS),
   id: z.string().min(1),
   titulo: z.string().min(1),
   descripcion: z.string(),

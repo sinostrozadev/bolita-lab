@@ -31,7 +31,7 @@
 | 12 | **Batalla de colores** | `colores` (rama `colores`) | equipos de color: mismo color se fusiona, distinto se divide, los chicos mueren, gana el que sobrevive; votación | 11-10 | en prueba: `yV2xgpjEOpY` sáb 11-14 07:00 (aprobado); mejoras del final y votación unificada en curso |
 | 13 | **Máquina de canicas musical 3D** | `maquina` | máquina tipo Wintergatan en Three.js: noria, vibráfono, bombo, platillo; la melodía la tocan las canicas (179 golpes sincronizados) | 11-10 | prototipo privado `Liq64V3Kn34` (espera veredicto); render 32 min a 60 fps |
 | 15 | **Votación por acciones** | variable en `colores` y `carrera` v2 | "❤️ = ROJO · 💬 = AZUL · 🔁 = AMARILLO · 🔔 = VERDE": cada acción vota un color | en construcción | variable a medir (me gusta/comentarios/compartidos/subs por 1.000 vistas) |
-| 14a | **Largo · Torneo de bolitas** (lunes 19:00) | `torneo` (16:9, física de `carrera` v2 en tablero ancho) | 16 competidores, llave (octavos 4×4, cuartos 2×4, semis y final en duelo, bronce), 10 carreras con secciones de obstáculos (bloques, bumpers, trampolines, molinos, plataformas, portales, túneles), cámara que se aleja/acerca, votación antes de las semis, campeón con podio | 11-16 | en prueba: 16 países (render 11-12/13) |
+| 14a | **Largo · Torneo de bolitas** (lunes 19:00) | `torneo` (16:9, física de `carrera` v2 en tablero ancho) | 16 competidores, llave (octavos 4×4, cuartos 2×4, semis y final en duelo, bronce), 10 carreras con secciones de obstáculos (bloques, bumpers, trampolines, molinos, plataformas, portales, túneles), cámara que se aleja/acerca, votación antes de las semis, campeón con podio | 11-16 | en prueba: 16 países `ifYaoZV1jlU` lun 11-16 19:00 |
 | 14b | **Largo · ¿Cuántas adivinas?** (miércoles 19:00) | `quiz` (16:9, versión simple) | 10 melodías de dominio público; una bolita salta sobre un teclado y cada salto es una nota; cuenta regresiva y respuesta; "comenta tu puntaje" | 11-18 | en prueba (Santiago aún no convencido: versión simple) |
 | 14c | **Largo · Bolitas relajantes** (sábado 19:00) | `relajante` (16:9, 30 min, canvas) | 6 escenas de ~5 min (círculo que se llena, péndulos, 3 bolitas, espirógrafo, hexágono, gotas) con fundidos lentos y música tranquila (Satie, Pachelbel, Brahms, Greensleeves + propias) | 11-21 | en prueba (OK de fotogramas y audio antes del render) |
 | 14 | ~~Compilación~~ | `compilar.mts` | largo 16:9 con Shorts | — | descartado (2026-11-12): los largos son nativos |
@@ -76,10 +76,31 @@ Misma canción (transcripción de Santiago, compases 1–8 ×2, 80 bpm) en: bola
     { "formato": 13, "id": "poa80223y84", "fecha": "2026-11-15", "nota": "DBGT máquina 3D, 07:00" },
     { "formato": 5, "id": "4xZI3VplZw0", "fecha": "2026-11-16", "nota": "DBGT carrera (cama), 07:00" },
     { "formato": 12, "id": "oFa1laPNopI", "fecha": "2026-11-17", "nota": "DBGT colores (cama), 07:00" },
-    { "formato": 11, "id": "V-geJGHFy48", "fecha": "2026-11-15", "nota": "Creep (notas de tutorial), 15:00" }
+    { "formato": 11, "id": "V-geJGHFy48", "fecha": "2026-11-15", "nota": "Creep (notas de tutorial), 15:00" },
+    { "formato": 6, "id": "dXorev0KyK8", "fecha": "2026-11-17", "nota": "dato primer sitio web 1991, 12:00" },
+    { "formato": 4, "id": "xIVZYWIMeVM", "fecha": "2026-11-18", "nota": "carrera redes sociales, 12:00" },
+    { "formato": 12, "id": "PxIwfqL-vx8", "fecha": "2026-11-19", "nota": "colores batalla 4, 12:00" },
+    { "formato": 13, "id": "Liq64V3Kn34", "fecha": "2026-11-20", "nota": "máquina de canicas 3D, Oda a la alegría, 12:00 (ex prototipo privado)" },
+    { "formato": 14, "id": "ifYaoZV1jlU", "fecha": "2026-11-16", "nota": "LARGO Torneo de bolitas: 16 países, 10:33, lun 19:00" }
   ]
 }
 ```
+
+## Mediciones
+### 2026-11-12 — "Se queda a ver" (Studio, `retencion-studio.mjs`; meta >= 55 %)
+| Formato | Video (id) | Se queda a ver | Vistas |
+|---|---|---|---|
+| 2 bola "primer segundo" | vCBxbjwusnc | 43,1 % | 1.0K |
+| 4 carrera "primer segundo" | 5QFQ3xWI71c (zodiaco, 07:00) | 75,4 % | 864 |
+| 4 carrera "primer segundo" | mBG93NTd51c (estaciones) | 54,2 % | 290 |
+| 4 carrera "primer segundo" | CvgoCXRxVCQ (países) | 50,7 % | 1.0K |
+| 7 adivina (dominio público) | 6u43w_oAtTE (Bella Ciao) | 44,9 % | 1.1K |
+| 7 adivina | yO7rByQZW2k (Jingle Bells) | 44,0 % | 967 |
+| 7 adivina (DBGT) | fHVj0At4E0U | 37,9 % | 1.2K |
+| 9 apuesta | pi_-etXwymI (Marcha turca) | 54,8 % | 982 |
+| 9 apuesta (DBGT) | iUBhm8a36Dc | 33,3 % | 12 (muy reciente) |
+| 1 bola clásica (vieja) | 6T5zmMoG93A (marcha crecer) | 59,7 % | 956 |
+Lectura: carrera "primer segundo" promedia ~60 % (rango 51-75 %), la mejor; apuesta ~55 % con una muestra; adivina 38-45 %, bajo la meta; bola 43 %. n pequeño: no decide nada hasta la revisión del 11-29.
 
 ## Reglas de esta tabla
 - Al programar un video de un formato nuevo o en prueba, se agrega una línea al JSON (formato, id, fecha de publicación, nota).

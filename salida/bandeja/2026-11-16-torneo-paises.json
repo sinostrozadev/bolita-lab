@@ -13,7 +13,7 @@
     "#simulacion"
   ],
   "duracionSeg": 633,
-  "estado": "listo",
+  "estado": "subido",
   "publicarEn": "2026-11-16T19:00:00-03:00",
   "categoria": "24",
   "mp4": "/home/santiago/projects/yt/bolita-lab/salida/largos/2026-11-16-torneo-paises.mp4",
@@ -54,5 +54,9 @@
   ],
   "noEsParaNinos": true,
   "contenidoSintetico": false,
-  "nota": "Largo 16:9. Subir por Studio (no es Short: sin #Shorts). Marcar las pausas publicitarias en midrollsSeg cuando el canal esté en el YPP."
+  "nota": "Largo 16:9. Subir por Studio (no es Short: sin #Shorts). Marcar las pausas publicitarias en midrollsSeg cuando el canal esté en el YPP.",
+  "videoId": "ifYaoZV1jlU",
+  "url": "https://www.youtube.com/watch?v=ifYaoZV1jlU",
+  "programado": "2026-11-16 19:00",
+  "subidoEn": "2026-11-13T05:48:28.411Z"
 }

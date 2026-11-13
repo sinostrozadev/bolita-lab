@@ -28,7 +28,7 @@ import { agregarCreditos } from './imagenes-dato.mjs';
 import {
   ARCHIVO_API_AUDITADA, ARCHIVO_TOKEN_YT, DIR_BANDEJA, caducidadTokenYT, DIR_GUIONES, DIR_SALIDA, DIR_TRABAJO, RAIZ,
   asegurarDirectorios, cargarCalendario, composicionDe, correr, crearLog, detectarHuerfanos, duracionVideo,
-  enLaNube, escribirJson, existeSecreto, fechaHoyLocal, leerBacklog, leerBandeja, memoriaDisponibleMb, ordenRotacion,
+  enLaNube, escribirJson, existeSecreto, fechaHoyLocal, leerBacklog, leerBandeja, leerGuiones, memoriaDisponibleMb, ordenRotacion,
   resumenSalida, siguientePlantilla, slugificar,
   type EntradaBandeja, type Guion, type Log, type Plantilla,
 } from './lib/operacion.mjs';
@@ -65,6 +65,12 @@ const CONCURRENCIA = process.env.BOLITA_CONCURRENCIA ?? '1';
 const MEMORIA_MIN_MB = parseInt(process.env.BOLITA_MEMORIA_MIN_MB ?? '1200', 10);
 const ESPERA_MEMORIA_MAX_MIN = 30;
 const MIN = 60_000;
+/**
+ * Nube por fragmentos (workflow producir.yml): NUBE_FASE=preparar → promueve el guion, lo prepara (voz, mapas, props) y se detiene
+ * antes de renderizar; NUBE_FASE=final (+ NUBE_ID) → el mp4 ya fue armado por el workflow (fragmentos unidos + audio): solo deja
+ * el json de bandeja. Sin NUBE_FASE todo funciona como siempre (render completo en un solo proceso).
+ */
+const FASE = process.env.NUBE_FASE ?? '';
 const TIEMPO_PREPARAR = 20 * MIN;
 const TIEMPO_RENDER = parseInt(process.env.BOLITA_RENDER_MAX_MIN ?? '90', 10) * MIN;
 const TIEMPO_GENERAR = 20 * MIN;
@@ -158,10 +164,24 @@ const descripcionConCreditos = (descripcion: string, rutaProps: string): string 
   } catch { return descripcion; }
 };
 
+const registrarListo = async (g: Guion & { ruta: string }, props: string, salidaMp4: string, inicio: number, log: Log): Promise<boolean> => {
+  let duracionSeg = 0;
+  try { duracionSeg = Math.round((await duracionVideo(salidaMp4)) * 10) / 10; } catch (e) { log(`  ⚠ ${(e as Error).message}`); }
+  const entrada: EntradaBandeja = {
+    id: g.id, plantilla: g.plantilla, titulo: g.titulo, descripcion: descripcionConCreditos(g.descripcion, props), hashtags: g.hashtags,
+    duracionSeg, estado: 'listo', tipo: 'short',
+    ...(process.env.BOLITA_ARTEFACTO ? { artefacto: process.env.BOLITA_ARTEFACTO } : {}),
+  };
+  escribirJson(path.join(DIR_BANDEJA, `${g.id}.json`), entrada); // json SIEMPRE después del mp4
+  log(`  ✓ listo ${g.id} (${duracionSeg}s de video, ${((Date.now() - inicio) / 1000).toFixed(0)}s de render)`);
+  return true;
+};
+
 const renderizarUno = async (g: Guion & { ruta: string }, log: Log): Promise<boolean> => {
   const salidaMp4 = path.join(DIR_BANDEJA, `${g.id}.mp4`);
   const props = path.join(DIR_TRABAJO, `${g.id}.props.json`);
   const composicion = composicionDe(g.plantilla);
+  if (FASE === 'final') return registrarListo(g, props, salidaMp4, Date.now(), log);
 
   const preparar = path.join(RAIZ, 'scripts', `preparar-${g.plantilla}.mts`);
   if (!fs.existsSync(preparar)) {
@@ -178,6 +198,7 @@ const renderizarUno = async (g: Guion & { ruta: string }, log: Log): Promise<boo
     marcarError(g, `preparar-${g.plantilla} no escribió ${rel(props)}`, log);
     return false;
   }
+  if (FASE === 'preparar') { log(`  ✓ preparado ${g.id} (fase preparar: el render lo hacen los fragmentos del workflow)`); return true; }
 
   const argsRender = [
     'render', 'src/index.ts', composicion, salidaMp4,
@@ -189,6 +210,9 @@ const renderizarUno = async (g: Guion & { ruta: string }, log: Log): Promise<boo
     // kernel mató a ffmpeg por OOM (≈950 MB) en un render de carrera. Con crf 18 la calidad sobra.
     '--x264-preset=veryfast',
   ];
+  // Three.js (ritmo, maquina) no tiene GPU en WSL ni en el runner: render por software con swangle. BOLITA_GL lo fuerza a mano.
+  const gl = process.env.BOLITA_GL ?? (['ritmo', 'maquina'].includes(g.plantilla) ? 'swangle' : '');
+  if (gl) argsRender.push(`--gl=${gl}`);
   let r = { codigo: 1, salida: '' };
   for (let intento = 1; intento <= 2; intento++) {
     if (!(await esperarMemoria(log))) {
@@ -200,18 +224,7 @@ const renderizarUno = async (g: Guion & { ruta: string }, log: Log): Promise<boo
     const args = intento === 1 ? argsRender : argsRender.map((a) => (a.startsWith('--concurrency=') ? '--concurrency=1' : a));
     // flock -w: espera hasta 30 min a que termine otro render (de este u otro canal, p. ej. Línea Punteada) antes de empezar.
     r = await correr('flock', ['-w', '1800', LOCK_RENDER, REMOTION, ...args], { log, timeoutMs: TIEMPO_RENDER });
-    if (r.codigo === 0 && fs.existsSync(salidaMp4)) {
-      let duracionSeg = 0;
-      try { duracionSeg = Math.round((await duracionVideo(salidaMp4)) * 10) / 10; } catch (e) { log(`  ⚠ ${(e as Error).message}`); }
-      const entrada: EntradaBandeja = {
-        id: g.id, plantilla: g.plantilla, titulo: g.titulo, descripcion: descripcionConCreditos(g.descripcion, props), hashtags: g.hashtags,
-        duracionSeg, estado: 'listo', tipo: 'short',
-        ...(process.env.BOLITA_ARTEFACTO ? { artefacto: process.env.BOLITA_ARTEFACTO } : {}),
-      };
-      escribirJson(path.join(DIR_BANDEJA, `${g.id}.json`), entrada); // json SIEMPRE después del mp4
-      log(`  ✓ listo ${g.id} (${duracionSeg}s de video, ${((Date.now() - inicio) / 1000).toFixed(0)}s de render)`);
-      return true;
-    }
+    if (r.codigo === 0 && fs.existsSync(salidaMp4)) return registrarListo(g, props, salidaMp4, inicio, log);
     try { fs.unlinkSync(salidaMp4); } catch { /* no había mp4 parcial */ }
     const motivo = r.codigo === 137 ? ' (SIGKILL: probablemente el kernel lo mató por falta de RAM)' : r.codigo === 124 ? ' (tiempo agotado)' : '';
     log(`  ⚠ render falló con código ${r.codigo}${motivo}: ${resumenSalida(r.salida, 3)}`);
@@ -234,10 +247,22 @@ const elegirDelBacklog = (log: Log): (Guion & { ruta: string }) | undefined => {
       return candidatos[0];
     }
   }
+  // Plantillas fuera de la rotación (ritmo, maquina): solo si el workflow pidió un guion explícito.
+  if (process.env.BOLITA_PLANTILLAS_MANUALES === '1') return backlog[0];
   return undefined;
 };
 
+/** Fase final de la nube por fragmentos: el workflow dejó el mp4 en la bandeja; aquí solo se registra en la bandeja. */
+const pasoFinal = async (log: Log) => {
+  const id = process.env.NUBE_ID ?? '';
+  const g = leerGuiones().find((x) => x.id === id);
+  if (!g) { log(`✗ fase final: no encuentro contenido/guiones/${id}.json`); process.exitCode = 1; return; }
+  if (!fs.existsSync(path.join(DIR_BANDEJA, `${id}.mp4`))) { log(`✗ fase final: falta salida/bandeja/${id}.mp4`); process.exitCode = 1; return; }
+  if (!(await renderizarUno(g, log))) process.exitCode = 1;
+};
+
 const pasoRender = async (log: Log) => {
+  if (FASE === 'final') return pasoFinal(log);
   const calendario = cargarCalendario();
   const fecha = fechaHoyLocal(calendario.zonaHoraria);
   const forzados = opc.n !== undefined ? Math.max(1, parseInt(opc.n, 10) || 1) : undefined;
