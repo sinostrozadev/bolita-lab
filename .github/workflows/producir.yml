@@ -47,8 +47,12 @@ concurrency:
 
 jobs:
   producir:
-    # Cinturón y tirantes contra bucles: un push cuyo último commit es del bot no produce.
-    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'bot:')
+    # A mano siempre; automático (schedule/push) solo con la variable de repo BOLITA_NUBE_AUTO=1 (mientras corra el cron local,
+    # ambos tomarían el mismo guion). Contra bucles: un push cuyo último commit es del bot (`bot: …`) no produce.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (vars.BOLITA_NUBE_AUTO == '1' &&
+       (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'bot:')))
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
