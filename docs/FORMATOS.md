@@ -73,10 +73,30 @@ Misma canción (transcripción de Santiago, compases 1–8 ×2, 80 bpm) en: bola
     { "formato": 13, "id": "poa80223y84", "fecha": "2026-11-15", "nota": "DBGT máquina 3D, 07:00" },
     { "formato": 5, "id": "4xZI3VplZw0", "fecha": "2026-11-16", "nota": "DBGT carrera (cama), 07:00" },
     { "formato": 12, "id": "oFa1laPNopI", "fecha": "2026-11-17", "nota": "DBGT colores (cama), 07:00" },
-    { "formato": 11, "id": "V-geJGHFy48", "fecha": "2026-11-15", "nota": "Creep (notas de tutorial), 15:00" }
+    { "formato": 11, "id": "V-geJGHFy48", "fecha": "2026-11-15", "nota": "Creep (notas de tutorial), 15:00" },
+    { "formato": 6, "id": "dXorev0KyK8", "fecha": "2026-11-17", "nota": "dato primer sitio web 1991, 12:00" },
+    { "formato": 4, "id": "xIVZYWIMeVM", "fecha": "2026-11-18", "nota": "carrera redes sociales, 12:00" },
+    { "formato": 12, "id": "PxIwfqL-vx8", "fecha": "2026-11-19", "nota": "colores batalla 4, 12:00" },
+    { "formato": 13, "id": "Liq64V3Kn34", "fecha": "2026-11-20", "nota": "máquina de canicas 3D, Oda a la alegría, 12:00 (ex prototipo privado)" }
   ]
 }
 ```
+
+## Mediciones
+### 2026-11-12 — "Se queda a ver" (Studio, `retencion-studio.mjs`; meta >= 55 %)
+| Formato | Video (id) | Se queda a ver | Vistas |
+|---|---|---|---|
+| 2 bola "primer segundo" | vCBxbjwusnc | 43,1 % | 1.0K |
+| 4 carrera "primer segundo" | 5QFQ3xWI71c (zodiaco, 07:00) | 75,4 % | 864 |
+| 4 carrera "primer segundo" | mBG93NTd51c (estaciones) | 54,2 % | 290 |
+| 4 carrera "primer segundo" | CvgoCXRxVCQ (países) | 50,7 % | 1.0K |
+| 7 adivina (dominio público) | 6u43w_oAtTE (Bella Ciao) | 44,9 % | 1.1K |
+| 7 adivina | yO7rByQZW2k (Jingle Bells) | 44,0 % | 967 |
+| 7 adivina (DBGT) | fHVj0At4E0U | 37,9 % | 1.2K |
+| 9 apuesta | pi_-etXwymI (Marcha turca) | 54,8 % | 982 |
+| 9 apuesta (DBGT) | iUBhm8a36Dc | 33,3 % | 12 (muy reciente) |
+| 1 bola clásica (vieja) | 6T5zmMoG93A (marcha crecer) | 59,7 % | 956 |
+Lectura: carrera "primer segundo" promedia ~60 % (rango 51-75 %), la mejor; apuesta ~55 % con una muestra; adivina 38-45 %, bajo la meta; bola 43 %. n pequeño: no decide nada hasta la revisión del 11-29.
 
 ## Reglas de esta tabla
 - Al programar un video de un formato nuevo o en prueba, se agrega una línea al JSON (formato, id, fecha de publicación, nota).

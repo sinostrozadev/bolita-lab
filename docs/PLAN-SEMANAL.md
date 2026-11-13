@@ -542,6 +542,22 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
     },
     {
       "fecha": "2026-11-17",
+      "hora": "12:00",
+      "formato": "short",
+      "plantilla": "dato",
+      "tema": "El primer sitio web de la historia (1991)",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-10-dato-primer-sitio-web-1991.json",
+      "videoId": "dXorev0KyK8",
+      "referente": "satisfying.ba11s",
+      "porQue": "cola de la noche 11-12 (agente de operación)",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-17",
       "hora": "18:00",
       "formato": "short",
       "plantilla": "carrera",
@@ -554,6 +570,22 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "videoId": "z9c6DgDFKAA",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
       "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) · movido el 11-08 para dar paso a la plantilla nueva (reprogramar.mts)",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-18",
+      "hora": "12:00",
+      "formato": "short",
+      "plantilla": "carrera",
+      "tema": "Carrera: redes sociales",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-10-carrera-redes-sociales.json",
+      "videoId": "xIVZYWIMeVM",
+      "referente": "satisfying.ba11s",
+      "porQue": "cola de la noche 11-12 (agente de operación)",
       "bloqueo": null
     },
     {
@@ -574,6 +606,22 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
     },
     {
       "fecha": "2026-11-19",
+      "hora": "12:00",
+      "formato": "short",
+      "plantilla": "colores",
+      "tema": "Batalla de colores (4 equipos)",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-10-colores-batalla-4.json",
+      "videoId": "PxIwfqL-vx8",
+      "referente": "satisfying.ba11s",
+      "porQue": "cola de la noche 11-12 (agente de operación)",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-19",
       "hora": "18:00",
       "formato": "short",
       "plantilla": "carrera",
@@ -586,6 +634,22 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "videoId": "fnnlwWYxIMo",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
       "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) · movido el 11-08 para dar paso a la plantilla nueva (reprogramar.mts)",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-20",
+      "hora": "12:00",
+      "formato": "short",
+      "plantilla": "maquina",
+      "tema": "Máquina de canicas 3D: Oda a la alegría",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/prototipos/",
+      "videoId": "Liq64V3Kn34",
+      "referente": "satisfying.ba11s",
+      "porQue": "cola de la noche 11-12 (agente de operación)",
       "bloqueo": null
     },
     {
