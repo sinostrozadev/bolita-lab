@@ -1,5 +1,5 @@
-# Criterios de guion — Bolita Lab (BORRADOR INCOMPLETO, 2026-11-13)
-> Quedó a medias porque se alcanzó el límite de uso. Lo usa el revisor automático; Santiago aprueba o veta en el panel. Faltan: los ejemplos de ritmo/máquina/colores y calibrar la rúbrica con métricas.
+# Criterios de guion — Bolita Lab (borrador para aprobación de Santiago, 2026-11-13)
+> Lo usa el revisor automático (propuesta en `yt/_propuestas/revisor-de-guiones.md`); Santiago aprueba o veta en el panel. Formato común: `yt/_propuestas/plantilla-criterios-guion.md`.
 
 ## 1. Bloqueantes (sí/no)
 | # | Criterio | ¿Lo comprueba una máquina? |
@@ -38,6 +38,8 @@ Se aprueba con todos los bloqueantes, promedio ≥ 4 y ningún criterio < 3. Si 
 ## 5. Ejemplos
 - **Aprobaría:** `contenido/guiones/2026-11-09-bola-apuesta-marcha-turca.json` (dominio público, pregunta concreta que pide comentar; 54,8 % se queda a ver). Veredicto: aprobado; gancho 4, comentario 5, giro 4.
 - **No aprobaría:** `contenido/guiones/2026-11-10-carrera-redes-sociales.json`. Veredicto: rechazado por B2 (6 participantes, sin votación) y B3 (el título nombra 4 redes y la descripción dice "seis"). Cambio pedido: 4 redes + `votacion: true`.
+
+- **Ritmo/máquina:** se aprueba solo si `verificar-ritmo`/`verificar-maquina` dan sincronía ±1 frame y 0 avisos geométricos (ej.: ritmo v3 Canon y Creep: 0 avisos). La v2 de Creep (`V-geJGHFy48`, con 45 avisos y rieles enredados) habría quedado en "cambios pedidos" (no amontonado = 2).
 
 ## 6. Preferencias de Santiago (citadas)
 - "hay que ser más creativo con las bolitas, todo es tan lineal; explora movimientos, inventa caminos; el requisito es que cuadren con los golpes originales" (11-09).
