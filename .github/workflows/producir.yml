@@ -1,9 +1,9 @@
 # Producción de Shorts de Bolita Lab en la nube, POR FRAGMENTOS (docs/OPERACION.md § "Producción en la nube").
 # Un video por run. Toma un guion del backlog (o uno explícito, p. ej. contenido/prototipos/ritmo-canon.json) y lo produce en tres etapas:
 #   preparar  (1 job)  : voz, sonido, simulación, props y duración; deja todo en un artifact interno.
-#   fragmento (N jobs) : cada uno renderiza (en paralelo) un tramo de frames sin audio, en su propio runner de 4 vCPU.
+#   fragmento (N jobs) : cada uno renderiza (en paralelo) un tramo de frames con su tramo de audio (mkv, PCM sin pérdida), en su propio runner de 4 vCPU.
 #                        ritmo y maquina (Three.js) llevan --gl=swangle (WebGL por software).
-#   final     (1 job)  : une los tramos, renderiza el audio completo, los mezcla, deja el json de bandeja, la hoja de contacto
+#   final     (1 job)  : une los tramos (copia) y codifica el audio a AAC una sola vez, deja el json de bandeja, la hoja de contacto
 #                        y publica el artifact "shorts-<fecha>-<run>" (mp4 + json + hoja + guion, 14 días).
 # `fragmentos` = 1 equivale al render en un solo runner (más lento). Subida a YouTube: no se hace aquí (hoy se sube por Studio).
 # Disparadores automáticos (schedule y push) APAGADOS salvo que la variable de repo BOLITA_NUBE_AUTO valga 1:
@@ -25,8 +25,8 @@ on:
         default: ''
         type: string
       fragmentos:
-        description: 'En cuántos runners paralelos se reparte el render (1 = uno solo; 6 por defecto; máx. 16)'
-        default: '6'
+        description: 'En cuántos runners paralelos se reparte el render (1 = uno solo; 10 por defecto; máx. 16)'
+        default: '10'
         type: string
       commit:
         description: 'Commitear el estado (guion movido, json de bandeja, hoja) como bot. A mano por defecto NO: solo artifact. Schedule/push siempre commitean'
@@ -133,8 +133,8 @@ jobs:
           cat /tmp/comps.txt
           frames=$(awk -v c="$comp" '$1==c {print $4}' /tmp/comps.txt | head -1)
           [ -n "$frames" ] || { echo "::error::No pude leer la duración de la composición $comp"; exit 1; }
-          n="${{ inputs.fragmentos || '6' }}"
-          [ "$n" -ge 1 ] 2>/dev/null || n=6; [ "$n" -le 16 ] || n=16
+          n="${{ inputs.fragmentos || '10' }}"
+          [ "$n" -ge 1 ] 2>/dev/null || n=10; [ "$n" -le 16 ] || n=16
           # nunca fragmentos de menos de 120 frames
           while [ "$n" -gt 1 ] && [ $(( frames / n )) -lt 120 ]; do n=$(( n - 1 )); done
           indices=$(seq -s, 0 $(( n - 1 )) | sed 's/^/[/; s/$/]/')
@@ -203,7 +203,7 @@ jobs:
           name: preparado
           path: .
 
-      - name: Renderizar el fragmento ${{ matrix.i }} (sin audio)
+      - name: Renderizar el fragmento ${{ matrix.i }} (video + su tramo de audio)
         env:
           ID: ${{ needs.preparar.outputs.id }}
           COMP: ${{ needs.preparar.outputs.composicion }}
@@ -215,11 +215,11 @@ jobs:
           a=$(( I * FRAMES / N )); b=$(( (I + 1) * FRAMES / N - 1 ))
           cpus=$(nproc); conc=$cpus; [ "$conc" -gt 4 ] && conc=4
           mkdir -p fragmentos
-          out="fragmentos/frag-$(printf %03d "$I").mp4"
+          out="fragmentos/frag-$(printf %03d "$I").mkv"
           echo "Fragmento $I/$N: frames $a-$b de $FRAMES · concurrency $conc · $COMP $GLFLAG"
           inicio=$(date +%s)
           npx remotion render src/index.ts "$COMP" "$out" --props="salida/trabajo/$ID.props.json" \
-            --frames="$a-$b" --muted --codec=h264 --crf=18 --x264-preset=veryfast \
+            --frames="$a-$b" --codec=h264-mkv --audio-codec=pcm-16 --crf=18 --x264-preset=veryfast \
             --concurrency="$conc" --timeout=180000 --log=error $GLFLAG
           echo "⏱ fragmento $I: $(( $(date +%s) - inicio )) s"
           ls -la fragmentos
@@ -250,15 +250,6 @@ jobs:
       - name: Dependencias
         run: npm ci --no-audit --no-fund
 
-      - name: Caché del Chrome de Remotion
-        uses: actions/cache@v4
-        with:
-          path: node_modules/.remotion
-          key: chrome-remotion-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Chrome headless de Remotion
-        run: npx remotion browser ensure
-
       - uses: actions/download-artifact@v4
         with:
           name: preparado
@@ -270,22 +261,19 @@ jobs:
           path: fragmentos
           merge-multiple: true
 
-      - name: Unir fragmentos, renderizar el audio y mezclar
+      - name: Unir fragmentos y codificar el mp4 final
         env:
           ID: ${{ needs.preparar.outputs.id }}
-          COMP: ${{ needs.preparar.outputs.composicion }}
-          GLFLAG: ${{ needs.preparar.outputs.glflag }}
         run: |
           set -e
           mkdir -p salida/bandeja
           ls -la fragmentos
-          for f in $(ls fragmentos/frag-*.mp4 | sort); do echo "file '$PWD/$f'"; done > lista.txt
-          ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i lista.txt -c copy video-mudo.mp4
-          inicio=$(date +%s)
-          npx remotion render src/index.ts "$COMP" audio.aac --props="salida/trabajo/$ID.props.json" \
-            --codec=aac --timeout=180000 --log=error $GLFLAG
-          echo "⏱ audio: $(( $(date +%s) - inicio )) s"
-          ffmpeg -hide_banner -loglevel error -y -i video-mudo.mp4 -i audio.aac -map 0:v:0 -map 1:a:0 -c copy -movflags +faststart "salida/bandeja/$ID.mp4"
+          # ffmpeg de Remotion (el runner no trae ffmpeg en el PATH)
+          FF="$PWD/node_modules/@remotion/compositor-linux-x64-gnu/ffmpeg"
+          export LD_LIBRARY_PATH="$(dirname "$FF")${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+          for f in $(ls fragmentos/frag-*.mkv | sort); do echo "file '$PWD/$f'"; done > lista.txt
+          "$FF" -hide_banner -loglevel error -y -f concat -safe 0 -i lista.txt -c copy unido.mkv
+          "$FF" -hide_banner -loglevel error -y -i unido.mkv -map 0:v:0 -map 0:a:0 -c:v copy -c:a aac -b:a 192k -movflags +faststart "salida/bandeja/$ID.mp4"
           ls -la "salida/bandeja/$ID.mp4"
 
       - name: Registrar en la bandeja (json) y nombre del artifact
