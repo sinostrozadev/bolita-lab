@@ -189,6 +189,9 @@ de la API (docs/DECISIONES.md, 2026-11-04).
 | `.github/workflows/producir.yml` ("Producir Shorts") | push a `master` que toque `contenido/backlog/**` o `contenido/calendario.json`; a mano (`cuantos`, `subir`); diario 06:30 UTC (03:30 Chile) | `diario.mts --sin-guiones --cuantos N [--sin-subir]` → `hojas.mts` → artifact + commit del estado |
 | `.github/workflows/compilar.yml` ("Compilar semanal") | domingos 07:30 UTC (04:30 Chile) y a mano (`n`) | baja los mp4 de los artifacts `shorts-*` de los últimos 14 días, `compilar.mts --n 14`, `subir exportar` → artifact + commit |
 
+> **Variable `BOLITA_NUBE_AUTO`** (variable de repo, no secret): la corrida **programada** de `producir.yml` (03:30 Chile)
+> solo ejecuta si vale `1`; sin ella no hace nada, para no competir con el cron local por el mismo backlog. `workflow_dispatch` (a mano) siempre corre. Crearla o cambiarla: `gh variable set BOLITA_NUBE_AUTO -b 1` (o `-b 0` para apagar).
+
 **Reglas del diseño**
 - Todo lo que es código corre en Actions; los guiones llegan **ya escritos** al backlog (en la nube no hay
   `claude -p`: se generan en una sesión local o con `generar-guiones` y se pushean). Cada push al backlog
