@@ -1,0 +1,62 @@
+{
+  "id": "2026-11-16-torneo-paises",
+  "plantilla": "torneo",
+  "tipo": "largo",
+  "titulo": "TORNEO de bolitas: 16 países, 1 campeón 🏆",
+  "descripcion": "¿Qué país de habla hispana gana un torneo de bolitas? 16 países, 4 rondas y 10 carreras con bumpers, molinos, portales, trampolines, túneles y bloques que se rompen. Comenta tu país antes de ver la final 👇\n\nEl resultado sale de una simulación física (gravedad, choques y rebotes calculados por computador): nadie está favorecido, ni siquiera nosotros.\n\nCapítulos:\n0:00 Los 16 países y la llave\n0:10 Octavos de final: 4 carreras, pasan 2\n3:59 Cuartos de final: quedan 8\n6:02 Semifinales: duelos 1 contra 1\n7:57 Por el tercer puesto\n8:54 La gran final\n9:57 El campeón, el podio y la llave completa\n\nCómo funciona: octavos con 4 carreras de 4 (pasan las 2 primeras), cuartos con 2 carreras de 4, semifinales y final en duelos 1 contra 1, y la pelea por el bronce. Cada carrera tiene su propia pista, con secciones distintas de obstáculos.\n\n¿Qué torneo hacemos ahora? ¿Comidas, animales, equipos de fútbol? Déjalo en los comentarios.\nSimulación y música sintetizada por Bolita Lab. Banderas: Noto Color Emoji (licencia OFL).\n\n#bolitalab #carreradebolitas #marblerace",
+  "hashtags": [
+    "#bolitalab",
+    "#carreradebolitas",
+    "#marblerace",
+    "#torneo",
+    "#paises",
+    "#simulacion"
+  ],
+  "duracionSeg": 633,
+  "estado": "subido",
+  "publicarEn": "2026-11-16T19:00:00-03:00",
+  "categoria": "24",
+  "mp4": "/home/santiago/projects/yt/bolita-lab/salida/largos/2026-11-16-torneo-paises.mp4",
+  "miniatura": "/home/santiago/projects/yt/bolita-lab/salida/largos/2026-11-16-torneo-paises-mini.png",
+  "capitulos": [
+    {
+      "seg": 0,
+      "titulo": "Los 16 países y la llave"
+    },
+    {
+      "seg": 10,
+      "titulo": "Octavos de final: 4 carreras, pasan 2"
+    },
+    {
+      "seg": 239,
+      "titulo": "Cuartos de final: quedan 8"
+    },
+    {
+      "seg": 362,
+      "titulo": "Semifinales: duelos 1 contra 1"
+    },
+    {
+      "seg": 477,
+      "titulo": "Por el tercer puesto"
+    },
+    {
+      "seg": 534,
+      "titulo": "La gran final"
+    },
+    {
+      "seg": 597,
+      "titulo": "El campeón, el podio y la llave completa"
+    }
+  ],
+  "midrollsSeg": [
+    239,
+    477
+  ],
+  "noEsParaNinos": true,
+  "contenidoSintetico": false,
+  "nota": "Largo 16:9. Subir por Studio (no es Short: sin #Shorts). Marcar las pausas publicitarias en midrollsSeg cuando el canal esté en el YPP.",
+  "videoId": "ifYaoZV1jlU",
+  "url": "https://www.youtube.com/watch?v=ifYaoZV1jlU",
+  "programado": "2026-11-16 19:00",
+  "subidoEn": "2026-11-13T05:48:28.411Z"
+}

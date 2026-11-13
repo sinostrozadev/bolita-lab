@@ -541,6 +541,22 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
       "porQue": "rotación (toca carrera tras el dato de las 12:00); ya renderizado el 11-07 con el CTA; el de café/té/mate pasa a la cola"
     },
     {
+      "fecha": "2026-11-16",
+      "hora": "19:00",
+      "formato": "largo",
+      "plantilla": "torneo",
+      "tema": "Torneo de bolitas: 16 países",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "salida/bandeja/2026-11-16-torneo-paises.json",
+      "videoId": "ifYaoZV1jlU",
+      "referente": "satisfying.ba11s",
+      "porQue": "largo (horas YPP); votación por acciones",
+      "bloqueo": null
+    },
+    {
       "fecha": "2026-11-17",
       "hora": "12:00",
       "formato": "short",

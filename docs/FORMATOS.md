@@ -31,7 +31,8 @@
 | 12 | **Batalla de colores** | `colores` (rama `colores`) | equipos de color: mismo color se fusiona, distinto se divide, los chicos mueren, gana el que sobrevive; votación | 11-10 | en prueba: `yV2xgpjEOpY` sáb 11-14 07:00 (aprobado); mejoras del final y votación unificada en curso |
 | 13 | **Máquina de canicas musical 3D** | `maquina` | máquina tipo Wintergatan en Three.js: noria, vibráfono, bombo, platillo; la melodía la tocan las canicas (179 golpes sincronizados) | 11-10 | prototipo privado `Liq64V3Kn34` (espera veredicto); render 32 min a 60 fps |
 | 15 | **Votación por acciones** | variable en `colores` y `carrera` v2 | "❤️ = ROJO · 💬 = AZUL · 🔁 = AMARILLO · 🔔 = VERDE": cada acción vota un color | en construcción | variable a medir (me gusta/comentarios/compartidos/subs por 1.000 vistas) |
-| 14 | **Compilación / largo** | `compilar.mts` | largo 16:9 con Shorts | — | pausado (la del 11-08 no se sube); próximo: quiz "¿Cuántas adivinas?" |
+| 14 | **Torneo (largo)** | largo 16:9 | torneo de 16 países en carreras, llave y votación por acciones; `ifYaoZV1jlU` lun 11-16 19:00 | 11-16 | en prueba |
+| 14b | **Compilación / largo** | `compilar.mts` | largo 16:9 con Shorts | — | pausado (la del 11-08 no se sube); próximo: quiz "¿Cuántas adivinas?" |
 
 ## Experimento "una canción, siete formatos" (11-16 → 11-22, 07:00)
 Misma canción (transcripción de Santiago, compases 1–8 ×2, 80 bpm) en: bola adivina, bola apuesta, ritmo plano, ritmo figuras, máquina 3D, carrera v2 (cama musical) y colores (cama musical). Uno por día, siempre 07:00, del **11-11 al 11-17** (máquina el 11-15). Los 07:00 que ocupaban se movieron al 11-18/19/20/21. Se compara vistas 48 h, "se queda a ver" y comentarios: la única variable es el formato.
@@ -77,7 +78,8 @@ Misma canción (transcripción de Santiago, compases 1–8 ×2, 80 bpm) en: bola
     { "formato": 6, "id": "dXorev0KyK8", "fecha": "2026-11-17", "nota": "dato primer sitio web 1991, 12:00" },
     { "formato": 4, "id": "xIVZYWIMeVM", "fecha": "2026-11-18", "nota": "carrera redes sociales, 12:00" },
     { "formato": 12, "id": "PxIwfqL-vx8", "fecha": "2026-11-19", "nota": "colores batalla 4, 12:00" },
-    { "formato": 13, "id": "Liq64V3Kn34", "fecha": "2026-11-20", "nota": "máquina de canicas 3D, Oda a la alegría, 12:00 (ex prototipo privado)" }
+    { "formato": 13, "id": "Liq64V3Kn34", "fecha": "2026-11-20", "nota": "máquina de canicas 3D, Oda a la alegría, 12:00 (ex prototipo privado)" },
+    { "formato": 14, "id": "ifYaoZV1jlU", "fecha": "2026-11-16", "nota": "LARGO Torneo de bolitas: 16 países, 10:33, lun 19:00" }
   ]
 }
 ```
