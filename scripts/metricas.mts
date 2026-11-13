@@ -124,9 +124,11 @@ const numero = (s?: string) => {
   if (!s) return null;
   const m = s.match(/([\d.,]+)\s*(K|M|mil|mill)?/i);
   if (!m) return null;
-  let n = parseFloat(m[1].replace(/\./g, '').replace(',', '.'));
-  if (/k|mil$/i.test(m[2] ?? '')) n *= 1e3; else if (/m|mill/i.test(m[2] ?? '')) n *= 1e6;
-  return Math.round(n);
+  const suf = m[2] ?? '', t = m[1];
+  // Con sufijo (1.5K, 1,5 mil) el separador es decimal; sin sufijo, "1.234"/"1,234,567" son miles y "7.0"/"343,9" decimales.
+  let n = suf ? parseFloat(t.replace(',', '.')) : /^\d{1,3}([.,]\d{3})+$/.test(t) ? parseFloat(t.replace(/[.,]/g, '')) : parseFloat(t.replace(',', '.'));
+  if (/^k|^mil$/i.test(suf)) n *= 1e3; else if (/^m/i.test(suf)) n *= 1e6;
+  return Math.round(n * 10) / 10;
 };
 
 const canalPublico = async () => {
@@ -159,7 +161,7 @@ const deStudio = (textos: Record<string, string>) => {
   return {
     vistas28d: tras(t, /(?:Views|Visualizaciones)\s*\n?\s*([\d.,]+\s*[KM]?)/i),
     horas28d: tras(t, /(?:Watch time \(hours\)|Tiempo de reproducción \(horas\))\s*\n?\s*([\d.,]+)/i),
-    vistas48h: tras(t, /([\d.,]+)\s*\n?\s*(?:Views|Visualizaciones)\s*·?\s*(?:Last 48 hours|Últimas 48 horas)/i),
+    vistas48h: tras(t, /(?:48 hour views|Visualizaciones en 48 horas|Visualizaciones de las últimas 48 horas)\s*\n?\s*([\d.,]+\s*[KM]?)/i),
     ypp: m ? { subs: tras(m, /([\d.,]+)\s*\/\s*1[.,]?000/), vistasShorts90d: tras(m, /([\d.,]+\s*[KM]?)\s*\/\s*10\s*M/i), horas12m: tras(m, /([\d.,]+)\s*\/\s*4[.,]?000/) } : null,
   };
 };
