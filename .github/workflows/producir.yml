@@ -1,38 +1,39 @@
-# Producción de Shorts en la nube (docs/OPERACION.md § "Producción en la nube").
-# Renderiza guiones del backlog (voz, sonido, simulación, mp4), deja el estado commiteado
-# (salida/bandeja/<id>.json, backlog/guiones movidos, hoja de contacto, PARA-SUBIR-A-MANO.md) y
-# publica los mp4 como artifact "shorts-<fecha>" (14 días). La subida a YouTube está APAGADA salvo
-# que se pida con el input `subir` o la variable de repo BOLITA_SUBIR = 1.
+# Producción de Shorts de Bolita Lab en la nube, POR FRAGMENTOS (docs/OPERACION.md § "Producción en la nube").
+# Un video por run. Toma un guion del backlog (o uno explícito, p. ej. contenido/prototipos/ritmo-canon.json) y lo produce en tres etapas:
+#   preparar  (1 job)  : voz, sonido, simulación, props y duración; deja todo en un artifact interno.
+#   fragmento (N jobs) : cada uno renderiza (en paralelo) un tramo de frames sin audio, en su propio runner de 4 vCPU.
+#                        ritmo y maquina (Three.js) llevan --gl=swangle (WebGL por software).
+#   final     (1 job)  : une los tramos, renderiza el audio completo, los mezcla, deja el json de bandeja, la hoja de contacto
+#                        y publica el artifact "shorts-<fecha>-<run>" (mp4 + json + hoja + guion, 14 días).
+# `fragmentos` = 1 equivale al render en un solo runner (más lento). Subida a YouTube: no se hace aquí (hoy se sube por Studio).
+# Disparadores automáticos (schedule y push) APAGADOS salvo que la variable de repo BOLITA_NUBE_AUTO valga 1:
+# mientras corra el cron local, ambos tomarían el mismo guion. A mano siempre funciona.
 name: Producir Shorts
 
 on:
   push:
     branches: [master]
-    # Solo lo que produce un humano (guiones nuevos o cambios de calendario). NUNCA salida/:
+    # Solo lo que produce un humano/sesión (guiones nuevos o cambios de calendario). NUNCA salida/:
     # así el commit del bot no podría disparar este workflow aunque se pusheara con otro token.
     paths:
       - 'contenido/backlog/**'
       - 'contenido/calendario.json'
   workflow_dispatch:
     inputs:
-      cuantos:
-        description: 'Cuántos Shorts renderizar (con guion explícito siempre es 1)'
-        default: '2'
-        type: string
       guion:
-        description: 'Opcional: ruta de un guion del repo (ej. contenido/prototipos/ritmo-canon.json) o texto contenido en el nombre de uno del backlog. Solo se renderiza ese'
+        description: 'Opcional: ruta de un guion del repo (ej. contenido/prototipos/ritmo-canon.json) o texto contenido en el nombre de uno del backlog. Vacío = el siguiente de la rotación'
         default: ''
+        type: string
+      fragmentos:
+        description: 'En cuántos runners paralelos se reparte el render (1 = uno solo; 6 por defecto; máx. 16)'
+        default: '6'
         type: string
       commit:
         description: 'Commitear el estado (guion movido, json de bandeja, hoja) como bot. A mano por defecto NO: solo artifact. Schedule/push siempre commitean'
         default: false
         type: boolean
-      concurrencia:
-        description: 'Pestañas de Remotion (vacío = automático según vCPU/RAM)'
-        default: ''
-        type: string
       subir:
-        description: 'Subir a YouTube (queda privado mientras Google no audite el proyecto)'
+        description: 'Subir a YouTube (gancho reservado: hoy NO sube, solo avisa)'
         default: false
         type: boolean
   schedule:
@@ -41,26 +42,35 @@ on:
 permissions:
   contents: write
 
+# A mano: cada run es independiente (se pueden lanzar varios videos a la vez, cada uno con su guion).
+# Automático: una producción a la vez (comparten el backlog y el commit del bot).
 concurrency:
-  group: producir
+  group: ${{ github.event_name == 'workflow_dispatch' && format('producir-{0}', github.run_id) || 'producir' }}
   cancel-in-progress: false
 
+env:
+  BOLITA_NUBE: '1'
+  BOLITA_MEMORIA_MIN_MB: '1500'
+  BOLITA_RENDER_MAX_MIN: '150'
+  GUION: ${{ inputs.guion || '' }}
+
 jobs:
-  producir:
-    # A mano siempre; automático (schedule/push) solo con la variable de repo BOLITA_NUBE_AUTO=1 (mientras corra el cron local,
-    # ambos tomarían el mismo guion). Contra bucles: un push cuyo último commit es del bot (`bot: …`) no produce.
+  preparar:
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (vars.BOLITA_NUBE_AUTO == '1' &&
        (github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'bot:')))
     runs-on: ubuntu-latest
-    timeout-minutes: 90
-    env:
-      BOLITA_NUBE: '1'
-      BOLITA_MEMORIA_MIN_MB: '1500'
-      BOLITA_RENDER_MAX_MIN: '40'
-      CUANTOS: ${{ inputs.cuantos || '2' }}
-      GUION: ${{ inputs.guion || '' }}
+    timeout-minutes: 60
+    outputs:
+      id: ${{ steps.datos.outputs.id }}
+      composicion: ${{ steps.datos.outputs.composicion }}
+      glflag: ${{ steps.datos.outputs.glflag }}
+      frames: ${{ steps.datos.outputs.frames }}
+      origen: ${{ steps.datos.outputs.origen }}
+      indices: ${{ steps.datos.outputs.indices }}
+      fragmentos: ${{ steps.datos.outputs.fragmentos }}
+      fecha: ${{ steps.datos.outputs.fecha }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -71,25 +81,6 @@ jobs:
         with:
           node-version: 22
           cache: npm
-
-      - name: Máquina, fecha (Chile) y nombre del artifact
-        id: fecha
-        run: |
-          fecha=$(TZ=America/Santiago date +%F)
-          echo "fecha=$fecha" >> "$GITHUB_OUTPUT"
-          cpus=$(nproc); mem=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo)
-          # Runner público: 4 vCPU / 16 GB (privado: 2 / 7).
-          if [ "$cpus" -ge 4 ] && [ "$mem" -ge 12000 ]; then conc=3; else conc=2; fi
-          [ -n "${{ inputs.concurrencia }}" ] && conc="${{ inputs.concurrencia }}"
-          echo "BOLITA_CONCURRENCIA=$conc" >> "$GITHUB_ENV"
-          echo "CPU $cpus · RAM ${mem} MB · concurrency $conc"
-          echo "BOLITA_ARTEFACTO=\`shorts-$fecha-${GITHUB_RUN_ID}\` del run ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" >> "$GITHUB_ENV"
-
-      - name: Fuentes del sistema (emoji a color para carrera)
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq --no-install-recommends fonts-noto-color-emoji > /dev/null
-          fc-list | grep -qi "Noto Color Emoji" && echo "✓ Noto Color Emoji"
 
       - name: Dependencias
         run: npm ci --no-audit --no-fund
@@ -104,7 +95,7 @@ jobs:
       - name: Chrome headless de Remotion
         run: npx remotion browser ensure
 
-      - name: Poner el guion elegido en el backlog (solo en el runner, no se commitea salvo commit=true)
+      - name: Poner el guion elegido en el backlog (solo en el runner; se consume igual que en local)
         if: env.GUION != ''
         run: |
           mkdir -p contenido/backlog
@@ -113,56 +104,205 @@ jobs:
           [ -n "$origen" ] && [ -f "$origen" ] || { echo "::error::No encuentro el guion '$GUION'"; exit 1; }
           case "$origen" in contenido/backlog/*) ;; *) cp "$origen" contenido/backlog/ ;; esac
           for f in contenido/backlog/*.json; do [ "$f" = "contenido/backlog/$(basename "$origen")" ] || rm -f "$f"; done
-          echo "CUANTOS=1" >> "$GITHUB_ENV"
-          echo "BOLITA_PLANTILLAS_MANUALES=1" >> "$GITHUB_ENV" # admite también ritmo y maquina (Three.js, --gl=swangle)
+          echo "BOLITA_PLANTILLAS_MANUALES=1" >> "$GITHUB_ENV" # admite también ritmo y maquina (fuera de la rotación)
           echo "Guion: $origen"
 
-      - name: ¿Se sube a YouTube?
-        id: subida
-        run: |
-          if [ "${{ inputs.subir }}" = "true" ] || [ "${{ vars.BOLITA_SUBIR }}" = "1" ]; then
-            echo "subir=1" >> "$GITHUB_OUTPUT"; echo "Subida ENCENDIDA"
-          else
-            echo "subir=0" >> "$GITHUB_OUTPUT"; echo "Subida apagada (input subir=false y BOLITA_SUBIR≠1): solo PARA-SUBIR-A-MANO.md"
-          fi
-
-      - name: Credenciales de YouTube
-        if: steps.subida.outputs.subir == '1'
-        env:
-          CLIENTE: ${{ secrets.YOUTUBE_CLIENT_JSON }}
-          TOKEN: ${{ secrets.YOUTUBE_TOKEN_JSON }}
-        run: |
-          if [ -z "$CLIENTE" ] || [ -z "$TOKEN" ]; then
-            echo "::error::Faltan los secrets YOUTUBE_CLIENT_JSON y/o YOUTUBE_TOKEN_JSON (ver docs/SANTIAGO.md, 'Producción en la nube')."
-            exit 1
-          fi
-          umask 077
-          mkdir -p secrets
-          printf '%s' "$CLIENTE" > secrets/youtube-client.json
-          printf '%s' "$TOKEN" > secrets/youtube-token.json
-          node -e 'for (const f of ["secrets/youtube-client.json","secrets/youtube-token.json"]) JSON.parse(require("fs").readFileSync(f,"utf8"))' \
-            || { echo "::error::Algún secret de YouTube no es JSON válido."; exit 1; }
-          echo "✓ credenciales escritas en secrets/ (no se commitean: .gitignore)"
-
-      - name: Producir (render + estado)
+      - name: Preparar (promover el guion, voz, sonido, mapas, props)
         id: diario
+        env:
+          NUBE_FASE: preparar
         run: |
-          banderas="--sin-guiones --cuantos $CUANTOS"
-          [ "${{ steps.subida.outputs.subir }}" = "1" ] || banderas="$banderas --sin-subir"
-          inicio=$(date +%s)
+          ls contenido/backlog/*.json 2>/dev/null | sort > /tmp/antes.txt || true
+          banderas=(--sin-generar --sin-subir --n 1)
+          :
           set +e
-          npx tsx scripts/diario.mts $banderas
+          npx tsx scripts/diario.mts "${banderas[@]}"
           codigo=$?
           set -e
-          echo "⏱ diario: $(( ($(date +%s) - inicio) / 60 )) min"
           exit $codigo
 
+      - name: Datos del video y reparto en fragmentos
+        id: datos
+        run: |
+          id=$(basename "$(ls -t salida/trabajo/*.props.json 2>/dev/null | head -1)" .props.json)
+          [ -n "$id" ] && [ -f "contenido/guiones/$id.json" ] || { echo "::error::El guion pedido no produjo nada que renderizar (ver el log de 'Preparar')"; exit 1; }
+          plantilla=$(node -e 'console.log(JSON.parse(require("fs").readFileSync(process.argv[1],"utf8")).plantilla)' "contenido/guiones/$id.json")
+          comp="$(echo "${plantilla:0:1}" | tr a-z A-Z)${plantilla:1}"
+          glflag=""; case "$plantilla" in ritmo|maquina) glflag="--gl=swangle" ;; esac
+          npx remotion compositions src/index.ts --props="salida/trabajo/$id.props.json" $glflag > /tmp/comps.txt 2>&1 || true
+          cat /tmp/comps.txt
+          frames=$(awk -v c="$comp" '$1==c {print $4}' /tmp/comps.txt | head -1)
+          [ -n "$frames" ] || { echo "::error::No pude leer la duración de la composición $comp"; exit 1; }
+          n="${{ inputs.fragmentos || '6' }}"
+          [ "$n" -ge 1 ] 2>/dev/null || n=6; [ "$n" -le 16 ] || n=16
+          # nunca fragmentos de menos de 120 frames
+          while [ "$n" -gt 1 ] && [ $(( frames / n )) -lt 120 ]; do n=$(( n - 1 )); done
+          indices=$(seq -s, 0 $(( n - 1 )) | sed 's/^/[/; s/$/]/')
+          ls contenido/backlog/*.json 2>/dev/null | sort > /tmp/despues.txt || true
+          origen=$(comm -23 /tmp/antes.txt /tmp/despues.txt | head -1 || true)
+          {
+            echo "id=$id"; echo "composicion=$comp"; echo "glflag=$glflag"; echo "frames=$frames"
+            echo "origen=$origen"; echo "indices=$indices"; echo "fragmentos=$n"
+            echo "fecha=$(TZ=America/Santiago date +%F)"
+          } >> "$GITHUB_OUTPUT"
+          echo "Video $id · $comp · $frames frames · $n fragmento(s) · plantilla $plantilla"
+
+      - name: Dejar lo preparado para los fragmentos
+        uses: actions/upload-artifact@v4
+        with:
+          name: preparado
+          path: |
+            public/voz
+            public/audio/generado
+            public/mapas
+            public/imagenes
+            public/sim
+            salida/trabajo
+            contenido/guiones
+          retention-days: 1
+          if-no-files-found: ignore
+
+  fragmento:
+    needs: preparar
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: true
+      matrix:
+        i: ${{ fromJSON(needs.preparar.outputs.indices) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'master' }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Fuentes del sistema (emoji a color de los íconos)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq --no-install-recommends fonts-noto-color-emoji > /dev/null
+          fc-list | grep -qi "Noto Color Emoji" && echo "✓ Noto Color Emoji"
+
+      - name: Dependencias
+        run: npm ci --no-audit --no-fund
+
+      - name: Caché del Chrome de Remotion
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.remotion
+          key: chrome-remotion-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Chrome headless de Remotion
+        run: npx remotion browser ensure
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: preparado
+          path: .
+
+      - name: Renderizar el fragmento ${{ matrix.i }} (sin audio)
+        env:
+          ID: ${{ needs.preparar.outputs.id }}
+          COMP: ${{ needs.preparar.outputs.composicion }}
+          GLFLAG: ${{ needs.preparar.outputs.glflag }}
+          FRAMES: ${{ needs.preparar.outputs.frames }}
+          N: ${{ needs.preparar.outputs.fragmentos }}
+          I: ${{ matrix.i }}
+        run: |
+          a=$(( I * FRAMES / N )); b=$(( (I + 1) * FRAMES / N - 1 ))
+          cpus=$(nproc); conc=$cpus; [ "$conc" -gt 4 ] && conc=4
+          mkdir -p fragmentos
+          out="fragmentos/frag-$(printf %03d "$I").mp4"
+          echo "Fragmento $I/$N: frames $a-$b de $FRAMES · concurrency $conc · $COMP $GLFLAG"
+          inicio=$(date +%s)
+          npx remotion render src/index.ts "$COMP" "$out" --props="salida/trabajo/$ID.props.json" \
+            --frames="$a-$b" --muted --codec=h264 --crf=18 --x264-preset=veryfast \
+            --concurrency="$conc" --timeout=180000 --log=error $GLFLAG
+          echo "⏱ fragmento $I: $(( $(date +%s) - inicio )) s"
+          ls -la fragmentos
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: frag-${{ matrix.i }}
+          path: fragmentos/
+          retention-days: 1
+          compression-level: 0
+
+  final:
+    needs: [preparar, fragmento]
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      NUBE_ID: ${{ needs.preparar.outputs.id }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.ref_name || 'master' }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Dependencias
+        run: npm ci --no-audit --no-fund
+
+      - name: Caché del Chrome de Remotion
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.remotion
+          key: chrome-remotion-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Chrome headless de Remotion
+        run: npx remotion browser ensure
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: preparado
+          path: .
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: frag-*
+          path: fragmentos
+          merge-multiple: true
+
+      - name: Unir fragmentos, renderizar el audio y mezclar
+        env:
+          ID: ${{ needs.preparar.outputs.id }}
+          COMP: ${{ needs.preparar.outputs.composicion }}
+          GLFLAG: ${{ needs.preparar.outputs.glflag }}
+        run: |
+          set -e
+          mkdir -p salida/bandeja
+          ls -la fragmentos
+          for f in $(ls fragmentos/frag-*.mp4 | sort); do echo "file '$PWD/$f'"; done > lista.txt
+          ffmpeg -hide_banner -loglevel error -y -f concat -safe 0 -i lista.txt -c copy video-mudo.mp4
+          inicio=$(date +%s)
+          npx remotion render src/index.ts "$COMP" audio.aac --props="salida/trabajo/$ID.props.json" \
+            --codec=aac --timeout=180000 --log=error $GLFLAG
+          echo "⏱ audio: $(( $(date +%s) - inicio )) s"
+          ffmpeg -hide_banner -loglevel error -y -i video-mudo.mp4 -i audio.aac -map 0:v:0 -map 1:a:0 -c copy -movflags +faststart "salida/bandeja/$ID.mp4"
+          ls -la "salida/bandeja/$ID.mp4"
+
+      - name: Registrar en la bandeja (json) y nombre del artifact
+        id: fecha
+        env:
+          FECHA: ${{ needs.preparar.outputs.fecha }}
+        run: |
+          echo "fecha=$FECHA" >> "$GITHUB_OUTPUT"
+          export BOLITA_ARTEFACTO="\`shorts-$FECHA-${GITHUB_RUN_ID}\` del run ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          NUBE_FASE=final BOLITA_PLANTILLAS_MANUALES=1 npx tsx scripts/diario.mts --sin-generar --sin-subir --solo-render
+
       - name: Hojas de contacto
-        if: always() && steps.diario.outcome != 'skipped'
+        if: always()
         run: npx tsx scripts/hojas.mts
 
       - name: Reunir el resultado
-        if: always() && steps.diario.outcome != 'skipped'
+        if: always()
         run: |
           mkdir -p resultado
           # mp4 + json de bandeja + hoja de contacto + guion promovido (la bandeja versionada no trae mp4).
@@ -173,10 +313,9 @@ jobs:
             for x in "salida/bandeja/$id.json" "salida/revisiones/hojas/$id.jpg" "contenido/guiones/$id.json"; do [ -f "$x" ] && cp "$x" resultado/ || true; done
           done
           ls -la resultado
-          if [ -n "$GUION" ] && ! ls resultado/*.mp4 >/dev/null 2>&1; then echo "::error::El guion '$GUION' no produjo ningún mp4 (ver el log de 'Producir')"; exit 1; fi
 
       - name: Publicar resultado como artifact
-        if: always() && steps.diario.outcome != 'skipped'
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: shorts-${{ steps.fecha.outputs.fecha }}-${{ github.run_id }}
@@ -185,13 +324,12 @@ jobs:
           compression-level: 0 # el mp4 ya viene comprimido
           if-no-files-found: warn
 
-      - name: Borrar credenciales
-        if: always()
-        run: rm -rf secrets
-
       - name: Commit del estado
-        if: always() && steps.diario.outcome != 'skipped' && (github.event_name != 'workflow_dispatch' || inputs.commit)
+        if: always() && (github.event_name != 'workflow_dispatch' || inputs.commit)
+        env:
+          ORIGEN: ${{ needs.preparar.outputs.origen }}
         run: |
+          # El guion consumido sale del backlog (en local lo hace promover).
+          [ -n "$ORIGEN" ] && rm -f "$ORIGEN" || true
           .github/scripts/commit-bot.sh "bot: producción ${{ steps.fecha.outputs.fecha }}" \
             contenido/backlog contenido/guiones salida/bandeja salida/revisiones/hojas
-
