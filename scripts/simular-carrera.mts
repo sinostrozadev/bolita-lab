@@ -37,21 +37,46 @@ const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FPS = 60;
 const SUBPASOS = 10; // 1/600 s
 const DT = 1 / (FPS * SUBPASOS);
-const ANCHO = 1080;
-const PANTALLA = 1920;
-/** Altura del tablero en pantallas. Medido: con 5 pantallas y g≈1100 la carrera dura ~30 s (el
- *  tiempo depende casi solo de la altura: entre clavijas la bola va a velocidad terminal). */
-const PANTALLAS = 5;
-const META_Y = PANTALLA * PANTALLAS - 300;
+// Formato del lienzo: por defecto el Short vertical (1080 × 1920). El torneo 16:9 (largo) lo cambia con
+// `configurarLienzo` antes de simular (son `let` del módulo: todas las funciones los leen al correr).
+const LIENZO_SHORT = {
+  ancho: 1080,
+  pantalla: 1920,
+  /** Medido: con 5 pantallas de 1920 y g≈1100 la carrera dura ~30 s (el tiempo depende casi solo de la altura). */
+  metaY: 1920 * 5 - 300,
+  /** Zona segura: la líder siempre queda entre estas dos alturas de pantalla. Arriba: bajo el gancho fijo (≈ 270–400)
+   * y el marcador (≈ 420–600). Abajo: sobre el podio (≈ 1340) y el bloque de intriga (≈ 1470–1570). */
+  banda: { arriba: 720, abajo: 1290 },
+  /** La meta queda a esta altura de pantalla cuando la cámara llega al fondo. */
+  metaEnPantalla: 1180,
+  duracion: { min: 25, max: 45, objetivo: 34 },
+  /** Con extras, el 1.er choque con clavija debe llegar antes de esto (s): el primer segundo del Short. */
+  primerChoqueMax: 0.3,
+};
+export type Lienzo = typeof LIENZO_SHORT;
+let ANCHO = LIENZO_SHORT.ancho;
+let PANTALLA = LIENZO_SHORT.pantalla;
+let META_Y = LIENZO_SHORT.metaY;
 /** Bajo la meta queda espacio: así la cámara puede dejar la meta en el centro de la pantalla. */
-const ALTO = META_Y + 700;
-/** Zona segura (ver tokens): la líder siempre queda entre estas dos alturas de pantalla. */
-/** Arriba: bajo el gancho fijo (≈ 270–400) y el marcador (≈ 420–600). Abajo: sobre el podio (≈ 1340) y el
- * bloque de intriga (≈ 1470–1570), que quedan fijos todo el video. */
-const BANDA_LIDER = { arriba: 720, abajo: 1290 };
-/** La meta queda a esta altura de pantalla cuando la cámara llega al fondo. */
-const META_EN_PANTALLA = 1180;
-const CAM_MAX = META_Y - META_EN_PANTALLA;
+let ALTO = META_Y + 700;
+let BANDA_LIDER = LIENZO_SHORT.banda;
+let META_EN_PANTALLA = LIENZO_SHORT.metaEnPantalla;
+let CAM_MAX = META_Y - META_EN_PANTALLA;
+let DURACION_MIN = LIENZO_SHORT.duracion.min;
+let DURACION_MAX = LIENZO_SHORT.duracion.max;
+let DURACION_OBJETIVO = LIENZO_SHORT.duracion.objetivo;
+let PRIMER_CHOQUE_MAX = LIENZO_SHORT.primerChoqueMax;
+/** Cuántas clasifican (torneo): la carrera se decide cuando cruza la PASAN-ésima (1 = la ganadora, el Short). */
+let PASAN = 1;
+/** Cambia el lienzo (sin argumento vuelve al Short) y cuántas clasifican. */
+export const configurarLienzo = (l: Partial<Lienzo> = {}, pasan = 1) => {
+  const c = { ...LIENZO_SHORT, ...l };
+  ANCHO = c.ancho; PANTALLA = c.pantalla; META_Y = c.metaY; ALTO = META_Y + 700;
+  BANDA_LIDER = c.banda; META_EN_PANTALLA = c.metaEnPantalla; CAM_MAX = META_Y - META_EN_PANTALLA;
+  DURACION_MIN = c.duracion.min; DURACION_MAX = c.duracion.max; DURACION_OBJETIVO = c.duracion.objetivo;
+  PRIMER_CHOQUE_MAX = c.primerChoqueMax;
+  PASAN = Math.max(1, pasan);
+};
 /** Cámara lenta de la llegada: factor y tramo (en frames de física relativos al cruce). */
 const LENTA = { factor: 0.25, antes: 4, despues: 2, rampaIn: 6, rampaOut: 8 };
 const VENTAJA_MAX_SEG = 1.5;
@@ -66,9 +91,6 @@ const REST_CLAVIJA = 0.6;
 const REST_PARED = 0.55;
 const REST_BOLA = 0.85;
 const REST_SEGMENTO = 0.45;
-const DURACION_MIN = 25;
-const DURACION_MAX = 45;
-const DURACION_OBJETIVO = 34;
 const TOPE_SEG = 70; // corte duro si nadie llega
 
 /** Escala pentatónica (Do mayor) para afinar el golpe de cada bola. */
@@ -289,6 +311,8 @@ interface Resultado {
   /** Instante (en frames de física, fraccionario) en que cada bola cruza; -1 si no llega. */
   llegadas: number[];
   tGanadora: number;
+  /** Instante (frames de física) en que cruza la PASAN-ésima: ahí se decide la carrera (= tGanadora con PASAN 1). */
+  tDecisivo: number;
   /** Ventaja 1.º–2.º en s (Infinity si la 2.ª no llega en la ventana de celebración). */
   ventaja: number;
   /** Usos de tubo (frames de física). */
@@ -339,6 +363,8 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
   const llegadas: number[] = new Array(n).fill(-1);
   const usos: Resultado['usos'] = [];
   let tGanadora = -1;
+  let tDecisivo = -1;
+  let cruzaron = 0;
   const topeFrames = TOPE_SEG * FPS;
   const ultimoGolpe = new Array(n).fill(-999); // frame del último evento por bola (anti-spam)
   const RR_BLOQUE = RADIO_BOLA + BLOQUE.esquina;
@@ -526,6 +552,7 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
           b.llego = t; llegadas[i] = t;
           eventos.push({ frame, tipo: 'meta', bola: i });
           if (tGanadora < 0) tGanadora = t;
+          if (++cruzaron === PASAN) tDecisivo = t;
         }
       }
     }
@@ -535,9 +562,10 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
       const b = porParticipante[i];
       posiciones[i].push([Math.round(b.x * 10) / 10, Math.round(b.y * 10) / 10]);
     }
-    if (tGanadora >= 0 && frame >= tGanadora + CELEBRACION_SEG * FPS) {
+    if (tDecisivo >= 0 && frame >= tDecisivo + CELEBRACION_SEG * FPS) {
       const tiempos = llegadas.filter((t) => t >= 0).sort((a, b) => a - b);
-      const ventaja = tiempos.length >= 2 ? (tiempos[1] - tiempos[0]) / FPS : Infinity;
+      // Ventaja que decide: la última que clasifica sobre la primera que queda fuera (Short: 1.ª sobre 2.ª).
+      const ventaja = tiempos.length >= PASAN + 1 ? (tiempos[PASAN] - tiempos[PASAN - 1]) / FPS : Infinity;
       // Bolas que siguen dentro de un tubo al cortar: su uso termina aquí.
       porParticipante.forEach((b, i) => { if (b.tubo >= 0) usos.push({ tubo: b.tubo, bola: i, desde: b.desde, hasta: frame }); });
       // ¿A quién le abrió el camino cada bloque roto? A la primera OTRA bola que pase (en ≤ 8 s) por donde
@@ -557,7 +585,7 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
         }
         if (mejor) caminos.push({ frame: mejor.frame, bola: quien, otra: mejor.otra, bloque: k });
       });
-      return { mundo, posiciones, eventos, llegadas, tGanadora, ventaja, usos, caminos };
+      return { mundo, posiciones, eventos, llegadas, tGanadora, tDecisivo, ventaja, usos, caminos };
     }
   }
   return null; // nadie llegó dentro del tope
@@ -575,6 +603,7 @@ const puntajeExtras = (r: Resultado) =>
  * la mejor (más extras, luego más ajustada).
  */
 const simular = (guion: GuionCarrera) => {
+  const diag = process.env.CARRERA_DIAG === "1";
   const n = guion.participantes.length;
   const extras = guion.extras !== false;
   const base = guion.semilla ?? semillaDesde(guion.id);
@@ -586,10 +615,11 @@ const simular = (guion: GuionCarrera) => {
   let mejor: { r: Resultado; semilla: number; gravedad: number; p: number } | null = null;
   for (let intento = 0; intento < 240; intento++) {
     const r = correr(n, semilla, gravedad, extras);
-    const dur = r ? r.tGanadora / FPS : Infinity;
+    const dur = r ? r.tDecisivo / FPS : Infinity;
     // El 1.er choque con clavija debe llegar en ≤ 0,3 s (con gravedad baja la salida se vuelve lenta).
     const primerChoque = r?.eventos.find((e) => e.tipo === 'clavija')?.frame ?? Infinity;
-    if (r && dur >= DURACION_MIN && dur <= DURACION_MAX && (!extras || primerChoque <= 0.3 * FPS)) {
+    if (diag) console.log(`[diag] intento ${intento} g=${gravedad.toFixed(0)} dur=${dur.toFixed(1)} 1er=${primerChoque}`);
+    if (r && dur >= DURACION_MIN && dur <= DURACION_MAX && (!extras || primerChoque <= PRIMER_CHOQUE_MAX * FPS)) {
       validas++;
       const p = extras ? puntajeExtras(r) : 0;
       const reñida = r.ventaja < VENTAJA_MAX_SEG;
@@ -607,7 +637,7 @@ const simular = (guion: GuionCarrera) => {
     semilla = (semilla + 0x9e3779b9) >>> 0;
   }
   if (mejor) return { ...mejor, intentos: 240 };
-  throw new Error(`carrera ${guion.id}: no se logró una duración de 25–45 s en 240 intentos`);
+  throw new Error(`carrera ${guion.id}: no se logró una duración de ${DURACION_MIN}–${DURACION_MAX} s en 240 intentos`);
 };
 
 /** Velocidad de reproducción (frames de física por frame de video) según la distancia al cruce. */
@@ -629,7 +659,7 @@ const alVideo = (r: Resultado) => {
   const finFisica = r.posiciones[0].length - 1;
   // t[o] = instante de física que muestra el frame de video o.
   const t: number[] = [];
-  for (let x = 0; x <= finFisica; x += velocidad(x, r.tGanadora)) t.push(x);
+  for (let x = 0; x <= finFisica; x += velocidad(x, r.tDecisivo)) t.push(x);
   const aVideo = (tf: number) => { // primer frame de video que ya muestra el instante tf
     let lo = 0, hi = t.length - 1;
     while (lo < hi) { const m = (lo + hi) >> 1; if (t[m] >= tf - 1e-9) hi = m; else lo = m + 1; }
@@ -642,7 +672,8 @@ const alVideo = (r: Resultado) => {
   const eventos = r.eventos.map((ev) => ({ ...ev, frame: aVideo(ev.frame) }));
   const llegadas = r.llegadas.map((x) => (x < 0 ? -1 : aVideo(x)));
   const frameGanadora = aVideo(r.tGanadora);
-  const lentos = t.map((x, o) => (velocidad(x, r.tGanadora) < 1 ? o : -1)).filter((o) => o >= 0);
+  const frameDecisivo = aVideo(r.tDecisivo);
+  const lentos = t.map((x, o) => (velocidad(x, r.tDecisivo) < 1 ? o : -1)).filter((o) => o >= 0);
   const camaraLenta = { desde: lentos[0], hasta: lentos[lentos.length - 1], factor: LENTA.factor };
 
   // Cámara: apunta a la líder (algo por debajo del centro) con suavizado y luego la acota a una
@@ -709,11 +740,25 @@ const alVideo = (r: Resultado) => {
     }
   }
   avisos.sort((a, b) => a.frame - b.frame);
-  return { posiciones, eventos, llegadas, frameGanadora, camaraLenta, camara, ranking, frameRiser, duracionFrames: t.length, bloques, tubos, avisos };
+  return { posiciones, eventos, llegadas, frameGanadora, frameDecisivo, camaraLenta, camara, ranking, frameRiser, duracionFrames: t.length, bloques, tubos, avisos };
 };
 
 /** Simula, escribe `public/sim/<id>.json` y `public/audio/generado/<id>.wav`. Devuelve la simulación. */
-export const prepararSimulacion = (guion: GuionCarrera): SimulacionCarrera => {
+export interface OpcionesSimulacion {
+  /** Lienzo distinto del Short (torneo 16:9). */
+  lienzo?: Partial<Lienzo>;
+  /** Cuántas clasifican: la cámara lenta y el corte van en el cruce de la PASAN-ésima (por defecto 1). */
+  pasan?: number;
+  /** No escribir el wav suelto de la carrera (el torneo mezcla su propio audio). */
+  sinWav?: boolean;
+}
+
+export const prepararSimulacion = (guion: GuionCarrera, opciones: OpcionesSimulacion = {}): SimulacionCarrera => {
+  configurarLienzo(opciones.lienzo, opciones.pasan);
+  try { return prepararSimulacionConLienzo(guion, opciones); } finally { configurarLienzo(); }
+};
+
+const prepararSimulacionConLienzo = (guion: GuionCarrera, opciones: OpcionesSimulacion): SimulacionCarrera => {
   const { r, semilla, gravedad, intentos } = simular(guion);
   const v = alVideo(r);
   // Orden final: por instante de llegada; las que no llegan, por lo avanzadas que van al final.
@@ -738,6 +783,7 @@ export const prepararSimulacion = (guion: GuionCarrera): SimulacionCarrera => {
     orden,
     ganadora: orden[0],
     frameGanadora: v.frameGanadora,
+    ...(opciones.pasan && opciones.pasan > 1 ? { pasan: opciones.pasan, frameDecisivo: v.frameDecisivo } : {}),
     ventajaSeg: Math.round(r.ventaja * 1000) / 1000,
     camaraLenta: v.camaraLenta,
     duracionFrames: v.duracionFrames,
@@ -748,7 +794,7 @@ export const prepararSimulacion = (guion: GuionCarrera): SimulacionCarrera => {
   fs.mkdirSync(path.dirname(rutaSim), { recursive: true });
   fs.writeFileSync(rutaSim, JSON.stringify(sim));
   const rutaWav = path.join(RAIZ, 'public/audio/generado', `${guion.id}.wav`);
-  sintetizarCarrera(sim, rutaWav, guion.musica);
+  if (!opciones.sinWav) sintetizarCarrera(sim, rutaWav, guion.musica);
   const golpes = sim.eventos.filter((e) => e.tipo === 'clavija' || e.tipo === 'rampa').length;
   const choques = sim.eventos.filter((e) => e.tipo === 'bola').length;
   console.log(

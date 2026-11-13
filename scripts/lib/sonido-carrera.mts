@@ -32,7 +32,7 @@ const ruido = (semilla: number) => {
 };
 
 /** Bombo: seno que cae de 150 a 45 Hz en 0,16 s con clic de ataque. */
-const bombo = (p: Float32Array, t: number, vol: number) => {
+export const bombo = (p: Float32Array, t: number, vol: number) => {
   barrido(p, t, 150, 45, 0.16, vol, 'seno');
   golpe(p, t, { duracion: 0.008, volumen: vol * 0.4, tono: 0.6, semilla: Math.floor(t * 1000) });
 };
@@ -53,7 +53,7 @@ const ruidoAgudo = (p: Float32Array, t: number, dur: number, vol: number, semill
 };
 
 /** Metal sintético: armónicos 1..7 con 1/n, ataque de 25 ms y vibrato leve (fanfarria). */
-const metal = (p: Float32Array, t: number, hz: number, dur: number, vol: number) => {
+export const metal = (p: Float32Array, t: number, hz: number, dur: number, vol: number) => {
   const desde = Math.floor(t * SR), total = Math.floor((dur + 0.25) * SR);
   let fase = 0;
   for (let i = 0; i < total; i++) {
@@ -72,7 +72,8 @@ const metal = (p: Float32Array, t: number, hz: number, dur: number, vol: number)
   }
 };
 
-export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string, musica?: string) => {
+/** Sintetiza el wav de una carrera; con `ruta` null no escribe nada (el torneo mezcla los canales en su propio wav). */
+export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string | null, musica?: string): Float32Array[] => {
   /** Con canción de fondo los choques suenan más bajos (se oyen encima sin tapar la melodía). */
   const kGolpe = musica ? 0.5 : 1;
   const segundos = (sim.duracionFrames + 72) / sim.fps + 0.8;
@@ -290,5 +291,6 @@ export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string, musica?:
   const kMusica = musica ? 1 : 0.5;
   for (let i = 0; i < largo; i++) { L[i] += mL[i] * kMusica; R[i] += mR[i] * kMusica; }
   masterizar([L, R], { rmsDb: -15, techoDb: -2.2 });
-  escribirWav(ruta, [L, R]);
+  if (ruta) escribirWav(ruta, [L, R]);
+  return [L, R];
 };

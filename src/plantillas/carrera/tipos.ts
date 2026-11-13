@@ -106,6 +106,9 @@ export interface SimulacionCarrera {
   ganadora: number;
   /** Frame en que cruza la ganadora (aquí suena la fanfarria). */
   frameGanadora: number;
+  /** Torneo: cuántas clasifican y frame en que cruza la última que clasifica (ahí van la cámara lenta y el corte). */
+  pasan?: number;
+  frameDecisivo?: number;
   /** Ventaja de la ganadora sobre la 2.ª, en segundos de carrera (tiempo real, sin cámara lenta). */
   ventajaSeg: number;
   /** Tramo del video en cámara lenta alrededor de la llegada (frames del video). */
