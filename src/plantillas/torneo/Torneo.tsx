@@ -470,7 +470,7 @@ const PanelVivo: React.FC<{ ctx: Ctx; c: CarreraTorneo; sim: SimulacionCarrera; 
           <div key={b} style={{ position: 'absolute', left: 24, right: 20, top: TOP + p * FILA + (p >= c.pasan - 0.001 && n > c.pasan ? 26 : 0), height: FILA - 12, display: 'flex', alignItems: 'center', gap: 14 }}>
             <span style={{ width: 44, fontSize: 36, color: PALETA.tintaSuave }}>{lugar + 1}.º</span>
             <Bolita ctx={ctx} i={i} tam={62} />
-            <span style={{ flex: 1, fontSize: ctx.g.participantes[i].etiqueta.length > 10 ? 26 : 32, color: ctx.plan.colores[i], whiteSpace: 'nowrap', overflow: 'hidden' }}>{ctx.g.participantes[i].etiqueta}</span>
+            <span style={{ flex: 1, fontSize: ctx.g.participantes[i].etiqueta.length > 9 ? 24 : ctx.g.participantes[i].etiqueta.length > 7 ? 28 : 32, color: ctx.plan.colores[i], whiteSpace: 'nowrap', overflow: 'hidden' }}>{ctx.g.participantes[i].etiqueta}</span>
             {llego && <span style={{ fontSize: 30, fontFamily: FUENTE_EMOJI }}>{pasa ? '✅' : '❌'}</span>}
           </div>
         );
@@ -741,7 +741,7 @@ const Podio: React.FC<{ ctx: Ctx; dur: number }> = ({ ctx, dur }) => {
         {pod(p1, 960, 330, '1', 36)}
       </div>
       {enVoto && frame > 60 && (
-        <div style={{ position: 'absolute', inset: 0, transform: 'translateY(-380px)' }}>
+        <div style={{ position: 'absolute', inset: 0, transform: 'translateY(-440px)' }}>
           <Sequence from={60} layout="none"><PanelEscalado ctx={ctx} frameFinal={-40} ganador={ctx.plan.votacion.indexOf(p1)} /></Sequence>
         </div>
       )}

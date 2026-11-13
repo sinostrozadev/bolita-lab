@@ -51,6 +51,12 @@ const pasoTrazas = (ctx: CanvasRenderingContext2D, e: EscenaPlan, g: number) => 
     ctx.fillRect(0, 0, W, H);
     ctx.globalCompositeOperation = 'source-over';
   }
+  // En 8 bits el desvanecido se "estanca" en alfas bajas y deja una bruma gris: cada 5 s se limpia lo casi transparente.
+  if (g % 150 === 75) {
+    const img = ctx.getImageData(0, 0, W, H), d = img.data;
+    for (let i = 3; i < d.length; i += 4) if (d[i] < 30) d[i] = 0;
+    ctx.putImageData(img, 0, 0);
+  }
   const h = tonoEn(e, g);
   if (e.bolas && (e.tipo === 'llenar' || e.tipo === 'tres')) {
     e.bolas.forEach((b, j) => {
@@ -162,9 +168,11 @@ const dibujarVivo = (ctx: CanvasRenderingContext2D, e: EscenaPlan, g: number) =>
           const tt = dt - k * 0.45;
           if (tt < 0) continue;
           const R = 30 + 150 * tt * d.s;
-          const a = Math.max(0, 0.75 * (1 - tt / 6.5)) * (1 - k * 0.22);
-          ctx.lineWidth = 3.5 - k; ctx.strokeStyle = hsl(hj, 80, 72, a);
+          const a = Math.max(0, 0.95 * (1 - tt / 6.5)) * (1 - k * 0.2);
+          ctx.lineWidth = 5 - k * 1.2; ctx.strokeStyle = hsl(hj, 90, 72, a);
+          ctx.shadowColor = hsl(hj, 95, 60, a); ctx.shadowBlur = k === 0 ? 16 : 0;
           ctx.beginPath(); ctx.ellipse(d.x, d.y, R, R * 0.42, 0, 0, Math.PI * 2); ctx.stroke();
+          ctx.shadowBlur = 0;
         }
         if (dt < 0.5) { ctx.globalCompositeOperation = 'lighter'; brillo(ctx, d.x, d.y, 60 * (1 - dt / 0.5) + 10, hsl(hj, 90, 70, 0.6)); ctx.globalCompositeOperation = 'source-over'; }
       }

@@ -125,13 +125,13 @@ export const prepararRelajante = (g: GuionRelajante, opciones: { previewAudio?: 
     switch (e.tipo) {
       case 'llenar': {
         const R = 470;
-        const s = simularContenedor({ segundos: D, g: 1000, anillo: R, semilla: sem, bolas: [{ x: CX - 60, y: CY - 200, vx: 360, vy: 0, r: 34 }] });
+        const s = simularContenedor({ segundos: D, g: 1000, anillo: R, semilla: sem, bolas: [{ x: CX - 60, y: CY - 200, vx: 420, vy: -620, r: 34 }] });
         ep.bolas = s.bolas; ep.anillo = { cx: CX, cy: CY, R }; golpes = s.golpes;
         break;
       }
       case 'tres': {
         const R = 470;
-        const s = simularContenedor({ segundos: D, g: 850, anillo: R, semilla: sem, bolas: [0, 1, 2].map((j) => ({ x: CX - 200 + j * 200, y: CY - 150 + j * 40, vx: (j - 1) * 260 + 80, vy: -120 * j, r: 26 })) });
+        const s = simularContenedor({ segundos: D, g: 850, anillo: R, semilla: sem, bolas: [0, 1, 2].map((j) => ({ x: CX - 200 + j * 200, y: CY - 150 + j * 40, vx: (j - 1) * 300 + 90, vy: -380 - 120 * j, r: 26 })) });
         ep.bolas = s.bolas; ep.anillo = { cx: CX, cy: CY, R }; golpes = s.golpes;
         break;
       }
@@ -166,7 +166,11 @@ export const prepararRelajante = (g: GuionRelajante, opciones: { previewAudio?: 
       case 'gotas': {
         // Una gota por nota de la melodía: cae en el instante de la nota (la imagen sigue a la música).
         const notas = notasMelodia(pieza, D);
-        ep.gotas = notas.map((t) => ({ t, x: Math.round(260 + az() * 1400), y: Math.round(260 + az() * 600), s: 0.6 + az() * 0.6 }));
+        // + llovizna: gotas chicas cada ~0,8 s (solo imagen) para que la superficie nunca quede quieta.
+        const llovizna: number[] = [];
+        for (let t = 1; t < D - 2; t += 0.5 + az() * 0.6) llovizna.push(t);
+        ep.gotas = [...notas.map((t) => ({ t, x: Math.round(260 + az() * 1400), y: Math.round(260 + az() * 600), s: 0.7 + az() * 0.6 })),
+          ...llovizna.map((t) => ({ t, x: Math.round(160 + az() * 1600), y: Math.round(200 + az() * 700), s: 0.3 + az() * 0.25 }))].sort((a, b) => a.t - b.t);
         golpes = []; // la melodía ya suena en cada gota
         break;
       }
