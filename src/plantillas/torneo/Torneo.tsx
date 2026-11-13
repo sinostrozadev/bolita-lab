@@ -14,9 +14,9 @@ import {
 import { FORMATO_LARGO, MARCA, NEONES, PALETA, TIPO } from '../../marca/tokens';
 import { cargarFuentes } from '../../marca/fuentes';
 import { crearAzar } from '../../lib/azar';
-import { Icono } from '../carrera/Icono';
+import { FUENTE_EMOJI, Icono } from '../carrera/Icono';
 import { Bloques, TubosFondo, TubosFrente } from '../carrera/Extras';
-import { AVISO_FRAMES, type SimulacionCarrera } from '../carrera/tipos';
+import { AVISO_FRAMES, barrasMovil, type SimulacionCarrera } from '../carrera/tipos';
 import { PanelVotacion } from '../../marca/Votacion';
 import { ACCIONES } from '../../marca/votacion-texto';
 import { NOMBRE_RONDA, type CarreraTorneo, type GuionTorneo, type PlanTorneo, type Ronda } from './guion';
@@ -178,8 +178,8 @@ const Llave: React.FC<{ ctx: Ctx; hecha: number; anima?: number; k?: number; foc
                   <span style={{ flex: 1, overflow: 'hidden', textDecoration: fuera && e > 0.5 ? 'line-through' : 'none', color: pasa ? ctx.plan.colores[i] : undefined }}>
                     {ctx.g.participantes[i].etiqueta}
                   </span>
-                  {pasa && <span style={{ fontSize: 26, color: PALETA.verde, opacity: e }}>{final ? '🏆' : '✓'}</span>}
-                  {fuera && <span style={{ fontSize: 26, color: PALETA.rojo, opacity: e }}>✗</span>}
+                  {pasa && <span style={{ fontSize: 24, fontFamily: FUENTE_EMOJI, opacity: e }}>{final ? '🏆' : '✅'}</span>}
+                  {fuera && <span style={{ fontSize: 22, fontFamily: FUENTE_EMOJI, opacity: e }}>❌</span>}
                 </div>
               );
             })}
@@ -304,8 +304,8 @@ const Presenta: React.FC<{ ctx: Ctx; c: CarreraTorneo; dur: number }> = ({ ctx, 
 // ---------------------------------------------------------------- LA CARRERA (16:9)
 
 const DESTELLO = 7;
-const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; f: number; colores: string[] }> = ({ sim, cam, f, colores }) => {
-  const desde = cam - 120, hasta = cam + H + 120;
+const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; alto: number; f: number; colores: string[] }> = ({ sim, cam, alto, f, colores }) => {
+  const desde = cam - 160, hasta = cam + alto + 160;
   const ancho = sim.tablero.ancho;
   const destellos = useMemo(() => {
     const m = new Map<number, { color: string; edad: number }>();
@@ -313,12 +313,13 @@ const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; f: number; colore
       const ev = sim.eventos[k];
       if (ev.frame > f) continue;
       if (f - ev.frame >= DESTELLO) break;
-      if (ev.tipo !== 'clavija' || ev.clavija === undefined || m.has(ev.clavija)) continue;
+      if ((ev.tipo !== 'clavija' && ev.tipo !== 'bumper') || ev.clavija === undefined || m.has(ev.clavija)) continue;
       m.set(ev.clavija, { color: colores[ev.bola], edad: f - ev.frame });
     }
     return m;
   }, [sim, f, colores]);
   const { metaY } = sim.tablero;
+  const T = sim.tiempo?.[f] ?? f / 60;
   const cuadro = 40;
   return (
     <>
@@ -328,6 +329,16 @@ const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; f: number; colore
       {sim.clavijas.map((c, i) => {
         if (c.y < desde || c.y > hasta) return null;
         const d = destellos.get(i);
+        if (c.tipo === 'bumper') {
+          const b = d ? interpolate(f - (f - d.edad), [0, 14], [1, 0], { extrapolateRight: 'clamp' }) : 0;
+          const rr = c.r * (1 + 0.25 * b);
+          const col = d ? d.color : PALETA.neon.magenta;
+          return <div key={i} style={{
+            position: 'absolute', left: c.x - rr, top: c.y - rr, width: rr * 2, height: rr * 2, borderRadius: '50%', boxSizing: 'border-box',
+            background: `radial-gradient(circle at 40% 35%, #FFFFFF 0, ${col} 30%, #3A0F3A 75%)`, border: `6px solid ${b > 0 ? '#FFFFFF' : PALETA.neon.amarillo}`,
+            boxShadow: `0 0 ${18 + 40 * b}px ${col}, inset 0 0 12px #00000088`,
+          }} />;
+        }
         if (!d) return <div key={i} style={{ position: 'absolute', left: c.x - c.r, top: c.y - c.r, width: c.r * 2, height: c.r * 2, borderRadius: '50%', background: 'radial-gradient(circle at 40% 35%, #C9C9F0 0, #7C7CAE 60%)', boxShadow: '0 0 12px rgba(157,92,255,0.45)' }} />;
         const b = interpolate(d.edad, [0, DESTELLO], [1, 0]);
         const r = c.r * (1 + 0.45 * b);
@@ -337,11 +348,41 @@ const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; f: number; colore
         if (Math.max(s.y1, s.y2) < desde || Math.min(s.y1, s.y2) > hasta) return null;
         const largo = Math.hypot(s.x2 - s.x1, s.y2 - s.y1);
         const ang = (Math.atan2(s.y2 - s.y1, s.x2 - s.x1) * 180) / Math.PI;
+        if (s.tipo === 'trampolin') return (
+          <div key={i} style={{ position: 'absolute', left: s.x1, top: s.y1 - s.grosor / 2, width: largo, height: 44, transformOrigin: `0 ${s.grosor / 2}px`, transform: `rotate(${ang}deg)` }}>
+            <div style={{ position: 'absolute', left: 0, top: 0, width: largo, height: s.grosor, borderRadius: 8, background: PALETA.neon.lima, boxShadow: `0 0 20px ${PALETA.neon.lima}` }} />
+            <svg width={largo} height={30} style={{ position: 'absolute', top: s.grosor }}><polyline points={Array.from({ length: 9 }, (_, k) => `${largo * (0.15 + 0.7 * k / 8)},${k % 2 ? 26 : 2}`).join(' ')} fill="none" stroke={PALETA.neon.lima} strokeOpacity={0.7} strokeWidth={4} /></svg>
+          </div>
+        );
         return <div key={i} style={{
           position: 'absolute', left: s.x1, top: s.y1 - s.grosor / 2, width: largo, height: s.grosor, borderRadius: s.grosor, transformOrigin: '0 50%', transform: `rotate(${ang}deg)`,
           background: `linear-gradient(90deg, ${PALETA.fondo2}, #2B2B52)`, border: `2px solid ${PALETA.neon.violeta}AA`, boxShadow: `0 0 24px ${PALETA.neon.violeta}77`,
         }} />;
       })}
+      {(sim.secciones ?? []).map((sc, k) => sc.y0 > desde - 200 && sc.y0 < hasta + 200 && (
+        <div key={`sc${k}`} style={{ position: 'absolute', left: 0, top: sc.y0 - 70, width: sim.tablero.ancho, textAlign: 'center', fontFamily: TIPO.display, fontWeight: 800, fontSize: 92, letterSpacing: 6, color: `${PALETA.tinta}30`, whiteSpace: 'nowrap' }}>{sc.titulo}</div>
+      ))}
+      {(sim.portales ?? []).map((p, k) => [[p.ax, p.ay, 1], [p.bx, p.by, -1]].map(([x, y, sentido], j) => (y < desde - 100 || y > hasta + 100) ? null : (
+        <div key={`p${k}${j}`} style={{ position: 'absolute', left: x - p.r - 10, top: y - p.r - 10, width: 2 * p.r + 20, height: 2 * p.r + 20 }}>
+          <div style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: `radial-gradient(circle, #000 0, #000 35%, ${p.color}66 60%, transparent 72%)` }} />
+          <div style={{ position: 'absolute', inset: 6, borderRadius: '50%', border: `6px dashed ${p.color}`, boxShadow: `0 0 26px ${p.color}`, transform: `rotate(${sentido * f * 3}deg)` }} />
+          <div style={{ position: 'absolute', inset: 24, borderRadius: '50%', border: `3px solid ${p.color}AA`, transform: `rotate(${-sentido * f * 5}deg)` }} />
+          <div style={{ position: 'absolute', top: -46, width: '100%', textAlign: 'center', fontFamily: TIPO.display, fontWeight: 800, fontSize: 26, color: p.color, whiteSpace: 'nowrap' }}>{j === 0 ? 'ENTRA' : 'SALE'}</div>
+        </div>
+      )))}
+      {(sim.moviles ?? []).map((m, k) => (m.cy < desde - 300 || m.cy > hasta + 300) ? null : (
+        <React.Fragment key={`m${k}`}>
+          {barrasMovil(m, T).map(([x1, y1, x2, y2], j) => {
+            const largo = Math.hypot(x2 - x1, y2 - y1), ang = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
+            const col = m.tipo === 'molino' ? PALETA.neon.naranja : PALETA.neon.cian;
+            return <div key={j} style={{
+              position: 'absolute', left: x1, top: y1 - m.grosor / 2, width: largo, height: m.grosor, borderRadius: m.grosor, transformOrigin: `0 ${m.grosor / 2}px`, transform: `rotate(${ang}deg)`,
+              background: `linear-gradient(180deg, #FFFFFF, ${col} 40%, ${col}AA)`, boxShadow: `0 0 22px ${col}`,
+            }} />;
+          })}
+          {m.tipo === 'molino' && <div style={{ position: 'absolute', left: m.cx - 22, top: m.cy - 22, width: 44, height: 44, borderRadius: '50%', background: `radial-gradient(circle at 40% 35%, #FFFFFF, ${PALETA.neon.naranja})`, boxShadow: `0 0 18px ${PALETA.neon.naranja}` }} />}
+        </React.Fragment>
+      ))}
       {metaY > desde - 300 && metaY < hasta + 300 && (
         <>
           <div style={{ position: 'absolute', left: 0, top: metaY - 170, width: ancho, textAlign: 'center', fontFamily: TIPO.display, fontWeight: 800, fontSize: 120, letterSpacing: 22, color: `${PALETA.tinta}38` }}>META</div>
@@ -358,14 +399,16 @@ const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; f: number; colore
 };
 
 const ESTELA = [2, 4, 6, 8];
-const Bolas: React.FC<{ ctx: Ctx; c: CarreraTorneo; sim: SimulacionCarrera; cam: number; f: number; etiquetas: number }> = ({ ctx, c, sim, cam, f, etiquetas }) => {
+const Bolas: React.FC<{ ctx: Ctx; c: CarreraTorneo; sim: SimulacionCarrera; cam: number; alto: number; esc: number; f: number; etiquetas: number }> = ({ ctx, c, sim, cam, alto, esc, f, etiquetas }) => {
   const r = sim.tablero.radioBola;
+  /** Las etiquetas mantienen su tamaño en pantalla aunque la cámara se aleje. */
+  const ke = Math.min(1.7, 1 / esc);
   return (
     <>
       {sim.posiciones.map((pos, b) => {
         const [x, y] = pos[f];
         const sy = y - cam;
-        if (sy < -260 || sy > H + 260) return null;
+        if (sy < -260 || sy > alto + 260) return null;
         const i = c.corredores[b];
         const color = ctx.plan.colores[i];
         let cerca = Infinity;
@@ -382,7 +425,7 @@ const Bolas: React.FC<{ ctx: Ctx; c: CarreraTorneo; sim: SimulacionCarrera; cam:
             <Bolita ctx={ctx} i={i} tam={r * 2} style={{ position: 'absolute', left: x - r, top: y - r }} />
             {opEt > 0.01 && (
               <div style={{
-                position: 'absolute', left: x, top: y - r - 46, transform: 'translateX(-50%)', height: 40, padding: '0 16px', borderRadius: 999, whiteSpace: 'nowrap',
+                position: 'absolute', left: x, top: y - r - 46 * ke, transform: `translateX(-50%) scale(${ke})`, transformOrigin: '50% 0', height: 40, padding: '0 16px', borderRadius: 999, whiteSpace: 'nowrap',
                 display: 'flex', alignItems: 'center', fontFamily: TIPO.display, fontWeight: 800, fontSize: 28, color: PALETA.fondo, background: color, opacity: opEt,
                 boxShadow: `0 0 14px ${color}AA`,
               }}>{ctx.g.participantes[i].etiqueta}</div>
@@ -408,10 +451,10 @@ const PanelVivo: React.FC<{ ctx: Ctx; c: CarreraTorneo; sim: SimulacionCarrera; 
     <div style={{ position: 'absolute', left: 0, top: 0, width: PANEL, height: H, background: `linear-gradient(90deg, ${PALETA.fondo}, ${PALETA.fondo2})`, borderRight: `3px solid #2B2B52`, fontFamily: TIPO.display, fontWeight: 800 }}>
       <div style={{ position: 'absolute', top: 44, left: 30, right: 20 }}>
         <div style={{ fontSize: 28, color: PALETA.tintaSuave, letterSpacing: 2 }}>{NOMBRE_RONDA[c.ronda]}</div>
-        <div style={{ fontSize: 46, color: PALETA.tinta, lineHeight: 1.1 }}>{c.nombre}</div>
+        <div style={{ fontSize: 38, color: PALETA.tinta, lineHeight: 1.1, whiteSpace: 'nowrap' }}>{c.nombre}</div>
         <div style={{ fontSize: 30, color: PALETA.neon.amarillo, marginTop: 10 }}>{c.pasan === 2 ? 'PASAN 2' : c.ronda === 'final' ? 'POR LA COPA 🏆' : 'PASA 1'}</div>
       </div>
-      {n > c.pasan && (
+      {n > c.pasan && c.ronda !== 'final' && (
         <>
           <div style={{ position: 'absolute', left: 24, right: 24, top: corte, height: 0, borderTop: `4px dashed ${PALETA.rojo}` }} />
           <div style={{ position: 'absolute', left: 24, top: corte + 6, fontSize: 20, color: PALETA.rojo, letterSpacing: 1 }}>FUERA ↓</div>
@@ -428,7 +471,7 @@ const PanelVivo: React.FC<{ ctx: Ctx; c: CarreraTorneo; sim: SimulacionCarrera; 
             <span style={{ width: 44, fontSize: 36, color: PALETA.tintaSuave }}>{lugar + 1}.º</span>
             <Bolita ctx={ctx} i={i} tam={62} />
             <span style={{ flex: 1, fontSize: ctx.g.participantes[i].etiqueta.length > 10 ? 26 : 32, color: ctx.plan.colores[i], whiteSpace: 'nowrap', overflow: 'hidden' }}>{ctx.g.participantes[i].etiqueta}</span>
-            {llego && <span style={{ fontSize: 34, color: pasa ? PALETA.verde : PALETA.rojo }}>{pasa ? '✓' : '✗'}</span>}
+            {llego && <span style={{ fontSize: 30, fontFamily: FUENTE_EMOJI }}>{pasa ? '✅' : '❌'}</span>}
           </div>
         );
       })}
@@ -443,13 +486,23 @@ const Carrera169: React.FC<{ ctx: Ctx; c: CarreraTorneo }> = ({ ctx, c }) => {
   const colores = useMemo(() => c.corredores.map((i) => ctx.plan.colores[i]), [c, ctx.plan.colores]);
   if (!sim) return null;
   const f = Math.min(frame * 2, sim.duracionFrames - 1);
-  const cam = sim.camara[f];
+  const kc = Math.min(frame, c.camTop.length - 1);
+  const cam = c.camTop[kc], altoVis = c.camAlto[kc];
+  /** Escala del mundo: 1080 px de pantalla muestran `altoVis` px de mundo (se aleja si se separan). */
+  const esc = H / altoVis;
+  const ANCHO_AREA = W - PANEL;
+  const izq = PANEL + (ANCHO_AREA - sim.tablero.ancho * esc) / 2;
   const decisiva = sim.orden[c.pasan - 1];
   const fDec = sim.frameDecisivo ?? sim.frameGanadora;
   // Zoom a la meta en la cámara lenta, anclado en la x de la que decide.
   const z = interpolate(f, [sim.camaraLenta.desde, sim.camaraLenta.desde + 26], [1, ZOOM_META], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp', easing: Easing.inOut(Easing.cubic) });
-  const ax = PANEL + sim.posiciones[decisiva][Math.min(fDec, sim.duracionFrames - 1)][0];
-  const ay = sim.tablero.metaY - sim.camara[Math.min(f, sim.duracionFrames - 1)];
+  const ax = izq + sim.posiciones[decisiva][Math.min(fDec, sim.duracionFrames - 1)][0] * esc;
+  const ay = (sim.tablero.metaY - cam) * esc;
+  // Sección en la que va la líder: su rótulo arriba (2,5 s al entrar).
+  const liderY = Math.max(...sim.posiciones.map((p) => p[f][1]));
+  const secs = sim.secciones ?? [];
+  const sec = secs.findIndex((x) => liderY >= x.y0 + 60 && liderY < x.y1);
+  const entraSec = sec >= 0 ? (() => { for (let g = f; g >= 0; g -= 2) { const ly = Math.max(...sim.posiciones.map((p) => p[g][1])); if (ly < secs[sec].y0 + 60) return g; } return 0; })() : -1;
   const lenta = f >= sim.camaraLenta.desde && f <= sim.camaraLenta.hasta;
   const etiquetas = interpolate(frame, [20, 30], [0, 1], { extrapolateRight: 'clamp' }) * (lenta ? 0 : 1);
   // Aviso narrativo (frames de 60 fps).
@@ -467,16 +520,31 @@ const Carrera169: React.FC<{ ctx: Ctx; c: CarreraTorneo }> = ({ ctx, c }) => {
   return (
     <AbsoluteFill style={{ background: PALETA.fondo, overflow: 'hidden' }}>
       <AbsoluteFill style={{ transform: `scale(${z})`, transformOrigin: `${ax}px ${ay}px` }}>
-        <div style={{ position: 'absolute', left: PANEL, top: 0, width: sim.tablero.ancho, height: H, overflow: 'hidden', background: `radial-gradient(ellipse at 50% 30%, ${PALETA.fondo2}, ${PALETA.fondo})` }}>
-          <div style={{ position: 'absolute', left: 0, top: 0, width: sim.tablero.ancho, height: sim.tablero.alto, transform: `translateY(${-cam}px)` }}>
-            <Tablero sim={sim} cam={cam} f={f} colores={colores} />
+        <div style={{ position: 'absolute', left: PANEL, top: 0, width: ANCHO_AREA, height: H, overflow: 'hidden', background: `radial-gradient(ellipse at 50% 30%, ${PALETA.fondo2}, #07070C)` }}>
+          <div style={{ position: 'absolute', left: izq - PANEL, top: 0, width: sim.tablero.ancho, height: sim.tablero.alto, transform: `scale(${esc}) translateY(${-cam}px)`, transformOrigin: '0 0', background: `${PALETA.fondo}` }}>
+            <Tablero sim={sim} cam={cam} alto={altoVis} f={f} colores={colores} />
             <TubosFondo sim={sim} cam={cam} frame={f} colores={colores} />
             <Bloques sim={sim} cam={cam} frame={f} colores={colores} />
-            <Bolas ctx={ctx} c={c} sim={sim} cam={cam} f={f} etiquetas={etiquetas} />
+            <Bolas ctx={ctx} c={c} sim={sim} cam={cam} alto={altoVis} esc={esc} f={f} etiquetas={etiquetas} />
             <TubosFrente sim={sim} cam={cam} />
           </div>
         </div>
       </AbsoluteFill>
+      {/* Fuera de cuadro: flecha con su bandera al borde (arriba o abajo) */}
+      {!lenta && sim.posiciones.map((pos, b) => {
+        const [x, y] = pos[f];
+        const sy = (y - cam) * esc;
+        const llegada = sim.llegadas[b] >= 0 && sim.llegadas[b] <= f;
+        if (llegada || (sy > -20 && sy < H + 20)) return null;
+        const i = c.corredores[b];
+        const arriba = sy <= -20;
+        return (
+          <div key={`fc${b}`} style={{ position: 'absolute', left: izq + x * esc - 40, top: arriba ? 12 : H - 92, width: 80, display: 'flex', flexDirection: arriba ? 'column' : 'column-reverse', alignItems: 'center', opacity: 0.9 }}>
+            <div style={{ fontFamily: TIPO.display, fontWeight: 800, fontSize: 26, color: ctx.plan.colores[i] }}>{arriba ? '▲' : '▼'}</div>
+            <Bolita ctx={ctx} i={i} tam={52} />
+          </div>
+        );
+      })}
       {lenta && <AbsoluteFill style={{ background: `radial-gradient(ellipse at 60% 60%, transparent 40%, ${ctx.plan.colores[c.corredores[decisiva]]}44 100%)` }} />}
       <PanelVivo ctx={ctx} c={c} sim={sim} f={f} />
       {aviso && (() => {
@@ -494,6 +562,18 @@ const Carrera169: React.FC<{ ctx: Ctx; c: CarreraTorneo }> = ({ ctx, c }) => {
               padding: '12px 30px', borderRadius: 999, background: `${PALETA.fondo}EE`, border: `3px solid ${aviso.tipo === 'camino' ? PALETA.neon.amarillo : PALETA.neon.cian}`,
               fontFamily: TIPO.display, fontWeight: 800, fontSize: 40, color: PALETA.tinta, whiteSpace: 'nowrap', opacity: op, transform: `scale(${0.8 + 0.2 * e})`,
             }}>{texto}</div>
+          </div>
+        );
+      })()}
+      {sec >= 0 && f - entraSec < 150 && !aviso && (() => {
+        const k = f - entraSec;
+        const e = spring({ frame: Math.floor(k / 2), fps, config: { damping: 12, stiffness: 180 } });
+        const op = interpolate(k, [0, 8, 130, 150], [0, 1, 1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+        return (
+          <div style={{ position: 'absolute', left: PANEL, width: W - PANEL, top: 30, display: 'flex', justifyContent: 'center' }}>
+            <div style={{ padding: '10px 34px', borderRadius: 999, background: `${PALETA.fondo}EE`, border: `3px solid ${PALETA.neon.lima}`, fontFamily: TIPO.display, fontWeight: 800, fontSize: 44, color: PALETA.tinta, opacity: op, transform: `scale(${0.7 + 0.3 * e})`, whiteSpace: 'nowrap' }}>
+              {secs[sec].titulo} <span style={{ color: PALETA.tintaSuave, fontSize: 30 }}>· sección {sec + 1} de {secs.length}</span>
+            </div>
           </div>
         );
       })()}
@@ -584,56 +664,116 @@ const Votacion: React.FC<{ ctx: Ctx; dur: number }> = ({ ctx, dur }) => {
 
 // ---------------------------------------------------------------- CAMPEÓN
 
-const Campeon: React.FC<{ ctx: Ctx; dur: number }> = ({ ctx, dur }) => {
+/** Fase 1 (0–9 s): el campeón GIGANTE con su bandera, trofeo, rayos y confeti. */
+const CampeonGigante: React.FC<{ ctx: Ctx; dur: number }> = ({ ctx, dur }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const [p1, p2, p3] = ctx.plan.podio;
-  const e = spring({ frame: frame - 6, fps, config: { damping: 10, stiffness: 90 } });
-  const confeti = useMemo(() => {
-    const az = crearAzar(0xC0FFEE);
-    return Array.from({ length: 140 }, (_, j) => ({
-      x0: j % 2 ? -40 : W + 40, y0: 900, vx: (j % 2 ? 1 : -1) * (8 + az() * 22), vy: -(22 + az() * 22),
-      color: NEONES[Math.floor(az() * NEONES.length)], w: 16 + az() * 16, giro: (az() - 0.5) * 24, retraso: Math.floor(az() * 40), fase: az() * 6,
-    }));
-  }, []);
-  const op = interpolate(frame, [dur - 10, dur], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  const p1 = ctx.plan.podio[0];
   const color = ctx.plan.colores[p1];
-  const pod = (i: number, x: number, alto: number, lugar: string, d: number) => {
-    const s = spring({ frame: frame - d, fps, config: { damping: 12, stiffness: 120 } });
-    return (
-      <div style={{ position: 'absolute', left: x - 150, bottom: 0, width: 300, display: 'flex', flexDirection: 'column', alignItems: 'center', transform: `translateY(${(1 - s) * 400}px)` }}>
-        <Bolita ctx={ctx} i={i} tam={lugar === '1' ? 210 : 150} />
-        <div style={{ fontFamily: TIPO.display, fontWeight: 800, fontSize: 38, color: ctx.plan.colores[i], margin: '10px 0', whiteSpace: 'nowrap' }}>{ctx.g.participantes[i].etiqueta}</div>
-        <div style={{ width: 280, height: alto, borderRadius: '16px 16px 0 0', background: `linear-gradient(180deg, ${ctx.plan.colores[i]}AA, ${PALETA.fondo2})`, display: 'flex', justifyContent: 'center', paddingTop: 10, fontFamily: TIPO.display, fontWeight: 800, fontSize: 84, color: PALETA.tinta }}>{lugar}</div>
-      </div>
-    );
-  };
+  const e = spring({ frame: frame - 4, fps, config: { damping: 9, stiffness: 70 } });
+  const t = spring({ frame: frame - 30, fps, config: { damping: 10, stiffness: 120 } });
+  const op = interpolate(frame, [dur - 12, dur], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
   return (
     <AbsoluteFill style={{ opacity: op, overflow: 'hidden' }}>
       <Fondo tinte={color} />
-      <div style={{ position: 'absolute', top: 40, width: W, textAlign: 'center', fontFamily: TIPO.display, fontWeight: 800, transform: `scale(${0.7 + 0.3 * e})` }}>
-        <div style={{ fontSize: 60, color: '#FFD34D' }}>🏆 CAMPEÓN DEL TORNEO 🏆</div>
-        <div style={{ fontSize: 140, color, textShadow: `0 0 50px ${color}` }}>{ctx.g.participantes[p1].etiqueta}</div>
+      {/* rayos que giran */}
+      <AbsoluteFill style={{ transform: `rotate(${frame * 0.4}deg) scale(1.6)`, opacity: 0.35 * e,
+        background: `repeating-conic-gradient(from 0deg at 50% 55%, ${color}55 0deg 9deg, transparent 9deg 22.5deg)` }} />
+      <div style={{ position: 'absolute', left: W / 2 - 260, top: 600 - 260, transform: `scale(${0.2 + 0.8 * e}) rotate(${(1 - e) * -40}deg)` }}>
+        <Bolita ctx={ctx} i={p1} tam={520} />
       </div>
-      <div style={{ position: 'absolute', left: 0, top: 0, width: W, height: H - 40 }}>
-        {pod(p2, 560, 200, '2', 40)}
-        {pod(p1, 960, 300, '1', 20)}
-        {pod(p3, 1360, 140, '3', 60)}
+      <div style={{ position: 'absolute', left: W / 2 - 110, top: 40, fontSize: 200, lineHeight: 1, transform: `translateY(${(1 - t) * -300}px) rotate(${Math.sin(frame / 9) * 6}deg)` }}>🏆</div>
+      <div style={{ position: 'absolute', bottom: 40, width: W, textAlign: 'center', fontFamily: TIPO.display, fontWeight: 800, opacity: t }}>
+        <div style={{ fontSize: 56, color: '#FFD34D', letterSpacing: 4 }}>CAMPEÓN DEL TORNEO</div>
+        <div style={{ fontSize: 130, color, textShadow: `0 0 50px ${color}, 0 6px 0 #000`, lineHeight: 1 }}>{ctx.g.participantes[p1].etiqueta}</div>
       </div>
-      {confeti.map((p, j) => {
+      <Confeti frame={frame} semilla={11} />
+      <Marca />
+    </AbsoluteFill>
+  );
+};
+
+const Confeti: React.FC<{ frame: number; semilla: number; n?: number }> = ({ frame, semilla, n = 160 }) => {
+  const piezas = useMemo(() => {
+    const az = crearAzar(0xC0FFEE ^ semilla);
+    return Array.from({ length: n }, (_, j) => ({
+      x0: j % 2 ? -40 : W + 40, y0: 950 - az() * 200, vx: (j % 2 ? 1 : -1) * (8 + az() * 24), vy: -(20 + az() * 24),
+      color: NEONES[Math.floor(az() * NEONES.length)], w: 16 + az() * 16, giro: (az() - 0.5) * 24, retraso: Math.floor(az() * 90), fase: az() * 6,
+    }));
+  }, [semilla, n]);
+  return (
+    <>
+      {piezas.map((p, j) => {
         const t = frame - p.retraso;
         if (t < 0) return null;
         const x = p.x0 + p.vx * t * 0.99 ** t, y = p.y0 + p.vy * t + 0.4 * t * t;
         if (y > H + 50) return null;
         return <div key={j} style={{ position: 'absolute', left: x, top: y, width: p.w, height: p.w * 0.55, background: p.color, borderRadius: 3, transform: `rotate(${p.giro * t}deg) scaleY(${Math.cos(t * 0.25 + p.fase)})` }} />;
       })}
-      {/* "GANÓ X → si le diste ME GUSTA, ¡acertaste!" (si el campeón estaba en la votación) */}
-      {frame > 150 && ctx.plan.votacion.includes(p1) && (
-        <div style={{ position: 'absolute', inset: 0, transform: 'translateY(-250px)' }}>
-          <Sequence from={150} layout="none"><PanelEscalado ctx={ctx} frameFinal={-40} ganador={ctx.plan.votacion.indexOf(p1)} /></Sequence>
+    </>
+  );
+};
+
+/** Fase 2 (9–17 s): podio 1.º–2.º–3.º y, si el campeón estaba en la votación, "si le diste … ¡acertaste!". */
+const Podio: React.FC<{ ctx: Ctx; dur: number }> = ({ ctx, dur }) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const [p1, p2, p3] = ctx.plan.podio;
+  const op = interpolate(frame, [0, 10, dur - 10, dur], [0, 1, 1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  const pod = (i: number, x: number, alto: number, lugar: string, d: number) => {
+    const s = spring({ frame: frame - d, fps, config: { damping: 12, stiffness: 120 } });
+    return (
+      <div style={{ position: 'absolute', left: x - 160, bottom: 0, width: 320, display: 'flex', flexDirection: 'column', alignItems: 'center', transform: `translateY(${(1 - s) * 500}px)` }}>
+        <Bolita ctx={ctx} i={i} tam={lugar === '1' ? 220 : 160} />
+        <div style={{ fontFamily: TIPO.display, fontWeight: 800, fontSize: 40, color: ctx.plan.colores[i], margin: '10px 0', whiteSpace: 'nowrap' }}>{ctx.g.participantes[i].etiqueta}</div>
+        <div style={{ width: 300, height: alto, borderRadius: '16px 16px 0 0', background: `linear-gradient(180deg, ${['#FFD34D', '#D8D8E8', '#D08A4A'][Number(lugar) - 1]}, ${PALETA.fondo2})`, display: 'flex', justifyContent: 'center', paddingTop: 10, fontFamily: TIPO.display, fontWeight: 800, fontSize: 96, color: PALETA.fondo }}>{lugar}</div>
+      </div>
+    );
+  };
+  const enVoto = ctx.plan.votacion.includes(p1);
+  return (
+    <AbsoluteFill style={{ opacity: op, overflow: 'hidden' }}>
+      <Fondo tinte={ctx.plan.colores[p1]} />
+      <div style={{ position: 'absolute', top: 30, width: W, textAlign: 'center', fontFamily: TIPO.display, fontWeight: 800, fontSize: 72, color: PALETA.tinta }}>EL PODIO</div>
+      <div style={{ position: 'absolute', left: 0, top: 0, width: W, height: H }}>
+        {pod(p3, 1440, 170, '3', 10)}
+        {pod(p2, 480, 240, '2', 22)}
+        {pod(p1, 960, 330, '1', 36)}
+      </div>
+      {enVoto && frame > 60 && (
+        <div style={{ position: 'absolute', inset: 0, transform: 'translateY(-380px)' }}>
+          <Sequence from={60} layout="none"><PanelEscalado ctx={ctx} frameFinal={-40} ganador={ctx.plan.votacion.indexOf(p1)} /></Sequence>
         </div>
       )}
+      <Confeti frame={frame + 200} semilla={23} n={80} />
       <Marca />
+    </AbsoluteFill>
+  );
+};
+
+/** Fase 3 (17–24 s): repaso de la llave completa. */
+const Repaso: React.FC<{ ctx: Ctx; dur: number }> = ({ ctx, dur }) => {
+  const frame = useCurrentFrame();
+  const op = interpolate(frame, [0, 10, dur - 10, dur], [0, 1, 1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  return (
+    <AbsoluteFill style={{ opacity: op }}>
+      <Fondo tinte="#FFD34D" />
+      <div style={{ position: 'absolute', top: 40, width: W, textAlign: 'center', fontFamily: TIPO.display, fontWeight: 800, fontSize: 60, color: PALETA.tinta }}>
+        ASÍ FUE EL TORNEO · <Nombre ctx={ctx} i={ctx.plan.podio[0]} /> 🏆
+      </div>
+      <Llave ctx={ctx} hecha={9} k={frame} foco={9} />
+      <Marca />
+    </AbsoluteFill>
+  );
+};
+
+const Campeon: React.FC<{ ctx: Ctx; dur: number }> = ({ ctx, dur }) => {
+  const f1 = 270, f2 = 240;
+  return (
+    <AbsoluteFill>
+      <Sequence durationInFrames={f1} name="campeón gigante"><CampeonGigante ctx={ctx} dur={f1} /></Sequence>
+      <Sequence from={f1} durationInFrames={f2} name="podio"><Podio ctx={ctx} dur={f2} /></Sequence>
+      <Sequence from={f1 + f2} durationInFrames={dur - f1 - f2} name="repaso"><Repaso ctx={ctx} dur={dur - f1 - f2} /></Sequence>
     </AbsoluteFill>
   );
 };

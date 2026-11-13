@@ -68,6 +68,12 @@ export interface CarreraTorneo {
   frames: number;
   /** Frame de VIDEO (relativo a la carrera) en que cruza la última que clasifica. */
   frameDecisivo: number;
+  /**
+   * Cámara inteligente por frame de VIDEO: y del mundo en el borde superior y alto visible (px de mundo). Se aleja
+   * cuando las bolitas se separan (todas en cuadro) y, cuando la líder se acerca a la meta, va a la meta y se queda.
+   */
+  camTop: number[];
+  camAlto: number[];
 }
 
 export type TipoSegmento = 'portada' | 'ronda' | 'presenta' | 'carrera' | 'resultado' | 'votacion' | 'campeon' | 'cierre';
@@ -109,6 +115,6 @@ export const T_TORNEO = {
   presenta: 105,
   resultado: 195,
   votacion: 240,
-  campeon: 480,
+  campeon: 720,
   cierre: 360,
 } as const;

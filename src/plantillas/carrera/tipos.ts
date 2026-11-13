@@ -8,7 +8,9 @@
  */
 /** `bloque`: golpe a un bloque con vida (le resta 1); `rompe`: el bloque llega a 0 y desaparece de la física;
  * `tubo`: la bola entra a un tubo; `tuboSale`: sale por la boca de abajo. */
-export type TipoEvento = 'clavija' | 'rampa' | 'bola' | 'meta' | 'bloque' | 'rompe' | 'tubo' | 'tuboSale';
+export type TipoEvento = 'clavija' | 'rampa' | 'bola' | 'meta' | 'bloque' | 'rompe' | 'tubo' | 'tuboSale'
+  /** Secciones del torneo (largo 16:9): */
+  | 'bumper' | 'trampolin' | 'molino' | 'portal';
 
 export interface EventoCarrera {
   frame: number;
@@ -79,9 +81,41 @@ export interface AvisoCarrera {
 export const AVISO_FRAMES = 144;
 export const AVISO_SEPARACION = 180;
 
-export interface Clavija { x: number; y: number; r: number }
+export interface Clavija { x: number; y: number; r: number; /** Torneo: bumper de pinball (devuelve con fuerza). */ tipo?: 'bumper' }
 /** Segmento sólido (rampa, pared de embudo). */
-export interface Segmento { x1: number; y1: number; x2: number; y2: number; grosor: number }
+export interface Segmento { x1: number; y1: number; x2: number; y2: number; grosor: number; /** Torneo: trampolín (rebota con impulso). */ tipo?: 'trampolin' }
+
+/**
+ * Obstáculo con movimiento (torneo): `molino` = aspas (1–2 barras cruzadas) que giran en torno a (cx, cy) a `omega`
+ * rad/s; `plataforma` = barra que sube y baja `amp` px con período `periodo` s. Posición = función del tiempo de FÍSICA
+ * (s): el componente la lee con `sim.tiempo[frame]`.
+ */
+export interface Movil {
+  tipo: 'molino' | 'plataforma';
+  cx: number; cy: number;
+  /** Semilargo de cada barra y grosor (px). */
+  largo: number; grosor: number;
+  ang0: number; omega: number; brazos: 1 | 2;
+  amp: number; periodo: number; fase: number;
+}
+/** Portal (torneo): la bola que entra en A sale por B con la misma velocidad. */
+export interface Portal { ax: number; ay: number; bx: number; by: number; r: number; color: string }
+/** Sección del tablero (torneo): tramo [y0, y1] con un tipo de obstáculo y su rótulo. */
+export type TipoSeccion = 'bloques' | 'bumpers' | 'trampolines' | 'molinos' | 'plataformas' | 'portales' | 'tuneles';
+export interface Seccion { tipo: TipoSeccion; y0: number; y1: number; titulo: string }
+
+/** Barras de un móvil en el instante t (s de física): extremos [x1, y1, x2, y2] y su centro de giro / desplazamiento. */
+export const barrasMovil = (m: Movil, t: number): [number, number, number, number][] => {
+  const dy = m.tipo === 'plataforma' ? m.amp * Math.sin((2 * Math.PI * t) / m.periodo + m.fase) : 0;
+  const a = m.ang0 + m.omega * t;
+  const out: [number, number, number, number][] = [];
+  for (let k = 0; k < m.brazos; k++) {
+    const ang = a + (k * Math.PI) / 2;
+    const ux = Math.cos(ang) * m.largo, uy = Math.sin(ang) * m.largo;
+    out.push([m.cx - ux, m.cy + dy - uy, m.cx + ux, m.cy + dy + uy]);
+  }
+  return out;
+};
 
 export interface SimulacionCarrera {
   version: 2;
@@ -121,6 +155,11 @@ export interface SimulacionCarrera {
   bloques?: Bloque[];
   tubos?: Tubo[];
   avisos?: AvisoCarrera[];
+  /** Torneo (secciones): móviles, portales, secciones y el tiempo de física (s) que muestra cada frame de video. */
+  moviles?: Movil[];
+  portales?: Portal[];
+  secciones?: Seccion[];
+  tiempo?: number[];
 }
 
 /** Celebración tras cruzar la ganadora (s) y duración del cartel de cierre (frames). */

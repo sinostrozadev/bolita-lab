@@ -15,8 +15,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { semillaDesde } from '../src/lib/azar';
+import type { TipoSeccion } from '../src/plantillas/carrera/tipos';
 import { GuionTorneo, NOMBRE_RONDA, T_TORNEO, type CarreraTorneo, type PlanTorneo, type Ronda, type SegmentoTorneo } from '../src/plantillas/torneo/guion';
 import type { GuionCarrera } from '../src/plantillas/carrera/guion';
+import type { SimulacionCarrera } from '../src/plantillas/carrera/tipos';
 import { prepararSimulacion, type Lienzo } from './simular-carrera.mjs';
 import { sintetizarCarrera, bombo, metal } from './lib/sonido-carrera.mjs';
 import { SR, barrido, escribirWav, golpe, masterizar, midiAHz, nota } from './lib/wav.mjs';
@@ -53,7 +55,57 @@ const hslAHex = (h: number, s: number, l: number) => {
 };
 
 /** Color de neón de carrera más parecido (solo para el schema; el torneo dibuja con el hex propio). */
+/** Secciones de obstáculos por carrera (de arriba a abajo): ninguna combinación se repite; la final las trae todas. */
+const SECCIONES_POR_CARRERA: TipoSeccion[][] = [
+  ['bloques', 'bumpers', 'molinos', 'tuneles', 'trampolines'],
+  ['portales', 'trampolines', 'bloques', 'plataformas', 'bumpers'],
+  ['molinos', 'tuneles', 'portales', 'bumpers', 'plataformas'],
+  ['plataformas', 'bloques', 'trampolines', 'portales', 'molinos'],
+  ['bumpers', 'portales', 'tuneles', 'molinos', 'bloques'],
+  ['trampolines', 'molinos', 'plataformas', 'tuneles', 'portales'],
+  ['tuneles', 'bumpers', 'plataformas', 'bloques', 'trampolines'],
+  ['bloques', 'portales', 'molinos', 'trampolines', 'tuneles'],
+  ['plataformas', 'bumpers', 'portales', 'tuneles', 'molinos'],
+  ['bloques', 'molinos', 'portales', 'bumpers', 'trampolines', 'tuneles', 'plataformas'],
+];
+/** La final es más larga (7 secciones). */
+const LIENZO_FINAL: Partial<Lienzo> = { metaY: 15000, duracion: { min: 44, max: 70, objetivo: 54 } };
+
 const NEON_CERCANO = ['lima', 'cian', 'magenta', 'naranja', 'violeta', 'amarillo'] as const;
+
+/**
+ * Cámara inteligente (frames de VIDEO, 30 fps). Objetivo por frame: encuadrar a todas las que siguen corriendo
+ * (alto visible entre 1080 y ALTO_MAX: se aleja cuando se separan); desde que la líder entra a los últimos 1500 px,
+ * mezcla hacia un plano fijo de la meta (meta al 68 % del alto, alto 1080) y ya no vuelve (m solo crece): se ve
+ * llegar a cada una. Suavizado exponencial: aleja rápido (nunca pierde a nadie), acerca lento.
+ */
+const ALTO_MAX = 1750;
+const camaraInteligente = (sim: SimulacionCarrera, frames: number) => {
+  const meta = sim.tablero.metaY, n = sim.posiciones.length;
+  const top: number[] = [], alto: number[] = [];
+  let cTop = 0, cAlto = 1080, m = 0;
+  for (let k = 0; k < frames; k++) {
+    const f = Math.min(2 * k, sim.duracionFrames - 1);
+    const vivas = [...Array(n).keys()].filter((b) => sim.llegadas[b] < 0 || sim.llegadas[b] > f);
+    const ys = (vivas.length ? vivas : [...Array(n).keys()]).map((b) => sim.posiciones[b][f][1]);
+    const lider = Math.max(...sim.posiciones.map((p) => Math.min(p[f][1], meta + 120)));
+    const y0 = Math.min(...ys) - 190, y1 = Math.max(...ys) + 250;
+    let V = Math.max(1080, Math.min(ALTO_MAX, y1 - y0));
+    let T = y1 - y0 > ALTO_MAX ? y1 - ALTO_MAX : (y0 + y1) / 2 - V / 2;
+    m = Math.max(m, Math.min(1, Math.max(0, (lider - (meta - 1500)) / 900)));
+    const mm = m * m * (3 - 2 * m);
+    V = V + (1080 - V) * mm;
+    T = T + (meta - 1080 * 0.68 - T) * mm;
+    T = Math.max(0, Math.min(sim.tablero.alto - V, T));
+    if (k === 0) { cTop = T; cAlto = V; }
+    cAlto += (V - cAlto) * (V > cAlto ? 0.12 : 0.05);
+    const centro = cTop + cAlto / 2, objetivo = T + V / 2;
+    const nc = centro + (objetivo - centro) * 0.14;
+    cTop = nc - cAlto / 2;
+    top.push(Math.round(cTop * 10) / 10); alto.push(Math.round(cAlto * 10) / 10);
+  }
+  return { top, alto };
+};
 
 const leerGuion = (ruta: string): GuionTorneo => {
   const crudo = JSON.parse(fs.readFileSync(ruta, 'utf8'));
@@ -80,13 +132,17 @@ export const prepararTorneo = (g: GuionTorneo, { soloPlan = false } = {}) => {
       extras: true,
       ...(musica ? { musica } : {}),
     } as GuionCarrera;
-    const sim = prepararSimulacion(guionCarrera, { lienzo: LIENZO, pasan, sinWav: true });
+    const secciones = SECCIONES_POR_CARRERA[(k - 1) % SECCIONES_POR_CARRERA.length];
+    const lienzo = ronda === 'final' ? { ...LIENZO, ...LIENZO_FINAL } : LIENZO;
+    const sim = prepararSimulacion(guionCarrera, { lienzo, pasan, sinWav: true, secciones });
     canales.push(soloPlan ? [] : sintetizarCarrera(sim, null, musica));
+    const frames = Math.ceil(sim.duracionFrames / 2);
+    const cam = camaraInteligente(sim, frames);
     const c: CarreraTorneo = {
-      simId, ronda, nombre, corredores, pasan,
+      simId, ronda, nombre, corredores, pasan, camTop: cam.top, camAlto: cam.alto,
       orden: sim.orden.map((b) => corredores[b]),
       ventajaSeg: Number.isFinite(sim.ventajaSeg) ? sim.ventajaSeg : null,
-      frames: Math.ceil(sim.duracionFrames / 2),
+      frames,
       frameDecisivo: Math.round((sim.frameDecisivo ?? sim.frameGanadora) / 2),
     };
     carreras.push(c);
@@ -134,7 +190,7 @@ export const prepararTorneo = (g: GuionTorneo, { soloPlan = false } = {}) => {
     poner({ tipo: 'carrera', dur: c.frames, carrera: k });
     poner({ tipo: 'resultado', dur: T_TORNEO.resultado, carrera: k });
   });
-  capitulos.push({ seg: t / FPS, titulo: `El campeón: ${g.participantes[podio[0]].etiqueta}` });
+  capitulos.push({ seg: t / FPS, titulo: 'El campeón, el podio y la llave completa' });
   poner({ tipo: 'campeon', dur: T_TORNEO.campeon });
   poner({ tipo: 'cierre', dur: T_TORNEO.cierre });
   const duracionFrames = t;
@@ -221,7 +277,14 @@ export const prepararTorneo = (g: GuionTorneo, { soloPlan = false } = {}) => {
           break;
         }
         case 'votacion': pad(t0, dur, 0.05); for (let b = 0; b < dur; b += 1) tic(t0 + b, 1200); break;
-        case 'campeon': redoble(t0, 2.2); fanfarria(t0 + 2.2, true); pad(t0 + 3.5, dur - 3.5, 0.05); break;
+        case 'campeon': {
+          // Golpe + fanfarria larga al aparecer el campeón gigante, otra al podio (9 s) y cama hasta el repaso.
+          impacto(t0, 0.6); fanfarria(t0 + 0.1, true); fanfarria(t0 + 3.2, true);
+          for (let b = 0; b < 8.5; b += 0.5) ambos((p) => bombo(p, t0 + 0.8 + b, b % 1 < 0.01 ? 0.25 : 0.12));
+          redoble(t0 + 7.4, 1.6); fanfarria(t0 + 9, false);
+          pad(t0 + 1, dur - 1, 0.055);
+          break;
+        }
         case 'cierre': pad(t0, dur, 0.05); impacto(t0, 0.3); break;
       }
     }

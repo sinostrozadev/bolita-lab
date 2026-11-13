@@ -27,6 +27,7 @@ import { GuionCarrera } from '../src/plantillas/carrera/guion';
 import {
   AVISO_SEPARACION, CELEBRACION_SEG, CIERRE_FRAMES,
   type AvisoCarrera, type Bloque, type Clavija, type EventoCarrera, type Segmento, type SimulacionCarrera, type Tubo,
+  type Movil, type Portal, type Seccion, type TipoSeccion, barrasMovil,
 } from '../src/plantillas/carrera/tipos';
 import { midiAHz } from './lib/wav.mjs';
 import { sintetizarCarrera } from './lib/sonido-carrera.mjs';
@@ -68,8 +69,11 @@ let DURACION_OBJETIVO = LIENZO_SHORT.duracion.objetivo;
 let PRIMER_CHOQUE_MAX = LIENZO_SHORT.primerChoqueMax;
 /** Cuántas clasifican (torneo): la carrera se decide cuando cruza la PASAN-ésima (1 = la ganadora, el Short). */
 let PASAN = 1;
+/** Torneo: secciones de obstáculos a lo largo de la pista (null = tablero del Short). */
+let SECCIONES: TipoSeccion[] | null = null;
 /** Cambia el lienzo (sin argumento vuelve al Short) y cuántas clasifican. */
-export const configurarLienzo = (l: Partial<Lienzo> = {}, pasan = 1) => {
+export const configurarLienzo = (l: Partial<Lienzo> = {}, pasan = 1, secciones: TipoSeccion[] | null = null) => {
+  SECCIONES = secciones && secciones.length ? secciones : null;
   const c = { ...LIENZO_SHORT, ...l };
   ANCHO = c.ancho; PANTALLA = c.pantalla; META_Y = c.metaY; ALTO = META_Y + 700;
   BANDA_LIDER = c.banda; META_EN_PANTALLA = c.metaEnPantalla; CAM_MAX = META_Y - META_EN_PANTALLA;
@@ -105,7 +109,7 @@ const BLOQUE = { w: 112, h: 68, esquina: 14, separacion: 260, prob: 0.62, rest: 
 const TUBO = { franja: 380, ancho: 136, boca: 110, velAtajo: 1300, velVueltas: 480, salidaMax: 760 };
 
 interface TuboDef extends Omit<Tubo, 'usos'> { cx: number; velocidad: number; paso: number; largo: number }
-interface Mundo { clavijas: Clavija[]; segmentos: Segmento[]; bloques: Bloque[]; tubos: TuboDef[] }
+interface Mundo { clavijas: Clavija[]; segmentos: Segmento[]; bloques: Bloque[]; tubos: TuboDef[]; moviles: Movil[]; portales: Portal[]; secciones: Seccion[] }
 
 type P = [number, number];
 
@@ -170,12 +174,160 @@ const caminoTubo = (tipo: Tubo['tipo'], cx: number, y0: number, ySalida: number,
   return pts;
 };
 
+// ---------- Torneo: tablero por SECCIONES (largo 16:9) ----------
+/** Rótulo de cada sección (se ve en el tablero y en el HUD). */
+export const TITULO_SECCION: Record<TipoSeccion, string> = {
+  bloques: '🧱 ZONA DE BLOQUES', bumpers: '💥 BUMPERS', trampolines: '🦘 TRAMPOLINES', molinos: '⚙️ MOLINOS',
+  plataformas: '↕️ PLATAFORMAS', portales: '🌌 PORTALES', tuneles: '🚇 TÚNELES',
+};
+const BUMPER = { r: 44, salidaMin: 720, rest: 0.95 };
+const TRAMPOLIN = { semi: 110, grosor: 14, salidaMin: 860, rest: 0.9 };
+const PORTAL_R = 70;
+const COLORES_PORTAL = ['#FF3DCA', '#2EF2FF'];
+
+/**
+ * Tablero del torneo: salida con clavijas, N secciones de obstáculos (cada una cierra con un embudo que junta a las
+ * bolas) y recta final con clavijas. Todo nace de la semilla. Ancho = ANCHO (1520 en el largo).
+ */
+const construirTableroSecciones = (azar: () => number, semilla: number, tipos: TipoSeccion[]): Mundo => {
+  const clavijas: Clavija[] = [];
+  const segmentos: Segmento[] = [];
+  const bloques: Bloque[] = [];
+  const tubos: TuboDef[] = [];
+  const moviles: Movil[] = [];
+  const portales: Portal[] = [];
+  const secciones: Seccion[] = [];
+  const azarX = crearAzar((semilla ^ 0x5ec710) >>> 0);
+  const sepX = 200, sepY = 165;
+  /** Rejilla de clavijas entre yA y yB, salvo donde `libre(x, y)` diga que no. */
+  const rejilla = (yA: number, yB: number, huecos: number, libre: (x: number, y: number) => boolean = () => true) => {
+    let fila = 0;
+    for (let y = yA; y < yB; y += sepY, fila++) {
+      const desfase = fila % 2 === 0 ? sepX / 2 : 0;
+      for (let x = 140 + desfase; x <= ANCHO - 140; x += sepX) {
+        if (azar() < huecos) continue;
+        const c = { x: Math.round(x + (azar() - 0.5) * 12), y: Math.round(y + (azar() - 0.5) * 12), r: RADIO_CLAVIJA };
+        if (libre(c.x, c.y)) clavijas.push(c);
+      }
+    }
+  };
+  const embudo = (y: number, caida: number) => {
+    const boca = 270, centro = ANCHO / 2 + (azar() - 0.5) * 360;
+    segmentos.push({ x1: 0, y1: y - caida, x2: centro - boca / 2, y2: y, grosor: 16 });
+    segmentos.push({ x1: ANCHO, y1: y - caida, x2: centro + boca / 2, y2: y, grosor: 16 });
+  };
+  const Y0 = 1250, YFIN = META_Y - 700;
+  rejilla(840, Y0 - 120, 0.1);
+  const alto = (YFIN - Y0) / tipos.length;
+  const CAIDA = 360;
+  tipos.forEach((tipo, k) => {
+    const ys = Math.round(Y0 + k * alto), yeSec = Math.round(ys + alto);
+    // contenido entre a y b; el embudo de cierre termina en yeSec − 60
+    const a = ys + 120, b = yeSec - CAIDA - 200;
+    secciones.push({ tipo, y0: ys, y1: yeSec, titulo: TITULO_SECCION[tipo] });
+    switch (tipo) {
+      case 'bloques': {
+        const desde = clavijas.length;
+        rejilla(a, b, 0.12);
+        const nuevas = clavijas.splice(desde);
+        for (const c of nuevas) {
+          const ok = c.x >= 230 && c.x <= ANCHO - 230 && bloques.every((q) => Math.hypot(q.x - c.x, q.y - c.y) >= BLOQUE.separacion);
+          if (ok && azarX() < 0.7) {
+            const u = azarX();
+            bloques.push({ x: c.x, y: c.y, w: BLOQUE.w, h: BLOQUE.h, vida: u < 0.3 ? 1 : u < 0.7 ? 2 : 3, golpes: [], roto: -1, rompio: -1 });
+          } else clavijas.push(c);
+        }
+        break;
+      }
+      case 'bumpers': {
+        let fila = 0;
+        for (let y = a + 60; y < b; y += 290, fila++) {
+          const off = fila % 2 ? 170 : 0;
+          for (let x = 250 + off; x <= ANCHO - 250; x += 340) clavijas.push({ x: Math.round(x + (azarX() - 0.5) * 30), y: Math.round(y + (azarX() - 0.5) * 30), r: BUMPER.r, tipo: 'bumper' });
+        }
+        break;
+      }
+      case 'trampolines': {
+        let fila = 0;
+        for (let y = a + 80; y < b; y += 320, fila++) {
+          const off = fila % 2 ? 230 : 0;
+          for (let x = 300 + off; x <= ANCHO - 260; x += 460) {
+            const ang = (fila % 2 ? 1 : -1) * (0.12 + azarX() * 0.12) * (x < ANCHO / 2 ? 1 : -1);
+            const ux = Math.cos(ang) * TRAMPOLIN.semi, uy = Math.sin(ang) * TRAMPOLIN.semi;
+            segmentos.push({ x1: x - ux, y1: y - uy, x2: x + ux, y2: y + uy, grosor: TRAMPOLIN.grosor, tipo: 'trampolin' });
+          }
+        }
+        rejilla(a, b, 0.6, (x, y) => segmentos.every((sg) => sg.tipo !== 'trampolin' || Math.hypot((sg.x1 + sg.x2) / 2 - x, (sg.y1 + sg.y2) / 2 - y) > 230));
+        break;
+      }
+      case 'molinos': {
+        let fila = 0;
+        for (let y = a + 200; y < b - 120; y += 520, fila++) {
+          const xs = fila % 2 ? [ANCHO / 2] : [ANCHO * 0.27, ANCHO * 0.73];
+          for (const x of xs) {
+            const sentido = (moviles.length % 2 ? 1 : -1);
+            moviles.push({ tipo: 'molino', cx: Math.round(x + (azarX() - 0.5) * 60), cy: Math.round(y), largo: 165, grosor: 18, ang0: azarX() * Math.PI, omega: sentido * (1.1 + azarX() * 0.6), brazos: 2, amp: 0, periodo: 1, fase: 0 });
+          }
+        }
+        rejilla(a, b, 0.35, (x, y) => moviles.every((m) => Math.hypot(m.cx - x, m.cy - y) > m.largo + 90));
+        break;
+      }
+      case 'plataformas': {
+        let fila = 0;
+        for (let y = a + 160; y < b - 80; y += 430, fila++) {
+          const xs = fila % 2 ? [ANCHO / 2] : [ANCHO * 0.25, ANCHO * 0.75];
+          for (const x of xs) {
+            const tilt = (x < ANCHO / 2 ? 1 : -1) * (0.1 + azarX() * 0.08) * (fila % 2 ? (azarX() < 0.5 ? 1 : -1) : 1);
+            moviles.push({ tipo: 'plataforma', cx: Math.round(x), cy: Math.round(y), largo: 175, grosor: 18, ang0: tilt, omega: 0, brazos: 1, amp: 110, periodo: 2 + azarX() * 1.2, fase: azarX() * 6.28 });
+          }
+        }
+        rejilla(a, b, 0.4, (x, y) => moviles.every((m) => Math.abs(m.cx - x) > m.largo + 80 || Math.abs(m.cy - y) > m.amp + 110));
+        break;
+      }
+      case 'portales': {
+        const izqPrimero = azarX() < 0.5;
+        const pares: [number, number, number, number][] = [
+          [izqPrimero ? 260 : ANCHO - 260, a + 260, izqPrimero ? ANCHO - 300 : 300, a + (b - a) * 0.62],
+          [izqPrimero ? ANCHO - 260 : 260, a + (b - a) * 0.3, izqPrimero ? 320 : ANCHO - 320, a + (b - a) * 0.88],
+        ];
+        pares.forEach(([ax, ay, bx, by], j) => portales.push({ ax, ay: Math.round(ay), bx, by: Math.round(by), r: PORTAL_R, color: COLORES_PORTAL[j] }));
+        rejilla(a, b, 0.15, (x, y) => portales.every((p) => Math.hypot(p.ax - x, p.ay - y) > 160 && Math.hypot(p.bx - x, p.by - y) > 190));
+        break;
+      }
+      case 'tuneles': {
+        const largoT = Math.min(b - a - 120, 1700);
+        const izqAtajo = azarX() < 0.5;
+        for (const izq of [true, false]) {
+          const tipoT: Tubo['tipo'] = izq === izqAtajo ? 'atajo' : 'vueltas';
+          const yBoca = Math.round(a + 40), ySalida = Math.round(yBoca + largoT);
+          const x0 = izq ? 0 : ANCHO - TUBO.franja, x1 = izq ? TUBO.franja : ANCHO;
+          const cx = izq ? TUBO.franja / 2 : ANCHO - TUBO.franja / 2;
+          const puntos = remuestrear(caminoTubo(tipoT, cx, yBoca + TUBO.boca, ySalida, tipoT === 'vueltas' ? 6 : 1), 8);
+          let largo = 0;
+          for (let i = 1; i < puntos.length; i++) largo += Math.hypot(puntos[i][0] - puntos[i - 1][0], puntos[i][1] - puntos[i - 1][1]);
+          tubos.push({ tipo: tipoT, x0, x1, yBoca, ySalida, puntos, ancho: TUBO.ancho, cx, velocidad: tipoT === 'atajo' ? TUBO.velAtajo : TUBO.velVueltas, paso: 8, largo });
+          const xp = izq ? TUBO.franja : ANCHO - TUBO.franja;
+          segmentos.push({ x1: xp, y1: yBoca, x2: xp, y2: ySalida - 20, grosor: 12 });
+        }
+        rejilla(a, b, 0.15, (x, y) => tubos.every((t) => !(x > t.x0 - 70 && x < t.x1 + 70 && y > t.yBoca - 150 && y < t.ySalida + 170)));
+        break;
+      }
+    }
+    // Embudo de cierre: junta a las bolas antes de la sección siguiente (y de la recta final).
+    embudo(yeSec - 60, CAIDA);
+  });
+  rejilla(YFIN + 80, META_Y - 320, 0.14);
+  tubos.sort((p, q) => p.yBoca - q.yBoca);
+  return { clavijas, segmentos, bloques, tubos, moviles, portales, secciones };
+};
+
 /**
  * Coloca clavijas (con jitter y huecos), 3 rampas y 2 embudos. Todo nace de la semilla.
  * Con `extras`, además 2–3 tubos en franjas laterales libres y ~25 % de las clavijas interiores pasan a
  * ser bloques con vida. Los extras usan su PROPIO azar: con `extras: false` el tablero es idéntico al v1.
  */
 const construirTablero = (azar: () => number, extras: boolean, semilla: number): Mundo => {
+  if (SECCIONES) return construirTableroSecciones(azar, semilla, SECCIONES);
   const clavijas: Clavija[] = [];
   const segmentos: Segmento[] = [];
   const azarX = crearAzar((semilla ^ 0x7b10c5) >>> 0);
@@ -280,7 +432,7 @@ const construirTablero = (azar: () => number, extras: boolean, semilla: number):
     clavijas.length = 0;
     clavijas.push(...quedan);
   }
-  return { clavijas, segmentos, bloques, tubos };
+  return { clavijas, segmentos, bloques, tubos, moviles: [], portales: [], secciones: [] };
 };
 
 /** Punto del rectángulo interior de un bloque (sin esquinas) más cercano a (x, y): la colisión es con un rectángulo redondeado. */
@@ -301,6 +453,8 @@ interface Bola {
   x: number; y: number; vx: number; vy: number; llego: number; quieto: number;
   /** Tubo en el que viaja (-1 = en la cancha), distancia recorrida, velocidad y punto de entrada. */
   tubo: number; s: number; v: number; ex: number; ey: number; desde: number;
+  /** Torneo: frame de física hasta el que no puede volver a entrar a un portal. */
+  portal?: number;
 }
 
 /** Resultado crudo de la física: todo en frames de FÍSICA (1/60 s de carrera real). */
@@ -325,7 +479,8 @@ interface Resultado {
 const correr = (n: number, semilla: number, gravedad: number, extras: boolean): Resultado | null => {
   const azar = crearAzar(semilla);
   const mundo = construirTablero(azar, extras, semilla);
-  const { clavijas, segmentos, bloques, tubos } = mundo;
+  const { clavijas, segmentos, bloques, tubos, moviles, portales } = mundo;
+  const ultimoMovil = new Array(n).fill(-999);
   // Estado de los bloques en esta carrera (el mundo es nuevo en cada corrida).
   const vida = bloques.map((b) => b.vida);
   const rotoFisica = bloques.map(() => -1);
@@ -437,7 +592,15 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
           const nx = dx / d, ny = dy / d;
           b.x = c.x + nx * rr; b.y = c.y + ny * rr;
           const vn = b.vx * nx + b.vy * ny;
-          if (vn < 0) {
+          if (vn < 0 && c.tipo === 'bumper') {
+            // Bumper de pinball: devuelve con fuerza (al menos salidaMin por la normal).
+            const sale = Math.max(BUMPER.rest * -vn, BUMPER.salidaMin);
+            b.vx += (sale - vn) * nx; b.vy += (sale - vn) * ny;
+            if (frame - ultimoGolpe[i] >= 3) {
+              ultimoGolpe[i] = frame;
+              eventos.push({ frame, tipo: 'bumper', bola: i, clavija: ci, fuerza: Math.min(1, sale / 1200) });
+            }
+          } else if (vn < 0) {
             b.vx -= (1 + REST_CLAVIJA) * vn * nx;
             b.vy -= (1 + REST_CLAVIJA) * vn * ny;
             if (-vn > 70 && frame - ultimoGolpe[i] >= 2) {
@@ -491,7 +654,11 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
           const nx = dx / d, ny = dy / d;
           b.x = px + nx * rr; b.y = py + ny * rr;
           const vn = b.vx * nx + b.vy * ny;
-          if (vn < 0) {
+          if (vn < 0 && sg.tipo === 'trampolin') {
+            const sale = Math.max(TRAMPOLIN.rest * -vn, TRAMPOLIN.salidaMin);
+            b.vx += (sale - vn) * nx; b.vy += (sale - vn) * ny;
+            if (frame - ultimoGolpe[i] >= 3) { ultimoGolpe[i] = frame; eventos.push({ frame, tipo: 'trampolin', bola: i, fuerza: Math.min(1, sale / 1300) }); }
+          } else if (vn < 0) {
             b.vx -= (1 + REST_SEGMENTO) * vn * nx;
             b.vy -= (1 + REST_SEGMENTO) * vn * ny;
             // Fricción tangencial leve para que deslice sin frenarse del todo.
@@ -504,6 +671,55 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
             }
           }
         }
+      }
+      // Torneo: móviles (molinos y plataformas): choque con una barra que se mueve (velocidad del punto de contacto).
+      if (moviles.length) {
+        const T = (frame + (s + 1) / SUBPASOS) / FPS;
+        for (let i = 0; i < n; i++) {
+          const b = porParticipante[i];
+          if (b.tubo >= 0) continue;
+          for (const m of moviles) {
+            if (Math.abs(b.y - m.cy) > m.largo + m.amp + RADIO_BOLA + 20 || Math.abs(b.x - m.cx) > m.largo + RADIO_BOLA + 20) continue;
+            const dyv = m.tipo === 'plataforma' ? (m.amp * 2 * Math.PI / m.periodo) * Math.cos((2 * Math.PI * T) / m.periodo + m.fase) : 0;
+            const dyp = m.tipo === 'plataforma' ? m.amp * Math.sin((2 * Math.PI * T) / m.periodo + m.fase) : 0;
+            for (const [x1, y1, x2, y2] of barrasMovil(m, T)) {
+              const ex = x2 - x1, ey = y2 - y1, l2 = ex * ex + ey * ey;
+              const u = Math.max(0, Math.min(1, ((b.x - x1) * ex + (b.y - y1) * ey) / l2));
+              const px = x1 + ex * u, py = y1 + ey * u;
+              const dx = b.x - px, dy = b.y - py, d2 = dx * dx + dy * dy, rr = RADIO_BOLA + m.grosor / 2;
+              if (d2 >= rr * rr || d2 === 0) continue;
+              const d = Math.sqrt(d2), nx = dx / d, ny = dy / d;
+              b.x = px + nx * rr; b.y = py + ny * rr;
+              const svx = m.tipo === 'molino' ? -m.omega * (py - m.cy - dyp) : 0;
+              const svy = m.tipo === 'molino' ? m.omega * (px - m.cx) : dyv;
+              const rel = (b.vx - svx) * nx + (b.vy - svy) * ny;
+              if (rel < 0) {
+                b.vx -= 1.5 * rel * nx; b.vy -= 1.5 * rel * ny;
+                if (-rel > 150 && frame - ultimoMovil[i] >= 4) { ultimoMovil[i] = frame; eventos.push({ frame, tipo: 'molino', bola: i, fuerza: Math.min(1, -rel / 1200) }); }
+              }
+            }
+          }
+        }
+      }
+      // Torneo: portales (entra por A, sale por B con la misma velocidad).
+      if (portales.length) {
+        for (let i = 0; i < n; i++) {
+          const b = porParticipante[i];
+          if (b.tubo >= 0 || (b.portal ?? -999) > frame) continue;
+          for (const p of portales) {
+            if (Math.hypot(b.x - p.ax, b.y - p.ay) < p.r - 14) {
+              b.x = p.bx; b.y = p.by + 4; b.vy = Math.max(b.vy, 120); b.portal = frame + 30;
+              eventos.push({ frame, tipo: 'portal', bola: i, fuerza: 1 });
+              break;
+            }
+          }
+        }
+      }
+      // Tope de velocidad (bumpers y trampolines suman energía: la física no explota).
+      for (let i = 0; i < n; i++) {
+        const b = porParticipante[i];
+        const v = Math.hypot(b.vx, b.vy);
+        if (v > 2600) { b.vx *= 2600 / v; b.vy *= 2600 / v; }
       }
       // Bola–bola (las que van dentro de un tubo no chocan con nadie)
       for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) {
@@ -607,7 +823,8 @@ const simular = (guion: GuionCarrera) => {
   const n = guion.participantes.length;
   const extras = guion.extras !== false;
   const base = guion.semilla ?? semillaDesde(guion.id);
-  const meta = extras ? 4 : 0; // tubo usado + ATAJO usado + bloque roto + "le abrió el camino"
+  // Torneo con secciones: solo se exige carrera reñida (cada sección ya trae lo suyo).
+  const meta = SECCIONES ? 0 : extras ? 4 : 0; // tubo usado + ATAJO usado + bloque roto + "le abrió el camino"
   const maxValidas = extras ? 60 : CARRERAS_VALIDAS_MAX;
   let gravedad = 1100;
   let semilla = base;
@@ -740,7 +957,8 @@ const alVideo = (r: Resultado) => {
     }
   }
   avisos.sort((a, b) => a.frame - b.frame);
-  return { posiciones, eventos, llegadas, frameGanadora, frameDecisivo, camaraLenta, camara, ranking, frameRiser, duracionFrames: t.length, bloques, tubos, avisos };
+  const tiempo = t.map((x) => Math.round((x / FPS) * 10000) / 10000);
+  return { tiempo, posiciones, eventos, llegadas, frameGanadora, frameDecisivo, camaraLenta, camara, ranking, frameRiser, duracionFrames: t.length, bloques, tubos, avisos };
 };
 
 /** Simula, escribe `public/sim/<id>.json` y `public/audio/generado/<id>.wav`. Devuelve la simulación. */
@@ -749,12 +967,14 @@ export interface OpcionesSimulacion {
   lienzo?: Partial<Lienzo>;
   /** Cuántas clasifican: la cámara lenta y el corte van en el cruce de la PASAN-ésima (por defecto 1). */
   pasan?: number;
+  /** Torneo: secciones de obstáculos (en orden, de arriba a abajo). */
+  secciones?: TipoSeccion[];
   /** No escribir el wav suelto de la carrera (el torneo mezcla su propio audio). */
   sinWav?: boolean;
 }
 
 export const prepararSimulacion = (guion: GuionCarrera, opciones: OpcionesSimulacion = {}): SimulacionCarrera => {
-  configurarLienzo(opciones.lienzo, opciones.pasan);
+  configurarLienzo(opciones.lienzo, opciones.pasan, opciones.secciones ?? null);
   try { return prepararSimulacionConLienzo(guion, opciones); } finally { configurarLienzo(); }
 };
 
@@ -784,6 +1004,7 @@ const prepararSimulacionConLienzo = (guion: GuionCarrera, opciones: OpcionesSimu
     ganadora: orden[0],
     frameGanadora: v.frameGanadora,
     ...(opciones.pasan && opciones.pasan > 1 ? { pasan: opciones.pasan, frameDecisivo: v.frameDecisivo } : {}),
+    ...(opciones.secciones?.length ? { moviles: r.mundo.moviles, portales: r.mundo.portales, secciones: r.mundo.secciones, tiempo: v.tiempo, frameDecisivo: v.frameDecisivo } : {}),
     ventajaSeg: Math.round(r.ventaja * 1000) / 1000,
     camaraLenta: v.camaraLenta,
     duracionFrames: v.duracionFrames,

@@ -166,6 +166,22 @@ export const sintetizarCarrera = (sim: SimulacionCarrera, ruta: string | null, m
           nota(p, { inicio: 0.03 + k * 0.035, hz: midiAHz(midi), duracion: 0.03, volumen: 0.09, timbre: 'seno', caida: 0.02, liberacion: 0.22 });
         }
       }, 0.9);
+    } else if (ev.tipo === 'bumper') {
+      // Pinball: "ding" brillante de dos parciales + golpe seco.
+      colocar(t, x, (p) => {
+        nota(p, { inicio: 0, hz: 988, duracion: 0.05, volumen: 0.16 * (0.6 + 0.4 * f), timbre: 'seno', liberacion: 0.22 });
+        nota(p, { inicio: 0, hz: 1482, duracion: 0.03, volumen: 0.09, timbre: 'seno', liberacion: 0.16 });
+        golpe(p, 0, { duracion: 0.02, volumen: 0.14, tono: 0.7, semilla: ev.frame * 5 + ev.bola });
+      }, 0.4);
+    } else if (ev.tipo === 'trampolin') {
+      // "Boing": resorte que sube.
+      colocar(t, x, (p) => { barrido(p, 0, 170, 560, 0.2, 0.22 * (0.6 + 0.4 * f), 'triangulo'); golpe(p, 0, { duracion: 0.02, volumen: 0.1, tono: 0.4, semilla: ev.frame }); }, 0.3);
+    } else if (ev.tipo === 'molino') {
+      // Aspa de madera: "clac" grave.
+      colocar(t, x, (p) => { nota(p, { inicio: 0, hz: 196, duracion: 0.03, volumen: 0.2 * (0.5 + 0.5 * f), timbre: 'pluck', liberacion: 0.08 }); golpe(p, 0, { duracion: 0.03, volumen: 0.2, tono: 0.3, semilla: ev.frame * 9 }); }, 0.3);
+    } else if (ev.tipo === 'portal') {
+      // Teletransporte: barrido que baja + brillo.
+      colocar(t, x, (p) => { barrido(p, 0, 1400, 220, 0.32, 0.18, 'seno'); barrido(p, 0.02, 2600, 700, 0.3, 0.05, 'sierra'); }, 0.5);
     } else if (ev.tipo === 'tubo') {
       colocar(t, x, (p) => { barrido(p, 0, 260, 900, 0.12, 0.2, 'seno'); golpe(p, 0, { duracion: 0.03, volumen: 0.1, tono: 0.6, semilla: ev.frame }); }, 0.3);
     } else if (ev.tipo === 'tuboSale') {
