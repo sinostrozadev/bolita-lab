@@ -1,0 +1,56 @@
+{
+ "id": "2026-11-05-bola-3bolas-canon",
+ "canal": "bolita-lab",
+ "titulo": "3 bolitas, un hueco: ¿cuál escapa primero? Canon de Pachelbel",
+ "ranura": "2026-11-22T12:00",
+ "ronda": 1,
+ "aprobado": false,
+ "bloqueantes": {
+  "B1": true,
+  "B2": false,
+  "B3": true,
+  "B4": true,
+  "B5": false,
+  "B6": false,
+  "B7": true,
+  "B8": true,
+  "B9": true
+ },
+ "maquina": {
+  "nota": "sin capa 1 automática; B1 y B8 se dan por buenos solo por no haber evidencia en contra",
+  "B1": "props mínimos (gancho, melodia, modo, bolas); no se pudo comprobar contra el zod actual",
+  "B8": "no aplica (no es ritmo ni máquina)"
+ },
+ "puntajes": {
+  "gancho": 2,
+  "claridad": 2,
+  "creatividad": 2,
+  "no_amontonado": 3,
+  "sorpresa": 2,
+  "comentario": 1,
+  "parecido_referente": 2
+ },
+ "promedio": 2,
+ "motivos": [
+  "B5: el gancho es una sola cadena, sin ganchoArriba (mecánica ≤9 palabras) ni ganchoAbajo (≤5 palabras) y sin emoji. Es el formato anterior al rediseño del 11-08, que exige un cold open de 0,4 s y dos textos fijos.",
+  "B2/B6: hay 3 bolas y ninguna votación. Se pregunta '¿cuál escapa primero?' sin decir cuál es cuál, sin colores ni nombres, así que no hay nada que votar. La norma de Santiago es siempre 4 competidores y filas de votación grandes (panel Votacion.tsx).",
+  "Comentario 1: no hay apuesta ni CTA concreto que pida comentar. Sin votación el espectador no tiene una respuesta que dar.",
+  "Sorpresa 2 y creatividad 2: el modo 'escape' con 3 bolas en un anillo con hueco es la mecánica lineal que Santiago critica ('todo es tan lineal'), y no hay vuelco planificado en los últimos 3–6 s.",
+  "B4 OK: el Canon de Pachelbel es dominio público.",
+  "B9 OK con reserva: el Canon ya salió como ritmo plano el 11-14 y como ritmo figuras el 11-15. Es otra mecánica y otra semana (11-22), pero conviene confirmar que no se repite el mismo arreglo.",
+  "B3 OK: 'tres bolitas' coincide con bolas:3 y el título tiene 62 caracteres."
+ ],
+ "cambios": [
+  "props.gancho 'string único' → ganchoArriba:'3 bolitas, 1 hueco: ¿cuál escapa primero?' (≤9 palabras) + ganchoAbajo:'Vota tu bolita 👇' (≤5 palabras, 1 emoji)",
+  "bolas:3 → bolas:4 con colores y nombres distintos, y votacion:true (panel 'ACCIÓN → ● NOMBRE', 4 filas grandes)",
+  "modo:'escape' lineal → añadir cold open con el estado final insinuado (una bolita ya cerca del hueco) y un vuelco real en los últimos 3–6 s (la favorita choca y otra escapa)",
+  "sin CTA → pedir un comentario concreto ('¿Cuál escapa? Comenta el color antes del final')",
+  "título 'Tres bolitas… ¿cuál escapa primero?' → '4 bolitas, un hueco: ¿cuál escapa? Canon de Pachelbel', para que título, descripción y props digan 4",
+  "descripción 'Tres bolitas…' → 'Cuatro bolitas…' y actualizar los hashtags si cambia el recuento"
+ ],
+ "revisor": "sonnet",
+ "fecha": "2026-11-15T03:06:30.363Z",
+ "santiago": {
+  "estado": "delegado al agente de producción (2026-11-14)"
+ }
+}

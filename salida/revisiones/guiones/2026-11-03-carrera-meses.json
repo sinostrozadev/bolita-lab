@@ -1,0 +1,54 @@
+{
+ "id": "2026-11-03-carrera-meses",
+ "canal": "bolita-lab",
+ "titulo": "¿Qué mes del año gana la carrera? 🏁 Carrera de bolitas",
+ "ranura": "2026-11-17T18:00",
+ "ronda": 1,
+ "aprobado": false,
+ "bloqueantes": {
+  "B1": true,
+  "B2": false,
+  "B3": false,
+  "B4": true,
+  "B5": false,
+  "B6": true,
+  "B9": true
+ },
+ "maquina": {
+  "nota": "sin capa 1 automática; revisión manual del JSON",
+  "participantes": 6,
+  "votacion": "ausente (no hay campo votacion en props)",
+  "titulo_caracteres": 53,
+  "gancho_palabras": 5,
+  "ganchoAbajo": "ausente"
+ },
+ "puntajes": {
+  "gancho": 2,
+  "claridad": 2,
+  "creatividad": 3,
+  "no_amontonado": 2,
+  "sorpresa": 3,
+  "valor_comentario": 3,
+  "parecido_referente": 2
+ },
+ "promedio": 2.43,
+ "motivos": [
+  "B2: hay 6 participantes (ENERO, MARZO, JUNIO, AGOSTO, OCTUBRE, DICIEMBRE) y no existe `votacion: true`; la regla exige exactamente 4 con votación.",
+  "B3: la descripción dice '6 meses, 6 bolitas', coherente con los 6 participantes, pero ambos incumplen el formato de 4. Además el título pregunta '¿Qué mes del año gana?' sobre 12 meses cuando solo compiten 6 elegidos arbitrariamente (se saltan feb, abr, may, jul, sep, nov), lo que confunde el sujeto.",
+  "B5: el gancho es una sola línea ('¿Qué mes gana la carrera?', 5 palabras); faltan `ganchoArriba` (mecánica) y `ganchoAbajo` (≤5 palabras) y el emoji en el gancho.",
+  "Claridad/no amontonado: 6 filas con etiquetas largas (DICIEMBRE, OCTUBRE) no caben como 4 filas grandes; la votación no se lee de un vistazo.",
+  "Comentario: la descripción pide 'qué mes apoyabas', pero sin votación explícita en pantalla es una invitación genérica."
+ ],
+ "cambios": [
+  "participantes (6 meses) → 4 meses (p. ej. ENERO, JUNIO, OCTUBRE, DICIEMBRE) con colores y emojis distintos",
+  "props sin votacion → agregar `votacion: true` (y la acción de voto 'ACCIÓN → ● NOMBRE' según el schema carrera)",
+  "props.gancho único → `ganchoArriba` ≤9 palabras (ej. '4 meses compiten: ¿cuál llega primero?') + `ganchoAbajo` ≤5 palabras con 1 emoji (ej. 'Vota tu cumpleaños 🎂')",
+  "título '¿Qué mes del año gana la carrera? 🏁 Carrera de bolitas' → '¿Qué mes gana la carrera? 4 meses, 1 ganador 🏁' (evita sugerir los 12 meses)",
+  "descripción '6 meses, 6 bolitas de neón…' → '4 meses, 4 bolitas…' y pedir comentar el voto concreto"
+ ],
+ "revisor": "sonnet",
+ "fecha": "2026-11-15T03:06:22.465Z",
+ "santiago": {
+  "estado": "delegado al agente de producción (2026-11-14)"
+ }
+}

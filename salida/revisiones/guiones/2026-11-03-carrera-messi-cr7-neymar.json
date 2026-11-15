@@ -1,0 +1,58 @@
+{
+ "id": "2026-11-03-carrera-messi-cr7-neymar",
+ "canal": "bolita-lab",
+ "titulo": "¿Messi, CR7, Neymar o Mbappé? ⚽ ¿Quién gana la carrera?",
+ "ranura": "2026-11-18T18:00",
+ "ronda": 1,
+ "aprobado": false,
+ "bloqueantes": {
+  "B1": false,
+  "B2": false,
+  "B3": false,
+  "B4": true,
+  "B5": false,
+  "B6": true,
+  "B7": true,
+  "B8": true,
+  "B9": false
+ },
+ "maquina": {
+  "nota": "sin capa 1 automática; revisión manual del JSON",
+  "participantes": 5,
+  "votacion": "ausente (no hay campo votacion en props)",
+  "ganchoArriba_ganchoAbajo": "ausentes; solo existe 'gancho' ('¿Messi o CR7?', 3 palabras)",
+  "titulo_largo": "54 caracteres (OK)"
+ },
+ "puntajes": {
+  "gancho": 2,
+  "claridad": 1,
+  "creatividad": 3,
+  "no_amontonado": 2,
+  "sorpresa": 2,
+  "comentario": 3,
+  "parecido_referente": 2
+ },
+ "promedio": 2.1,
+ "motivos": [
+  "B2: hay 5 participantes (Messi, CR7, Neymar, Mbappé, Haaland); la votación exige exactamente 4 y `votacion: true` no está presente.",
+  "B3: el título nombra 4 jugadores y la descripción nombra 5 (añade Haaland); título y descripción no coinciden con lo que pasa en pantalla.",
+  "B5: no hay `ganchoArriba` (≤ 9 palabras) ni `ganchoAbajo` (≤ 5 palabras + 1 emoji); solo `gancho: '¿Messi o CR7?'`, que además contradice el título de 4 jugadores y no expresa la mecánica.",
+  "B1: el formato de gancho (campo `gancho` único) y la falta de `votacion` probablemente no validan el schema vigente de la plantilla carrera (que exige ganchoArriba/ganchoAbajo/votacion); el id de 2026-11-03 sugiere un guion con formato antiguo.",
+  "B9: no queda claro que sea seguro para monetización: usa nombres de personas reales (jugadores) y banderas, aunque sin caras; además el tema fútbol/ídolos puede atraer público infantil; y la ranura (11-18) está lejos de la fecha del id (11-03), por lo que podría repetir tema ya usado en la semana. No se puede confirmar que cumpla.",
+  "Claridad/votación 1: con 5 corredores y sin 'ACCIÓN → ● NOMBRE' no se sabe qué votar; el gancho '¿Messi o CR7?' no coincide con los 4 del título.",
+  "Sorpresa 2: carrera de bolitas sin ningún giro declarado en los últimos segundos."
+ ],
+ "cambios": [
+  "participantes: 5 (incluye HAALAND) → 4 participantes (MESSI, CR7, NEYMAR, MBAPPÉ), eliminar HAALAND",
+  "props sin votacion → agregar `votacion: true`",
+  "props.gancho: \"¿Messi o CR7?\" → ganchoArriba: \"Vota por tu crack: ¿quién llega primero?\" (≤ 9 palabras) y ganchoAbajo: \"Comenta tu pick 🏆\" (≤ 5 palabras + 1 emoji)",
+  "descripcion: \"Messi, Cristiano, Neymar, Mbappé y Haaland bajan…\" → \"Messi, Cristiano, Neymar y Mbappé bajan como bolitas de neón por un tablero de clavijas. ¿Tu crack gana? Vota en los comentarios.\"",
+  "título: mantener los 4 nombres actuales y alinear con gancho (ya cumple ≤ 70 caracteres)",
+  "B9: confirmar con el generador que tema fútbol/Messi-CR7 no repetido en la semana 18-11 y que no se trate como contenido para niños; si se repite, cambiar el tema"
+ ],
+ "revisor": "sonnet",
+ "fecha": "2026-11-15T03:06:26.091Z",
+ "santiago": {
+  "estado": "delegado al agente de producción (2026-11-14)"
+ }
+}

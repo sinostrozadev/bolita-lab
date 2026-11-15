@@ -1,0 +1,53 @@
+{
+ "id": "2026-11-13-dato-pulpo-tres-corazones",
+ "canal": "bolita-lab",
+ "titulo": "Un pulpo tiene tres corazones y sangre azul",
+ "ranura": "2026-11-22",
+ "ronda": 1,
+ "aprobado": false,
+ "bloqueantes": {
+  "B1": true,
+  "B2": true,
+  "B3": true,
+  "B4": true,
+  "B5": true,
+  "B6": true,
+  "B7": false,
+  "B8": true,
+  "B9": true
+ },
+ "maquina": {
+  "nota": "Sin capa 1 automática. Conté 92 palabras de voz (gancho + 6 escenas + remate), dentro de 75–100, con 6 escenas. Las escenas 3 y 4 repiten la idea del cobre."
+ },
+ "puntajes": {
+  "gancho": 3,
+  "claridad": 4,
+  "creatividad_movimiento": 3,
+  "no_amontonado": 4,
+  "sorpresa_giro": 3,
+  "valor_comentario": 2,
+  "parecido_referente": 3
+ },
+ "promedio": 3.14,
+ "motivos": [
+  "B7 falla: ninguna escena ni el remate dice la fuente en la voz (institución + año), y las entradas de 'fuentes' no traen año.",
+  "Los datos centrales son correctos y los verifiqué de memoria, sin consultar la web. Un pulpo tiene 3 corazones (2 branquiales y 1 sistémico), su sangre usa hemocianina con cobre, que es azul al oxigenarse, y transporta oxígeno peor que la hemoglobina. El corazón sistémico se detiene al nadar, por eso el pulpo prefiere reptar. Solo falla la atribución.",
+  "Valor de comentario 2: no hay pregunta ni apuesta que invite a comentar algo concreto.",
+  "Las escenas 3 y 4 explican dos veces lo mismo (cobre vs hierro) y la 4 repite el formato 'lista' de la 2. Esto baja la creatividad visual y el ritmo.",
+  "La escena 6 sugiere que el pulpo necesita tres corazones solo porque su sangre transporta peor el oxígeno. Es una simplificación causal algo engañosa.",
+  "El mejor momento, 'el corazón se detiene al nadar', queda en el remate como dato más y no como giro con intriga."
+ ],
+ "cambios": [
+  "Remate/escena 1: sin fuente dicha → añadir en voz una atribución con año, p. ej. 'Según el Monterey Bay Aquarium, 2024, …' (con la cifra de 3 corazones) y poner el año en cada entrada de 'fuentes' (institución + año)",
+  "Escena 4 (cobre vs hierro, repite la 3) → fundirla con la 3 y liberar tiempo para el giro: 'Y lo más raro: cuando nada, su corazón principal se detiene.'",
+  "Escena 2 y 4, ambas 'lista' → cambiar una por 'icono' o 'comparar' para variar las figuras",
+  "Escena 6: 'lleva el oxígeno peor que la tuya: tú tienes un corazón, el pulpo necesita tres' → 'su sangre lleva menos oxígeno que la tuya, y por eso necesita un empujón extra de sus tres corazones'",
+  "Remate: 'Cuando nada, el corazón principal se detiene, por eso prefiere caminar.' → cerrar con apuesta comentable, p. ej. '¿Cuántos corazones crees que tiene un calamar? Comenta tu número.'",
+  "Gancho: 'Un animal con tres corazones.' → 'Este animal tiene 3 corazones… y uno se apaga al nadar.' (insinúa el giro final)"
+ ],
+ "revisor": "sonnet",
+ "fecha": "2026-11-15T03:17:34.368Z",
+ "santiago": {
+  "estado": "delegado al agente de producción (2026-11-14)"
+ }
+}

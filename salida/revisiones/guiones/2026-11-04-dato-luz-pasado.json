@@ -1,0 +1,53 @@
+{
+ "id": "2026-11-04-dato-luz-pasado",
+ "canal": "bolita-lab",
+ "titulo": "Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso",
+ "ranura": "2026-11-20T18:00",
+ "ronda": 1,
+ "aprobado": false,
+ "bloqueantes": {
+  "B1": true,
+  "B2": true,
+  "B3": true,
+  "B4": true,
+  "B5": false,
+  "B6": true,
+  "B7": false,
+  "B8": true,
+  "B9": true
+ },
+ "maquina": {
+  "nota": "sin capa 1; no se ejecutó ninguna verificación mecánica",
+  "palabras_voz_aprox": 86,
+  "escenas": 5,
+  "hechos_verificados": "Verificados con constantes conocidas de la NASA (sin consulta web en esta ronda): luz Sol–Tierra 499 s (8 min 19 s), Luna ≈1,28 s, Próxima Centauri 4,24 años luz. Sin errores factuales."
+ },
+ "puntajes": {
+  "gancho": 3,
+  "claridad": 4,
+  "creatividad_movimiento": 3,
+  "no_amontonado": 4,
+  "sorpresa_giro": 3,
+  "valor_comentario": 2,
+  "parecido_referente": 3
+ },
+ "promedio": 3.14,
+ "motivos": [
+  "B7: ninguna escena ni el remate dice la fuente en la voz (NASA). Las fuentes están en `fuentes` y en la descripción, pero el criterio exige decirla en la locución.",
+  "B5: el gancho \"Lo que ves en el cielo… ya pasó.\" no lleva emoji, y no hay split mecánica (≤9 palabras) + ganchoAbajo (≤5 palabras). Si el schema de `dato` usa un solo campo `gancho`, falta al menos el emoji.",
+  "Promedio 3,14 < 4. El remate (\"Mirar el cielo es mirar al pasado\") repite la escena 5, así que no hay vuelco en los últimos segundos.",
+  "Sin invitación a comentar: no hay pregunta ni apuesta (valor de comentario 2).",
+  "Los hechos son correctos y el guion se entiende sin el título. El problema es de forma, no de contenido."
+ ],
+ "cambios": [
+  "Escena 2: \"La luz del Sol tarda ocho minutos y diecinueve segundos.\" → \"Según la NASA, la luz del Sol tarda ocho minutos y diecinueve segundos.\" (cumple la fuente en voz, B7)",
+  "gancho: \"Lo que ves en el cielo… ya pasó.\" → \"Lo que ves en el cielo ya pasó ⏳\" (o ganchoArriba \"Miras el cielo… y ya pasó\" + ganchoAbajo \"8 min de retraso ⏳\", con emoji)",
+  "Escena 5 + remate: \"Cada estrella que miras es una foto vieja del pasado.\" / \"Mirar el cielo es mirar al pasado.\" → dejar solo uno y usar el remate como giro, p. ej. \"Algunas estrellas de esa foto ya ni existen. ¿Cuál crees que fue la primera en apagarse?\" (giro real + pregunta que pide comentar, con frase de visual acorde)",
+  "Escena 3: \"está a cuatro años luz y un poco más\" → \"está a 4,24 años luz: su luz salió en 2022\" (más concreto; cifra consistente con la etiqueta de pantalla)"
+ ],
+ "revisor": "sonnet",
+ "fecha": "2026-11-15T03:06:29.926Z",
+ "santiago": {
+  "estado": "delegado al agente de producción (2026-11-14)"
+ }
+}

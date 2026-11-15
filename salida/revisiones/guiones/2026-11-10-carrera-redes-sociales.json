@@ -1,0 +1,53 @@
+{
+ "id": "2026-11-10-carrera-redes-sociales",
+ "canal": "bolita-lab",
+ "titulo": "¿TikTok, Instagram, YouTube o X? 📲 ¿Qué red social gana?",
+ "ranura": "2026-11-18T12:00",
+ "ronda": 1,
+ "aprobado": false,
+ "bloqueantes": {
+  "B1": true,
+  "B2": false,
+  "B3": false,
+  "B4": true,
+  "B5": false,
+  "B6": true,
+  "B7": true,
+  "B8": true,
+  "B9": true
+ },
+ "maquina": {
+  "nota": "Sin capa 1 automática; revisión manual del JSON. Participantes: 6 (TIKTOK, INSTAGRAM, YOUTUBE, X, FACEBOOK, SNAPCHAT). No hay campo votacion. No hay campos ganchoArriba/ganchoAbajo; solo 'gancho' de 4 palabras."
+ },
+ "puntajes": {
+  "gancho": 2,
+  "claridad": 2,
+  "creatividad": 3,
+  "no_amontonado": 2,
+  "sorpresa": 3,
+  "comentario": 3,
+  "parecido_referente": 3
+ },
+ "promedio": 2.6,
+ "motivos": [
+  "B2: 6 participantes y sin `votacion: true`; la regla exige exactamente 4 participantes y votación activa.",
+  "B3: el título nombra 4 redes (TikTok, Instagram, YouTube, X) pero hay 6 participantes, y la descripción dice 'Seis redes sociales'; título y descripción no coinciden entre sí ni con lo que pasa.",
+  "B5: el gancho es un solo campo genérico ('¿Qué red social gana?'), sin estructura ganchoArriba (mecánica) / ganchoAbajo (≤5 palabras) ni emoji en el gancho; el emoji está solo en el título.",
+  "Claridad 2: 6 filas de votación no caben como 4 filas grandes y la votación no está activada; no se sabe qué votar.",
+  "No amontonado 2: 6 bolitas con 6 etiquetas/íconos en cuadro vertical probablemente se pisan.",
+  "Gancho 2: pregunta genérica sin mecánica ni cold open; la descripción pide 'comenta cuál apoyabas' pero sin votación activa.",
+  "Promedio 2,6 < 4 y varios puntajes < 3."
+ ],
+ "cambios": [
+  "participantes: 6 → 4 (dejar TIKTOK, INSTAGRAM, YOUTUBE, X; quitar FACEBOOK y SNAPCHAT)",
+  "props: sin votacion → añadir votacion: true",
+  "descripcion: 'Seis redes sociales, seis bolitas de neón…' → 'Cuatro redes sociales, cuatro bolitas de neón y un tablero lleno de clavijas. ¿La que más usas llega primero? Comenta cuál apoyabas.'",
+  "gancho: '¿Qué red social gana?' → ganchoArriba (≤9 palabras, mecánica; p. ej. 'Cuatro redes caen por las clavijas') + ganchoAbajo (≤5 palabras; p. ej. '¿Cuál llega primero? 📲')",
+  "titulo: mantener (59 caracteres, ya nombra las 4 redes) una vez reducidos los participantes a 4"
+ ],
+ "revisor": "sonnet",
+ "fecha": "2026-11-15T03:06:23.803Z",
+ "santiago": {
+  "estado": "delegado al agente de producción (2026-11-14)"
+ }
+}

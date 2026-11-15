@@ -1,0 +1,53 @@
+{
+ "id": "2026-11-10-dato-primer-sitio-web-1991",
+ "canal": "bolita-lab",
+ "titulo": "El primer sitio web de la historia sigue explicando qué es la web",
+ "ranura": "2026-11-17T12:00",
+ "ronda": 1,
+ "aprobado": false,
+ "bloqueantes": {
+  "B1": true,
+  "B2": true,
+  "B3": true,
+  "B4": true,
+  "B5": true,
+  "B6": true,
+  "B7": false,
+  "B8": true,
+  "B9": true
+ },
+ "maquina": {
+  "nota": "sin capa 1; B1 asumido por haberse generado con el validador. Palabras de la voz ≈ 84 (rango 75–100 OK), 6 escenas (rango 4–6 OK). B2 y B8 no aplican a este formato."
+ },
+ "puntajes": {
+  "gancho": 3,
+  "claridad": 4,
+  "creatividad": 3,
+  "no_amontonado": 4,
+  "sorpresa": 3,
+  "comentario": 2,
+  "parecido_referente": 3
+ },
+ "promedio": 3.14,
+ "motivos": [
+  "B7: las cifras (1991, 1993, 10.000 servidores, más de mil millones de sitios) tienen fuente en 'fuentes', pero la voz casi no dice la fuente. Solo aparece 'CERN' como sujeto de la escena 1, sin atribuir ninguna cifra, y la cifra de Netcraft no se atribuye en ningún momento.",
+  "Comentario = 2 (bajo el mínimo de 3): no hay pregunta, apuesta ni adivinanza que pida comentar algo concreto.",
+  "Gancho = 3: '¿Sabes cuál fue la primera página web?' es una pregunta clara pero genérica, y no deja ver el estado final ni la sorpresa.",
+  "Hechos verificados contra lo que publica el CERN: web pública el 30-04-1993, unos 10.000 servidores a fines de 1994, la etiqueta del NeXT ('This machine is a server. DO NOT POWER IT DOWN!!') y Netcraft con más de mil millones de sitios (2024). Son correctos y no hay error factual.",
+  "Imprecisiones menores: 'un año después' del 1993 al fin de 1994 es en realidad cerca de año y medio. 'Un físico del CERN' simplifica, porque Berners-Lee es informático de formación en física. 'Su dirección todavía funciona' es cierto, pero el contenido que se ve es una réplica restaurada del sitio original.",
+  "B3: el título tiene 66 caracteres, cabe en 70, y es coherente con lo que se cuenta."
+ ],
+ "cambios": [
+  "escena 4: 'La web se entregó gratis al mundo en mil novecientos noventa y tres.' → 'Según el CERN, la web se entregó gratis al mundo en mil novecientos noventa y tres.'",
+  "escena 5: 'Un año después ya había diez mil servidores.' → 'A fines de mil novecientos noventa y cuatro ya había diez mil servidores, dice el CERN.'",
+  "remate: 'Hoy hay más de mil millones de sitios, y el primero sigue ahí.' → 'Netcraft cuenta más de mil millones de sitios hoy. ¿Cuál fue el primero que visitaste? Cuéntalo en comentarios.' (dice la fuente y pide un comentario concreto; hay que recortar otra frase para no pasar de 100 palabras)",
+  "gancho: '¿Sabes cuál fue la primera página web?' → '¿Adivina qué decía la primera página web? 🌐' (invita a adivinar y a comentar, y es más concreto que la pregunta actual)",
+  "escena 6: 'Su dirección todavía funciona hoy.' → 'Su dirección, info.cern.ch, todavía abre hoy.' (más preciso, sin afirmar que es el archivo original)",
+  "descripción y fuentes: quitar la línea de fuentes duplicada para que quede una sola lista"
+ ],
+ "revisor": "sonnet",
+ "fecha": "2026-11-15T03:06:34.250Z",
+ "santiago": {
+  "estado": "delegado al agente de producción (2026-11-14)"
+ }
+}

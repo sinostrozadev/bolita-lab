@@ -1,0 +1,53 @@
+{
+ "id": "2026-11-05-carrera-dias-semana",
+ "canal": "bolita-lab",
+ "titulo": "¿Qué día de la semana gana? 📅 Carrera de bolitas",
+ "ranura": "2026-11-21T18:00",
+ "ronda": 1,
+ "aprobado": false,
+ "bloqueantes": {
+  "B1": false,
+  "B2": false,
+  "B3": false,
+  "B4": true,
+  "B5": false,
+  "B6": true,
+  "B7": true,
+  "B8": true,
+  "B9": true
+ },
+ "maquina": {
+  "nota": "sin capa 1 automática; participantes=6, votacion ausente, ganchoArriba/ganchoAbajo ausentes"
+ },
+ "puntajes": {
+  "gancho": 2,
+  "claridad": 2,
+  "creatividad": 3,
+  "no_amontonado": 2,
+  "sorpresa": 3,
+  "comentario": 3,
+  "parecido_referente": 2
+ },
+ "promedio": 2.43,
+ "motivos": [
+  "B2: la carrera tiene 6 participantes y no declara votacion:true; la regla exige exactamente 4 con votación.",
+  "B1: lo más probable es que no valide el schema actual. Hay 6 participantes y faltan los campos de votación y de gancho.",
+  "B5: solo existe 'gancho' (texto genérico en forma de pregunta). No hay ganchoArriba (mecánica, ≤9 palabras), ganchoAbajo (≤5 palabras) ni emoji en el gancho de pantalla.",
+  "B3: la descripción dice 'Siete días no, pero seis sí', una frase confusa e incoherente. El título habla de 'día de la semana' en general, y el video solo muestra lunes a sábado, sin domingo.",
+  "Claridad: con 6 filas no hay votación de un vistazo 'ACCIÓN → ● NOMBRE'.",
+  "No amontonado: 6 bolitas y etiquetas largas (MIÉRCOLES) se amontonan, según la preferencia de Santiago de 4 competidores y filas grandes.",
+  "Gancho: la pregunta es clara pero no tiene intriga ni insinúa el estado final."
+ ],
+ "cambios": [
+  "participantes: 6 (lunes…sábado) → 4 días con contraste claro (LUNES 😴, MIÉRCOLES 🐪, VIERNES 🎉, DOMINGO 🛋️) y votacion: true",
+  "props sin gancho de mecánica → ganchoArriba: '¿Qué día llega primero a la meta?' (≤9 palabras) + ganchoAbajo: 'Vota tu día 👇' (≤5 palabras, 1 emoji)",
+  "descripcion: 'Siete días no, pero seis sí: …' → 'Lunes, miércoles, viernes y domingo compiten en una carrera de bolitas con física real. ¿Quién gana? Vota en comentarios.'",
+  "titulo: mantener ≤70 caracteres y coherente con los 4 días, p. ej. '¿Qué día gana? Lunes vs viernes y más 📅 Carrera de bolitas'",
+  "colores: mantener cian/lima/amarillo/naranja/magenta/violeta solo para 4 participantes distintos, con filas grandes en la grilla"
+ ],
+ "revisor": "sonnet",
+ "fecha": "2026-11-15T03:06:23.562Z",
+ "santiago": {
+  "estado": "delegado al agente de producción (2026-11-14)"
+ }
+}

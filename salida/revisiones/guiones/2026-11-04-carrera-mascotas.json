@@ -1,0 +1,50 @@
+{
+ "id": "2026-11-04-carrera-mascotas",
+ "canal": "bolita-lab",
+ "titulo": "¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas",
+ "ranura": "2026-11-19T18:00",
+ "ronda": 1,
+ "aprobado": false,
+ "bloqueantes": {
+  "B1": true,
+  "B2": false,
+  "B3": true,
+  "B4": true,
+  "B5": false,
+  "B6": true,
+  "B7": true,
+  "B8": true,
+  "B9": true
+ },
+ "maquina": {
+  "nota": "Sin capa 1. Revisé a mano el schema de src/plantillas/carrera/guion.ts. El JSON valida porque votacion, ganchoArriba y ganchoAbajo son opcionales, pero el criterio B2 exige votacion:true. Es un guion del 11-04 (formato v1) y ya hay un mp4 en bandeja renderizado sin votación."
+ },
+ "puntajes": {
+  "gancho": 3,
+  "claridad": 2,
+  "creatividad_movimiento": 3,
+  "no_amontonado": 4,
+  "sorpresa_giro": 3,
+  "valor_comentario": 3,
+  "parecido_referente": 3
+ },
+ "promedio": 3,
+ "motivos": [
+  "B2: el guion no tiene votacion:true. Hay 4 participantes, pero sin el panel 'VOTA POR TU FAVORITO' ni las acciones por competidor. La descripción pide 'defiende a la tuya en los comentarios' y eso no basta como votación. Claridad = 2 (la regla de Santiago es que la grilla de votación sea de un vistazo).",
+  "B5: solo existe 'gancho' (la pregunta), sin ganchoArriba (mecánica, ≤9 palabras) ni ganchoAbajo (≤5 palabras + 1 emoji). Sin ellos el frame 0 depende de los valores por defecto deterministas del id, no de una intriga escrita. Gancho = 3.",
+  "B3/B6 correctos: título de 52 caracteres, 4 participantes y 4 nombrados, y el sujeto se entiende. B4 (sin música con derechos) y B9 (mascotas, sin caras reales) parecen correctos. No pude confirmar que el tema no se repita en la semana; hay mención en docs/PLAN-SEMANAL.md y el mp4 ya existe en bandeja, así que conviene comprobarlo antes de programar.",
+  "Promedio 3.0 < 4: nada empuja a comentar algo concreto (no hay apuesta ni adivinanza), el giro final es el genérico de las carreras y la brecha con el referente es de formato v1 frente a v2."
+ ],
+ "cambios": [
+  "props sin votacion → agregar \"votacion\": true (4 participantes ya cumple)",
+  "props sin ganchoArriba → \"ganchoArriba\": \"4 mascotas bajan, solo una llega primera\" (≤9 palabras, mecánica)",
+  "props sin ganchoAbajo → \"ganchoAbajo\": \"¿Quién gana? 🐾\" (≤5 palabras + 1 emoji; se ignora si votacion está activa y el panel lo reemplaza, así que dejarlo coherente)",
+  "descripción 'Defiende a la tuya en los comentarios' → 'Vota por tu mascota abajo 👇: perro, gato, hámster o loro' (alinear con el panel de votación)",
+  "verificar contra docs/PLAN-SEMANAL.md y salida/bandeja que 'mascotas' no se haya usado esa semana; si la bandeja se renderiza de nuevo, volver a renderizar con el formato v2 (el mp4 actual es v1 y no tiene votación)"
+ ],
+ "revisor": "sonnet",
+ "fecha": "2026-11-15T03:06:31.393Z",
+ "santiago": {
+  "estado": "delegado al agente de producción (2026-11-14)"
+ }
+}

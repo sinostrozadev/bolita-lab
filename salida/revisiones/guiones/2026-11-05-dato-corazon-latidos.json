@@ -1,0 +1,54 @@
+{
+ "id": "2026-11-05-dato-corazon-latidos",
+ "canal": "bolita-lab",
+ "titulo": "Tu corazón late casi 3.000 millones de veces en tu vida",
+ "ranura": "2026-11-21T12:00",
+ "ronda": 1,
+ "aprobado": false,
+ "bloqueantes": {
+  "B1": true,
+  "B2": true,
+  "B3": true,
+  "B4": true,
+  "B5": true,
+  "B6": true,
+  "B7": false,
+  "B8": true,
+  "B9": true
+ },
+ "maquina": {
+  "nota": "sin capa 1 automática; revisado a mano",
+  "palabras_voz": "78 con gancho (9) y remate (9); 69 sin el gancho. Rango B7: 75–100",
+  "escenas": 5,
+  "aritmetica": "70×1440=100.800/día; ×365×80≈2.943 M (ok); 5 L/min×1440≈7.200 L (ok); ratón ≈630 M y elefante ≈1.020 M (ok)"
+ },
+ "puntajes": {
+  "gancho": 4,
+  "claridad": 4,
+  "creatividad": 3,
+  "no_amontonado": 4,
+  "sorpresa": 4,
+  "comentario": 2,
+  "parecido_referente": 3
+ },
+ "promedio": 3.43,
+ "motivos": [
+  "B7: la voz no dice ninguna fuente (ni institución ni año). Las fuentes están solo en la descripción y en el arreglo `fuentes`, y B7 exige la fuente dicha en la voz.",
+  "Valor de comentario = 2: el remate es una afirmación sin invitación a comentar nada concreto.",
+  "Promedio 3,43 < 4. Solo el criterio de comentario está bajo 3.",
+  "Las cifras no tienen error factual. Lo comprobé con mi conocimiento, sin WebSearch/WebFetch en esta sesión. Rango AHA de 60–100 lpm. Levine 1997: los mamíferos acumulan del orden de mil millones de latidos y el humano es la excepción. El cálculo de ~2.900 M en 80 años y el ratón/elefante aproximados coinciden y están rotulados como estimaciones.",
+  "Menor: 'Tú, casi tres mil' omite 'millones' en la voz. Se entiende por el contexto, pero conviene decirlo completo.",
+  "Menor: la palabra 'excepción' y el 'triple' del remate se apoyan en la estimación del elefante (~1.000 M), que es aproximada. Es aceptable porque la descripción lo aclara."
+ ],
+ "cambios": [
+  "escena 1 texto: 'Un corazón adulto en reposo late entre sesenta y cien veces por minuto.' → 'Según la Asociación Americana del Corazón, un corazón adulto en reposo late entre sesenta y cien veces por minuto.' (fuente dicha en la voz; +6 palabras, total ≈ 84)",
+  "escena 5 texto: 'Tú, casi tres mil.' → 'Tú, casi tres mil millones.' (cifra completa)",
+  "escena 5 texto, tras la comparación: '(estimación de un estudio de 1997)' → agregar 'Según un estudio de 1997, los mamíferos suelen rondar los mil millones.' en lugar de repetir 'cerca de mil millones' (segunda fuente dicha y año)",
+  "remate: 'Somos una excepción: nos tocó el triple de latidos.' → 'Somos una excepción: nos tocó el triple. ¿Qué animal comparamos después? Comenta.' (invitación concreta a comentar; mantener el total ≤ 100 palabras)"
+ ],
+ "revisor": "sonnet",
+ "fecha": "2026-11-15T03:06:36.137Z",
+ "santiago": {
+  "estado": "delegado al agente de producción (2026-11-14)"
+ }
+}

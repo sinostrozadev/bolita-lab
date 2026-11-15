@@ -1,0 +1,51 @@
+{
+ "id": "2026-11-10-colores-batalla-4",
+ "canal": "bolita-lab",
+ "titulo": "Batalla de 4 colores: ¿cuál sobrevive? 🎨",
+ "ranura": "2026-11-19T12:00",
+ "ronda": 1,
+ "aprobado": false,
+ "bloqueantes": {
+  "B1": true,
+  "B2": true,
+  "B3": false,
+  "B4": true,
+  "B5": true,
+  "B6": true,
+  "B7": true,
+  "B8": true,
+  "B9": false
+ },
+ "maquina": {
+  "nota": "sin capa 1; B1 y B2 se asumen por forma: 4 equipos, votacion true; no pude correr el schema zod"
+ },
+ "puntajes": {
+  "gancho": 3,
+  "claridad": 4,
+  "creatividad": 4,
+  "no_amontonado": 3,
+  "sorpresa": 4,
+  "comentario": 4,
+  "parecido_referente": 3
+ },
+ "promedio": 3.57,
+ "motivos": [
+  "B3/B9: el id 2026-11-10-colores-batalla-4 es el formato 'colores' que según el contexto del canal ya salió el sáb 11-14 07:00. Usarlo otra vez el 11-19 repite título, mecánica y probablemente semilla dentro de la misma semana.",
+  "El gancho (B5) no aparece en el JSON: no hay ganchoArriba ni ganchoAbajo. Si la plantilla no los genera, falta el gancho del frame 0. Con solo título y descripción genéricos, el gancho vale 3.",
+  "40 bolas (4×10) en un círculo en pantalla vertical arriesgan amontonar al inicio y tapar etiquetas. El no amontonado vale 3, sin prueba de lo contrario.",
+  "Promedio 3,57, bajo el umbral de 4. Ningún puntaje es menor que 3.",
+  "El guion es correcto y claro (4 colores, votación unificada, reglas dichas en la descripción), pero es una repetición."
+ ],
+ "cambios": [
+  "id/título repetido → crear un guion nuevo con otro id (2026-11-19-colores-…) y un título que no repita 'Batalla de 4 colores: ¿cuál sobrevive?', por ejemplo 'Rojo, azul, amarillo o verde: ¿quién conquista la arena?'",
+  "equipos iguales y misma arena → cambiar la arena (cuadrado u otra forma) o los 4 colores, para que la mecánica no sea idéntica a la del 11-14",
+  "falta gancho → añadir ganchoArriba (≤9 palabras, ej. 'Si se tocan, se fusionan… o se parten') y ganchoAbajo (≤5 palabras, ej. '¿Qué color gana? 🎨')",
+  "bolasPorEquipo: 10 → 8 para evitar el amontonado, o confirmar con fotogramas del render que las etiquetas no quedan tapadas",
+  "descripción → quitar la lista fija 'Me gusta, Comenta, Comparte o Suscríbete' como única invitación y añadir una apuesta concreta ('Comenta tu color antes del final')"
+ ],
+ "revisor": "sonnet",
+ "fecha": "2026-11-15T03:06:30.010Z",
+ "santiago": {
+  "estado": "delegado al agente de producción (2026-11-14)"
+ }
+}
