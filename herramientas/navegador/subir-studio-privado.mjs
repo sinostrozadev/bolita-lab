@@ -54,6 +54,15 @@ const categoria = 'Education'; // todo el canal: economía explicada con datos y
 const etiquetas = (meta.hashtags || []).map((h) => h.replace(/^#/, '')).filter((h) => !LARGO || h.toLowerCase() !== 'shorts').join(', ') + ',';
 if (LARGO) meta.descripcion = String(meta.descripcion || '').replace(/(^|\s)#shorts\b/gi, '$1').trim();
 const MINIATURA = LARGO ? [meta.miniatura && path.resolve(BANDEJA, '..', '..', meta.miniatura), `${BANDEJA}/${id}-mini.png`, `${BANDEJA}/${id}-mini.jpg`].filter(Boolean).find((r) => fs.existsSync(r)) : undefined;
+// Gate de carátula GPT (2026-11-15, orden de Santiago: "los largos con carátula bonita de GPT, revisada antes de subir").
+// Un largo no se sube ni se programa sin una carátula pedida con la skill caratulas-con-gpt, revisada a ojo y guardada en
+// salida/caratulas/ (la ruta va en "miniatura" del json). Las de Remotion (salida/bandeja|largos/<id>-mini.png) eran el respaldo
+// y así salieron Panamericana (sin nada), Uruguay y Torneo. Escape consciente y registrado: CARATULA_REMOTION=1.
+if (LARGO && !(MINIATURA && /[\\/]salida[\\/]caratulas[\\/]/.test(MINIATURA))) {
+  const motivo = MINIATURA ? `la miniatura no es GPT (${MINIATURA})` : 'no hay miniatura';
+  if (process.env.CARATULA_REMOTION === '1') console.warn(`⚠ CARATULA_REMOTION=1: largo ${id} sube sin carátula GPT (${motivo}); pedirla y cambiarla después`);
+  else fallo(`largo ${id} sin carátula GPT: ${motivo}. Pídela con la skill caratulas-con-gpt, revísala, déjala en salida/caratulas/ y pon la ruta en "miniatura" del json (escape: CARATULA_REMOTION=1)`);
+}
 const urlVideo = (v) => (LARGO ? `https://www.youtube.com/watch?v=${v}` : `https://youtube.com/shorts/${v}`);
 
 // Fecha → "Nov 5, 2026" y hora → "6:00 PM"
