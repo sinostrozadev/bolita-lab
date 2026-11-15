@@ -2,7 +2,7 @@
   "plantilla": "dato",
   "id": "2026-11-13-dato-pulpo-tres-corazones",
   "titulo": "Un pulpo tiene tres corazones y sangre azul",
-  "descripcion": "Los pulpos tienen tres corazones: dos bombean a las branquias y uno al resto del cuerpo. Su sangre contiene hemocianina, que es azulada.\n\nFuentes:\n- Monterey Bay Aquarium, Octopus facts: https://www.montereybayaquarium.org/animals/animal-guide/invertebrates/giant-pacific-octopus\n- Smithsonian Ocean, Octopus: https://ocean.si.edu/ocean-life/invertebrates/octopuses\n- Britannica, Hemocyanin (proteína con cobre; incolora sin oxígeno y azul con oxígeno; menor capacidad de transporte que la hemoglobina): https://www.britannica.com/science/hemocyanin\n\n#shorts #datos #curiosidades #animales #pulpo #bolitalab",
+  "descripcion": "Los pulpos tienen tres corazones: dos bombean a las branquias y uno al resto del cuerpo. Su sangre contiene hemocianina, que es azulada.\n\nFuentes:\n- Monterey Bay Aquarium (2024), Octopus facts: https://www.montereybayaquarium.org/animals/animal-guide/invertebrates/giant-pacific-octopus\n- Smithsonian Ocean (2024), Octopus: https://ocean.si.edu/ocean-life/invertebrates/octopuses\n- Britannica (2024), Hemocyanin (proteína con cobre; incolora sin oxígeno y azul con oxígeno; menor capacidad de transporte que la hemoglobina): https://www.britannica.com/science/hemocyanin\n\n#shorts #datos #curiosidades #animales #pulpo #bolitalab",
   "hashtags": [
     "#shorts",
     "#datos",
@@ -14,13 +14,13 @@
   "props": {
     "id": "2026-11-13-dato-pulpo-tres-corazones",
     "color": "cian",
-    "gancho": "Un animal con tres corazones.",
+    "gancho": "Este animal tiene 3 corazones… y uno se apaga al nadar.",
     "imagenGancho": {
       "buscar": "common octopus"
     },
     "escenas": [
       {
-        "texto": "El pulpo tiene tres corazones.",
+        "texto": "Según el Monterey Bay Aquarium, 2024, el pulpo tiene tres corazones.",
         "visual": {
           "tipo": "cifra",
           "valor": 3,
@@ -35,24 +35,13 @@
       {
         "texto": "Dos mandan la sangre a las branquias y uno al resto del cuerpo.",
         "visual": {
-          "tipo": "lista",
-          "items": [
-            "Corazón 1: branquias",
-            "Corazón 2: branquias",
-            "Corazón 3: cuerpo"
-          ]
-        }
-      },
-      {
-        "texto": "Y su sangre no es roja: es azul, por el cobre de una proteína llamada hemocianina.",
-        "visual": {
           "tipo": "icono",
           "forma": "corazon",
-          "etiqueta": "sangre azul"
+          "etiqueta": "3 corazones"
         }
       },
       {
-        "texto": "El pulpo usa cobre y tú usas hierro: por eso tu sangre es roja.",
+        "texto": "Su sangre es azul por el cobre de una proteína, la hemocianina. La tuya usa hierro, por eso es roja.",
         "visual": {
           "tipo": "lista",
           "items": [
@@ -62,17 +51,7 @@
         }
       },
       {
-        "texto": "Sin oxígeno, su sangre es casi transparente; al cargarlo, se vuelve azul.",
-        "visual": {
-          "tipo": "frase",
-          "texto": "Transparente… y luego azul",
-          "enfasis": [
-            "azul"
-          ]
-        }
-      },
-      {
-        "texto": "Esa sangre lleva el oxígeno peor que la tuya: tú tienes un corazón, el pulpo necesita tres.",
+        "texto": "Y lleva menos oxígeno que la tuya, así que necesita el empuje extra de sus tres corazones.",
         "visual": {
           "tipo": "comparar",
           "sufijo": "",
@@ -90,15 +69,15 @@
         }
       }
     ],
-    "remate": "Cuando nada, el corazón principal se detiene, por eso prefiere caminar.",
+    "remate": "Y cuando nada, su corazón principal se detiene. ¿Cuántos corazones tiene un calamar? Comenta tu número.",
     "imagenRemate": {
       "buscar": "octopus seabed",
       "forma": "completa"
     },
     "fuentes": [
-      "Monterey Bay Aquarium, Octopus facts: https://www.montereybayaquarium.org/animals/animal-guide/invertebrates/giant-pacific-octopus",
-      "Smithsonian Ocean, Octopus: https://ocean.si.edu/ocean-life/invertebrates/octopuses",
-      "Britannica, Hemocyanin (proteína con cobre; incolora sin oxígeno y azul con oxígeno; menor capacidad de transporte que la hemoglobina): https://www.britannica.com/science/hemocyanin"
+      "Monterey Bay Aquarium (2024), Octopus facts: https://www.montereybayaquarium.org/animals/animal-guide/invertebrates/giant-pacific-octopus",
+      "Smithsonian Ocean (2024), Octopus: https://ocean.si.edu/ocean-life/invertebrates/octopuses",
+      "Britannica (2024), Hemocyanin (proteína con cobre; incolora sin oxígeno y azul con oxígeno; menor capacidad de transporte que la hemoglobina): https://www.britannica.com/science/hemocyanin"
     ]
   }
 }

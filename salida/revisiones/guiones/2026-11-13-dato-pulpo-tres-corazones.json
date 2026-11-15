@@ -3,8 +3,8 @@
  "canal": "bolita-lab",
  "titulo": "Un pulpo tiene tres corazones y sangre azul",
  "ranura": "2026-11-22",
- "ronda": 1,
- "aprobado": false,
+ "ronda": 2,
+ "aprobado": true,
  "bloqueantes": {
   "B1": true,
   "B2": true,
@@ -12,41 +12,39 @@
   "B4": true,
   "B5": true,
   "B6": true,
-  "B7": false,
+  "B7": true,
   "B8": true,
   "B9": true
  },
  "maquina": {
-  "nota": "Sin capa 1 automática. Conté 92 palabras de voz (gancho + 6 escenas + remate), dentro de 75–100, con 6 escenas. Las escenas 3 y 4 repiten la idea del cobre."
+  "nota": "Sin capa 1 automática; revisado a mano.",
+  "B3": "El título tiene 43 caracteres y coincide con el contenido.",
+  "B7": "La voz tiene unas 77 palabras sin el gancho y unas 87 con él (rango 75–100). Son 4 escenas. Las 3 fuentes llevan institución y año, y la fuente se dice en la voz.",
+  "B8": "No aplica (plantilla dato).",
+  "hechos_verificados": "Verificados de memoria, sin consultar la web: pulpo con 3 corazones (2 branquiales y 1 sistémico), sangre azul por hemocianina con cobre, y el corazón sistémico que se detiene al nadar. Coinciden con lo que publican Monterey Bay Aquarium y Britannica."
  },
  "puntajes": {
-  "gancho": 3,
+  "gancho": 4,
   "claridad": 4,
-  "creatividad_movimiento": 3,
+  "creatividad_movimiento": 4,
   "no_amontonado": 4,
-  "sorpresa_giro": 3,
-  "valor_comentario": 2,
-  "parecido_referente": 3
+  "sorpresa_giro": 4,
+  "valor_comentario": 4,
+  "parecido_referente": 4
  },
- "promedio": 3.14,
+ "promedio": 4,
  "motivos": [
-  "B7 falla: ninguna escena ni el remate dice la fuente en la voz (institución + año), y las entradas de 'fuentes' no traen año.",
-  "Los datos centrales son correctos y los verifiqué de memoria, sin consultar la web. Un pulpo tiene 3 corazones (2 branquiales y 1 sistémico), su sangre usa hemocianina con cobre, que es azul al oxigenarse, y transporta oxígeno peor que la hemoglobina. El corazón sistémico se detiene al nadar, por eso el pulpo prefiere reptar. Solo falla la atribución.",
-  "Valor de comentario 2: no hay pregunta ni apuesta que invite a comentar algo concreto.",
-  "Las escenas 3 y 4 explican dos veces lo mismo (cobre vs hierro) y la 4 repite el formato 'lista' de la 2. Esto baja la creatividad visual y el ritmo.",
-  "La escena 6 sugiere que el pulpo necesita tres corazones solo porque su sangre transporta peor el oxígeno. Es una simplificación causal algo engañosa.",
-  "El mejor momento, 'el corazón se detiene al nadar', queda en el remate como dato más y no como giro con intriga."
+  "Cumple todos los bloqueantes y no hay ningún puntaje bajo 3.",
+  "El gancho abre un bucle: 'uno se apaga al nadar'. El remate lo cierra con el dato y una pregunta concreta (¿cuántos corazones tiene un calamar?, respuesta 3) que pide comentar un número.",
+  "Los hechos centrales son correctos y las fuentes están bien citadas.",
+  "Punto débil menor: la escena 4 dice 'menos oxígeno', pero el visual compara corazones (1 vs 3), no oxígeno. Es un mensaje algo laxo, aunque no es un error factual."
  ],
  "cambios": [
-  "Remate/escena 1: sin fuente dicha → añadir en voz una atribución con año, p. ej. 'Según el Monterey Bay Aquarium, 2024, …' (con la cifra de 3 corazones) y poner el año en cada entrada de 'fuentes' (institución + año)",
-  "Escena 4 (cobre vs hierro, repite la 3) → fundirla con la 3 y liberar tiempo para el giro: 'Y lo más raro: cuando nada, su corazón principal se detiene.'",
-  "Escena 2 y 4, ambas 'lista' → cambiar una por 'icono' o 'comparar' para variar las figuras",
-  "Escena 6: 'lleva el oxígeno peor que la tuya: tú tienes un corazón, el pulpo necesita tres' → 'su sangre lleva menos oxígeno que la tuya, y por eso necesita un empujón extra de sus tres corazones'",
-  "Remate: 'Cuando nada, el corazón principal se detiene, por eso prefiere caminar.' → cerrar con apuesta comentable, p. ej. '¿Cuántos corazones crees que tiene un calamar? Comenta tu número.'",
-  "Gancho: 'Un animal con tres corazones.' → 'Este animal tiene 3 corazones… y uno se apaga al nadar.' (insinúa el giro final)"
+  "Escena 4, texto: 'Y lleva menos oxígeno que la tuya, así que necesita el empuje extra de sus tres corazones.' → 'Su sangre carga menos oxígeno que la tuya, y por eso necesita el empuje de sus tres corazones.' (opcional; ata mejor la causa con el visual)",
+  "Escena 1: la fuente se dice como 'Según el Monterey Bay Aquarium, 2024'. Si la locución suena rara, usar 'Según el acuario de Monterey Bay, 2024' (opcional)"
  ],
  "revisor": "sonnet",
- "fecha": "2026-11-15T03:17:34.368Z",
+ "fecha": "2026-11-15T08:59:34.905Z",
  "santiago": {
   "estado": "delegado al agente de producción (2026-11-14)"
  }

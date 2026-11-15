@@ -1,8 +1,8 @@
 {
   "id": "2026-11-13-bola-furelise-crecer",
   "plantilla": "bola",
-  "titulo": "Crece con cada nota de Para Elisa: ¿cuándo deja de caber?",
-  "descripcion": "Una bolita de neón crece en cada rebote y cada rebote toca la siguiente nota de Para Elisa de Beethoven. ¿Cuántos rebotes hasta llenar el círculo?\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #beethoven #furelise",
+  "titulo": "3 bolitas crecen con cada nota de Para Elisa: ¿cuándo dejan de caber?",
+  "descripcion": "Tres bolitas de neón crecen en cada rebote y cada rebote toca la siguiente nota de Para Elisa de Beethoven. Apuesta: ¿en qué rebote llenan el círculo? Comenta tu número antes del final.\nSimulación física determinista hecha en Bolita Lab.\n#shorts #satisfying #fisica #bolita #neon #beethoven #furelise",
   "hashtags": [
     "#shorts",
     "#satisfying",
@@ -12,7 +12,10 @@
     "#beethoven",
     "#furelise"
   ],
-  "duracionSeg": 35.1,
-  "estado": "listo",
-  "tipo": "short"
+  "duracionSeg": 45.6,
+  "estado": "subido",
+  "tipo": "short",
+  "videoId": "OLffa_f9cUo",
+  "publicarEn": "2026-11-22T10:00:00.000Z",
+  "subidoEn": "2026-11-15T09:13:20.557Z"
 }

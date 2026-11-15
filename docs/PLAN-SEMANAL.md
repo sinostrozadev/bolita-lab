@@ -1,5 +1,7 @@
 # Bolita Lab — Plan semanal (rodante)
 
+> **2026-11-15 (agente de producción):** semana 16→22 producida y programada; ids verificados en YouTube/Studio según la tabla JSON. Revisor independiente aplicado a cada guion (veredictos en `salida/revisiones/guiones/`).
+
 > Actualizado **2026-11-09 00:45** (experimentos de interacción al mediodía del 10/11/12; 11-13 12:00 reservada; 4 viejos corridos al 20/21/22). Antes: **2026-11-08 23:45** (plantilla nueva del primer segundo en 11-09/10/11 18:00; 3 carreras viejas corridas al 11-17/18/19). Antes: **2026-11-07 02:45** (America/Santiago) por Claude (subagente, sesión de madrugada). Método: skill global `plan-semanal`.
 > Regla: siempre hay plan de la semana en curso **y** de la siguiente. Cuando a la semana en curso le quedan < 3 ranuras
 > futuras con guion, o termina, se hace el ritual de cierre (skill §5) y se arma la que viene.
@@ -125,7 +127,7 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
   "version": 1,
   "canal": "bolita-lab",
   "zona": "America/Santiago",
-  "actualizado": "2026-11-12T23:59:00-03:00",
+  "actualizado": "2026-11-15T09:13:28.091Z",
   "semanas": [
     {
       "inicio": "2026-11-02",
@@ -568,6 +570,22 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "bloqueo": null
     },
     {
+      "fecha": "2026-11-16",
+      "hora": "19:00",
+      "formato": "largo",
+      "plantilla": "torneo",
+      "tema": "TORNEO de bolitas: 16 países, 1 campeón 🏆",
+      "tipo": "serie",
+      "serie": "Torneo de bolitas (lunes)",
+      "contingencia": null,
+      "estado": "renderizando",
+      "guion": "contenido/largos/2026-11-16-torneo-paises.json",
+      "videoId": null,
+      "referente": "mikan2d / Jelle's Marble Runs (torneos de canicas, largos)",
+      "porQue": "3 largos/semana para las horas del YPP (aprobado por Santiago 2026-11-12); el torneo es el formato prioritario",
+      "bloqueo": null
+    },
+    {
       "fecha": "2026-11-17",
       "hora": "12:00",
       "formato": "short",
@@ -629,6 +647,22 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "videoId": "dy2omu9k2go",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
       "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) · movido el 11-08 para dar paso a la plantilla nueva (reprogramar.mts)",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-18",
+      "hora": "19:00",
+      "formato": "largo",
+      "plantilla": "quiz",
+      "tema": "¿Cuántas adivinas? 10 canciones tocadas por una bolita 🎵",
+      "tipo": "serie",
+      "serie": "¿Cuántas adivinas? (miércoles)",
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/largos/2026-11-18-quiz.json",
+      "videoId": "G2LqmVOscOM",
+      "referente": "quizzes musicales \"guess the song\" (largos 8–10 min)",
+      "porQue": "los adivina de Shorts piden comentarios; versión simple (Santiago aún no convencido)",
       "bloqueo": null
     },
     {
@@ -728,6 +762,38 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "bloqueo": null
     },
     {
+      "fecha": "2026-11-21",
+      "hora": "19:00",
+      "formato": "largo",
+      "plantilla": "relajante",
+      "tema": "30 minutos de bolitas relajantes 🎵 para estudiar, concentrarse o dormir",
+      "tipo": "serie",
+      "serie": "Bolitas relajantes (sábado)",
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/largos/2026-11-21-relajante.json",
+      "videoId": "tuCnd-Q2JMQ",
+      "referente": "canales de visuales relajantes de 30–60 min (watch time alto por sesión)",
+      "porQue": "30 min por vista suma horas rápido; Santiago: \"tiene potencial, hay que trabajarlo más\" → fotogramas y preview de audio antes del render",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-22",
+      "hora": "07:00",
+      "formato": "short",
+      "plantilla": "bola",
+      "tema": "3 bolitas crecen con cada nota de Para Elisa (apuesta)",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": "contenido/guiones/2026-11-13-bola-furelise-crecer.json",
+      "videoId": "OLffa_f9cUo",
+      "referente": "",
+      "porQue": "",
+      "bloqueo": "corregido según revisor (ganchoArriba/Abajo + apuesta, 3 bolas); aprobado 3,9"
+    },
+    {
       "fecha": "2026-11-22",
       "hora": "12:00",
       "formato": "short",
@@ -744,52 +810,20 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "bloqueo": null
     },
     {
-      "fecha": "2026-11-16",
-      "hora": "19:00",
-      "formato": "largo",
-      "plantilla": "torneo",
-      "tema": "TORNEO de bolitas: 16 países, 1 campeón 🏆",
-      "tipo": "serie",
-      "serie": "Torneo de bolitas (lunes)",
-      "contingencia": null,
-      "estado": "renderizando",
-      "guion": "contenido/largos/2026-11-16-torneo-paises.json",
-      "videoId": null,
-      "referente": "mikan2d / Jelle's Marble Runs (torneos de canicas, largos)",
-      "porQue": "3 largos/semana para las horas del YPP (aprobado por Santiago 2026-11-12); el torneo es el formato prioritario",
-      "bloqueo": null
-    },
-    {
-      "fecha": "2026-11-18",
-      "hora": "19:00",
-      "formato": "largo",
-      "plantilla": "quiz",
-      "tema": "¿Cuántas adivinas? 10 canciones tocadas por una bolita 🎵",
-      "tipo": "serie",
-      "serie": "¿Cuántas adivinas? (miércoles)",
+      "fecha": "2026-11-22",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "dato",
+      "tema": "Un pulpo tiene tres corazones y sangre azul",
+      "tipo": "evergreen",
+      "serie": null,
       "contingencia": null,
       "estado": "programado",
-      "guion": "contenido/largos/2026-11-18-quiz.json",
-      "videoId": "G2LqmVOscOM",
-      "referente": "quizzes musicales \"guess the song\" (largos 8–10 min)",
-      "porQue": "los adivina de Shorts piden comentarios; versión simple (Santiago aún no convencido)",
-      "bloqueo": null
-    },
-    {
-      "fecha": "2026-11-21",
-      "hora": "19:00",
-      "formato": "largo",
-      "plantilla": "relajante",
-      "tema": "30 minutos de bolitas relajantes 🎵 para estudiar, concentrarse o dormir",
-      "tipo": "serie",
-      "serie": "Bolitas relajantes (sábado)",
-      "contingencia": null,
-      "estado": "programado",
-      "guion": "contenido/largos/2026-11-21-relajante.json",
-      "videoId": "tuCnd-Q2JMQ",
-      "referente": "canales de visuales relajantes de 30–60 min (watch time alto por sesión)",
-      "porQue": "30 min por vista suma horas rápido; Santiago: \"tiene potencial, hay que trabajarlo más\" → fotogramas y preview de audio antes del render",
-      "bloqueo": null
+      "guion": "contenido/guiones/2026-11-13-dato-pulpo-tres-corazones.json",
+      "videoId": "tIK8u9bHbwo",
+      "referente": "",
+      "porQue": "",
+      "bloqueo": "corregido según revisor (fuente en voz con año, giro, CTA); aprobado 4"
     }
   ]
 }
