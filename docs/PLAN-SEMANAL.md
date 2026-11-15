@@ -112,8 +112,8 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
 | Día | Formato | Primer video | Estado |
 |---|---|---|---|
 | lun 11-16 19:00 | **Torneo de bolitas** (16 competidores, llave, 10 carreras con secciones de obstáculos) | 16 países de habla hispana | render |
-| mié 11-18 19:00 | **¿Cuántas adivinas?** (10 melodías de dominio público, versión simple) | 10 canciones, de fácil a difícil | guion + audio listos |
-| sáb 11-21 19:00 | **Bolitas relajantes** (30 min, 6 escenas con fundidos) | Satie, Pachelbel, Brahms, Greensleeves + 2 propias | espera OK de fotogramas/audio |
+| mié 11-18 19:00 | **¿Cuántas adivinas?** (10 melodías de dominio público, versión simple) | 10 canciones, de fácil a difícil | programado `G2LqmVOscOM` |
+| sáb 11-21 19:00 | **Bolitas relajantes** (30 min, 6 escenas con fundidos) | Satie, Pachelbel, Brahms, Greensleeves + 2 propias | programado `tuCnd-Q2JMQ` |
 
 Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` → `scripts/preparar-largo-<tipo>.mts` →
 `scripts/render-largo.mts` (tramos con lock) → `scripts/bandeja-largo.mts` (json de bandeja con capítulos y mid-rolls).
@@ -768,9 +768,9 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "tipo": "serie",
       "serie": "¿Cuántas adivinas? (miércoles)",
       "contingencia": null,
-      "estado": "guion",
+      "estado": "programado",
       "guion": "contenido/largos/2026-11-18-quiz.json",
-      "videoId": null,
+      "videoId": "G2LqmVOscOM",
       "referente": "quizzes musicales \"guess the song\" (largos 8–10 min)",
       "porQue": "los adivina de Shorts piden comentarios; versión simple (Santiago aún no convencido)",
       "bloqueo": null
@@ -784,12 +784,12 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "tipo": "serie",
       "serie": "Bolitas relajantes (sábado)",
       "contingencia": null,
-      "estado": "guion",
+      "estado": "programado",
       "guion": "contenido/largos/2026-11-21-relajante.json",
-      "videoId": null,
+      "videoId": "tuCnd-Q2JMQ",
       "referente": "canales de visuales relajantes de 30–60 min (watch time alto por sesión)",
       "porQue": "30 min por vista suma horas rápido; Santiago: \"tiene potencial, hay que trabajarlo más\" → fotogramas y preview de audio antes del render",
-      "bloqueo": "OK de Santiago a fotogramas + audio de 30 s antes del render completo"
+      "bloqueo": null
     }
   ]
 }
