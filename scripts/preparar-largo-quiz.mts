@@ -36,9 +36,9 @@ export const prepararQuiz = (g: GuionQuiz, previews?: string) => {
     const segundos = toca / FPS - 0.6;
     // notas (con la misma vuelta en bucle que melodiaATempo)
     const pulso = 60 / c.melodia.bpm;
-    const notas: [number, number][] = [];
+    const notas: [number, number, number][] = [];
     for (let t = 0; t < segundos;) {
-      for (const [m, d] of c.melodia.notas) { if (t >= segundos) break; if (m > 0) notas.push([Math.round(t * 1000) / 1000, m]); t += d * pulso; }
+      for (const [m, d] of c.melodia.notas) { if (t >= segundos) break; if (m > 0) notas.push([Math.round(t * 1000) / 1000, m, Math.round(d * pulso * 1000) / 1000]); t += d * pulso; }
     }
     const pads = [...new Set(notas.map(([, m]) => m))].sort((a, b) => a - b);
     const mel = melodiaATempo(c.melodia, 'piano', 'acorde', segundos);

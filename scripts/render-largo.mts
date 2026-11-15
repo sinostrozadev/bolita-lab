@@ -34,7 +34,7 @@ for (let a = 0, k = 1; a < total; a += tramo, k++) {
   partes.push(mp4);
   if (fs.existsSync(`${mp4}.ok`)) { console.log(`[render-largo] tramo ${k} ya está (${a}-${b})`); continue; }
   const ti = Date.now();
-  const cmd = ['-w', '7200', '/tmp/bolita-render.lock', 'npx', 'remotion', 'render', 'src/index.ts', comp, mp4,
+  const cmd = ['-w', '3600', '/tmp/bolita-render.lock', 'npx', 'remotion', 'render', 'src/index.ts', comp, mp4,
     `--props=${path.resolve(rutaProps)}`, `--frames=${a}-${b}`, '--muted', '--concurrency=1', '--codec=h264', `--crf=${crf}`,
     '--timeout=240000', ...(gl ? [`--gl=${gl}`] : [])];
   console.log(`[render-largo] tramo ${k}: frames ${a}-${b}…`);

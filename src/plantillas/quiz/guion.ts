@@ -13,7 +13,7 @@ export const GuionQuiz = z.object({
 export type GuionQuiz = z.infer<typeof GuionQuiz>;
 
 /** Frames (30 fps): portada, presentación de cada canción, la canción, tarjeta (3 s de cuenta + respuesta), cierre. */
-export const T_QUIZ = { portada: 300, intro: 60, toca: 1050, tarjeta: 270, final: 660 } as const;
+export const T_QUIZ = { portada: 150, intro: 60, toca: 1050, tarjeta: 270, final: 660 } as const;
 
 export interface PlanQuiz {
   version: 1;
@@ -24,8 +24,8 @@ export interface PlanQuiz {
     nombre: string; autor: string; dificultad: 1 | 2 | 3;
     /** Frame en que empieza el bloque de la canción (intro). */
     desde: number;
-    /** [segundo desde que empieza a sonar, midi] de cada nota. */
-    notas: [number, number][];
+    /** [segundo desde que empieza a sonar, midi, duración en s] de cada nota. */
+    notas: [number, number, number][];
     /** Alturas distintas (de grave a agudo): un pad por cada una. */
     pads: number[];
   }[];

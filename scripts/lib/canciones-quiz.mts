@@ -4,7 +4,20 @@
  * (pulso = negra, midi 0 = silencio). Las 5 del catálogo de Shorts ya se escucharon y validaron en el canal.
  * Ninguna con letra en pantalla. Cumpleaños feliz queda FUERA (regla del canal, ver plantillas-remotion).
  */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { MELODIAS, type Melodia } from './wav.mjs';
+
+/** Canon en Re desde la partitura del canal (tema + variación en negras: más reconocible que las 16 blancas del catálogo). */
+const CANON: Melodia = (() => {
+  const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
+  const p = JSON.parse(fs.readFileSync(path.join(raiz, 'contenido/partituras/canon.json'), 'utf8')) as { pistas: { melodia: [number, number, number][] } };
+  const notas: [number, number][] = [];
+  let t = 0;
+  for (const [m, ini, d] of p.pistas.melodia.filter(([, i]) => i >= 16 && i < 48)) { if (ini > t) notas.push([0, ini - t]); notas.push([m, d]); t = ini + d; }
+  return { nombre: 'Canon en Re (Pachelbel)', bpm: 84, tonica: 2, menor: false, notas };
+})();
 
 export interface CancionQuiz { nombre: string; autor: string; dificultad: 1 | 2 | 3; melodia: Melodia }
 
@@ -75,5 +88,5 @@ export const CANCIONES_QUIZ: CancionQuiz[] = [
   { nombre: 'Canción de cuna', autor: 'Johannes Brahms · 1868', dificultad: 2, melodia: BRAHMS },
   { nombre: 'El lago de los cisnes', autor: 'Piotr Chaikovski · 1876', dificultad: 3, melodia: MELODIAS.cisnes },
   { nombre: 'Greensleeves', autor: 'Tradicional inglés · siglo XVI', dificultad: 3, melodia: GREENSLEEVES },
-  { nombre: 'Canon en Re', autor: 'Johann Pachelbel · c. 1680', dificultad: 3, melodia: MELODIAS.canon },
+  { nombre: 'Canon en Re', autor: 'Johann Pachelbel · c. 1680', dificultad: 3, melodia: CANON },
 ];

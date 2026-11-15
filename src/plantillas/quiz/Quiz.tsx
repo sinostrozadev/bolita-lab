@@ -37,7 +37,7 @@ const NIVEL = ['', 'FÁCIL', 'MEDIA', 'DIFÍCIL'];
 
 type Cancion = PlanQuiz['canciones'][number];
 
-const Teclado: React.FC<{ c: Cancion; k: number; tono: number }> = ({ c, k, tono }) => {
+const Teclado: React.FC<{ c: Cancion; k: number; tono: number; sinCabecera?: boolean }> = ({ c, k, tono, sinCabecera }) => {
   const frame = useCurrentFrame();
   const t = frame / FPS;
   const n = c.pads.length;
@@ -58,8 +58,24 @@ const Teclado: React.FC<{ c: Cancion; k: number; tono: number }> = ({ c, k, tono
     by = PAD_Y - BOLA_R - 4 * alto * u * (1 - u);
   }
   const hue = (m: number) => tono + ((m - c.pads[0]) / Math.max(1, c.pads[c.pads.length - 1] - c.pads[0])) * 200;
+  // Notas que caen (estilo Synthesia): cada barra baja hacia su pad y lo toca justo cuando suena.
+  const VEL = 230, VENTANA = 3.1;
+  const barras = c.notas.filter(([tn, , dn]) => tn + dn > t - 0.05 && tn < t + VENTANA);
   return (
     <AbsoluteFill>
+      {c.pads.map((m) => <div key={`g${m}`} style={{ position: 'absolute', left: xDe(m) - 1, top: 150, width: 2, height: PAD_Y - 150, background: `hsla(${hue(m)},60%,60%,0.08)` }} />)}
+      {barras.map(([tn, m, dn], j) => {
+        const fondo = PAD_Y - (tn - t) * VEL; // borde inferior de la barra
+        const alto = Math.max(18, dn * VEL - 6);
+        const top = Math.max(150, fondo - alto), bottom = Math.min(PAD_Y, fondo);
+        if (bottom - top < 2) return null;
+        const sonando = tn <= t;
+        return <div key={`n${j}`} style={{
+          position: 'absolute', left: xDe(m) - ancho * 0.3, top, width: ancho * 0.6, height: bottom - top, borderRadius: 10,
+          background: `linear-gradient(180deg, hsla(${hue(m)},90%,70%,0.95), hsla(${hue(m)},85%,50%,0.85))`,
+          boxShadow: sonando ? `0 0 26px hsl(${hue(m)},95%,62%)` : `0 0 10px hsla(${hue(m)},90%,60%,0.5)`, opacity: top <= 150 ? 0.9 : 1,
+        }} />;
+      })}
       {c.pads.map((m) => {
         // brillo del pad: la última vez que sonó
         let ult = -99;
@@ -84,11 +100,11 @@ const Teclado: React.FC<{ c: Cancion; k: number; tono: number }> = ({ c, k, tono
       })}
       <div style={{ position: 'absolute', left: bx - BOLA_R * 3, top: by - BOLA_R * 3, width: BOLA_R * 6, height: BOLA_R * 6, borderRadius: '50%', background: `radial-gradient(circle, ${PALETA.neon.amarillo}55 0%, transparent 65%)` }} />
       <div style={{ position: 'absolute', left: bx - BOLA_R, top: by - BOLA_R, width: BOLA_R * 2, height: BOLA_R * 2, borderRadius: '50%', background: `radial-gradient(circle at 34% 30%, #FFFFFF 0, ${PALETA.neon.amarillo} 45%, #C9A800 100%)`, boxShadow: `0 0 30px ${PALETA.neon.amarillo}` }} />
-      <div style={{ position: 'absolute', top: 40, width: W, textAlign: 'center', fontFamily: TIPO.display, fontWeight: 800 }}>
+      {!sinCabecera && <><div style={{ position: 'absolute', top: 40, width: W, textAlign: 'center', fontFamily: TIPO.display, fontWeight: 800 }}>
         <div style={{ fontSize: 88, color: PALETA.tinta }}>¿QUÉ CANCIÓN ES? <span style={{ fontFamily: FUENTE_EMOJI }}>🎵</span></div>
       </div>
       <div style={{ position: 'absolute', left: 50, top: 50, fontFamily: TIPO.display, fontWeight: 800, fontSize: 54, color: PALETA.neon.amarillo }}>{k + 1}/10</div>
-      <div style={{ position: 'absolute', right: 50, top: 56 }}><Estrellas n={c.dificultad} tam={40} /></div>
+      <div style={{ position: 'absolute', right: 50, top: 56 }}><Estrellas n={c.dificultad} tam={40} /></div></>}
     </AbsoluteFill>
   );
 };
@@ -174,7 +190,12 @@ export const Quiz: React.FC<GuionQuiz> = (g) => {
   return (
     <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 35%, #2A2556 0%, ${PALETA.fondo2} 50%, ${PALETA.fondo} 100%)` }}>
       <Audio src={staticFile(`audio/generado/${g.id}.wav`)} />
-      <Sequence durationInFrames={portada}><Portada g={g} /></Sequence>
+      {/* Portada: el teclado ya cae detrás del título (en silencio): se ve el juego desde el frame 0 */}
+      <Sequence durationInFrames={portada}>
+        <AbsoluteFill style={{ opacity: 0.55 }}><Sequence from={-200} layout="none"><Teclado c={plan.canciones[9]} k={9} tono={(9 * 47) % 360} sinCabecera /></Sequence></AbsoluteFill>
+        <AbsoluteFill style={{ background: 'radial-gradient(ellipse at 50% 45%, rgba(11,11,18,0.85) 20%, rgba(11,11,18,0.2) 75%)' }} />
+        <Portada g={g} />
+      </Sequence>
       {plan.canciones.map((c, k) => (
         <React.Fragment key={k}>
           <Sequence from={c.desde} durationInFrames={intro}><Intro c={c} k={k} /></Sequence>
