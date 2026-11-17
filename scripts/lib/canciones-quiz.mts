@@ -14,7 +14,7 @@ const CANON: Melodia = (() => {
   const raiz = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
   const p = JSON.parse(fs.readFileSync(path.join(raiz, 'contenido/partituras/canon.json'), 'utf8')) as { pistas: { melodia: [number, number, number][] } };
   const notas: [number, number][] = [];
-  let t = 0;
+  let t = 16; // la melodía parte en el pulso 16 (variación en negras): con t = 0 sonaban 16 pulsos de silencio antes
   for (const [m, ini, d] of p.pistas.melodia.filter(([, i]) => i >= 16 && i < 48)) { if (ini > t) notas.push([0, ini - t]); notas.push([m, d]); t = ini + d; }
   return { nombre: 'Canon en Re (Pachelbel)', bpm: 84, tonica: 2, menor: false, notas };
 })();
@@ -77,6 +77,33 @@ const GREENSLEEVES: Melodia = {
   ],
 };
 
+/** Lago de los cisnes, tema del oboe (Chaikovski, 1876), compases 1-8, Si menor (verificado contra la partitura de Wikimedia Commons). */
+const CISNES: Melodia = {
+  nombre: 'El lago de los cisnes', bpm: 110, tonica: 11, menor: true,
+  notas: [
+    [78, 2], [71, .5], [73, .5], [74, .5], [76, .5],
+    [78, 1.5], [74, .5], [78, 1.5], [74, .5],
+    [78, 1.5], [71, .5], [74, .5], [71, .5], [67, .5], [74, .5],
+    [71, 2.5], [76, .5], [74, .5], [73, .5],
+    [78, 2], [71, .5], [73, .5], [74, .5], [76, .5],
+    [78, 1.5], [74, .5], [78, 1.5], [74, .5],
+    [78, 1.5], [71, .5], [74, .5], [71, .5], [67, .5], [74, .5],
+    [71, 3], [71, 1],
+  ],
+};
+
+/** Marcha turca (Mozart, K. 331): mismas notas que MELODIAS.marchaturca, con el ritmo real (semicorcheas / corcheas), sin adornos. */
+const MARCHA: Melodia = {
+  nombre: 'Marcha turca', bpm: 140, compas: 2, anacrusa: 1, tonica: 9, menor: true,
+  notas: [
+    [71, .25], [69, .25], [68, .25], [69, .25], [72, .25], [0, .75],
+    [74, .25], [72, .25], [71, .25], [72, .25], [76, .25], [0, .75],
+    [77, .25], [76, .25], [75, .25], [76, .25], [83, .25], [81, .25], [80, .25], [81, .25], [83, .25], [81, .25], [80, .25], [81, .25],
+    [84, 1], [81, .5], [84, .5],
+    [83, .5], [81, .5], [79, .5], [81, .5], [83, .5], [81, .5], [79, .5], [81, .5], [83, .5], [81, .5], [79, .5], [78, .5], [76, 1],
+  ],
+};
+
 /** Orden de fácil a difícil (la dificultad se muestra con estrellas). */
 export const CANCIONES_QUIZ: CancionQuiz[] = [
   { nombre: 'Jingle Bells', autor: 'James Lord Pierpont · 1857', dificultad: 1, melodia: JINGLE },
@@ -84,9 +111,9 @@ export const CANCIONES_QUIZ: CancionQuiz[] = [
   { nombre: 'La cucaracha', autor: 'Tradicional mexicana', dificultad: 1, melodia: CUCARACHA },
   { nombre: 'Para Elisa', autor: 'Ludwig van Beethoven · 1810', dificultad: 2, melodia: MELODIAS.furelise },
   { nombre: 'Cancán', autor: 'Jacques Offenbach · 1858', dificultad: 2, melodia: CANCAN },
-  { nombre: 'Marcha turca', autor: 'Wolfgang Amadeus Mozart · 1783', dificultad: 2, melodia: MELODIAS.marchaturca },
+  { nombre: 'Marcha turca', autor: 'Wolfgang Amadeus Mozart · 1783', dificultad: 2, melodia: MARCHA },
   { nombre: 'Canción de cuna', autor: 'Johannes Brahms · 1868', dificultad: 2, melodia: BRAHMS },
-  { nombre: 'El lago de los cisnes', autor: 'Piotr Chaikovski · 1876', dificultad: 3, melodia: MELODIAS.cisnes },
+  { nombre: 'El lago de los cisnes', autor: 'Piotr Chaikovski · 1876', dificultad: 3, melodia: CISNES },
   { nombre: 'Greensleeves', autor: 'Tradicional inglés · siglo XVI', dificultad: 3, melodia: GREENSLEEVES },
   { nombre: 'Canon en Re', autor: 'Johann Pachelbel · c. 1680', dificultad: 3, melodia: CANON },
 ];
