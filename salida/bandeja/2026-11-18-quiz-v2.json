@@ -1,0 +1,80 @@
+{
+  "id": "2026-11-18-quiz-v2",
+  "plantilla": "quiz",
+  "tipo": "largo",
+  "titulo": "¿Cuántas adivinas? 10 canciones tocadas por una bolita 🎵",
+  "descripcion": "Una bolita salta sobre un teclado y cada salto es una nota. 10 melodías famosas, de fácil a difícil: cuenta cuántas reconoces antes de la respuesta y comenta tu puntaje 👇\n\nCapítulos:\n0:00 Las reglas: cuenta tus aciertos\n0:05 Canción 1 · ★☆☆\n0:51 Canción 2 · ★☆☆\n1:37 Canción 3 · ★☆☆\n2:23 Canción 4 · ★★☆\n3:09 Canción 5 · ★★☆\n3:55 Canción 6 · ★★☆\n4:41 Canción 7 · ★★☆\n5:27 Canción 8 · ★★★\n6:13 Canción 9 · ★★★\n6:59 Canción 10 · ★★★\n7:45 ¿Cuántas adivinaste? Tu puntaje\n\nTodas las melodías son de dominio público (compositores clásicos y canciones tradicionales); arreglo y sonido sintetizados por Bolita Lab.\n\n#bolitalab #adivinalacancion #quiz",
+  "hashtags": [
+    "#bolitalab",
+    "#adivinalacancion",
+    "#quiz",
+    "#musica",
+    "#desafio"
+  ],
+  "duracionSeg": 487,
+  "estado": "subido",
+  "publicarEn": "2026-11-18T22:00:00.000Z",
+  "categoria": "24",
+  "mp4": "/home/santiago/projects/yt/bolita-lab/salida/largos/2026-11-18-quiz-v2.mp4",
+  "capitulos": [
+    {
+      "seg": 0,
+      "titulo": "Las reglas: cuenta tus aciertos"
+    },
+    {
+      "seg": 5,
+      "titulo": "Canción 1 · ★☆☆"
+    },
+    {
+      "seg": 51,
+      "titulo": "Canción 2 · ★☆☆"
+    },
+    {
+      "seg": 97,
+      "titulo": "Canción 3 · ★☆☆"
+    },
+    {
+      "seg": 143,
+      "titulo": "Canción 4 · ★★☆"
+    },
+    {
+      "seg": 189,
+      "titulo": "Canción 5 · ★★☆"
+    },
+    {
+      "seg": 235,
+      "titulo": "Canción 6 · ★★☆"
+    },
+    {
+      "seg": 281,
+      "titulo": "Canción 7 · ★★☆"
+    },
+    {
+      "seg": 327,
+      "titulo": "Canción 8 · ★★★"
+    },
+    {
+      "seg": 373,
+      "titulo": "Canción 9 · ★★★"
+    },
+    {
+      "seg": 419,
+      "titulo": "Canción 10 · ★★★"
+    },
+    {
+      "seg": 465,
+      "titulo": "¿Cuántas adivinaste? Tu puntaje"
+    }
+  ],
+  "midrollsSeg": [],
+  "noEsParaNinos": true,
+  "contenidoSintetico": false,
+  "nota": "Reemplazo de G2LqmVOscOM (Canon sin 11 s de silencio, tema real del Lago de los cisnes, ritmo real de la Marcha turca; commit e0a81d4). Subido por Studio con título temporal [v2] y renombrado por API tras verificar publishAt.",
+  "miniatura": "/home/santiago/projects/yt/bolita-lab/salida/caratulas/quiz-canciones.jpg",
+  "videoId": "HmX09axMfOc",
+  "url": "https://www.youtube.com/watch?v=HmX09axMfOc",
+  "programado": "2026-11-18 19:00",
+  "subidoEn": "2026-11-17T16:38:20.924Z",
+  "reprogramadoEn": "2026-11-17T16:38:37.567Z",
+  "reemplazaA": "G2LqmVOscOM"
+}

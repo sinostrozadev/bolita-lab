@@ -114,7 +114,7 @@ Reemplazos si una ranura se cae: `dato-pulpo-tres-corazones` · `carrera-super-p
 | Día | Formato | Primer video | Estado |
 |---|---|---|---|
 | lun 11-16 19:00 | **Torneo de bolitas** (16 competidores, llave, 10 carreras con secciones de obstáculos) | 16 países de habla hispana | render |
-| mié 11-18 19:00 | **¿Cuántas adivinas?** (10 melodías de dominio público, versión simple) | 10 canciones, de fácil a difícil | programado `G2LqmVOscOM` |
+| mié 11-18 19:00 | **¿Cuántas adivinas?** (10 melodías de dominio público, versión simple) | 10 canciones, de fácil a difícil | programado `HmX09axMfOc` (reemplaza a `G2LqmVOscOM`, privado: melodías corregidas) |
 | sáb 11-21 19:00 | **Bolitas relajantes** (30 min, 6 escenas con fundidos) | Satie, Pachelbel, Brahms, Greensleeves + 2 propias | programado `tuCnd-Q2JMQ` |
 
 Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` → `scripts/preparar-largo-<tipo>.mts` →
@@ -660,7 +660,7 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "contingencia": null,
       "estado": "programado",
       "guion": "contenido/largos/2026-11-18-quiz.json",
-      "videoId": "G2LqmVOscOM",
+      "videoId": "HmX09axMfOc",
       "referente": "quizzes musicales \"guess the song\" (largos 8–10 min)",
       "porQue": "los adivina de Shorts piden comentarios; versión simple (Santiago aún no convencido)",
       "bloqueo": null
