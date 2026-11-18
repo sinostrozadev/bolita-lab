@@ -15,6 +15,7 @@ const OPCIONES = {
   args: ['--disable-blink-features=AutomationControlled', '--no-first-run', '--no-default-browser-check', '--disable-gpu', '--renderer-process-limit=2'],
   ignoreDefaultArgs: ['--enable-automation'],
 };
+const _log = console.log; console.log = (...a) => _log(new Date().toISOString(), ...a); // marcas de hora (2026-11-18)
 let ctx = await chromium.launchPersistentContext(perfil, OPCIONES);
 let page = ctx.pages()[0] ?? (await ctx.newPage());
 let ultimaUrl = 'https://accounts.google.com/v3/signin/identifier?continue=https://www.youtube.com/&flowName=GlifWebSignIn&flowEntry=ServiceLogin';
