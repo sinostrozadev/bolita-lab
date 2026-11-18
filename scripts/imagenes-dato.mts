@@ -20,7 +20,7 @@ import type { GuionDato, ImagenEscena, ImagenResuelta, ImagenesDato } from '../s
 const RAIZ = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const API = 'https://commons.wikimedia.org/w/api.php';
 /** Wikimedia pide un User-Agent descriptivo con contacto: https://meta.wikimedia.org/wiki/User-Agent_policy */
-const USER_AGENT = 'BolitaLabShorts/1.0 (canal de YouTube Bolita Lab; contacto: sinostrozadev@gmail.com) node-fetch';
+const USER_AGENT = 'BolitaLabShorts/1.0 (canal de YouTube Bolita Lab; contacto: https://github.com/sinostrozadev/bolita-lab) node-fetch';
 const LADO_MINIMO = 1200;
 const ANCHO_DESCARGA = 1280; // suficiente para la tarjeta (960 px) y el fondo (1080 px); más grande gasta RAM en el render
 const RESULTADOS = 20;
