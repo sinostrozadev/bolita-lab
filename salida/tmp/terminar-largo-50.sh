@@ -7,7 +7,7 @@
 #
 # Pasos:
 #  1. ffprobe: el mp4 existe, dura lo que dice el plan (± 3 s) y ≥ 20 min, video 1920×1080 h264, audio AAC presente;
-#     ffmpeg volumedetect: volumen medio > −35 dB (no está mudo). Cualquier fallo → sale sin subir.
+#     volumen RMS > −35 dB (medido en Python) (no está mudo). Cualquier fallo → sale sin subir.
 #  2. Miniatura: still MiniaturaEliminacion (fotograma real de la parrilla de los 50 + "50 PAÍSES / SOLO 1 GANA") bajo el lock
 #     de render. Es Remotion, no GPT → se sube con CARATULA_REMOTION=1 (provisional, ver salida/caratulas/pedidos/).
 #  3. bandeja-largo.mts → salida/bandeja/<id>.json (capítulos en la descripción, mid-rolls) + enlace duro del mp4 en la bandeja.
@@ -17,9 +17,9 @@
 set -euo pipefail
 cd /home/santiago/projects/yt/bolita-lab
 ID=2026-11-21-eliminacion-50-paises
-MP4=salida/largos/$ID.mp4
+MP4=${MP4:-salida/largos/$ID.mp4}
 GUION=contenido/largos/$ID.json
-PROPS=salida/trabajo/$ID.props.json
+PROPS=${PROPS:-salida/trabajo/$ID.props.json}
 CUANDO=2026-11-21T19:00:00-03:00
 CANAL=UCi1_1_ItZCLY4axLshZcuZQ
 FFPROBE=$(command -v ffprobe || echo node_modules/@remotion/compositor-linux-x64-gnu/ffprobe)
@@ -35,8 +35,15 @@ echo "   duración $DUR s (plan $ESPERADA s) · video $VID · audio ${AUD:-NINGU
 python3 -c "import sys;d=float('$DUR');e=float('$ESPERADA');sys.exit(0 if d>=1200 and abs(d-e)<=3 else 1)" || { echo "✗ duración fuera de rango (≥ 1200 s y ± 3 s del plan)"; exit 1; }
 [ "$VID" = "h264,1920,1080" ] || { echo "✗ video inesperado: $VID"; exit 1; }
 [[ "$AUD" == aac,2* ]] || { echo "✗ sin audio AAC estéreo: $AUD"; exit 1; }
-VOL=$("$FFMPEG" -hide_banner -nostats -i "$MP4" -map 0:a -af volumedetect -f null - 2>&1 | sed -n 's/.*mean_volume: \(-\?[0-9.]*\) dB/\1/p')
-echo "   volumen medio $VOL dB"
+# El ffmpeg de Remotion no trae volumedetect ni s16le: se decodifica a wav 8 kHz mono y se mide en Python.
+WAVTMP=$(mktemp --suffix=.wav)
+"$FFMPEG" -v error -y -i "$MP4" -map 0:a -ac 1 -ar 8000 -c:a pcm_s16le "$WAVTMP"
+VOL=$(python3 -c "
+import wave,array,math
+w=wave.open('$WAVTMP');a=array.array('h',w.readframes(w.getnframes()))
+print(round(20*math.log10(math.sqrt(sum(x*x for x in a)/max(1,len(a)))/32768+1e-9),1))")
+rm -f "$WAVTMP"
+echo "   volumen RMS $VOL dB"
 python3 -c "import sys;sys.exit(0 if float('${VOL:--99}')>-35 else 1)" || { echo "✗ audio casi mudo"; exit 1; }
 echo "✓ mp4 verificado"
 [ "${SOLO_VERIFICAR:-0}" = 1 ] && exit 0
