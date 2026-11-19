@@ -50,7 +50,8 @@ const caidas = (plan: PlanEliminacion) => {
 
 /** Contador grande "QUEDAN N" (anima de `de` a `a` entre los frames k0 y k1). */
 const Quedan: React.FC<{ de: number; a?: number; k?: number; k0?: number; k1?: number; tam?: number; color?: string }> = ({ de, a = de, k = 0, k0 = 0, k1 = 1, tam = 72, color = ORO }) => {
-  const n = Math.round(interpolate(k, [k0, k1], [de, a], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }));
+  // Si no cae nadie (la final: 4 → 4), k0 = k1 y interpolate exige rango creciente: no se anima.
+  const n = de === a || k1 <= k0 ? a : Math.round(interpolate(k, [k0, k1], [de, a], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }));
   const golpe = de !== a && k >= k0 && k <= k1 + 8 ? 1 + 0.08 * Math.sin(((k - k0) / 3) * Math.PI) : 1;
   return (
     <div style={{ fontFamily: TIPO.display, fontWeight: 800, fontSize: tam, color: PALETA.tinta, lineHeight: 1, whiteSpace: 'nowrap' }}>

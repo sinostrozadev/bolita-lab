@@ -5,14 +5,25 @@
 > solo cuenta como "superado" con resultados (retención, vistas relativas, subs/video) durante 2 tandas seguidas (§5).
 > Fuentes: `docs/REFERENTES.md` (investigación 2026-11-04/05), `salida/metricas/2026-11-07/metricas.json` (lo nuestro).
 
-## Metas actuales
+## Metas actuales (cambiadas el 2026-11-19; diagnóstico de virales del 18-11 §2.2)
 
-| Plantillas | Canal-meta | Video-meta | Videos de apoyo |
+| Plantillas | Canal-meta | Video-meta | Por qué |
 |---|---|---|---|
-| **`bola`** (y el canal entero en "Shorts de bolita") | **satisfying.ba11s** ([@satisfying.ba11s](https://www.youtube.com/@satisfying.ba11s)) · ~1,35 M subs · ~384 videos · creado 2023-11 · ~12 Shorts/mes · sin voz, bola que rebota/crece en un círculo + melodía, hecho por código (alcanzable con Remotion) | **"Here is a bouncing ball that gets bigger and faster until my pc crashes"** — [Peo-DIOmmRo](https://www.youtube.com/watch?v=Peo-DIOmmRo) · 78,3 M · 56 s · 2023-12 | [rgjeRfHFjms](https://www.youtube.com/watch?v=rgjeRfHFjms) "Reminds me of something 🤔" (38,6 M, 36 s, adivinar la canción) · su **pestaña Shorts reciente** (60–160 K por Short = la vara realista de la mediana) |
-| `carrera` (apoyo de la misma meta) | mikan2d ([@mikan2d](https://www.youtube.com/@mikan2d)) · 3,08 M subs · ~6/mes | [biN5wJVlEzA](https://www.youtube.com/watch?v=biN5wJVlEzA) "Digging Race" · 5,7 M · 34 s | [4S4LVaZoiks](https://www.youtube.com/watch?v=4S4LVaZoiks) "Particle Race 4" (5,1 M, 60 s, serie numerada) |
-| **`dato`** | **Ñerd** ([@Ñerd-s2j](https://www.youtube.com/@%C3%91erd-s2j)) · 19,1 K subs · 44 Shorts en ~2 semanas · ~16 M vistas | "¿Por qué Arizona se quedó a 60 km del mar sin tocarlo?" · 4,1 M · 2:42 (fórmula ya copiada a `FORMULA_DATO`) | capital de Canadá (1,3 M) · "¿Por qué Chile es tan largo…?" (1,1 M). Formato vecino en español a 60–90 s: El Calacas ("beberte todos los océanos", 3,6 M, 61 s) |
+| **`bola` en bucle** ("¿Qué canción toca la bolita?") | **bouncyball** · 302 K subs · creado 2024-12 · mediana 273 K (50 Shorts) · ~1/día · sin voz | **"Which song is the bouncing balls playing?"** — [eX5dtXBbDgU](https://www.youtube.com/shorts/eX5dtXBbDgU) · 8,46 M · 21 s (y 5,28 M / 4,91 M con el MISMO título) | 20 s, 1 bola, melodía nota a nota, pregunta fija, bucle. Mismo formato que el nuestro de 20 s; nosotros solo dominio público |
+| **`carrera` remontada** ("elige tu color") | **MarbleDecide** · 25,5 K subs · creado 2026-05 · mediana 31,5 K | **"Unreal comeback 😱🔥"** — [61iZ3NcJc4M](https://www.youtube.com/shorts/61iZ3NcJc4M) · 14,0 M · 86 s | canal chico y nuevo con un outlier enorme: la fórmula (elegir + remontada) rinde sin tamaño. Apoyo en español: FernanWarriorZ "ELIGE TU COLOR" (8,85 M) |
+| **Largo `eliminacion`** | **AlgoRaces** · 19 K subs · creado 2025-07 · ~150 K por largo | **"50 Countries Tournament - Marble Race in Algodoo"** — [sc8g3ZeYD5w](https://www.youtube.com/watch?v=sc8g3ZeYD5w) · 1,46 M · 26 min | 2D simple (Algodoo) como el nuestro: lo que pesa es la escala (50) y las fases. Apoyo: Alfa Marbles (canal de 3 meses, 644 K con 25 min) |
 
+Fuera: satisfying.ba11s (sin subir desde 2025-05), mikan2d y Ñerd para `dato` (el `dato` sale de la rotación: voz sintética).
+
+### Brechas → cómo se mide (umbrales y fechas en `docs/PLAN-SEMANAL.md`, "Cómo se mide cada apuesta")
+| Dimensión | Meta | Nosotros (19-11) |
+|---|---|---|
+| Duración Short de canción | 20–21 s, bucle | 19–21 s, bucle (5 programados 23→30-11) |
+| % visto Short de canción | ≥ 90 % (bucle) | por medir desde el 25-11 |
+| Comentarios en carrera | MarbleDecide: miles | 0–3 → meta ≥ 10 (3 remontadas 24/26/28-11) |
+| Largo: impresiones a 7 d | AlgoRaces ~150 K vistas/largo | Torneo 392 impresiones → meta ≥ 3.000 y CTR ≥ 5 % (50 países, sáb 21-11) |
+
+<!-- Fichas anteriores (historial, 2026-11-07) -->
 **Por qué estas y no otras (criterios §2):**
 - satisfying.ba11s es **la misma mecánica que `bola`** (inventó la ola "Will the ball escape?"), sin voz, sin equipo
   humano: lo podría hacer nuestra fábrica (test de ≤ 5 días de plantilla: sí). Está vivo (~12/mes).
@@ -89,3 +100,4 @@
 ## Historial de metas
 
 - 2026-11-07 · Meta inicial fijada: satisfying.ba11s (bola/canal) + mikan2d (carrera) + Ñerd (dato).
+- 2026-11-19 · Metas nuevas por el diagnóstico de virales: bouncyball (bola en bucle), MarbleDecide (carrera remontada), AlgoRaces (largo de eliminación). satisfying.ba11s inactivo desde 2025-05.

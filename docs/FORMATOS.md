@@ -86,7 +86,13 @@ Misma canción (transcripción de Santiago, compases 1–8 ×2, 80 bpm) en: bola
     { "formato": 13, "id": "Liq64V3Kn34", "fecha": "2026-11-20", "nota": "máquina de canicas 3D, Oda a la alegría, 12:00 (ex prototipo privado)" },
     { "formato": 16, "id": "xJqtrarA79w", "fecha": "2026-11-23", "nota": "bucle 19 s: Para Elisa, 18:00" },
     { "formato": 14, "id": "ifYaoZV1jlU", "fecha": "2026-11-16", "nota": "LARGO Torneo de bolitas: 16 países, 10:33, lun 19:00" },
-    { "formato": 17, "id": "JOzAjFGWNew", "fecha": "2026-11-24", "nota": "carrera remontada elige tu color: Colo-Colo/U/UC/Cobreloa, gana COLO-COLO, remontada a 18,1 s, 18:00" }
+    { "formato": 17, "id": "JOzAjFGWNew", "fecha": "2026-11-24", "nota": "carrera remontada elige tu color: Colo-Colo/U/UC/Cobreloa, gana COLO-COLO, remontada a 18,1 s, 18:00" },
+    { "formato": 17, "id": "i1ziHMpmE9o", "fecha": "2026-11-26", "nota": "carrera remontada elige tu color: Coca/Pepsi/Fanta/Sprite, gana PEPSI, remontada a 14,3 s, 18:00" },
+    { "formato": 17, "id": "U3eOIC2cXJU", "fecha": "2026-11-28", "nota": "carrera remontada elige tu color: ARG/BRA/CHI/MEX, gana MÉXICO, remontada a 15,0 s, 18:00" },
+    { "formato": 16, "id": "d5aguS65OdI", "fecha": "2026-11-25", "nota": "bucle 20 s · En la gruta del rey de la montaña (Grieg), 18:00" },
+    { "formato": 16, "id": "8qARUo-q1M8", "fecha": "2026-11-27", "nota": "bucle 20 s · Oda a la alegría, 18:00" },
+    { "formato": 16, "id": "8SOnngr9G-g", "fecha": "2026-11-29", "nota": "bucle 20 s · Marcha turca, 18:00" },
+    { "formato": 16, "id": "JR6eqkaAoBI", "fecha": "2026-11-30", "nota": "bucle 20 s · Pequeña serenata nocturna, 18:00" }
   ]
 }
 ```
