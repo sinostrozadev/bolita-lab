@@ -814,7 +814,7 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "videoId": "b3v9Q6ymd3A",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
       "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) · movido el 11-09 para los experimentos de interacción",
-      "bloqueo": " · ⚠ 19-11: la API no lo lista como programado en el canal (revisar)"
+      "bloqueo": null
     },
     {
       "fecha": "2026-11-21",
@@ -878,7 +878,7 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "videoId": "zeb04rqSoHk",
       "referente": "satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K)",
       "porQue": "bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación · movido el 11-09",
-      "bloqueo": " · ⚠ 19-11: la API no lo lista como programado en el canal (revisar)"
+      "bloqueo": null
     },
     {
       "fecha": "2026-11-22",
