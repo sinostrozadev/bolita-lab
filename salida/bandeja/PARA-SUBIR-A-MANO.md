@@ -1,6 +1,6 @@
 # Videos listos para subir a mano (YouTube Studio)
 
-Generado: 2026-11-13 03:45 (America/Santiago) · 4 Short(s) + 2 video(s) largo(s), en orden de calendario.
+Generado: 2026-11-15 04:38 (America/Santiago) · 4 Short(s) + 3 video(s) largo(s), en orden de calendario.
 
 Cómo: YouTube Studio → **Crear → Subir videos** → elige el archivo indicado. Copia el título y la
 descripción **tal cual** (la descripción ya trae los hashtags al final). En "Público": **No, no es
@@ -142,7 +142,7 @@ shorts, satisfying, fisica, bolita, neon, beethoven, furelise
 ## 1. 14 Shorts de Bolita Lab: rebotes, carreras y datos increíbles
 
 - **Archivo:** `/home/santiago/projects/yt/bolita-lab/salida/compilaciones/2026-11-03-compilacion.mp4`
-- **Programar para:** 2026-11-15 10:00 (America/Santiago)
+- **Programar para:** 2026-11-21 19:00 (America/Santiago)
 - **Id:** `2026-11-03-compilacion` · **Plantilla:** compilación (video largo) · **Duración:** 08:09 · **Categoría:** Entretenimiento
 - **Miniatura:** `/home/santiago/projects/yt/bolita-lab/salida/marca/miniatura-compilacion.png`
 
@@ -192,7 +192,7 @@ bolitalab, satisfying, simulacion, fisica, datoscuriosos
 ## 2. 14 Shorts de Bolita Lab: rebotes, carreras y datos increíbles
 
 - **Archivo:** `/home/santiago/projects/yt/bolita-lab/salida/compilaciones/2026-11-08-compilacion.mp4`
-- **Programar para:** 2026-11-22 10:00 (America/Santiago)
+- **Programar para:** 2026-11-23 19:00 (America/Santiago)
 - **Id:** `2026-11-08-compilacion` · **Plantilla:** compilación (video largo) · **Duración:** 08:35 · **Categoría:** Entretenimiento
 - **Miniatura:** `/home/santiago/projects/yt/bolita-lab/salida/marca/miniatura-compilacion.png`
 
@@ -220,6 +220,56 @@ Capítulos:
 06:43 ¿Qué color gana la carrera? 🎨 El tuyo, ¿llega primero?
 07:15 ¿Cuál de las 2 bolitas escapa por el hueco estrecho? Oda a la Alegría
 07:44 En el Canal de Panamá vas del Atlántico al Pacífico hacia el este
+
+Las fuentes de cada dato están en la descripción de su Short.
+
+Simulaciones físicas deterministas y sonido sincronizado a cada rebote. Música de dominio público.
+Suscríbete: hay un Short nuevo cada día.
+
+#bolitalab #satisfying #simulacion #fisica #datoscuriosos
+```
+
+**Hashtags:**
+```
+#bolitalab #satisfying #simulacion #fisica #datoscuriosos
+```
+
+**Etiquetas** (campo "Etiquetas" de Studio):
+```
+bolitalab, satisfying, simulacion, fisica, datoscuriosos
+```
+
+## 3. 14 Shorts de Bolita Lab: rebotes, carreras y datos increíbles
+
+- **Archivo:** `/home/santiago/projects/yt/bolita-lab/salida/compilaciones/2026-11-15-compilacion.mp4`
+- **Programar para:** 2026-11-25 19:00 (America/Santiago)
+- **Id:** `2026-11-15-compilacion` · **Plantilla:** compilación (video largo) · **Duración:** 08:29 · **Categoría:** Entretenimiento
+- **Miniatura:** `/home/santiago/projects/yt/bolita-lab/salida/marca/miniatura-compilacion.png`
+
+**Título:**
+```
+14 Shorts de Bolita Lab: rebotes, carreras y datos increíbles
+```
+
+**Descripción:**
+```
+Recopilación de Bolita Lab: 14 Shorts seguidos, sin cortes. Bolitas de neón que rebotan al ritmo de melodías clásicas, carreras con física real y datos sorprendentes con fuente.
+
+Capítulos:
+00:00 ¿Qué mes del año gana la carrera? 🏁 Carrera de bolitas
+00:37 La miel no caduca: la de hace 3.000 años aún se podía comer
+01:10 ¿TikTok, Instagram, YouTube o X? 📲 ¿Qué red social gana?
+01:40 ¿Messi, CR7, Neymar o Mbappé? ⚽ ¿Quién gana la carrera?
+02:15 La Torre Eiffel mide 15 cm más en verano que en invierno
+02:59 Batalla de 4 colores: ¿cuál sobrevive? 🎨
+03:40 ¿Perro, gato, hámster o loro? 🐶🐱 Carrera de bolitas
+04:10 PROTOTIPO carrera v2 · ¿Qué superpoder gana? · privado
+04:47 PROTOTIPO máquina de canicas musical 3D · privado
+05:30 Lo que ves en el cielo ya pasó: el Sol tiene 8 minutos de retraso
+06:02 PROTOTIPO batalla de colores · privado
+06:45 Tu corazón late casi 3.000 millones de veces en tu vida
+07:15 ¿Qué día de la semana gana? 📅 Carrera de bolitas
+07:51 3 bolitas, un hueco: ¿cuál escapa primero? Canon de Pachelbel
 
 Las fuentes de cada dato están en la descripción de su Short.
 

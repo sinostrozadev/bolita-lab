@@ -8,6 +8,14 @@
 > **Manda el bloque JSON del final** (lo leen `estado.mts` y el panel de Santiago); la tabla es su vista legible.
 > Meta de calidad contra la que se mide cada ranura: `docs/META-REFERENTE.md`.
 
+## Esqueleto semana lun 2026-11-30 → dom 2026-12-06 (se llena el jue 26-11 17:00)
+
+| Ranura | Formato | Estado |
+|---|---|---|
+| lun 11-30 18:00 | Short · ¿Qué canción toca la bolita? · Nachtmusik | programado `JR6eqkaAoBI` |
+| mar 12-01 → dom 12-06 18:00 | 1 Short/día: el formato que gane la lectura de 48 h ("¿Qué canción…?" vs "Elige tu color"); temas sin marcas | idea (guiones el jue 26) |
+| sáb 12-05 19:00 | Largo · 2.º de eliminación (50 países parte 2 / por continente) — solo si el de 50 países pasa el umbral (lectura 48 h lun 23, final sáb 28) | condicional |
+
 ## 🔒 Hito del jue 2026-11-19 17:00 → semana asegurada lun 2026-11-23 → dom 2026-11-29
 
 > 2026-11-18 noche: estrategia del diagnóstico de virales aprobada por Santiago (`docs/DECISIONES.md`, misma fecha). Desde esta
@@ -17,15 +25,21 @@
 | Ranura | Formato | Estado al 18-11 noche |
 |---|---|---|
 | sáb 11-21 19:00 | **Largo · 50 países, carrera de eliminación** (~20 min, `eliminacion`) | **programado `Sz2GoSvspmA`** (publishAt 22:00Z verificado por API, 20:10, EN localizado, pantalla final puesta). Falta tras publicarse: comentario fijado (la API da 403 en privados) |
-| lun 11-23 18:00 | Short · ¿Qué canción toca la bolita? (20 s, bucle) · Para Elisa | programado `xJqtrarA79w` (verificado API) |
-| mar 11-24 18:00 | Short · Elige tu color con remontada · Colo-Colo/U/UC/Cobreloa | programado `JOzAjFGWNew` (verificado API) |
-| mié 11-25 18:00 | Short · ¿Qué canción toca la bolita? | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
-| jue 11-26 18:00 | Short · Elige tu color con remontada | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
-| vie 11-27 18:00 | Short · ¿Qué canción toca la bolita? | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
-| sáb 11-28 18:00 | Short · Elige tu color con remontada | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
-| sáb 11-28 19:00 | Largo · 2.º de eliminación ("50 clubes de fútbol de Latinoamérica" o "Copa Libertadores: 32 clubes", contingente a la final del 29-11) — **solo si el de 50 países pasa el umbral de 48 h**; si no, ranura vacía | por decidir el lun 23 |
-| dom 11-29 18:00 | Short · ¿Qué canción toca la bolita? | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
-| lun 11-30 18:00 | Short · ¿Qué canción toca la bolita? (reserva) | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
+| lun 11-23 18:00 | Short · ¿Qué canción toca la bolita? (20 s, bucle) · Para Elisa | programado `xJqtrarA79w` (verificado API, de nuevo el 19-11 14:00) |
+| mar 11-24 18:00 | Short · Elige tu color con remontada · Colo-Colo/U/UC/Cobreloa | programado `JOzAjFGWNew` (verificado API, de nuevo el 19-11 14:00) |
+| mié 11-25 18:00 | Short · ¿Qué canción toca la bolita? | programado `d5aguS65OdI` (private + publishAt verificado por API el 19-11 14:00) |
+| jue 11-26 18:00 | Short · Elige tu color con remontada | programado `i1ziHMpmE9o` (private + publishAt verificado por API el 19-11 14:00) |
+| vie 11-27 18:00 | Short · ¿Qué canción toca la bolita? | programado `8qARUo-q1M8` (private + publishAt verificado por API el 19-11 14:00) |
+| sáb 11-28 18:00 | Short · Elige tu color con remontada | programado `U3eOIC2cXJU` (private + publishAt verificado por API el 19-11 14:00) |
+| sáb 11-28 19:00 | Largo · 2.º de eliminación | **NO se hace esta semana (decisión del ritual del jue 19-11):** el de 50 países recién sale el sáb 21 y su lectura de 48 h es el lun 23 20:00; repetir el formato antes de leerlo sería relleno, y la regla del dueño del 19-11 es "cerrar frentes" (sin desarrollo nuevo). Ranura vacía. Si la lectura del lun 23 pasa el umbral, el 2.º largo entra el **sáb 05-12 19:00** (tema sin marcas: "50 países parte 2" con semilla y pistas nuevas, o países por continente; clubes y selecciones NO, por marcas) | ranura vacía (decidido) |
+| dom 11-29 18:00 | Short · ¿Qué canción toca la bolita? | programado `8SOnngr9G-g` (private + publishAt verificado por API el 19-11 14:00) |
+| lun 11-30 18:00 | Short · ¿Qué canción toca la bolita? (reserva) | programado `JR6eqkaAoBI` (private + publishAt verificado por API el 19-11 14:00) |
+
+**Ritual del jue 19-11 hecho (14:00, sesión multicanal):** los 8 Shorts 23→30 verificados por API (private + publishAt, uno por día a las
+18:00, ningún día vacío entre el lun 23 y el dom 29); el largo de 50 países `Sz2GoSvspmA` sigue programado sáb 21 19:00 (22:00Z);
+2.º largo de eliminación del sáb 28: no (ver fila). Pendiente que no se hizo hoy por "cerrar frentes": `META-REFERENTE.md` (punto 3) y
+carátula GPT del largo (punto 4, queda la de Remotion). ⚠ Dos Shorts programados usan marcas en el título (mar 24 clubes chilenos,
+jue 26 Coca/Pepsi/Fanta/Sprite): decidir antes del lun 23 si se dejan (es solo el nombre en el título; no hay logos).
 
 **Ritual del jue 19-11 17:00 (cuando se renueve el cupo):**
 1. Confirmar que el largo de 50 países terminó de renderizar (`salida/logs/render-eliminacion-50.log`) y correr
@@ -168,16 +182,16 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
   "version": 1,
   "canal": "bolita-lab",
   "zona": "America/Santiago",
-  "actualizado": "2026-11-15T09:13:28.091Z",
+  "actualizado": "2026-11-19T17:10:00Z",
   "semanas": [
     {
-      "inicio": "2026-11-02",
-      "fin": "2026-11-08",
+      "inicio": "2026-11-16",
+      "fin": "2026-11-22",
       "rol": "en-curso"
     },
     {
-      "inicio": "2026-11-09",
-      "fin": "2026-11-15",
+      "inicio": "2026-11-23",
+      "fin": "2026-11-29",
       "rol": "siguiente"
     }
   ],
@@ -800,7 +814,7 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "videoId": "b3v9Q6ymd3A",
       "referente": "mikan2d (biN5wJVlEzA \"Digging Race\", 5,7 M)",
       "porQue": "rotación; carrera es la más floja (1.149 y 676): seguir midiendo antes de matar (n=2) · movido el 11-09 para los experimentos de interacción",
-      "bloqueo": null
+      "bloqueo": " · ⚠ 19-11: la API no lo lista como programado en el canal (revisar)"
     },
     {
       "fecha": "2026-11-21",
@@ -811,11 +825,27 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "tipo": "serie",
       "serie": "Bolitas relajantes (sábado)",
       "contingencia": null,
-      "estado": "programado",
+      "estado": "descartado",
       "guion": "contenido/largos/2026-11-21-relajante.json",
       "videoId": "tuCnd-Q2JMQ",
       "referente": "canales de visuales relajantes de 30–60 min (watch time alto por sesión)",
       "porQue": "30 min por vista suma horas rápido; Santiago: \"tiene potencial, hay que trabajarlo más\" → fotogramas y preview de audio antes del render",
+      "bloqueo": "desprogramado el 18-11 (privado); su ranura la tomó Sz2GoSvspmA"
+    },
+    {
+      "fecha": "2026-11-21",
+      "hora": "19:00",
+      "formato": "largo",
+      "plantilla": "eliminacion",
+      "tema": "50 países, 1 campeón: carrera de eliminación de bolitas 🏆",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": null,
+      "videoId": "Sz2GoSvspmA",
+      "referente": "AlgoRaces 50 Countries Tournament 1,46 M",
+      "porQue": "diagnóstico de virales 18-11",
       "bloqueo": null
     },
     {
@@ -848,7 +878,7 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "videoId": "zeb04rqSoHk",
       "referente": "satisfying.ba11s (Peo-DIOmmRo, 78 M; mediana reciente 60–160 K)",
       "porQue": "bola + dato rinden ≈ 1.150–1.280 vistas (mejor plantilla junto a dato); rotación · movido el 11-09",
-      "bloqueo": null
+      "bloqueo": " · ⚠ 19-11: la API no lo lista como programado en el canal (revisar)"
     },
     {
       "fecha": "2026-11-22",
@@ -865,6 +895,166 @@ Las compilaciones quedan descartadas. Producción: `contenido/largos/<id>.json` 
       "referente": "",
       "porQue": "",
       "bloqueo": "corregido según revisor (fuente en voz con año, giro, CTA); aprobado 4"
+    },
+    {
+      "fecha": "2026-11-23",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "bola",
+      "tema": "¿Qué canción toca la bolita? 🎵 · nivel fácil",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": null,
+      "videoId": "xJqtrarA79w",
+      "referente": "bouncyball / MarbleDecide (META 2026-11-18)",
+      "porQue": "1 Short/día desde el 23 (diagnóstico de virales)",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-24",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "carrera",
+      "tema": "¿Colo-Colo, la U, la UC o Cobreloa? Elige tu bolita",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": null,
+      "videoId": "JOzAjFGWNew",
+      "referente": "bouncyball / MarbleDecide (META 2026-11-18)",
+      "porQue": "Elige tu color con remontada",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-25",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "bola",
+      "tema": "¿Qué canción toca la bolita? 🎵 · seguro la has oído",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": null,
+      "videoId": "d5aguS65OdI",
+      "referente": "bouncyball / MarbleDecide (META 2026-11-18)",
+      "porQue": "",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-26",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "carrera",
+      "tema": "¿Coca, Pepsi, Fanta o Sprite? Elige tu bolita",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": null,
+      "videoId": "i1ziHMpmE9o",
+      "referente": "bouncyball / MarbleDecide (META 2026-11-18)",
+      "porQue": "Elige tu color con remontada",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-27",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "bola",
+      "tema": "¿Qué canción toca la bolita? 🎵 · te la sabes",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": null,
+      "videoId": "8qARUo-q1M8",
+      "referente": "bouncyball / MarbleDecide (META 2026-11-18)",
+      "porQue": "",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-28",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "carrera",
+      "tema": "¿Argentina, Brasil, Chile o México? Elige tu bolita",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": null,
+      "videoId": "U3eOIC2cXJU",
+      "referente": "bouncyball / MarbleDecide (META 2026-11-18)",
+      "porQue": "Elige tu color con remontada",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-28",
+      "hora": "19:00",
+      "formato": "largo",
+      "plantilla": "eliminacion",
+      "tema": "2.º largo de eliminación",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "descartado",
+      "guion": null,
+      "videoId": null,
+      "referente": "bouncyball / MarbleDecide (META 2026-11-18)",
+      "porQue": "no se repite el formato antes de leer el del sáb 21 (ritual jue 19-11; regla 'cerrar frentes')",
+      "bloqueo": "pasa al sáb 05-12 si el umbral se cumple"
+    },
+    {
+      "fecha": "2026-11-29",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "bola",
+      "tema": "¿Qué canción toca la bolita? 🎵 · ponte a prueba",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": null,
+      "videoId": "8SOnngr9G-g",
+      "referente": "bouncyball / MarbleDecide (META 2026-11-18)",
+      "porQue": "",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-11-30",
+      "hora": "18:00",
+      "formato": "short",
+      "plantilla": "bola",
+      "tema": "¿Qué canción toca la bolita? 🎵 · difícil de olvidar",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "programado",
+      "guion": null,
+      "videoId": "JR6eqkaAoBI",
+      "referente": "bouncyball / MarbleDecide (META 2026-11-18)",
+      "porQue": "",
+      "bloqueo": null
+    },
+    {
+      "fecha": "2026-12-05",
+      "hora": "19:00",
+      "formato": "largo",
+      "plantilla": "eliminacion",
+      "tema": "2.º largo de eliminación (50 países parte 2 / por continente)",
+      "tipo": "evergreen",
+      "serie": null,
+      "contingencia": null,
+      "estado": "idea",
+      "guion": null,
+      "videoId": null,
+      "referente": "bouncyball / MarbleDecide (META 2026-11-18)",
+      "porQue": "condicional al umbral del largo del 21-11",
+      "bloqueo": null
     }
   ]
 }

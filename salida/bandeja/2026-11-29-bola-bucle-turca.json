@@ -12,8 +12,10 @@
     "#neon"
   ],
   "duracionSeg": 20,
-  "estado": "listo",
+  "estado": "subido",
   "tipo": "short",
   "serie": "bucle-adivina",
-  "publicarEn": "2026-11-29T18:00:00-03:00"
+  "publicarEn": "2026-11-29T18:00:00-03:00",
+  "videoId": "8SOnngr9G-g",
+  "subidoEn": "2026-11-19T05:20:42.317Z"
 }
