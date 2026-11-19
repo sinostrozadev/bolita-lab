@@ -45,6 +45,9 @@ Formato fijo (lo lee el panel): Detectado · Mejorado · Herramientas exploradas
 
 ## Pendiente
 
+- **Actualización 19-11 09:40:** WSL se reinició a las 03:07; el tramo 8 había fallado (no por el reinicio): `interpolate` con rango vacío en el contador QUEDAN de la final (4 → 4, frame 32932). Arreglado en `Quedan`, reproducido con stills del rango y re-renderizado solo el tramo 8 (los 7 anteriores tenían `.ok`). Largo `Sz2GoSvspmA` programado sáb 21-11 19:00 (verificado por API; Studio lo dejó en Draft y el script lo programó). Los 8 Shorts 23→30 ya estaban subidos antes del reinicio: verificados por API. Gotcha: el ffmpeg de Remotion no trae `volumedetect` ni `s16le` (volumen se mide en Python); no se puede comentar por API un video privado (403).
+- Comentario fijado del largo el sáb 21 después de las 19:00 (`scripts/comentar.mts Sz2GoSvspmA "¿En qué ronda quedó tu país? …"` + fijarlo en Studio) y Related video de 2 Shorts públicos → `Sz2GoSvspmA`.
+
 - Terminar el render del largo (`salida/logs/render-eliminacion-50.log`) y correr `bash salida/tmp/terminar-largo-50.sh` antes del sáb 21 18:00; después pantalla final, comentario fijado y Related video.
 - Reescribir `docs/META-REFERENTE.md` (bouncyball / MarbleDecide / AlgoRaces) en el ritual del jue 19-11.
 - Lecturas: largo a 48 h (lun 23-11 20:00) y 7 días (sáb 28-11); canciones y remontadas a 48 h cada una (umbrales en `docs/PLAN-SEMANAL.md`).

@@ -16,7 +16,7 @@
 
 | Ranura | Formato | Estado al 18-11 noche |
 |---|---|---|
-| sáb 11-21 19:00 | **Largo · 50 países, carrera de eliminación** (~20 min, `eliminacion`) | preparado; render en cola bajo el lock → `salida/tmp/terminar-largo-50.sh` sube y programa (verifica ffprobe/audio antes) |
+| sáb 11-21 19:00 | **Largo · 50 países, carrera de eliminación** (~20 min, `eliminacion`) | **programado `Sz2GoSvspmA`** (publishAt 22:00Z verificado por API, 20:10, EN localizado, pantalla final puesta). Falta tras publicarse: comentario fijado (la API da 403 en privados) |
 | lun 11-23 18:00 | Short · ¿Qué canción toca la bolita? (20 s, bucle) · Para Elisa | programado `xJqtrarA79w` (verificado API) |
 | mar 11-24 18:00 | Short · Elige tu color con remontada · Colo-Colo/U/UC/Cobreloa | programado `JOzAjFGWNew` (verificado API) |
 | mié 11-25 18:00 | Short · ¿Qué canción toca la bolita? | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
