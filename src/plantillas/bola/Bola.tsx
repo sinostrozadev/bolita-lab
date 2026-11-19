@@ -301,7 +301,7 @@ const Pistas: React.FC<{ pistas: { t: number; texto: string }[]; F: number; fps:
 const APUESTA_DESDE = 3 * 60;
 const APUESTA_FRAMES = 90;
 
-export const Bola: React.FC<GuionBola> = (props) => {
+const BolaClasica: React.FC<GuionBola> = (props) => {
   cargarFuentes();
   const F = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
@@ -507,3 +507,79 @@ export const Bola: React.FC<GuionBola> = (props) => {
     </AbsoluteFill>
   );
 };
+
+/** Bloque de texto SIN animación (el bucle exige que el último fotograma sea idéntico al primero): misma placa que `BloqueTexto`. */
+const BloqueFijo: React.FC<{ texto: string; color: string; top?: number; centroY?: number; tam: number }> = ({ texto, color, top, centroY, tam }) => {
+  const posicion = top !== undefined ? { top } : { top: centroY, transform: 'translateY(-50%)' };
+  return (
+    <div style={{ position: 'absolute', left: FORMATO.seguro.lados - 20, right: FORMATO.seguro.lados - 20, ...posicion, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}>
+      <div style={{
+        padding: '12px 26px 16px', borderRadius: 30, background: hexA(PALETA.fondo, 0.74), boxShadow: `0 0 22px 6px ${hexA(PALETA.fondo, 0.55)}`,
+        fontFamily: TIPO.display, fontWeight: TIPO.pesoDisplay, fontSize: tam, lineHeight: 1.06, letterSpacing: -1.5, textAlign: 'center', color: PALETA.tinta,
+        textShadow: `0 0 22px ${hexA(color, 0.8)}, 0 3px 10px rgba(0,0,0,0.85)`, textWrap: 'balance' as never,
+      }}>{texto}</div>
+    </div>
+  );
+};
+
+/** Estela del bucle: muestras de los últimos 2 s (con vuelta al final del ciclo: es periódico), de la más vieja a la más nueva. */
+const ESTELA_FRAMES = 120;
+const ESTELA_PASO = 2;
+
+/**
+ * Juego "bucle": toda la escena es función periódica del frame (trayectoria, color del anillo, partículas, estela y
+ * textos sin animación), así que el último fotograma encaja con el primero. Sin contador, clímax, llamado ni cierre.
+ */
+const BolaBucle: React.FC<GuionBola> = (props) => {
+  cargarFuentes();
+  const F = useCurrentFrame();
+  const sim = useSim(props.id);
+  const eventos = useMemo(() => {
+    if (!sim) return [];
+    const N = sim.duracionFrames;
+    // Cada rebote también como copia del ciclo anterior (frame − N): partículas y flash cruzan el punto de empalme.
+    const base = sim.eventos.filter((e) => e.tipo === 'rebote');
+    return [...base.map((e) => ({ ...e, frame: e.frame - N })), ...base];
+  }, [sim]);
+  if (!sim) return <AbsoluteFill style={{ background: PALETA.fondo }} />;
+  const N = sim.duracionFrames;
+  const fila = sim.cuadros[Math.min(F, N - 1)];
+  const recientes = eventos.filter((e) => e.frame <= F && F - e.frame <= FRAMES_PARTICULA);
+  const ultimo = eventos.filter((e) => e.frame <= F).at(-1);
+  const colorFlash = NEONES[(ultimo?.color ?? fila[3]) % NEONES.length];
+  let flash = 0;
+  for (const e of recientes) flash = Math.max(flash, interpolate(F - e.frame, [0, FRAMES_FLASH], [1, 0], { extrapolateRight: 'clamp' }) * (0.65 + 0.35 * e.fuerza));
+  const color = NEONES[fila[3] % NEONES.length];
+  const estela: React.ReactNode[] = [];
+  for (let j = ESTELA_FRAMES; j >= ESTELA_PASO; j -= ESTELA_PASO) {
+    const fa = sim.cuadros[(((F - j) % N) + N) % N];
+    const o = 0.78 * Math.pow(1 - j / ESTELA_FRAMES, 1.4);
+    const c = NEONES[fa[3] % NEONES.length];
+    estela.push(
+      <div key={j} style={{
+        position: 'absolute', left: fa[0] - fa[2] * 0.92, top: fa[1] - fa[2] * 0.92, width: fa[2] * 1.84, height: fa[2] * 1.84, borderRadius: '50%',
+        boxSizing: 'border-box', background: c, border: `3px solid ${hexA(PALETA.fondo, 0.55)}`, opacity: o,
+      }} />,
+    );
+  }
+  const arriba = ganchoArribaDe(props);
+  return (
+    <AbsoluteFill style={{ background: PALETA.fondo, overflow: 'hidden' }}>
+      <Audio src={rutaAudio(props.id)} />
+      <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 48%, ${hexA(colorFlash, 0.07 + 0.08 * flash)} 0%, ${PALETA.fondo2}00 45%, #000000aa 100%)` }} />
+      {/* Estela recortada al interior del anillo */}
+      <div style={{ position: 'absolute', left: sim.anillo.cx - sim.anillo.r + sim.anillo.grosor / 2, top: sim.anillo.cy - sim.anillo.r + sim.anillo.grosor / 2, width: (sim.anillo.r - sim.anillo.grosor / 2) * 2, height: (sim.anillo.r - sim.anillo.grosor / 2) * 2, borderRadius: '50%', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', left: -(sim.anillo.cx - sim.anillo.r + sim.anillo.grosor / 2), top: -(sim.anillo.cy - sim.anillo.r + sim.anillo.grosor / 2), width: FORMATO.ancho, height: FORMATO.alto }}>{estela}</div>
+      </div>
+      <Anillo sim={sim} frame={F} color={colorFlash} flash={flash} apagado={0} />
+      <Particulas eventos={recientes} frame={F} />
+      <Pelota x={fila[0]} y={fila[1]} r={fila[2]} color={color} />
+      <BloqueFijo texto={arriba} color={NEONES[sim.cuadros[0][3] % NEONES.length]} top={ARRIBA_TOP} tam={tamArriba(arriba)} />
+      <BloqueFijo texto={ganchoAbajoDe(props)} color={PALETA.neon.magenta} centroY={ABAJO_CENTRO_Y} tam={ganchoAbajoDe(props).length > 26 ? 50 : 60} />
+      <MarcaDeAgua />
+    </AbsoluteFill>
+  );
+};
+
+/** Despacha según el juego: "bucle" tiene su propia escena (periódica); el resto, la clásica. */
+export const Bola: React.FC<GuionBola> = (props) => (props.juego?.tipo === 'bucle' ? <BolaBucle {...props} /> : <BolaClasica {...props} />);

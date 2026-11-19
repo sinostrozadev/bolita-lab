@@ -98,3 +98,18 @@ npx remotion render src/index.ts Bola salida/bandeja/<id>.mp4 --props=salida/tra
 `juego.pistas` puede ser `[]` (sin tarjetas de pista) y `juego.cta` acepta hasta 9 palabras / 56 caracteres (pasa a 2 líneas).
 El `llamado` de todas las plantillas acepta hasta 64 caracteres (más de 40 → píldora de 2 líneas). Ejemplo:
 `contenido/prototipos/cancion-santiago/bola-adivina.json`.
+
+## Juego `bucle` — "¿Qué canción toca la bolita?" en bucle de ~20 s (2026-11-18)
+Motivo: bouncyball (8,46 M vistas) usa 21 s, 1 bola, melodía armada nota a nota, pregunta fija y último fotograma = primero
+(`_propuestas/2026-11-18-diagnostico-virales.md` §2.1–2.4). Se activa con `props.juego = { "tipo": "bucle" }` (+ `melodiaNotas`
+obligatoria que empiece con nota; `modo` y `bolas` se ignoran). Campos opcionales del juego: `pregunta`, `cta`, `duracion` (18–22,
+solo si el tempo natural de la partitura cae fuera), `velocidad` (px/s, por defecto 1700).
+- **Duración** = largo de la partitura (pulsos × 60/bpm); si no cae en 18–22 s se reescala a `duracion` (por defecto 20) y avisa.
+- **Ritmo exacto**: no hay física con gravedad; cada rebote cae en el instante de su nota (la 1.ª a los 0,1 s). Entre rebotes la bola va
+  recta por una cuerda del círculo; el largo de la cuerda sale de la velocidad deseada (nota corta → cuerda corta). Los ángulos de contacto
+  se reescalan por bisección para sumar un número entero de vueltas: la bola vuelve al mismo punto y el cuadro N equivale al 0.
+- **Periodicidad**: estela (últimos 2 s con vuelta al final del ciclo), color de bola/anillo (función del vuelo), partículas y flash (copias
+  del ciclo anterior) y textos SIN animación (`BloqueFijo`) → último fotograma ≈ primero. Sin contador, clímax, llamado ni cierre.
+- **Audio**: solo melodía (timbre `piano` recomendado); la cola de la última nota se pliega sobre el inicio (bucle de audio sin corte).
+- **Respuesta**: nunca en pantalla ni en título/descripción; va en el comentario fijado (ver `contenido/partituras/bucle-*.json`).
+- Escena propia `BolaBucle` en `Bola.tsx` (despacho por `props.juego.tipo`); el resto de los guiones no cambia.

@@ -451,6 +451,134 @@ export const sintetizar = (sim: SimBola, audio: OpcionesAudio, ruta: string) => 
   escribirWav(ruta, [pista.subarray(0, fin)]);
 };
 
+
+// ---------- Juego "bucle" (2026-11-18) ----------
+/** La primera nota suena a los 0,1 s (6 frames): el Short arranca con música desde el frame 0. */
+const BUCLE_PRIMERA_NOTA = 0.1;
+const BUCLE_RADIO_BOLA = 70;
+const BUCLE_VELOCIDAD = 1700;
+
+/**
+ * Trayectoria periódica de UNA bola: cada rebote cae en el instante de su nota (ritmo exacto de la partitura). Entre dos
+ * rebotes la bola va en línea recta por una cuerda del círculo de rebote; el largo de la cuerda sale de la velocidad
+ * deseada (nota corta → cuerda corta). Los ángulos de contacto avanzan siempre en el mismo sentido y se reescalan para
+ * sumar un número entero de vueltas: la bola vuelve exacta al punto del que partió → el cuadro N equivale al 0.
+ */
+const simularBucle = (props: GuionBola) => {
+  const melodia = props.melodiaNotas!;
+  const juego = props.juego as Extract<NonNullable<GuionBola['juego']>, { tipo: 'bucle' }>;
+  const pulsosTotal = melodia.notas.reduce((a, [, p]) => a + p, 0);
+  const natural = (pulsosTotal * 60) / melodia.bpm;
+  const objetivo = natural >= 18 && natural <= 22 ? natural : (juego.duracion ?? 20);
+  const N = Math.round(objetivo * FPS);
+  const dur = N / FPS; // segundos por ciclo
+  const spPulso = dur / pulsosTotal;
+  if (Math.abs(spPulso * melodia.bpm / 60 - 1) > 0.002) console.warn(`aviso: tempo reescalado ×${(spPulso * melodia.bpm / 60).toFixed(3)} para durar ${dur.toFixed(2)} s`);
+
+  // Instantes de cada nota sonora (los silencios solo alargan el vuelo anterior).
+  const ns: { midi: number; t: number; pulsos: number }[] = [];
+  let pos = 0;
+  for (const [midi, pulsos] of melodia.notas) {
+    if (midi > 0) ns.push({ midi, t: BUCLE_PRIMERA_NOTA + pos * spPulso, pulsos });
+    pos += pulsos;
+  }
+  const K = ns.length;
+  // Vuelo k: de la nota k a la k+1 (la última vuela hasta la primera del ciclo siguiente).
+  const delta = ns.map((n, k) => (k + 1 < K ? ns[k + 1].t : ns[0].t + dur) - n.t);
+  const r = BUCLE_RADIO_BOLA;
+  const Rc = R - r - GROSOR / 2; // círculo que recorre el centro de la bola
+  const v = juego.velocidad ?? BUCLE_VELOCIDAD;
+  const MAXCUERDA = 0.96 * 2 * Rc;
+  let alfa = delta.map((d) => 2 * Math.asin(Math.min(MAXCUERDA, Math.max(110, v * d)) / (2 * Rc)));
+  // Cierre de la trayectoria: suma de ángulos = m vueltas completas (m ≥ 1), sin pasarse de la cuerda máxima.
+  const tope = 2 * Math.asin(0.96);
+  const sat = (esc: number) => alfa.map((a) => Math.min(tope, Math.max(0.12, a * esc)));
+  const suma = (xs: number[]) => xs.reduce((a, b) => a + b, 0);
+  const maxVueltas = Math.floor(suma(alfa.map(() => tope)) / (2 * Math.PI) - 1e-9);
+  const m = Math.max(1, Math.min(maxVueltas, Math.round(suma(alfa) / (2 * Math.PI))));
+  let lo = 0.01, hi = 60; // bisección del factor de escala: suma(sat(esc)) crece con esc hasta saturar
+  for (let i = 0; i < 80; i++) { const mid = (lo + hi) / 2; if (suma(sat(mid)) < 2 * Math.PI * m) lo = mid; else hi = mid; }
+  alfa = sat((lo + hi) / 2);
+  if (Math.abs(suma(alfa) - 2 * Math.PI * m) > 1e-6) throw new Error('bucle: no se pudo cerrar la trayectoria (ajusta la velocidad)');
+  const th0 = Math.PI / 2 + ((semillaDesde(props.id) % 61) - 30) * (Math.PI / 180); // contacto inicial abajo (±30°)
+  const theta: number[] = [th0];
+  for (let k = 0; k < K; k++) theta.push(theta[k] + alfa[k]);
+  const punto = (k: number) => ({ x: CX + Rc * Math.cos(theta[k]), y: CY + Rc * Math.sin(theta[k]) });
+  const colorDe = (k: number) => (k * 3) % NEONES.length;
+
+  const cuadros: number[][] = [];
+  for (let f = 0; f < N; f++) {
+    let t = f / FPS;
+    if (t < ns[0].t) t += dur; // antes de la 1.ª nota: sigue el último vuelo del ciclo anterior
+    let k = K - 1;
+    for (let j = 0; j < K; j++) if (ns[j].t <= t + 1e-9 && (j + 1 === K || ns[j + 1].t > t + 1e-9)) { k = j; break; }
+    const a = punto(k), b = punto(k + 1);
+    const u = (t - ns[k].t) / delta[k];
+    cuadros.push([r1(a.x + (b.x - a.x) * u), r1(a.y + (b.y - a.y) * u), BUCLE_RADIO_BOLA, colorDe(k)]);
+  }
+  const eventos: EventoSim[] = ns.map((n, k) => {
+    const fr = Math.round(n.t * FPS);
+    const px = CX + R * Math.cos(theta[k]), py = CY + R * Math.sin(theta[k]);
+    return { frame: fr, t: n.t, tipo: 'rebote', bola: 0, nota: n.midi, x: r1(px), y: r1(py), ang: r1(grados(theta[k]) + 180), color: colorDe(k), fuerza: 0.8 };
+  });
+  const cuerdas = alfa.map((a) => 2 * Rc * Math.sin(a / 2) / 1);
+  const vels = cuerdas.map((c, k) => c / delta[k]);
+  return { N, dur, spPulso, ns, cuadros, eventos, vueltas: m, vmin: Math.min(...vels), vmax: Math.max(...vels) };
+};
+
+/** Audio del bucle: solo melodía (+ acompañamiento opcional), sin cama ni riser; la cola de la última nota se pliega sobre el inicio (bucle de audio sin corte). */
+const sintetizarBucle = (props: GuionBola, b: ReturnType<typeof simularBucle>, ruta: string) => {
+  const audio = opcionesAudio(props);
+  const { acordes } = armonizar(audio.melodia);
+  const grave = Math.min(...audio.melodia.notas.filter(([m]) => m > 0).map(([m]) => m));
+  const COLA = 3;
+  const pista = crearPista(b.dur + COLA);
+  // compás de cada nota (para entrar con el acompañamiento al abrir compás)
+  const anacrusa = audio.melodia.anacrusa ?? 0, compasP = audio.melodia.compas ?? 4;
+  let pos = 0; let compasPrevio = Number.NaN;
+  const entradas: { t: number; acorde: Acorde }[] = [];
+  let i = 0;
+  for (const [midi, pulsos] of audio.melodia.notas) {
+    if (midi > 0) {
+      const n = b.ns[i++];
+      const dnota = Math.min(1.1, Math.max(0.18, pulsos * b.spPulso * 0.85));
+      tocar(pista, audio.timbre, { inicio: n.t, hz: midiAHz(midi), duracion: dnota, volumen: 0.5, semilla: i });
+      const c = pos < anacrusa ? -1 : Math.floor((pos - anacrusa) / compasP);
+      if (audio.acompanamiento && c !== compasPrevio && acordes.has(c)) entradas.push({ t: n.t, acorde: acordes.get(c)! });
+      compasPrevio = c;
+    }
+    pos += pulsos;
+  }
+  entradas.forEach((en, k) => {
+    const sig = entradas[k + 1]?.t ?? b.dur + BUCLE_PRIMERA_NOTA;
+    tocarAcompanamiento(pista, audio.acompanamiento!, { inicio: en.t, duracion: Math.max(0.15, Math.min(sig - en.t, compasP * b.spPulso * 1.25)), acorde: en.acorde, notaMasGrave: grave });
+  });
+  // Pliegue: lo que suena después del final del ciclo vuelve a sonar al principio.
+  const L = Math.round(b.dur * SR);
+  for (let k = L; k < pista.length; k++) pista[k - L] += pista[k];
+  const salida = pista.subarray(0, L);
+  normalizar(salida, -1);
+  escribirWav(ruta, [salida]);
+};
+
+const simularYSintetizarBucle = (props: GuionBola, raiz: string): SimBola => {
+  const b = simularBucle(props);
+  const sim: SimBola = {
+    version: 1, id: props.id, fps: FPS, modo: props.modo, bolas: 1, duracionFrames: b.N, climaxFrame: -1, rebotesTotales: b.eventos.length,
+    anillo: { cx: CX, cy: CY, r: R, anchoHueco: 0, grosor: GROSOR }, hueco: [], huecoSemi: [], cuadros: b.cuadros, eventos: b.eventos,
+    semillaUsada: semillaDesde(props.id), velocidadHuecoUsada: 0, coldOpenFrames: 0, bucle: true,
+  };
+  const rutaWav = path.join(raiz, 'public/audio/generado', `${props.id}.wav`);
+  sintetizarBucle(props, b, rutaWav);
+  const rutaSim = path.join(raiz, 'public/sim', `${props.id}.json`);
+  fs.mkdirSync(path.dirname(rutaSim), { recursive: true });
+  fs.writeFileSync(rutaSim, JSON.stringify(sim));
+  const dt0 = b.cuadros[0], dtN = b.cuadros[b.N - 1];
+  console.log(`bucle ${props.id}: ${b.dur.toFixed(2)} s (${b.N} cuadros), ${b.eventos.length} rebotes, 1.ª nota a ${(b.ns[0].t * 1000).toFixed(0)} ms, ${b.vueltas} vuelta(s), velocidad ${b.vmin.toFixed(0)}–${b.vmax.toFixed(0)} px/s`);
+  console.log(`  cierre: cuadro 0 (${dt0[0]}, ${dt0[1]}) → cuadro ${b.N - 1} (${dtN[0]}, ${dtN[1]}) · paso normal ≈ ${(Math.hypot(dtN[0] - dt0[0], dtN[1] - dt0[1])).toFixed(1)} px`);
+  return sim;
+};
+
 // ---------- Orquestación ----------
 export const leerProps = (rutaGuion: string): GuionBola => {
   const crudo = JSON.parse(fs.readFileSync(rutaGuion, 'utf8'));
@@ -462,6 +590,7 @@ export const leerProps = (rutaGuion: string): GuionBola => {
 
 /** Simula y sintetiza; devuelve el sim escrito. */
 export const simularYSintetizar = (props: GuionBola, raiz = process.cwd()): SimBola => {
+  if (props.juego?.tipo === 'bucle') return simularYSintetizarBucle(props, raiz);
   const { res, p } = buscarSimulacion(props);
   const sim: SimBola = {
     version: 1, id: props.id, fps: FPS, modo: props.modo, bolas: props.bolas,

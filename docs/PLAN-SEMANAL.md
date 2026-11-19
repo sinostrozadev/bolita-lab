@@ -17,15 +17,15 @@
 | Ranura | Formato | Estado al 18-11 noche |
 |---|---|---|
 | sáb 11-21 19:00 | **Largo · 50 países, carrera de eliminación** (~20 min, `eliminacion`) | preparado; render en cola bajo el lock → `salida/tmp/terminar-largo-50.sh` sube y programa (verifica ffprobe/audio antes) |
-| lun 11-23 18:00 | Short · ¿Qué canción toca la bolita? (20 s, bucle) | ver JSON |
-| mar 11-24 18:00 | Short · Elige tu color con remontada | ver JSON |
-| mié 11-25 18:00 | Short · ¿Qué canción toca la bolita? | ver JSON |
-| jue 11-26 18:00 | Short · Elige tu color con remontada | ver JSON |
-| vie 11-27 18:00 | Short · ¿Qué canción toca la bolita? | ver JSON |
-| sáb 11-28 18:00 | Short · Elige tu color con remontada | ver JSON |
+| lun 11-23 18:00 | Short · ¿Qué canción toca la bolita? (20 s, bucle) · Para Elisa | programado `xJqtrarA79w` (verificado API) |
+| mar 11-24 18:00 | Short · Elige tu color con remontada · Colo-Colo/U/UC/Cobreloa | programado `JOzAjFGWNew` (verificado API) |
+| mié 11-25 18:00 | Short · ¿Qué canción toca la bolita? | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
+| jue 11-26 18:00 | Short · Elige tu color con remontada | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
+| vie 11-27 18:00 | Short · ¿Qué canción toca la bolita? | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
+| sáb 11-28 18:00 | Short · Elige tu color con remontada | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
 | sáb 11-28 19:00 | Largo · 2.º de eliminación ("50 clubes de fútbol de Latinoamérica" o "Copa Libertadores: 32 clubes", contingente a la final del 29-11) — **solo si el de 50 países pasa el umbral de 48 h**; si no, ranura vacía | por decidir el lun 23 |
-| dom 11-29 18:00 | Short · ¿Qué canción toca la bolita? | ver JSON |
-| lun 11-30 18:00 | Short · ¿Qué canción toca la bolita? (reserva) | ver JSON |
+| dom 11-29 18:00 | Short · ¿Qué canción toca la bolita? | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
+| lun 11-30 18:00 | Short · ¿Qué canción toca la bolita? (reserva) | en cola de render → subida automática (`salida/pruebas/bucle-pipeline.log` / scratchpad `sube.log`); verificar publishAt |
 
 **Ritual del jue 19-11 17:00 (cuando se renueve el cupo):**
 1. Confirmar que el largo de 50 países terminó de renderizar (`salida/logs/render-eliminacion-50.log`) y correr

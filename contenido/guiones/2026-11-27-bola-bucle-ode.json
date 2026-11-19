@@ -1,0 +1,152 @@
+{
+  "plantilla": "bola",
+  "id": "2026-11-27-bola-bucle-ode",
+  "titulo": "¿Qué canción toca la bolita? 🎵 · te la sabes",
+  "descripcion": "Cada rebote de la bolita de neón toca la siguiente nota de una melodía de dominio público. ¿Cuál es? Escríbela en los comentarios 👇 (la respuesta, en el comentario fijado). Mira cómo se repite en bucle y vuelve a escucharla.\nSimulación hecha en Bolita Lab. #Shorts",
+  "hashtags": [
+    "#shorts",
+    "#adivinalacancion",
+    "#musica",
+    "#bolita",
+    "#satisfying",
+    "#neon"
+  ],
+  "props": {
+    "id": "2026-11-27-bola-bucle-ode",
+    "gancho": "¿Qué canción toca la bolita? 🎵",
+    "modo": "crecer",
+    "bolas": 1,
+    "timbre": "piano",
+    "juego": {
+      "tipo": "bucle"
+    },
+    "melodiaNotas": {
+      "bpm": 100,
+      "compas": 4,
+      "tonica": 7,
+      "menor": false,
+      "notas": [
+        [
+          71,
+          1
+        ],
+        [
+          71,
+          1
+        ],
+        [
+          72,
+          1
+        ],
+        [
+          74,
+          1
+        ],
+        [
+          74,
+          1
+        ],
+        [
+          72,
+          1
+        ],
+        [
+          71,
+          1
+        ],
+        [
+          69,
+          1
+        ],
+        [
+          67,
+          1
+        ],
+        [
+          67,
+          1
+        ],
+        [
+          69,
+          1
+        ],
+        [
+          71,
+          1
+        ],
+        [
+          71,
+          1.5
+        ],
+        [
+          69,
+          0.5
+        ],
+        [
+          69,
+          2
+        ],
+        [
+          71,
+          1
+        ],
+        [
+          71,
+          1
+        ],
+        [
+          72,
+          1
+        ],
+        [
+          74,
+          1
+        ],
+        [
+          74,
+          1
+        ],
+        [
+          72,
+          1
+        ],
+        [
+          71,
+          1
+        ],
+        [
+          69,
+          1
+        ],
+        [
+          67,
+          1
+        ],
+        [
+          67,
+          1
+        ],
+        [
+          69,
+          1
+        ],
+        [
+          71,
+          1
+        ],
+        [
+          69,
+          1.5
+        ],
+        [
+          67,
+          0.5
+        ],
+        [
+          67,
+          2
+        ]
+      ]
+    }
+  }
+}

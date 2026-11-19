@@ -1,0 +1,178 @@
+{
+ "nombre": "Pequeña serenata nocturna",
+ "autor": "Wolfgang Amadeus Mozart (Eine kleine Nachtmusik, K. 525, 1787)",
+ "fuente": "Mutopia Project, \"Eine kleine Nachtmusik\" KV525, 1.er mov. (edición Breitkopf & Härtel, 1883), dominio público; 1.os violines",
+ "url_pieza": "https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=2230",
+ "midi": "https://www.mutopiaproject.org/ftp/MozartWA/KV525/eine-kleine-nachtmusik-mvt1/eine-kleine-nachtmusik-mvt1.mid",
+ "pasaje": "Compases 1-8 (el \"cohete de Mannheim\", respuesta y 2.ª frase)",
+ "tempo_bpm": 100,
+ "tempo_original_mutopia": "144 bpm (negra)",
+ "repeticiones": 1,
+ "transposicion_semitonos": 0,
+ "verificacion": "Notas y ritmo extraídos del MIDI de dominio público (voz superior por instante de ataque) y contrastados a mano contra la melodía conocida (secuencia de alturas esperada idéntica a la generada). Derechos: composición de dominio público (autor fallecido hace más de 70 años); síntesis propia.",
+ "nombres_notas": "G5 D5 G5 D5 G5 D5 G5 B5 D6 C6 A5 C6 A5 C6 A5 F#5 A5 D5 G5 G5 B5 A5 G5 F#5 F#5 A5 C6 F#5 A5 G5 G5 B5 A5 G5 F#5 F#5 A5 C6 F#5",
+ "melodiaNotas": {
+  "bpm": 100,
+  "compas": 4,
+  "tonica": 7,
+  "menor": false,
+  "notas": [
+   [
+    79,
+    1.5
+   ],
+   [
+    74,
+    0.5
+   ],
+   [
+    79,
+    1.5
+   ],
+   [
+    74,
+    0.5
+   ],
+   [
+    79,
+    0.5
+   ],
+   [
+    74,
+    0.5
+   ],
+   [
+    79,
+    0.5
+   ],
+   [
+    83,
+    0.5
+   ],
+   [
+    86,
+    2
+   ],
+   [
+    84,
+    1.5
+   ],
+   [
+    81,
+    0.5
+   ],
+   [
+    84,
+    1.5
+   ],
+   [
+    81,
+    0.5
+   ],
+   [
+    84,
+    0.5
+   ],
+   [
+    81,
+    0.5
+   ],
+   [
+    78,
+    0.5
+   ],
+   [
+    81,
+    0.5
+   ],
+   [
+    74,
+    2
+   ],
+   [
+    79,
+    1
+   ],
+   [
+    79,
+    1.5
+   ],
+   [
+    83,
+    0.5
+   ],
+   [
+    81,
+    0.5
+   ],
+   [
+    79,
+    1
+   ],
+   [
+    78,
+    0.5
+   ],
+   [
+    78,
+    1.5
+   ],
+   [
+    81,
+    0.5
+   ],
+   [
+    84,
+    0.5
+   ],
+   [
+    78,
+    0.5
+   ],
+   [
+    81,
+    0.5
+   ],
+   [
+    79,
+    0.5
+   ],
+   [
+    79,
+    1.5
+   ],
+   [
+    83,
+    0.5
+   ],
+   [
+    81,
+    0.5
+   ],
+   [
+    79,
+    1
+   ],
+   [
+    78,
+    0.5
+   ],
+   [
+    78,
+    1.5
+   ],
+   [
+    81,
+    0.5
+   ],
+   [
+    84,
+    0.5
+   ],
+   [
+    78,
+    0.5
+   ]
+  ]
+ }
+}

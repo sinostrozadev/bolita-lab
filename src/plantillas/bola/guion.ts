@@ -66,7 +66,26 @@ export const JuegoApuesta = z.object({
   cta: textoCorto(48, 7, 'cta').optional(),
   acierto: textoCorto(32, 4, 'acierto').optional(),
 });
-export const JuegoBola = z.discriminatedUnion('tipo', [JuegoAdivina, JuegoApuesta]);
+/**
+ * Juego "bucle" (2026-11-18): Short de ~20 s que se repite sin costura. Una bola, sin clímax ni cierre: cada rebote es la
+ * siguiente nota de `melodiaNotas` y cae EXACTO en el tiempo de la partitura (la ruta se calcula para eso); la primera
+ * nota suena a los 0,1 s. El estado del último fotograma es el del primero (trayectoria, colores y audio periódicos).
+ * Pregunta fija arriba, CTA abajo, todo el video; la respuesta NUNCA va en pantalla.
+ * Exige `melodiaNotas` (cuyo largo en segundos pasa a ser el del video, entre 18 y 22 s: si el tempo natural cae
+ * fuera, se reescala a `duracion`).
+ */
+export const JuegoBucle = z.object({
+  tipo: z.literal('bucle'),
+  /** Pregunta fija de arriba (por defecto "¿Qué canción toca la bolita? 🎵"). */
+  pregunta: textoCorto(48, 8, 'pregunta').optional(),
+  /** CTA de abajo (por defecto "Escríbela en los comentarios 👇"). */
+  cta: textoCorto(56, 9, 'cta').optional(),
+  /** Duración objetivo (s) si el tempo natural de la partitura no cae entre 18 y 22 s. */
+  duracion: z.number().min(18).max(22).optional(),
+  /** Velocidad deseada de la bola (px/s) que fija el largo de cada vuelo; por defecto 1700. */
+  velocidad: z.number().min(900).max(2600).optional(),
+});
+export const JuegoBola = z.discriminatedUnion('tipo', [JuegoAdivina, JuegoApuesta, JuegoBucle]);
 export type JuegoBola = z.infer<typeof JuegoBola>;
 
 /** Textos por defecto de los juegos. */
@@ -77,6 +96,7 @@ export const TEXTOS_JUEGO = {
   apuestaCta: 'Comenta tu número antes del final 👇',
   apuestaYa: '⏳ apuesta ya',
   acierto: '¿Acertaste? 👇',
+  bucleArriba: '¿Qué canción toca la bolita? 🎵',
 } as const;
 
 export const GuionBola = z.object({
@@ -139,6 +159,10 @@ export const GuionBolaValidado = GuionBola.superRefine((g, ctx) => {
     const ts = g.juego.pistas.map((p) => p.t);
     if (ts.some((t, i) => i > 0 && t <= ts[i - 1])) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'pistas: los tiempos deben ir en orden creciente', path: ['juego', 'pistas'] });
   }
+  if (g.juego?.tipo === 'bucle') {
+    if (!g.melodiaNotas) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'juego bucle: hace falta `melodiaNotas` (la partitura fija el ritmo de los rebotes)', path: ['melodiaNotas'] });
+    else if (g.melodiaNotas.notas[0][0] === 0) ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'juego bucle: la melodía debe empezar con una nota (no con silencio)', path: ['melodiaNotas'] });
+  }
 });
 
 /** Intriga por defecto del bloque de abajo (determinista por id) para guiones que no traen `ganchoAbajo`. */
@@ -149,6 +173,7 @@ export const VARIANTES_GANCHO_ABAJO: Record<GuionBola['modo'], readonly string[]
 export const ganchoAbajoDe = (g: Pick<GuionBola, 'id' | 'modo' | 'ganchoAbajo' | 'juego'>): string => {
   if (g.juego?.tipo === 'adivina') return g.juego.cta ?? TEXTOS_JUEGO.adivinaCta;
   if (g.juego?.tipo === 'apuesta') return g.juego.cta ?? TEXTOS_JUEGO.apuestaCta;
+  if (g.juego?.tipo === 'bucle') return g.juego.cta ?? TEXTOS_JUEGO.adivinaCta;
   if (g.ganchoAbajo) return g.ganchoAbajo;
   const v = VARIANTES_GANCHO_ABAJO[g.modo];
   return v[semillaDesde(`abajo:${g.id}`) % v.length];
@@ -156,6 +181,7 @@ export const ganchoAbajoDe = (g: Pick<GuionBola, 'id' | 'modo' | 'ganchoAbajo' |
 export const ganchoArribaDe = (g: Pick<GuionBola, 'gancho' | 'ganchoArriba' | 'juego'>): string => {
   if (g.juego?.tipo === 'apuesta') return g.juego.pregunta;
   if (g.juego?.tipo === 'adivina') return g.ganchoArriba ?? TEXTOS_JUEGO.adivinaArriba;
+  if (g.juego?.tipo === 'bucle') return g.juego.pregunta ?? TEXTOS_JUEGO.bucleArriba;
   return g.ganchoArriba ?? g.gancho;
 };
 
@@ -212,4 +238,6 @@ export type SimBola = {
   coldOpenFrames?: number;
   /** Frame de la simulación con que arranca el cold open (ausente = climaxFrame − coldOpenFrames). */
   coldOpenDesde?: number;
+  /** `true` en el juego "bucle": trayectoria periódica (el cuadro N equivale al 0), sin clímax (climaxFrame = −1) ni cold open. */
+  bucle?: boolean;
 };

@@ -1,0 +1,142 @@
+{
+ "nombre": "Oda a la alegría",
+ "autor": "Ludwig van Beethoven (Sinfonía n.º 9, 1824)",
+ "fuente": "Mutopia Project, \"Ode to Joy\" (SATB, Various), dominio público; línea de soprano",
+ "url_pieza": "https://www.mutopiaproject.org/cgibin/piece-info.cgi?id=528",
+ "midi": "https://www.mutopiaproject.org/ftp/BeethovenLv/ode/ode.mid",
+ "pasaje": "Los 8 compases del tema completo (4 frases) en Sol mayor",
+ "tempo_bpm": 100,
+ "tempo_original_mutopia": "100 bpm (negra)",
+ "repeticiones": 1,
+ "transposicion_semitonos": 0,
+ "verificacion": "Notas y ritmo extraídos del MIDI de dominio público (voz superior por instante de ataque) y contrastados a mano contra la melodía conocida (secuencia de alturas esperada idéntica a la generada). Derechos: composición de dominio público (autor fallecido hace más de 70 años); síntesis propia.",
+ "nombres_notas": "B4 B4 C5 D5 D5 C5 B4 A4 G4 G4 A4 B4 B4 A4 A4 B4 B4 C5 D5 D5 C5 B4 A4 G4 G4 A4 B4 A4 G4 G4",
+ "melodiaNotas": {
+  "bpm": 100,
+  "compas": 4,
+  "tonica": 7,
+  "menor": false,
+  "notas": [
+   [
+    71,
+    1
+   ],
+   [
+    71,
+    1
+   ],
+   [
+    72,
+    1
+   ],
+   [
+    74,
+    1
+   ],
+   [
+    74,
+    1
+   ],
+   [
+    72,
+    1
+   ],
+   [
+    71,
+    1
+   ],
+   [
+    69,
+    1
+   ],
+   [
+    67,
+    1
+   ],
+   [
+    67,
+    1
+   ],
+   [
+    69,
+    1
+   ],
+   [
+    71,
+    1
+   ],
+   [
+    71,
+    1.5
+   ],
+   [
+    69,
+    0.5
+   ],
+   [
+    69,
+    2
+   ],
+   [
+    71,
+    1
+   ],
+   [
+    71,
+    1
+   ],
+   [
+    72,
+    1
+   ],
+   [
+    74,
+    1
+   ],
+   [
+    74,
+    1
+   ],
+   [
+    72,
+    1
+   ],
+   [
+    71,
+    1
+   ],
+   [
+    69,
+    1
+   ],
+   [
+    67,
+    1
+   ],
+   [
+    67,
+    1
+   ],
+   [
+    69,
+    1
+   ],
+   [
+    71,
+    1
+   ],
+   [
+    69,
+    1.5
+   ],
+   [
+    67,
+    0.5
+   ],
+   [
+    67,
+    2
+   ]
+  ]
+ }
+}
