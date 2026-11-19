@@ -8,6 +8,47 @@
 > **Manda el bloque JSON del final** (lo leen `estado.mts` y el panel de Santiago); la tabla es su vista legible.
 > Meta de calidad contra la que se mide cada ranura: `docs/META-REFERENTE.md`.
 
+## 🔒 Hito del jue 2026-11-19 17:00 → semana asegurada lun 2026-11-23 → dom 2026-11-29
+
+> 2026-11-18 noche: estrategia del diagnóstico de virales aprobada por Santiago (`docs/DECISIONES.md`, misma fecha). Desde esta
+> semana: **1 Short al día a las 18:00** (el mejor formato de cada día; `contenido/calendario.json`) + **1 largo de eliminación**.
+> Lo programado hasta el dom 22 se queda (3/día). El relajante del sáb 21 salió; su ranura la toma el largo de 50 países.
+
+| Ranura | Formato | Estado al 18-11 noche |
+|---|---|---|
+| sáb 11-21 19:00 | **Largo · 50 países, carrera de eliminación** (~20 min, `eliminacion`) | preparado; render en cola bajo el lock → `salida/tmp/terminar-largo-50.sh` sube y programa (verifica ffprobe/audio antes) |
+| lun 11-23 18:00 | Short · ¿Qué canción toca la bolita? (20 s, bucle) | ver JSON |
+| mar 11-24 18:00 | Short · Elige tu color con remontada | ver JSON |
+| mié 11-25 18:00 | Short · ¿Qué canción toca la bolita? | ver JSON |
+| jue 11-26 18:00 | Short · Elige tu color con remontada | ver JSON |
+| vie 11-27 18:00 | Short · ¿Qué canción toca la bolita? | ver JSON |
+| sáb 11-28 18:00 | Short · Elige tu color con remontada | ver JSON |
+| sáb 11-28 19:00 | Largo · 2.º de eliminación ("50 clubes de fútbol de Latinoamérica" o "Copa Libertadores: 32 clubes", contingente a la final del 29-11) — **solo si el de 50 países pasa el umbral de 48 h**; si no, ranura vacía | por decidir el lun 23 |
+| dom 11-29 18:00 | Short · ¿Qué canción toca la bolita? | ver JSON |
+| lun 11-30 18:00 | Short · ¿Qué canción toca la bolita? (reserva) | ver JSON |
+
+**Ritual del jue 19-11 17:00 (cuando se renueve el cupo):**
+1. Confirmar que el largo de 50 países terminó de renderizar (`salida/logs/render-eliminacion-50.log`) y correr
+   `bash salida/tmp/terminar-largo-50.sh` (verifica duración/audio, sube con el piloto bajo lock, programa sáb 21 19:00 y
+   verifica `publishAt` por API). Después: pantalla final (`herramientas/navegador/pantalla-final.mjs <id>`), comentario fijado
+   ("¿En qué ronda quedó tu país? 👇") y "Related video" de los 2 Shorts públicos más vistos → el largo (`related-video.mjs`).
+2. Verificar por API los 8 Shorts nuevos 23→30 (`npx tsx scripts/verificar-programado.mts <ids>`): private + publishAt.
+3. Reescribir `docs/META-REFERENTE.md`: Shorts → bouncyball (`eX5dtXBbDgU`, 8,46 M) + MarbleDecide (`61iZ3NcJc4M`, 14 M);
+   largos → AlgoRaces (`sc8g3ZeYD5w`, 1,46 M) / Alfa Marbles. satisfying.ba11s queda fuera (inactivo desde 2025-05).
+4. Pedir la carátula GPT del largo (skill `caratulas-con-gpt`; pedido listo en `salida/caratulas/pedidos/`) y cambiarla con
+   `scripts/miniatura.mts` si llega antes del sáb 21 18:00; si no, queda la de Remotion (fotograma real de la parrilla).
+5. Guiones de la semana 30-11 → 06-12 (1 Short/día): repetir el formato que gane la lectura de 48 h de abajo.
+
+### Cómo se mide cada apuesta (umbral · fecha de lectura · fuente)
+
+| Apuesta | Umbral de éxito | Lectura | Fuente | Si no llega |
+|---|---|---|---|---|
+| Largo 50 países (sáb 21 19:00) | **≥ 3.000 impresiones y CTR ≥ 5 % a 7 días**; duración media ≥ 4 min; ≥ 1.000 vistas a 7 días (Torneo: 392 impresiones, 37 vistas) | parcial lun 23-11 20:00 (48 h) · final sáb 28-11 20:00 | Studio → Analytics del video (Alcance) + `metricas.json` | si a 48 h < 500 impresiones: probar 2.º tema contingente (Libertadores) antes de abandonar el formato; 2 largos bajo umbral → volver a 1 largo cada 2 semanas |
+| "¿Qué canción toca la bolita?" (5 Shorts, 23→30) | **% visto ≥ 90 % (bucle)** y **"se queda" ≥ 60 %**; vistas ≥ 3.000 en 2 de 5 | cada uno a 48 h; lote completo mié 02-12 | Analytics API `averageViewPercentage` + `retencion-studio.mjs` | si % visto < 70 % en 3 de 5: acortar a 15 s y cambiar de melodías |
+| "Elige tu color" con remontada (3 Shorts, 24/26/28) | **≥ 10 comentarios por video** y vistas ≥ 3.000 en 2 de 3 | cada uno a 48 h; lote dom 30-11 | Studio (comentarios) + `metricas.json` | si < 3 comentarios: probar disputas más fuertes (clásicos de fútbol) o la mecánica "+1 comentario = +1 obstáculo" (ZenShapes) |
+| Cadencia 1/día | mediana de vistas por Short de la semana 23→29 **≥ mediana 16→22** (hoy ~1.100) con un tercio de videos | lun 30-11 | `metricas.json` (vistas a 7 días) | si cae > 30 %: volver a 2/día (12:00 y 18:00) |
+| Idioma es-419 corregido (6 videos) | sin umbral: higiene; mirar si "País" de esos videos sube en LatAm | lun 30-11 | Analytics `country` | — |
+
 ## 🔒 Hito del mié 2026-11-11 → semana asegurada 2026-11-12 (jue) → 2026-11-18 (mié)
 
 > Orden de Santiago (2026-11-08): el cupo del Max se renueva los **miércoles**. El miércoles en la noche quedan todos los guiones de

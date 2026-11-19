@@ -26,7 +26,7 @@ const W = FORMATO_LARGO.ancho, H = FORMATO_LARGO.alto;
 const PANEL = 400;
 const ZOOM_META = 1.3;
 
-const usarJson = <T,>(ruta: string, etiqueta: string): T | null => {
+export const usarJson = <T,>(ruta: string, etiqueta: string): T | null => {
   const [dato, setDato] = useState<T | null>(null);
   const [handle] = useState(() => delayRender(`torneo: ${etiqueta}`));
   useEffect(() => {
@@ -51,12 +51,14 @@ export const calcularMetadataTorneo: CalculateMetadataFunction<GuionTorneo> = as
 // ---------------------------------------------------------------- piezas comunes
 
 type Ctx = { g: GuionTorneo; plan: PlanTorneo };
-const Fondo: React.FC<{ tinte?: string }> = ({ tinte = PALETA.neon.violeta }) => (
+/** Lo mínimo que piden las piezas compartidas (las usa también el largo `eliminacion`). */
+export type CtxBase = { g: { participantes: Pick<GuionTorneo['participantes'][number], 'etiqueta' | 'icono'>[] }; plan: { colores: string[] } };
+export const Fondo: React.FC<{ tinte?: string }> = ({ tinte = PALETA.neon.violeta }) => (
   <AbsoluteFill style={{ background: `radial-gradient(ellipse at 50% 40%, ${tinte}33 0%, ${PALETA.fondo2} 45%, ${PALETA.fondo} 100%)` }} />
 );
 
 /** Bolita con la identidad del competidor (color + bandera/emoji). */
-const Bolita: React.FC<{ ctx: Ctx; i: number; tam: number; style?: React.CSSProperties; apagada?: boolean }> = ({ ctx, i, tam, style, apagada }) => {
+export const Bolita: React.FC<{ ctx: CtxBase; i: number; tam: number; style?: React.CSSProperties; apagada?: boolean }> = ({ ctx, i, tam, style, apagada }) => {
   const color = ctx.plan.colores[i];
   return (
     <div style={{ position: 'relative', width: tam, height: tam, flex: 'none', ...style }}>
@@ -72,11 +74,11 @@ const Bolita: React.FC<{ ctx: Ctx; i: number; tam: number; style?: React.CSSProp
   );
 };
 
-const Nombre: React.FC<{ ctx: Ctx; i: number }> = ({ ctx, i }) => (
+export const Nombre: React.FC<{ ctx: CtxBase; i: number }> = ({ ctx, i }) => (
   <span style={{ color: ctx.plan.colores[i], textShadow: `0 0 18px ${ctx.plan.colores[i]}AA` }}>{ctx.g.participantes[i].etiqueta}</span>
 );
 
-const Marca: React.FC = () => (
+export const Marca: React.FC = () => (
   <div style={{
     position: 'absolute', right: 34, bottom: 26, display: 'flex', alignItems: 'center', gap: 10, opacity: 0.6,
     fontFamily: TIPO.display, fontWeight: 800, fontSize: 30, color: PALETA.tinta,
@@ -86,7 +88,7 @@ const Marca: React.FC = () => (
   </div>
 );
 
-const lista = (nombres: React.ReactNode[]) => nombres.flatMap((n, k) => (k === 0 ? [n] : [k === nombres.length - 1 ? ' y ' : ', ', n]));
+export const lista = (nombres: React.ReactNode[]) => nombres.flatMap((n, k) => (k === 0 ? [n] : [k === nombres.length - 1 ? ' y ' : ', ', n]));
 
 // ---------------------------------------------------------------- LA LLAVE
 
@@ -304,7 +306,7 @@ const Presenta: React.FC<{ ctx: Ctx; c: CarreraTorneo; dur: number }> = ({ ctx, 
 // ---------------------------------------------------------------- LA CARRERA (16:9)
 
 const DESTELLO = 7;
-const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; alto: number; f: number; colores: string[] }> = ({ sim, cam, alto, f, colores }) => {
+export const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; alto: number; f: number; colores: string[]; tinte?: string }> = ({ sim, cam, alto, f, colores, tinte = PALETA.neon.cian }) => {
   const desde = cam - 160, hasta = cam + alto + 160;
   const ancho = sim.tablero.ancho;
   const destellos = useMemo(() => {
@@ -324,7 +326,7 @@ const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; alto: number; f: 
   return (
     <>
       {[0, ancho - 6].map((x) => (
-        <div key={x} style={{ position: 'absolute', left: x, top: desde, width: 6, height: hasta - desde, background: `${PALETA.neon.cian}40`, boxShadow: `0 0 22px ${PALETA.neon.cian}55` }} />
+        <div key={x} style={{ position: 'absolute', left: x, top: desde, width: 6, height: hasta - desde, background: `${tinte}40`, boxShadow: `0 0 22px ${tinte}55` }} />
       ))}
       {sim.clavijas.map((c, i) => {
         if (c.y < desde || c.y > hasta) return null;
@@ -399,7 +401,7 @@ const Tablero: React.FC<{ sim: SimulacionCarrera; cam: number; alto: number; f: 
 };
 
 const ESTELA = [2, 4, 6, 8];
-const Bolas: React.FC<{ ctx: Ctx; c: CarreraTorneo; sim: SimulacionCarrera; cam: number; alto: number; esc: number; f: number; etiquetas: number }> = ({ ctx, c, sim, cam, alto, esc, f, etiquetas }) => {
+export const Bolas: React.FC<{ ctx: CtxBase; c: { corredores: number[] }; sim: SimulacionCarrera; cam: number; alto: number; esc: number; f: number; etiquetas: number }> = ({ ctx, c, sim, cam, alto, esc, f, etiquetas }) => {
   const r = sim.tablero.radioBola;
   /** Las etiquetas mantienen su tamaño en pantalla aunque la cámara se aleje. */
   const ke = Math.min(1.7, 1 / esc);
@@ -693,7 +695,7 @@ const CampeonGigante: React.FC<{ ctx: Ctx; dur: number }> = ({ ctx, dur }) => {
   );
 };
 
-const Confeti: React.FC<{ frame: number; semilla: number; n?: number }> = ({ frame, semilla, n = 160 }) => {
+export const Confeti: React.FC<{ frame: number; semilla: number; n?: number }> = ({ frame, semilla, n = 160 }) => {
   const piezas = useMemo(() => {
     const az = crearAzar(0xC0FFEE ^ semilla);
     return Array.from({ length: n }, (_, j) => ({

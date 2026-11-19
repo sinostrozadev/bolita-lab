@@ -12,7 +12,7 @@
     "#satisfying"
   ],
   "duracionSeg": 1800,
-  "estado": "subido",
+  "estado": "desprogramado",
   "publicarEn": "2026-11-21T22:00:00.000Z",
   "categoria": "24",
   "mp4": "/home/santiago/projects/yt/bolita-lab/salida/largos/2026-11-21-relajante.mp4",
@@ -52,5 +52,9 @@
   "programado": "2026-11-21 19:00",
   "subidoEn": "2026-11-15T08:05:48.144Z",
   "notaMiniatura": "sin archivo de miniatura (salida/bandeja/<id>-mini.png)",
-  "reprogramadoEn": "2026-11-15T08:06:07.204Z"
+  "reprogramadoEn": "2026-11-15T08:06:07.204Z",
+  "desprogramado": {
+    "fecha": "2026-11-19T02:37:57.488Z",
+    "motivo": "Formato relajante 30 min: 79–3.300 vistas en ~15 canales medidos (diagnóstico 2026-11-18 §2.3/§6). Ranura sáb 21-11 19:00 para el largo 50 países."
+  }
 }

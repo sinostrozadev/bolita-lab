@@ -1,31 +1,7 @@
 {
   "zonaHoraria": "America/Santiago",
-  "comentario": "Ranuras de publicación (dias: 0=domingo … 6=sábado). Normal: 1 Short diario a las 18:00 y un 2.º a las 12:00 sábados y domingos. Hasta 'dobleHasta' (inclusive, fecha local) se usan 'ranurasDoble': 2 Shorts al día, 12:00 y 18:00 (las dos primeras semanas del canal; ajusta la fecha al día real de lanzamiento + 13). Los videos largos (compilaciones) usan 'ranurasLargo' y no ocupan ranuras de Shorts. La rotación de plantillas es cíclica. 2026-11-09 (Santiago): se agrega un 3.er Short diario a las 07:00 (en ambas fases) para probar más formatos. 2026-11-12 (Santiago): 3 largos 16:9 por semana, lunes (torneo), miércoles (¿cuántas adivinas?) y sábado (relajante) a las 19:00; sale el domingo 10:00.",
+  "comentario": "Ranuras de publicación (dias: 0=domingo … 6=sábado). Normal: 1 Short diario a las 18:00 y un 2.º a las 12:00 sábados y domingos. Hasta 'dobleHasta' (inclusive, fecha local) se usan 'ranurasDoble': 2 Shorts al día, 12:00 y 18:00 (las dos primeras semanas del canal; ajusta la fecha al día real de lanzamiento + 13). Los videos largos (compilaciones) usan 'ranurasLargo' y no ocupan ranuras de Shorts. La rotación de plantillas es cíclica. 2026-11-09 (Santiago): se agrega un 3.er Short diario a las 07:00 (en ambas fases) para probar más formatos. 2026-11-12 (Santiago): 3 largos 16:9 por semana, lunes (torneo), miércoles (¿cuántas adivinas?) y sábado (relajante) a las 19:00; sale el domingo 10:00. 2026-11-18 (diagnóstico de virales, aprobado por Santiago): desde la semana 2026-11-23 → 29 baja a 1 Short al día a las 18:00 (el mejor formato del día; los programados hasta el 22-11 se quedan). Motivo: todos los Shorts topan en ~1.000–1.500 vistas sin importar volumen y 3/día multiplica el riesgo de 'contenido repetitivo'. El relajante del sábado sale; el largo principal pasa a ser la carrera de eliminación (50 participantes).",
   "ranuras": [
-    {
-      "dias": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "hora": "07:00"
-    },
-    {
-      "dias": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "hora": "12:00"
-    },
     {
       "dias": [
         0,
@@ -51,30 +27,6 @@
         5,
         6
       ],
-      "hora": "07:00"
-    },
-    {
-      "dias": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "hora": "12:00"
-    },
-    {
-      "dias": [
-        0,
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
       "hora": "18:00"
     }
   ],
@@ -90,11 +42,9 @@
   ],
   "rotacion": [
     "bola",
-    "dato",
-    "carrera",
-    "colores"
+    "carrera"
   ],
-  "minimoBandeja": 4,
+  "minimoBandeja": 3,
   "minimoBacklog": 9,
   "margenMinutos": 20
 }
