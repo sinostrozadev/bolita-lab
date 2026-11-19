@@ -78,6 +78,14 @@ export const GuionCarrera = z.object({
    * los guiones nuevos de carrera llevan `votacion: true` y 4 participantes.
    */
   votacion: z.boolean().optional(),
+  /**
+   * Variante "ELIGE TU COLOR con REMONTADA" (2026-11-18, Short ≤ 25 s): cartel "ELIGE TU COLOR ANTES DE LA LARGADA 👇" los primeros ~2 s,
+   * tablero corto (el simulador busca una semilla con remontada real: la 3.ª/4.ª a falta del 30 % gana tras pasar a la líder),
+   * aviso "¡REMONTADA!" y final con "¿Cuál elegiste? Comenta 👇". Ausente/false = carrera normal (idéntica a la de siempre).
+   */
+  remontada: z.boolean().optional(),
+  /** Texto del cartel inicial de la variante `remontada` (≤ 9 palabras). Por defecto "ELIGE TU COLOR ANTES DE LA LARGADA 👇". */
+  cartel: z.string().min(1).max(60).refine((t) => palabras(t) <= 9, 'cartel: máximo 9 palabras').optional(),
   /** Llamado a suscribirse en el clímax (opcional; ausente = activado con variante por id; false = apagado; texto = ese texto). */
   llamado: CampoLlamado,
   /**

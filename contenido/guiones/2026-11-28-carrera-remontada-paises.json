@@ -1,0 +1,59 @@
+{
+  "plantilla": "carrera",
+  "id": "2026-11-28-carrera-remontada-paises",
+  "titulo": "¿Argentina, Brasil, Chile o México? Elige tu bolita antes de la largada 🌎",
+  "descripcion": "Elige tu país ANTES de la largada y comenta cuál elegiste 👇 Cuatro bolitas, una carrera y una remontada de último segundo. Física real: ¿gana el tuyo? #Shorts",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#bolitas",
+    "#satisfying",
+    "#eligetubolita",
+    "#argentina",
+    "#brasil",
+    "#chile",
+    "#mexico"
+  ],
+  "props": {
+    "id": "2026-11-28-carrera-remontada-paises",
+    "gancho": "¿Argentina, Brasil, Chile o México?",
+    "ganchoAbajo": "No te fíes del primero 😱",
+    "tema": "países",
+    "remontada": true,
+    "llamado": false,
+    "participantes": [
+      {
+        "etiqueta": "ARGENTINA",
+        "color": "cian",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇦🇷"
+        }
+      },
+      {
+        "etiqueta": "BRASIL",
+        "color": "lima",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇧🇷"
+        }
+      },
+      {
+        "etiqueta": "CHILE",
+        "color": "magenta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇨🇱"
+        }
+      },
+      {
+        "etiqueta": "MÉXICO",
+        "color": "amarillo",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🇲🇽"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "plantilla": "carrera",
+  "id": "2026-11-24-carrera-remontada-clubes-chile",
+  "titulo": "¿Colo-Colo, la U, la UC o Cobreloa? Elige tu bolita antes de la largada 🏁",
+  "descripcion": "Elige tu equipo ANTES de la largada y comenta cuál elegiste 👇 Cuatro bolitas, una sola carrera y una remontada que no se ve venir. Física real, sin trucos: ¿gana el tuyo? #Shorts",
+  "hashtags": [
+    "#shorts",
+    "#carrera",
+    "#bolitas",
+    "#satisfying",
+    "#eligetubolita",
+    "#colocolo",
+    "#launiversidaddechile",
+    "#cobreloa",
+    "#futbolchileno"
+  ],
+  "props": {
+    "id": "2026-11-24-carrera-remontada-clubes-chile",
+    "gancho": "¿Colo-Colo, la U, la UC o Cobreloa?",
+    "ganchoAbajo": "No te fíes del primero 😱",
+    "tema": "clubes de Chile",
+    "remontada": true,
+    "llamado": false,
+    "participantes": [
+      {
+        "etiqueta": "COLO-COLO",
+        "color": "lima",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "⚪"
+        }
+      },
+      {
+        "etiqueta": "LA U",
+        "color": "cian",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "💙"
+        }
+      },
+      {
+        "etiqueta": "UC",
+        "color": "violeta",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🔵"
+        }
+      },
+      {
+        "etiqueta": "COBRELOA",
+        "color": "naranja",
+        "icono": {
+          "tipo": "emoji",
+          "valor": "🟠"
+        }
+      }
+    ]
+  }
+}

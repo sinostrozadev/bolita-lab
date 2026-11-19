@@ -10,7 +10,7 @@ import { crearAzar } from '../../lib/azar';
 import { accionVoto, ganchoAbajoCarrera, type GuionCarrera, type IconoCompetidor } from './guion';
 import { Icono, iconoAportaJuntoAlNombre } from './Icono';
 import { CIERRE_FRAMES, type SimulacionCarrera } from './tipos';
-import { Aviso, Bloques, TubosFondo, TubosFrente, tamVotacion } from './Extras';
+import { Aviso, Bloques, CartelElige, TubosFondo, TubosFrente, tamVotacion } from './Extras';
 import { PanelVotacion } from '../../marca/Votacion';
 
 /** Ruta pública del JSON de simulación de un guion. */
@@ -416,7 +416,7 @@ const Celebracion: React.FC<{ sim: SimulacionCarrera; color: string; etiqueta: s
   const tamIcono = tam * ICONO_EN_BOLA * (0.85 + 0.15 * iconoIn);
   const salida = interpolate(frame, [sim.duracionFrames - 14, sim.duracionFrames], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
   const fuente = Math.min(132, (ANCHO - 2 * seguro.lados) / (etiqueta.length * 0.68));
-  const ventaja = sim.ventajaSeg < 1.5 ? `por ${sim.ventajaSeg.toFixed(2).replace('.', ',')} s` : '';
+  const ventaja = sim.remontada ? `¡remontada desde el ${sim.remontada.puestoAntes}.º puesto! 😱` : sim.ventajaSeg < 1.5 ? `por ${sim.ventajaSeg.toFixed(2).replace('.', ',')} s` : '';
   const G = 0.75; // gravedad del confeti (px/frame²)
   return (
     <AbsoluteFill>
@@ -553,7 +553,16 @@ export const Carrera: React.FC<GuionCarrera> = (props) => {
         ? <PanelVotacion colores={colores} etiquetas={etiquetas} acciones={props.participantes.map((_, i) => accionVoto(i))} opacidad={fadeCierre}
             frameFinal={sim.frameGanadora} ganador={sim.ganadora}
             iconos={(tam) => iconos.map((ic, i) => <Icono key={i} icono={ic} tam={tam} fondo={colores[i]} />)} />
-        : <BloqueTexto texto={ganchoAbajoCarrera(props)} color={PALETA.neon.magenta} centroY={ABAJO_CENTRO_Y} tam={58} opacidad={fadeCierre} />}
+        : props.remontada
+          ? <>
+              {/* Variante remontada: los primeros ~2 s manda el cartel "ELIGE TU COLOR"; luego la intriga; al final, el CTA. */}
+              <CartelElige texto={props.cartel ?? 'ELIGE TU COLOR ANTES DE LA LARGADA 👇'} colores={colores} etiquetas={etiquetas}
+                iconos={iconos.map((ic, i) => <Icono key={i} icono={ic} tam={44} fondo={colores[i]} />)} />
+              <BloqueTexto texto={celebrando ? '¿Cuál elegiste? Comenta 👇' : ganchoAbajoCarrera(props)} color={celebrando ? PALETA.neon.amarillo : PALETA.neon.magenta}
+                centroY={ABAJO_CENTRO_Y} tam={celebrando ? 62 : 58}
+                opacidad={fadeCierre * (celebrando ? 1 : interpolate(frame, [140, 156], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }))} />
+            </>
+          : <BloqueTexto texto={ganchoAbajoCarrera(props)} color={PALETA.neon.magenta} centroY={ABAJO_CENTRO_Y} tam={58} opacidad={fadeCierre} />}
 
       {/* Llamado a suscribirse en la recta final (se queda durante la celebración). Color de marca: el de
           la líder o la ganadora delataría el resultado antes de la meta. */}

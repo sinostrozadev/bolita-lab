@@ -70,7 +70,7 @@ export interface Tubo {
 /** Aviso narrativo del marcador (máx. 1 cada 3 s): `camino` = `bola` rompió un bloque y por ahí pasó `otra`. */
 export interface AvisoCarrera {
   frame: number;
-  tipo: 'camino' | 'tubo';
+  tipo: 'camino' | 'tubo' | 'remontada';
   bola: number;
   otra?: number;
   /** Índice del tubo (aviso 'tubo'). */
@@ -155,6 +155,8 @@ export interface SimulacionCarrera {
   bloques?: Bloque[];
   tubos?: Tubo[];
   avisos?: AvisoCarrera[];
+  /** Variante `remontada`: `ganadora` toma el 1.er lugar a `lider` (frame de VIDEO) tras ir `puestoAntes`.º a falta del 30 %. */
+  remontada?: { frame: number; ganadora: number; lider: number; puestoAntes: number };
   /** Torneo (secciones): móviles, portales, secciones y el tiempo de física (s) que muestra cada frame de video. */
   moviles?: Movil[];
   portales?: Portal[];

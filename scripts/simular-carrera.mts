@@ -55,6 +55,15 @@ const LIENZO_SHORT = {
   primerChoqueMax: 0.3,
 };
 export type Lienzo = typeof LIENZO_SHORT;
+/**
+ * Variante "elige tu color con remontada" (`remontada: true` en el guion): Short de ≤ 25 s en total. Tablero de ~3,5 pantallas
+ * (medido: ~2,7 s por cada 1000 px de alto) y ganadora entre 15 y 20 s: + 2,5 s de celebración + 1,2 s de cierre + la cámara lenta ≈ 22–25 s.
+ * Solo se aplica a guiones con `remontada`; el Short normal no cambia.
+ */
+export const LIENZO_REMONTADA: Partial<Lienzo> = {
+  metaY: 6600,
+  duracion: { min: 15, max: 20, objetivo: 17.5 },
+};
 let ANCHO = LIENZO_SHORT.ancho;
 let PANTALLA = LIENZO_SHORT.pantalla;
 let META_Y = LIENZO_SHORT.metaY;
@@ -605,7 +614,7 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
             b.vy -= (1 + REST_CLAVIJA) * vn * ny;
             if (-vn > 70 && frame - ultimoGolpe[i] >= 2) {
               ultimoGolpe[i] = frame;
-              eventos.push({ frame, tipo: 'clavija', bola: i, clavija: ci, hz: midiAHz(ESCALA_MIDI[i]), fuerza: Math.min(1, -vn / 1000) });
+              eventos.push({ frame, tipo: 'clavija', bola: i, clavija: ci, hz: midiAHz(ESCALA_MIDI[i % ESCALA_MIDI.length]), fuerza: Math.min(1, -vn / 1000) });
             }
           }
         }
@@ -667,7 +676,7 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
             b.vx -= vt * 0.0015 * tx; b.vy -= vt * 0.0015 * ty;
             if (-vn > 140 && frame - ultimoGolpe[i] >= 3) {
               ultimoGolpe[i] = frame;
-              eventos.push({ frame, tipo: 'rampa', bola: i, hz: midiAHz(ESCALA_MIDI[i]), fuerza: Math.min(1, -vn / 1000) });
+              eventos.push({ frame, tipo: 'rampa', bola: i, hz: midiAHz(ESCALA_MIDI[i % ESCALA_MIDI.length]), fuerza: Math.min(1, -vn / 1000) });
             }
           }
         }
@@ -739,7 +748,7 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
           a.vx -= imp * nx; a.vy -= imp * ny; b.vx += imp * nx; b.vy += imp * ny;
           if (-vrel > 90 && frame - ultimoGolpe[i] >= 2) {
             ultimoGolpe[i] = frame; ultimoGolpe[j] = frame;
-            eventos.push({ frame, tipo: 'bola', bola: i, otra: j, hz: midiAHz((ESCALA_MIDI[i] + ESCALA_MIDI[j]) / 2 + 12), fuerza: Math.min(1, -vrel / 900) });
+            eventos.push({ frame, tipo: 'bola', bola: i, otra: j, hz: midiAHz((ESCALA_MIDI[i % ESCALA_MIDI.length] + ESCALA_MIDI[j % ESCALA_MIDI.length]) / 2 + 12), fuerza: Math.min(1, -vrel / 900) });
           }
         }
       }
@@ -807,6 +816,42 @@ const correr = (n: number, semilla: number, gravedad: number, extras: boolean): 
   return null; // nadie llegó dentro del tope
 };
 
+/**
+ * REMONTADA (variante `remontada`). Métrica, con el ranking por frame de FÍSICA (ordenado por altura `y`, la más baja = la que va
+ * primera) y T = instante en que la ganadora W cruza la meta:
+ *   1. A falta del 30 % (frame 0,70·T) W va 3.ª o peor.
+ *   2. La que más frames fue 1.ª en [0, 0,75·T] (L) lo fue ≥ 40 % del tiempo y no es W (el líder "de verdad").
+ *   3. W toma el 1.er lugar para siempre en el instante fT (último frame en que W no era 1.ª, + 1) con 0,72·T ≤ fT ≤ T − 100
+ *      (último ~25 %, y ≥ ~1,5 s antes de la meta para que el aviso se vea).
+ * Cumplida, la carrera es una remontada real: nada se guiona, la física decide qué semilla sirve.
+ */
+export interface Remontada { ganadora: number; lider: number; frame: number; puestoAntes: number; cuota: number }
+const evaluarRemontada = (r: Resultado): Remontada | null => {
+  const n = r.posiciones.length;
+  const T = r.tDecisivo;
+  const W = r.llegadas.map((t, i) => ({ t, i })).filter((x) => x.t >= 0).sort((a, b) => a.t - b.t)[0]?.i;
+  if (W === undefined) return null;
+  const fin = Math.floor(T);
+  const rangoDe = (f: number, i: number) => {
+    let k = 0;
+    for (let j = 0; j < n; j++) if (j !== i && (r.posiciones[j][f][1] > r.posiciones[i][f][1] || (r.posiciones[j][f][1] === r.posiciones[i][f][1] && j < i))) k++;
+    return k;
+  };
+  const f70 = Math.floor(0.7 * T);
+  const puestoAntes = rangoDe(f70, W);
+  if (puestoAntes < 2) return null;
+  const primera = Array(n).fill(0) as number[];
+  const tope = Math.floor(0.75 * T);
+  for (let f = 0; f <= tope; f++) for (let i = 0; i < n; i++) if (rangoDe(f, i) === 0) { primera[i]++; break; }
+  const L = primera.indexOf(Math.max(...primera));
+  const cuota = primera[L] / (tope + 1);
+  if (L === W || cuota < 0.4) return null;
+  let fT = 0;
+  for (let f = fin; f >= 0; f--) if (rangoDe(f, W) !== 0) { fT = f + 1; break; }
+  if (fT < 0.72 * T || fT > T - 100) return null;
+  return { ganadora: W, lider: L, frame: fT, puestoAntes, cuota };
+};
+
 /** ¿La carrera luce los extras? Algún tubo usado, el ATAJO usado (se ve la ventaja), un bloque roto y un "le abrió el camino". */
 const puntajeExtras = (r: Resultado) =>
   (r.usos.length > 0 ? 1 : 0) + (r.usos.some((u) => r.mundo.tubos[u.tubo].tipo === 'atajo') ? 1 : 0) +
@@ -829,22 +874,26 @@ const simular = (guion: GuionCarrera) => {
   let gravedad = 1100;
   let semilla = base;
   let validas = 0;
-  let mejor: { r: Resultado; semilla: number; gravedad: number; p: number } | null = null;
+  const remontada = guion.remontada === true;
+  let mejor: { r: Resultado; semilla: number; gravedad: number; p: number; rem?: Remontada } | null = null;
   for (let intento = 0; intento < 240; intento++) {
     const r = correr(n, semilla, gravedad, extras);
     const dur = r ? r.tDecisivo / FPS : Infinity;
     // El 1.er choque con clavija debe llegar en ≤ 0,3 s (con gravedad baja la salida se vuelve lenta).
     const primerChoque = r?.eventos.find((e) => e.tipo === 'clavija')?.frame ?? Infinity;
     if (diag) console.log(`[diag] intento ${intento} g=${gravedad.toFixed(0)} dur=${dur.toFixed(1)} 1er=${primerChoque}`);
-    if (r && dur >= DURACION_MIN && dur <= DURACION_MAX && (!extras || primerChoque <= PRIMER_CHOQUE_MAX * FPS)) {
+    // Variante remontada: además de la duración, la física debe producir una remontada real (ver `evaluarRemontada`).
+    const rem = remontada && r && dur >= DURACION_MIN && dur <= DURACION_MAX ? evaluarRemontada(r) : null;
+    if (r && dur >= DURACION_MIN && dur <= DURACION_MAX && (!extras || primerChoque <= PRIMER_CHOQUE_MAX * FPS) && (!remontada || rem)) {
       validas++;
       const p = extras ? puntajeExtras(r) : 0;
       const reñida = r.ventaja < VENTAJA_MAX_SEG;
       // Primero los extras completos y reñida; luego más extras; luego menos ventaja.
       const clave = (x: { r: Resultado; p: number }) => (x.r.ventaja < VENTAJA_MAX_SEG ? 0 : 1) * 10 + (meta - x.p) + Math.min(0.99, x.r.ventaja / 100);
-      if (!mejor || clave({ r, p }) < clave(mejor)) mejor = { r, semilla, gravedad, p };
-      if ((reñida && p >= meta) || validas >= maxValidas) return { ...mejor, intentos: intento + 1 };
-    } else {
+      if (!mejor || clave({ r, p }) < clave(mejor)) mejor = { r, semilla, gravedad, p, rem: rem ?? undefined };
+      // Remontada: con una válida y 2 extras (tubo usado + bloque roto) basta; la reñida no se exige (la remontada es el gancho).
+      if (remontada ? (p >= 2 && validas >= 3) || validas >= 12 : (reñida && p >= meta) || validas >= maxValidas) return { ...mejor, intentos: intento + 1 };
+    } else if (!(remontada && r && dur >= DURACION_MIN && dur <= DURACION_MAX)) {
       // Duración fuera de rango: acerca la gravedad al objetivo.
       // Con extras la gravedad no baja de 950: más floja, la salida tarda > 0,3 s en el 1.er choque y la caída se ve
       // "flotando" (medido 2026-11-09: g=729 → 1.er choque a 417 ms). Si la carrera sale corta, cambia la semilla.
@@ -871,7 +920,7 @@ const velocidad = (t: number, tCruce: number) => {
  * Pasa la física (frames de carrera real) al tiempo del video: cámara lenta en la llegada,
  * cámara que sigue a la líder y ranking con histéresis. Devuelve todo en frames de VIDEO.
  */
-const alVideo = (r: Resultado) => {
+const alVideo = (r: Resultado, rem?: Remontada) => {
   const n = r.posiciones.length;
   const finFisica = r.posiciones[0].length - 1;
   // t[o] = instante de física que muestra el frame de video o.
@@ -949,6 +998,8 @@ const alVideo = (r: Resultado) => {
   ].sort((a, b) => a.frame - b.frame);
   // Prioridad: primero cada entrada a un tubo (es lo nuevo y se ve en cámara), luego los "le abrió el camino".
   const avisos: AvisoCarrera[] = [];
+  // La remontada tiene prioridad sobre todo aviso (y nunca se descarta): es el gancho de la variante.
+  if (rem) avisos.push({ frame: aVideo(rem.frame), tipo: 'remontada', bola: rem.ganadora, otra: rem.lider });
   for (const tipo of ['tubo', 'camino'] as const) {
     for (const a of candidatos) {
       if (a.tipo !== tipo || a.frame >= camaraLenta.desde - 60) continue;
@@ -958,7 +1009,8 @@ const alVideo = (r: Resultado) => {
   }
   avisos.sort((a, b) => a.frame - b.frame);
   const tiempo = t.map((x) => Math.round((x / FPS) * 10000) / 10000);
-  return { tiempo, posiciones, eventos, llegadas, frameGanadora, frameDecisivo, camaraLenta, camara, ranking, frameRiser, duracionFrames: t.length, bloques, tubos, avisos };
+  const remontada = rem ? { frame: aVideo(rem.frame), ganadora: rem.ganadora, lider: rem.lider, puestoAntes: rem.puestoAntes + 1 } : undefined;
+  return { remontada, tiempo, posiciones, eventos, llegadas, frameGanadora, frameDecisivo, camaraLenta, camara, ranking, frameRiser, duracionFrames: t.length, bloques, tubos, avisos };
 };
 
 /** Simula, escribe `public/sim/<id>.json` y `public/audio/generado/<id>.wav`. Devuelve la simulación. */
@@ -974,13 +1026,13 @@ export interface OpcionesSimulacion {
 }
 
 export const prepararSimulacion = (guion: GuionCarrera, opciones: OpcionesSimulacion = {}): SimulacionCarrera => {
-  configurarLienzo(opciones.lienzo, opciones.pasan, opciones.secciones ?? null);
+  configurarLienzo(guion.remontada ? { ...LIENZO_REMONTADA, ...opciones.lienzo } : opciones.lienzo, opciones.pasan, opciones.secciones ?? null);
   try { return prepararSimulacionConLienzo(guion, opciones); } finally { configurarLienzo(); }
 };
 
 const prepararSimulacionConLienzo = (guion: GuionCarrera, opciones: OpcionesSimulacion): SimulacionCarrera => {
-  const { r, semilla, gravedad, intentos } = simular(guion);
-  const v = alVideo(r);
+  const { r, semilla, gravedad, intentos, rem } = simular(guion);
+  const v = alVideo(r, rem);
   // Orden final: por instante de llegada; las que no llegan, por lo avanzadas que van al final.
   const ultimo = r.posiciones[0].length - 1;
   const orden = r.llegadas
@@ -1009,7 +1061,8 @@ const prepararSimulacionConLienzo = (guion: GuionCarrera, opciones: OpcionesSimu
     camaraLenta: v.camaraLenta,
     duracionFrames: v.duracionFrames,
     frameRiser: v.frameRiser,
-    ...(guion.extras !== false ? { bloques: v.bloques, tubos: v.tubos, avisos: v.avisos } : {}),
+    ...(guion.extras !== false || v.remontada ? { bloques: v.bloques, tubos: v.tubos, avisos: v.avisos } : {}),
+    ...(v.remontada ? { remontada: v.remontada } : {}),
   };
   const rutaSim = path.join(RAIZ, 'public/sim', `${guion.id}.json`);
   fs.mkdirSync(path.dirname(rutaSim), { recursive: true });
@@ -1029,7 +1082,11 @@ const prepararSimulacionConLienzo = (guion: GuionCarrera, opciones: OpcionesSimu
   if (sim.bloques) {
     const rotos = sim.bloques.filter((b) => b.roto >= 0).length;
     const usosTubo = sim.tubos!.reduce((a, t) => a + t.usos.length, 0);
-    console.log(`[carrera] extras: ${sim.bloques.length} bloques (${rotos} rotos) · ${sim.tubos!.length} tubos [${sim.tubos!.map((t) => `${t.tipo}×${t.usos.length}`).join(', ')}] → ${usosTubo} uso(s) · ${sim.avisos!.length} aviso(s): ${sim.avisos!.map((a) => `${(a.frame / FPS).toFixed(1)} s ${a.tipo === 'camino' ? `${guion.participantes[a.bola].etiqueta}→${guion.participantes[a.otra!].etiqueta}` : `${guion.participantes[a.bola].etiqueta} al tubo`}`).join(' · ')}`);
+    console.log(`[carrera] extras: ${sim.bloques.length} bloques (${rotos} rotos) · ${sim.tubos!.length} tubos [${sim.tubos!.map((t) => `${t.tipo}×${t.usos.length}`).join(', ')}] → ${usosTubo} uso(s) · ${sim.avisos!.length} aviso(s): ${sim.avisos!.map((a) => `${(a.frame / FPS).toFixed(1)} s ${a.tipo === 'remontada' ? '¡REMONTADA! ' : ''}${a.tipo !== 'tubo' ? `${guion.participantes[a.bola].etiqueta}→${guion.participantes[a.otra!].etiqueta}` : `${guion.participantes[a.bola].etiqueta} al tubo`}`).join(' · ')}`);
+  }
+  if (sim.remontada) {
+    const m = sim.remontada;
+    console.log(`[carrera] REMONTADA a los ${(m.frame / FPS).toFixed(1)} s: "${guion.participantes[m.ganadora].etiqueta}" (iba ${m.puestoAntes}.º a falta del 30 %) pasa a "${guion.participantes[m.lider].etiqueta}" y gana`);
   }
   console.log(`[carrera] orden: ${orden.map((i, k) => `${k + 1}.º ${guion.participantes[i].etiqueta}${sim.llegadas[i] < 0 ? ' (por posición en pista)' : ''}`).join(' · ')}`);
   console.log(`[carrera] → ${path.relative(RAIZ, rutaSim)} · ${path.relative(RAIZ, rutaWav)}`);

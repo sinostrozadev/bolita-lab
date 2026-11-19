@@ -207,6 +207,24 @@ export const Aviso: React.FC<{ sim: SimulacionCarrera; colores: string[]; etique
   const entrada = spring({ frame: k, fps, config: { damping: 12, stiffness: 190 } });
   const op = Math.min(interpolate(k, [0, 6], [0, 1], { extrapolateRight: 'clamp' }), interpolate(frame, [fin - 10, fin], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }));
   const Nombre: React.FC<{ i: number }> = ({ i }) => <span style={{ color: colores[i], textShadow: `0 0 14px ${colores[i]}AA` }}>{etiquetas[i]}</span>;
+  if (a.tipo === 'remontada') {
+    // Aviso grande de dos líneas: el gancho de la variante "elige tu color con remontada".
+    const pop = spring({ frame: k, fps, config: { damping: 9, stiffness: 220 } });
+    const nom = (i: number) => <span style={{ color: colores[i], textShadow: `0 0 14px ${colores[i]}AA` }}>{etiquetas[i]}</span>;
+    const tam2 = Math.min(40, (ANCHO - 2 * FORMATO.seguro.lados - 70) / ((etiquetas[a.bola].length + etiquetas[a.otra!].length + 12) * 0.56));
+    return (
+      <div style={{ position: 'absolute', left: 0, right: 0, top: centroY - 66, height: 132, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}>
+        <div style={{
+          height: 132, padding: '0 34px', borderRadius: 44, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', whiteSpace: 'nowrap',
+          background: `${PALETA.fondo}F2`, border: `4px solid ${PALETA.neon.amarillo}`, boxShadow: `0 0 34px ${PALETA.neon.amarillo}99, 0 6px 22px rgba(0,0,0,0.6)`,
+          transform: `scale(${0.7 + 0.3 * pop}) rotate(${(1 - pop) * -4}deg)`, opacity: op, fontFamily: TIPO.display, fontWeight: 800, color: PALETA.tinta,
+        }}>
+          <div style={{ fontSize: 64, lineHeight: 1.05, color: PALETA.neon.amarillo, textShadow: `0 0 24px ${PALETA.neon.amarillo}AA` }}>¡REMONTADA! 😱</div>
+          <div style={{ fontSize: tam2 }}>{nom(a.bola)} le pasó a {nom(a.otra!)}</div>
+        </div>
+      </div>
+    );
+  }
   const tubo = a.tubo !== undefined ? sim.tubos?.[a.tubo] : undefined;
   const contenido = a.tipo === 'camino'
     ? <>💥 ¡<Nombre i={a.bola} /> le abrió el camino a <Nombre i={a.otra!} />!</>
@@ -228,3 +246,36 @@ export const Aviso: React.FC<{ sim: SimulacionCarrera; colores: string[]; etique
 
 /** Grande ↔ compacta del panel de votación (el panel vive en src/marca/Votacion.tsx, compartido con `colores`). */
 export const tamVotacion = (sim: SimulacionCarrera, frame: number) => tamVotacionComun(frame, sim.frameGanadora);
+
+/**
+ * Cartel de la variante `remontada`: "ELIGE TU COLOR ANTES DE LA LARGADA 👇" + los competidores con su color, desde el frame 0
+ * (la carrera ya se mueve detrás). Se apaga a ~2,2 s; abajo, sobre la zona segura inferior y sin pisar los botones de YouTube.
+ */
+export const CartelElige: React.FC<{ texto: string; colores: string[]; etiquetas: string[]; iconos: React.ReactNode[] }> = ({ texto, colores, etiquetas, iconos }) => {
+  const frame = useCurrentFrame();
+  const op = interpolate(frame, [124, 144], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' });
+  if (op <= 0.001) return null;
+  const n = etiquetas.length;
+  const filas = Math.ceil(n / 2);
+  const alto = 24 + 2 * 62 + 14 + filas * 84 + 18;
+  return (
+    <div style={{
+      position: 'absolute', left: 56, width: 884, top: 1580 - alto, height: alto, boxSizing: 'border-box', padding: '12px 22px', opacity: op, borderRadius: 30,
+      background: `${PALETA.fondo}F0`, border: `3px solid ${PALETA.neon.amarillo}BB`, boxShadow: `0 0 30px 10px ${PALETA.fondo}B0`,
+      fontFamily: TIPO.display, fontWeight: 800, color: PALETA.tinta, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14,
+    }}>
+      <div style={{ fontSize: 46, lineHeight: 1.1, textAlign: 'center', color: PALETA.neon.amarillo, textShadow: `0 0 16px ${PALETA.neon.amarillo}88` }}>{texto}</div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', columnGap: 18, rowGap: 6, width: '100%' }}>
+        {etiquetas.map((e, i) => (
+          <div key={i} style={{ height: 78, display: 'flex', alignItems: 'center', gap: 12, whiteSpace: 'nowrap', fontSize: Math.min(44, 330 / (e.length * 0.62)), textShadow: '0 2px 0 #000, 0 0 10px #000' }}>
+            <span style={{
+              width: 62, height: 62, flex: 'none', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              background: `radial-gradient(circle at 30% 26%, #FFFFFFAA 0, ${colores[i]} 34%)`, boxShadow: `0 0 12px ${colores[i]}, 0 0 26px ${colores[i]}66`,
+            }}>{iconos[i]}</span>
+            <span style={{ color: colores[i] }}>{e}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
